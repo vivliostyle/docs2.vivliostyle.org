@@ -178,48 +178,83 @@ margin: 20mm;
 | UIコンポーネント | 8-12時間 |
 | **合計** | **42-64時間** |
 
-### 4.3 工数差
+### 4.3 工数差（旧観点：Web専用の場合）
 
-Vivliostyle Themesのみでの実装は、Tailwind CSS使用時と比較して **+35-50時間** の追加工数が見込まれる。
+~~Vivliostyle Themesのみでの実装は、Tailwind CSS使用時と比較して **+35-50時間** の追加工数が見込まれる。~~
+
+**注**: 上記はWeb版のみを考慮した場合の比較。SSMO（Web/PDF/EPUB同時出力）を前提とすると、評価は逆転する。詳細は [CSS_OPTIONS.md](CSS_OPTIONS.md) を参照。
 
 ---
 
-## 5. 結論と推奨
+## 5. 結論と推奨（SSMO観点）
 
 ### 5.1 評価サマリー
 
 | 評価項目 | Tailwind | Themes | 
 |---------|----------|--------|
-| Web UI適性 | ◎ | △ |
-| 開発効率 | ◎ | △ |
+| Web UI適性 | ◎ | ◯ |
+| 開発効率（Web単独） | ◎ | △ |
+| **SSMO対応** | **✗** | **◎** |
+| **3形式合計工数** | **130-198h** | **86-130h** |
 | Vivliostyleブランド整合 | △ | ◎ |
 | 本文タイポグラフィ | ◯ | ◎ |
-| メンテナンス性 | ◎ | ◯ |
+| デモンストレーション効果 | △ | ◎ |
 
-### 5.2 推奨アプローチ
+### 5.2 推奨アプローチ（改訂）
 
-**ハイブリッド方式を推奨：**
+**Vivliostyle Themes ベースを推奨：**
 
-1. **UI/レイアウト**: Tailwind CSS + @tailwindcss/typography
-2. **本文エリア**: Vivliostyle Themes のタイポグラフィ変数を部分的に採用
+Vivliostyleの最大のメリットは「**1つのソースからWeb/PDF/EPUB出力**」（SSMO: Single Source Multi Output）である。この価値を自社ドキュメントで実践することが、来訪者への最も説得力あるデモンストレーションとなる。
+
+1. **CSS設計**: Vivliostyle Themes をベースに、メディアクエリでWeb/Print分岐
+2. **本文スタイル**: Web/PDF/EPUBで共通
+3. **Web UI**: 最小限の追加実装（ナビ、レスポンシブ、ダークモード）
 
 ```css
-/* 本文エリアのみThemesの設定を活用 */
-.prose {
+/* 共通スタイル（Web/PDF/EPUB） */
+:root {
   --vs-font-family: 'Noto Sans JP', sans-serif;
   --vs-line-height: 1.8;
+}
+
+article {
   font-family: var(--vs-font-family);
   line-height: var(--vs-line-height);
 }
+
+/* Web専用 */
+@media screen {
+  .site-header { /* ... */ }
+  .sidebar { /* ... */ }
+}
+
+/* PDF/印刷専用 */
+@media print {
+  @page { size: A4; margin: 20mm; }
+  .site-header, .sidebar { display: none; }
+}
 ```
 
-### 5.3 Themesフル採用が適切なケース
+### 5.3 来訪者へのアピール
 
-以下の場合はThemesフル採用も検討可能：
+```markdown
+## このドキュメントについて
 
-- PDF出力機能を同時に提供する場合
-- 印刷用CSSとの一貫性が強く求められる場合
-- 開発期間に十分な余裕がある場合
+本ドキュメントは **Vivliostyle** を使用して作成されています。
+
+- 📱 **Web版**: 今ご覧のページ
+- 📄 **PDF版**: [ダウンロード](/docs.pdf)
+- 📚 **EPUB版**: [ダウンロード](/docs.epub)
+
+**すべて同一のMarkdownソースから生成されています。**
+```
+
+### 5.4 Tailwindが適切なケース
+
+以下の場合はTailwind/ハイブリッドも検討可能：
+
+- PDF/EPUB出力を行わない場合（ただし、Vivliostyleの価値を示すデモにはならない）
+- 開発期間が極めて限られている場合（ただし、3形式合計では逆に非効率）
 
 ---
 
@@ -228,3 +263,4 @@ Vivliostyle Themesのみでの実装は、Tailwind CSS使用時と比較して *
 - [Vivliostyle Themes GitHub](https://github.com/vivliostyle/themes)
 - [Create Book](https://github.com/vivliostyle/create-book)
 - [Vivliostyle CLI](https://github.com/vivliostyle/vivliostyle-cli)
+- [CSS_OPTIONS.md](CSS_OPTIONS.md) - CSS実装オプションの詳細分析

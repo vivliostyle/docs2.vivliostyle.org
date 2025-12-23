@@ -1,5 +1,8 @@
 # docs2.vivliostyle.org 開発計画（案1: Astro標準）
 
+> **注意**: 本案は **SSMO（Single Source Multi Output）に非対応** の参考案です。
+> 推奨案は [DEVELOPMENT_PLAN-2.md](DEVELOPMENT_PLAN-2.md) を参照してください。
+
 ## 1. プロジェクト概要
 
 ### 1.1 目的

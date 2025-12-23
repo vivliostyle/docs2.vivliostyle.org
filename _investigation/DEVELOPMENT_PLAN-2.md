@@ -47,10 +47,30 @@
 | 静的サイトジェネレータ | Astro |
 | Markdown パーサー | VFM (@vivliostyle/vfm) |
 | コンテンツ統合 | Astro Content Collections + カスタムローダー |
-| CSS フレームワーク | Tailwind CSS + @tailwindcss/typography |
+| CSS | Vivliostyle Themes ベース（SSMO対応） |
+| PDF/EPUB生成 | Vivliostyle CLI |
 | ホスティング | GitHub Pages |
 | コンテンツ管理 | Git submodule |
 | ソース形式 | Markdown (VFM記法対応) |
+
+### 2.1.1 SSMO（Single Source Multi Output）
+
+Vivliostyleの最大のメリットである「**1つのソースからWeb/PDF/EPUB出力**」を自社ドキュメントで実践する。
+
+```
+                    ┌─────────────────┐
+                    │  Markdown Source │
+                    │  (単一ソース)     │
+                    └────────┬────────┘
+                             │
+              ┌──────────────┼──────────────┐
+              ▼              ▼              ▼
+        ┌──────────┐  ┌──────────┐  ┌──────────┐
+        │ Web (HTML)│  │   PDF    │  │   EPUB   │
+        └──────────┘  └──────────┘  └──────────┘
+```
+
+これにより来訪者に対し、Vivliostyleの価値を実証できる。
 
 ### 2.2 URL 構造
 
@@ -147,52 +167,59 @@ export function vfmLoader({ pattern, base }): Loader {
 }
 ```
 
-### 2.7 工数見積もり
+### 2.7 工数見積もり（SSMO対応版）
 
 #### Phase 別工数
 
 | Phase | 内容 | 見積もり時間 |
 |-------|------|-------------|
-| Phase 1 | 基盤構築（VFMローダー含む） | 24〜40時間 |
+| Phase 1 | 基盤構築（VFM + SSMO CSS） | 32〜48時間 |
 | Phase 2 | CLI ドキュメント統合 | 8〜12時間 |
 | Phase 3 | 他プロダクト統合 | 16〜24時間 |
 | Phase 4 | UI/UX 改善 | 12〜16時間 |
-| Phase 5 | テスト・公開 | 8〜12時間 |
-| **合計** | | **68〜104時間** |
+| Phase 5 | PDF/EPUB生成・公開 | 12〜18時間 |
+| **合計** | | **80〜118時間** |
 
-#### Phase 1 詳細（VFMローダー含む）
+#### Phase 1 詳細（VFM + SSMO CSS）
 
 | タスク | 見積もり時間 |
 |--------|-------------|
 | Astro プロジェクトセットアップ | 1〜2時間 |
-| Tailwind CSS 導入 | 1〜2時間 |
+| **SSMO対応CSS設計・実装** | **12〜18時間** |
+| ├─ CSS変数・共通スタイル設計 | 2〜3時間 |
+| ├─ Web用レイアウト（ナビ、サイドバー） | 4〜6時間 |
+| ├─ レスポンシブ対応 | 3〜4時間 |
+| ├─ ダークモード | 2〜3時間 |
+| └─ @media print スタイル | 1〜2時間 |
 | **VFM カスタムローダー実装** | **8〜16時間** |
 | ├─ ローダー本体の実装 | 2〜3時間 |
 | ├─ Frontmatter 抽出処理 | 1〜2時間 |
 | ├─ 多言語対応（en/ja 振り分け） | 1〜2時間 |
 | ├─ submodule パス対応 | 1時間 |
 | └─ テスト・デバッグ | 2〜4時間 |
-| 基本レイアウトコンポーネント | 6〜8時間 |
+| 基本レイアウトコンポーネント | 4〜6時間 |
 | 言語検出・リダイレクト実装 | 2〜4時間 |
 | GitHub Actions 設定 | 2〜4時間 |
-| テスト・調整 | 4〜4時間 |
-| **小計** | **24〜40時間** |
+| テスト・調整 | 3〜4時間 |
+| **小計** | **32〜48時間** |
 
-#### 案1（Astro標準）との比較
+#### 他アプローチとの比較（SSMO観点）
 
-| 項目 | 案1: Astro標準 | 案2: VFM組み込み |
-|------|---------------|-----------------|
-| Phase 1 工数 | 16〜24時間 | 24〜40時間 |
-| 総工数 | 60〜88時間 | 68〜104時間 |
-| 差分 | - | +8〜16時間 |
+| 項目 | Tailwind（Web専用） | 本案（SSMO対応） |
+|------|---------------------|------------------|
+| Web版工数 | 60〜88時間 | 70〜100時間 |
+| PDF版追加工数 | +40〜60時間（別CSS） | +8〜12時間 |
+| EPUB版追加工数 | +30〜50時間 | +4〜6時間 |
+| **3形式合計** | **130〜198時間** | **80〜118時間** |
 | VFM記法対応 | ✗ | ✓ |
-| 既存ドキュメント変換 | 必要な場合あり | 不要 |
-| 長期保守性 | VFM非対応 | VFM更新に追従 |
+| Vivliostyle価値デモ | ✗ | ✓ |
+| ドッグフーディング | ✗ | ✓ |
 
 #### 備考
 
-- VFM カスタムローダーの追加工数（8〜16時間）は、既存ドキュメントの VFM 記法をそのまま使用できることで回収可能
-- 将来の VFM 機能追加にも自動対応
+- **SSMO対応は3形式出力を前提とすると実は効率的**
+- 来訪者に「1ソースからWeb/PDF/EPUB」をデモンストレーション可能
+- VFM 記法をそのまま使用でき、既存ドキュメントの変換不要
 
 ---
 
@@ -201,7 +228,12 @@ export function vfmLoader({ pattern, base }): Loader {
 ### Phase 1: 基盤構築
 
 - [ ] Astro プロジェクトのセットアップ
-- [ ] Tailwind CSS + @tailwindcss/typography の導入
+- [ ] **SSMO対応CSSの実装**
+  - [ ] CSS変数・共通スタイル設計
+  - [ ] Web用レイアウト（ナビ、サイドバー）
+  - [ ] レスポンシブ対応
+  - [ ] ダークモード
+  - [ ] @media print スタイル
 - [ ] **VFM カスタムローダーの実装**
   - [ ] @vivliostyle/vfm パッケージのインストール
   - [ ] vfm-loader.ts の作成
@@ -232,8 +264,18 @@ export function vfmLoader({ pattern, base }): Loader {
 - [ ] パンくずリスト
 - [ ] レスポンシブデザイン調整
 
-### Phase 5: テスト・公開
+### Phase 5: PDF/EPUB生成・公開
 
+- [ ] **PDF生成の設定**
+  - [ ] vivliostyle.config.js の作成
+  - [ ] Vivliostyle CLI でのPDF生成確認
+  - [ ] PDF版の表紙・目次設計
+- [ ] **EPUB生成の設定**
+  - [ ] EPUBビルドスクリプト
+  - [ ] メタデータ設定
+- [ ] **CI/CD設定**
+  - [ ] GitHub ActionsでWeb/PDF/EPUB自動生成
+  - [ ] ダウンロードリンクの設置
 - [ ] 全ページの表示確認
 - [ ] リンク切れチェック
 - [ ] SEO 対策（メタタグ、OGP、sitemap.xml）
@@ -263,7 +305,8 @@ export function vfmLoader({ pattern, base }): Loader {
 docs2.vivliostyle.org/
 ├── .github/
 │   └── workflows/
-│       └── deploy.yml          # GitHub Pages デプロイ用
+│       ├── deploy.yml          # GitHub Pages デプロイ用
+│       └── build-pdf-epub.yml  # PDF/EPUB 自動生成
 ├── submodules/
 │   ├── vfm/
 │   ├── vivliostyle-cli/
@@ -293,11 +336,15 @@ docs2.vivliostyle.org/
 │   │       ├── vfm/
 │   │       └── ...
 │   └── styles/
-│       └── global.css
+│       ├── global.css          # 共通CSS変数
+│       ├── web.css             # @media screen
+│       └── print.css           # @media print
 ├── public/
-│   └── favicon.ico
+│   ├── favicon.ico
+│   ├── docs.pdf            # 生成されるPDF
+│   └── docs.epub           # 生成されるEPUB
+├── vivliostyle.config.js   # Vivliostyle CLI 設定
 ├── astro.config.mjs
-├── tailwind.config.mjs
 ├── package.json
 └── tsconfig.json
 ```
