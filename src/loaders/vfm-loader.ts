@@ -39,10 +39,8 @@ async function collectMarkdownFiles(dir: string, baseDir: string): Promise<strin
   
   try {
     const entries = await readdir(dir, { withFileTypes: true });
-    
     for (const entry of entries) {
       const fullPath = join(dir, entry.name);
-      
       if (entry.isDirectory()) {
         // node_modules, .git などは除外
         if (!entry.name.startsWith('.') && entry.name !== 'node_modules') {
@@ -55,9 +53,9 @@ async function collectMarkdownFiles(dir: string, baseDir: string): Promise<strin
     }
   } catch (error) {
     console.warn(`Warning: Could not read directory ${dir}:`, error);
-    throw error;
+    // エラー時は警告のみ出して処理継続（throwしない）
+    return files;
   }
-  
   return files;
 }
 
