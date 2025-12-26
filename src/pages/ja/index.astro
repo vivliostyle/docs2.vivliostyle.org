@@ -1,0 +1,48 @@
+---
+/**
+ * 日本語版トップページ
+ */
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { getCollection } from 'astro:content';
+
+// VFMでコンバートされたドキュメントを取得
+let indexDoc = null;
+let htmlContent = '';
+
+try {
+  const docs = await getCollection('docs-ja');
+  indexDoc = docs.find(doc => doc.id === 'ja/index' || doc.slug === 'index');
+  
+  if (indexDoc && indexDoc.rendered) {
+    htmlContent = indexDoc.rendered.html;
+  }
+} catch (error) {
+  console.error('Failed to load docs:', error);
+}
+
+const title = indexDoc?.data?.title || 'Vivliostyle ドキュメントへようこそ';
+const description = indexDoc?.data?.description || 'Vivliostyle公式ドキュメント';
+---
+
+<DocsLayout title={title} description={description} lang="ja">
+  <nav slot="sidebar">
+    <h3>ドキュメント</h3>
+    <ul>
+      <li><a href="/ja/">ホーム</a></li>
+      <li><a href="/ja/cli/">CLI</a></li>
+      <li><a href="/ja/vfm/">VFM</a></li>
+      <li><a href="/ja/themes/">テーマ</a></li>
+      <li><a href="/ja/viewer/">Viewer</a></li>
+    </ul>
+  </nav>
+
+  {htmlContent ? (
+    <Fragment set:html={htmlContent} />
+  ) : (
+    <article>
+      <h1>Vivliostyle ドキュメントへようこそ</h1>
+      <p>ドキュメントを読み込み中...</p>
+      <p>このメッセージが表示される場合、VFMローダーがまだコンテンツを処理していない可能性があります。</p>
+    </article>
+  )}
+</DocsLayout>

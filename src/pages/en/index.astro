@@ -1,0 +1,59 @@
+---
+/**
+ * 英語版トップページ
+ */
+import DocsLayout from '../../layouts/DocsLayout.astro';
+import { getCollection } from 'astro:content';
+
+// VFMでコンバートされたドキュメントを取得
+let indexDoc = null;
+let htmlContent = '';
+
+try {
+  const docs = await getCollection('docs-en');
+  console.log('docs-en collection:', docs.length, 'documents');
+  
+  // デバッグ: すべてのドキュメントIDを表示
+  docs.forEach(doc => {
+    console.log('Doc ID:', doc.id, 'Slug:', doc.slug);
+  });
+  
+  indexDoc = docs.find(doc => doc.id === 'en/index' || doc.slug === 'index' || doc.id.includes('index'));
+  
+  if (indexDoc) {
+    console.log('Found index doc:', indexDoc.id);
+    if (indexDoc.rendered) {
+      htmlContent = indexDoc.rendered.html;
+      console.log('HTML content length:', htmlContent.length);
+    }
+  }
+} catch (error) {
+  console.error('Failed to load docs:', error);
+}
+
+const title = indexDoc?.data?.title || 'Welcome to Vivliostyle Documentation';
+const description = indexDoc?.data?.description || 'Official documentation for Vivliostyle';
+---
+
+<DocsLayout title={title} description={description} lang="en">
+  <nav slot="sidebar">
+    <h3>Documentation</h3>
+    <ul>
+      <li><a href="/en/">Home</a></li>
+      <li><a href="/en/cli/">CLI</a></li>
+      <li><a href="/en/vfm/">VFM</a></li>
+      <li><a href="/en/themes/">Themes</a></li>
+      <li><a href="/en/viewer/">Viewer</a></li>
+    </ul>
+  </nav>
+
+  {htmlContent ? (
+    <Fragment set:html={htmlContent} />
+  ) : (
+    <article>
+      <h1>Welcome to Vivliostyle Documentation</h1>
+      <p>Documentation is being loaded...</p>
+      <p>If you see this message, the VFM loader may not have processed the content yet.</p>
+    </article>
+  )}
+</DocsLayout>
