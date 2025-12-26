@@ -126,10 +126,21 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
           const { data: frontmatter, content: markdownBody } = matter(content);
           
           // VFMでHTMLに変換
-          const html = stringify(markdownBody, {
-            hardLineBreaks: false,
-            disableFormatHtml: false,
-          });
+          let html: string;
+          try {
+            html = stringify(markdownBody, {
+              hardLineBreaks: false,
+              disableFormatHtml: false,
+            });
+          } catch (stringifyError) {
+            logger.error(
+              `VFM Loader: Failed to stringify VFM for ${filePath}: ${
+                stringifyError instanceof Error ? stringifyError.message : String(stringifyError)
+              }`,
+            );
+            // このファイルの処理をスキップし、他のファイルの処理を継続
+            continue;
+          }
           
           // スラッグを生成
           const slug = generateSlug(filePath, baseDir);
