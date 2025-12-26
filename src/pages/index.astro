@@ -5,7 +5,6 @@
  * Accept-Languageヘッダーを確認し、適切な言語ページにリダイレクト。
  * SSRが必要な場合はクライアントサイドで処理。
  */
-const base = import.meta.env.BASE_URL;
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -13,7 +12,7 @@ const base = import.meta.env.BASE_URL;
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vivliostyle Documentation</title>
-  <script define:vars={{ base }}>
+  <script>
     // 言語検出とリダイレクト
     (function() {
       const supportedLangs = ['en', 'ja'];
@@ -26,15 +25,15 @@ const base = import.meta.env.BASE_URL;
       // サポートされている言語かチェック
       const targetLang = supportedLangs.includes(langCode) ? langCode : defaultLang;
       
-      // リダイレクト (base already ends without slash)
-      window.location.replace(base + '/' + targetLang + '/');
+      // リダイレクト
+      window.location.replace('/' + targetLang + '/');
     })();
   </script>
   <noscript>
-    <meta http-equiv="refresh" content="0; url=/docs2.vivliostyle.org/en/">
+    <meta http-equiv="refresh" content="0; url=/en/">
   </noscript>
 </head>
 <body>
-  <p>Redirecting to <a href="/docs2.vivliostyle.org/en/">English documentation</a>...</p>
+  <p>Redirecting to <a href="/en/">English documentation</a>...</p>
 </body>
 </html>
