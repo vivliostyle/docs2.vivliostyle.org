@@ -1,43 +1,51 @@
-# Astro Starter Kit: Minimal
 
-```sh
-npm create astro@latest -- --template minimal
+# Vivliostyle Documentation Site
+
+このリポジトリは [Vivliostyle](https://vivliostyle.org/) の公式ドキュメントサイト（次世代版）のソースです。
+
+## 概要
+
+- Astro + VFM (Vivliostyle Flavored Markdown) による静的サイト生成
+- SSMO (Single Source Multi Output) 対応CSS
+- 多言語対応（日本語・英語）
+- GitHub Actionsによる自動デプロイ（GitHub Pages）
+
+## 主な技術
+
+- [Astro](https://astro.build/) v5
+- [@vivliostyle/vfm](https://github.com/vivliostyle/vfm)（Markdown→HTML変換）
+- [gray-matter](https://github.com/jonschlinkert/gray-matter)（frontmatter抽出）
+
+## ディレクトリ構成
+
 ```
-
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
 /
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
+├── public/           # 静的ファイル（CSS等）
+├── src/              # Astroコンポーネント・ページ
+│   ├── loaders/      # VFMローダー
+│   ├── layouts/      # レイアウト
+│   └── pages/        # ページ
+├── content/          # ドキュメント本文（Markdown）
+├── .github/workflows # CI/CDワークフロー
 └── package.json
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## 開発・ビルド・デプロイ
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+| コマンド              | 説明                                   |
+|----------------------|----------------------------------------|
+| `npm install`        | 依存パッケージのインストール           |
+| `npm run dev`        | 開発サーバー起動（http://localhost:4321）|
+| `npm run build`      | 静的サイトを `./dist/` にビルド         |
+| `npm run preview`    | ビルド成果物のローカルプレビュー       |
 
-Any static assets, like images, can be placed in the `public/` directory.
+GitHub Actions により `astro-Install`/`main` ブランチへの push で自動デプロイされます。
 
-## 🧞 Commands
+公開URL: https://vivliostyle.github.io/docs2.vivliostyle.org/
 
-All commands are run from the root of the project, from a terminal:
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+## コントリビュート・参考
 
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- [Vivliostyle公式サイト](https://vivliostyle.org/)
+- [Astro公式ドキュメント](https://docs.astro.build)
+- [VFM (Vivliostyle Flavored Markdown)](https://github.com/vivliostyle/vfm)
