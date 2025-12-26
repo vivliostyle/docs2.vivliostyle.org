@@ -9,6 +9,8 @@
     "astro": "astro"
   },
   "dependencies": {
-    "astro": "^5.16.6"
+    "@vivliostyle/vfm": "^2.5.0",
+    "astro": "^5.16.6",
+    "gray-matter": "^4.0.3"
   }
 }
