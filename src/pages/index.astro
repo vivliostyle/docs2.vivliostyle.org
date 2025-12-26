@@ -26,8 +26,8 @@ const base = import.meta.env.BASE_URL;
       // サポートされている言語かチェック
       const targetLang = supportedLangs.includes(langCode) ? langCode : defaultLang;
       
-      // リダイレクト
-      window.location.replace(base + targetLang + '/');
+      // リダイレクト (base already ends without slash)
+      window.location.replace(base + '/' + targetLang + '/');
     })();
   </script>
   <noscript>
