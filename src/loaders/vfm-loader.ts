@@ -71,7 +71,8 @@ function generateSlug(filePath: string, baseDir: string): string {
   
   // index ファイルの場合はディレクトリ名をスラッグに
   if (basename(relativePath) === 'index') {
-    relativePath = dirname(relativePath);
+    const dir = dirname(relativePath);
+    relativePath = (dir === '.' || dir === '') ? 'index' : dir;
   }
   
   // Windows対応: バックスラッシュをスラッシュに

@@ -18,7 +18,7 @@ try {
     console.log('Doc ID:', doc.id, 'Slug:', doc.slug);
   });
   
-  indexDoc = docs.find(doc => doc.id === 'en/index' || doc.slug === 'index' || doc.id.includes('index'));
+  indexDoc = docs.find(doc => doc.id === 'en/index' || doc.id.endsWith('/index') || doc.id === 'index');
   
   if (indexDoc) {
     console.log('Found index doc:', indexDoc.id);

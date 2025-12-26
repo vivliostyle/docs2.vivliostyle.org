@@ -11,7 +11,7 @@ let htmlContent = '';
 
 try {
   const docs = await getCollection('docs-ja');
-  indexDoc = docs.find(doc => doc.id === 'ja/index' || doc.slug === 'index');
+  indexDoc = docs.find(doc => doc.id === 'ja/index' || doc.id.endsWith('/index') || doc.id === 'index');
   
   if (indexDoc && indexDoc.rendered) {
     htmlContent = indexDoc.rendered.html;
