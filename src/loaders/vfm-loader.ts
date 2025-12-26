@@ -55,6 +55,7 @@ async function collectMarkdownFiles(dir: string, baseDir: string): Promise<strin
     }
   } catch (error) {
     console.warn(`Warning: Could not read directory ${dir}:`, error);
+    throw error;
   }
   
   return files;
