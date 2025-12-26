@@ -1,0 +1,196 @@
+---
+/**
+ * ドキュメントページ用メインレイアウト
+ * SSMO対応: Web/PDF/EPUB共通スタイルを使用
+ */
+
+interface Props {
+  title: string;
+  description?: string;
+  lang?: string;
+}
+
+const { title, description = '', lang = 'en' } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang={lang}>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content={description}>
+  <title>{title} | Vivliostyle Documentation</title>
+  <link rel="stylesheet" href="/styles/global.css">
+</head>
+<body>
+  <div class="layout">
+    <header class="header">
+      <div class="header-content">
+        <a href={`/${lang}/`} class="logo">
+          <span class="logo-text">Vivliostyle Docs</span>
+        </a>
+        <nav class="header-nav">
+          <a href={`/${lang}/cli/`}>CLI</a>
+          <a href={`/${lang}/vfm/`}>VFM</a>
+          <a href={`/${lang}/themes/`}>Themes</a>
+          <a href={`/${lang}/viewer/`}>Viewer</a>
+        </nav>
+        <div class="lang-switcher">
+          <a href="/en/" class:list={[{ active: lang === 'en' }]}>EN</a>
+          <a href="/ja/" class:list={[{ active: lang === 'ja' }]}>JA</a>
+        </div>
+      </div>
+    </header>
+    
+    <div class="main-container">
+      <aside class="sidebar">
+        <slot name="sidebar" />
+      </aside>
+      
+      <main class="content">
+        <article class="prose">
+          <slot />
+        </article>
+      </main>
+    </div>
+    
+    <footer class="footer">
+      <p>&copy; {new Date().getFullYear()} Vivliostyle Foundation. Licensed under <a href="https://github.com/vivliostyle/vivliostyle/blob/master/LICENSE.md">AGPL-3.0</a>.</p>
+    </footer>
+  </div>
+</body>
+</html>
+
+<style>
+  /* レイアウト構造 - Web専用スタイル */
+  .layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--color-bg-header);
+    border-bottom: 1px solid var(--color-border);
+  }
+  
+  .header-content {
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    padding: 1rem var(--spacing-page);
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+  
+  .logo {
+    text-decoration: none;
+  }
+  
+  .logo-text {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+  
+  .header-nav {
+    display: flex;
+    gap: 1.5rem;
+    flex: 1;
+  }
+  
+  .header-nav a {
+    color: var(--color-text);
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .header-nav a:hover {
+    color: var(--color-primary);
+  }
+  
+  .lang-switcher {
+    display: flex;
+    gap: 0.5rem;
+  }
+  
+  .lang-switcher a {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    text-decoration: none;
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+  }
+  
+  .lang-switcher a.active {
+    background: var(--color-primary);
+    color: white;
+  }
+  
+  .main-container {
+    display: flex;
+    flex: 1;
+    max-width: var(--content-max-width);
+    margin: 0 auto;
+    width: 100%;
+  }
+  
+  .sidebar {
+    width: var(--sidebar-width);
+    padding: var(--spacing-page);
+    border-right: 1px solid var(--color-border);
+    position: sticky;
+    top: 4rem;
+    height: calc(100vh - 4rem);
+    overflow-y: auto;
+  }
+  
+  .content {
+    flex: 1;
+    padding: var(--spacing-page);
+    min-width: 0;
+  }
+  
+  .footer {
+    border-top: 1px solid var(--color-border);
+    padding: 2rem var(--spacing-page);
+    text-align: center;
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+  }
+  
+  .footer a {
+    color: var(--color-primary);
+  }
+  
+  /* レスポンシブ */
+  @media (max-width: 768px) {
+    .sidebar {
+      display: none;
+    }
+    
+    .header-nav {
+      display: none;
+    }
+  }
+  
+  /* 印刷時はヘッダー・フッター・サイドバーを非表示 */
+  @media print {
+    .header,
+    .footer,
+    .sidebar,
+    .lang-switcher {
+      display: none !important;
+    }
+    
+    .main-container {
+      display: block;
+    }
+    
+    .content {
+      padding: 0;
+    }
+  }
+</style>
