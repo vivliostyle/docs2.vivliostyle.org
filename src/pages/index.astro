@@ -1,0 +1,39 @@
+---
+/**
+ * ルートページ - 言語検出とリダイレクト
+ * 
+ * Accept-Languageヘッダーを確認し、適切な言語ページにリダイレクト。
+ * SSRが必要な場合はクライアントサイドで処理。
+ */
+---
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vivliostyle Documentation</title>
+  <script>
+    // 言語検出とリダイレクト
+    (function() {
+      const supportedLangs = ['en', 'ja'];
+      const defaultLang = 'en';
+      
+      // ブラウザの言語設定を取得
+      const browserLang = navigator.language || '';
+      const langCode = browserLang.split('-')[0].toLowerCase();
+      
+      // サポートされている言語かチェック
+      const targetLang = supportedLangs.includes(langCode) ? langCode : defaultLang;
+      
+      // リダイレクト
+      window.location.replace('/' + targetLang + '/');
+    })();
+  </script>
+  <noscript>
+    <meta http-equiv="refresh" content="0; url=/en/">
+  </noscript>
+</head>
+<body>
+  <p>Redirecting to <a href="/en/">English documentation</a>...</p>
+</body>
+</html>
