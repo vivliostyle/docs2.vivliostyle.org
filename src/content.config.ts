@@ -39,6 +39,7 @@ const cliDocsEn = defineCollection({
   loader: vfmLoader({
     base: 'submodules/vivliostyle-cli/docs',
     lang: 'en',
+    excludeDirs: ['ja'], // 日本語ディレクトリを除外
   }),
   schema: docsSchema,
 });

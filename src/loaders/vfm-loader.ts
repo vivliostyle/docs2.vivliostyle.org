@@ -18,6 +18,8 @@ export interface VFMLoaderOptions {
   pattern?: string;
   /** 言語コード（en, ja など） */
   lang?: string;
+  /** 除外するディレクトリ名の配列 */
+  excludeDirs?: string[];
 }
 
 interface DocEntry {
@@ -34,7 +36,7 @@ interface DocEntry {
 /**
  * ディレクトリを再帰的に走査してMarkdownファイルを収集
  */
-async function collectMarkdownFiles(dir: string, baseDir: string): Promise<string[]> {
+async function collectMarkdownFiles(dir: string, baseDir: string, excludeDirs: string[] = []): Promise<string[]> {
   const files: string[] = [];
   
   try {
@@ -42,11 +44,18 @@ async function collectMarkdownFiles(dir: string, baseDir: string): Promise<strin
     for (const entry of entries) {
       const fullPath = join(dir, entry.name);
       if (entry.isDirectory()) {
-        // node_modules, .git などは除外
-        if (!entry.name.startsWith('.') && entry.name !== 'node_modules') {
-          const subFiles = await collectMarkdownFiles(fullPath, baseDir);
-          files.push(...subFiles);
+        // 除外ディレクトリかチェック
+        const shouldExclude = entry.name.startsWith('.') || 
+                              entry.name === 'node_modules' || 
+                              excludeDirs.includes(entry.name);
+        
+        if (shouldExclude) {
+          console.log(`[vfm-loader] Excluding directory: ${entry.name}`);
+          continue;
         }
+        
+        const subFiles = await collectMarkdownFiles(fullPath, baseDir, excludeDirs);
+        files.push(...subFiles);
       } else if (entry.isFile() && /\.md$/i.test(entry.name)) {
         files.push(fullPath);
       }
@@ -87,10 +96,10 @@ function generateSlug(filePath: string, baseDir: string): string {
  * VFMローダーを作成
  */
 export function vfmLoader(options: VFMLoaderOptions): Loader {
-  const { base, lang } = options;
+  const { base, lang, excludeDirs = [] } = options;
 
   return {
-    name: 'vfm-loader',
+    name: `vfm-loader[${lang || 'unknown'}]`,
     
     async load(context: LoaderContext): Promise<void> {
       const { store, logger, config } = context;
@@ -100,20 +109,23 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
         ? base 
         : join(config.root.pathname, base);
       
-      logger.info(`VFM Loader: Scanning ${baseDir}`);
+      logger.info(`VFM Loader [${lang}]: Scanning ${baseDir}`);
+      if (excludeDirs.length > 0) {
+        logger.info(`VFM Loader [${lang}]: Excluding directories: ${excludeDirs.join(', ')}`);
+      }
       
       // ディレクトリの存在確認
       try {
         await stat(baseDir);
       } catch {
-        logger.warn(`VFM Loader: Base directory does not exist: ${baseDir}`);
+        logger.warn(`VFM Loader [${lang}]: Base directory does not exist: ${baseDir}`);
         return;
       }
       
       // Markdownファイルを収集
-      const markdownFiles = await collectMarkdownFiles(baseDir, baseDir);
+      const markdownFiles = await collectMarkdownFiles(baseDir, baseDir, excludeDirs);
       
-      logger.info(`VFM Loader: Found ${markdownFiles.length} markdown files`);
+      logger.info(`VFM Loader [${lang}]: Found ${markdownFiles.length} markdown files`);
       
       // 各ファイルを処理
       for (const filePath of markdownFiles) {
@@ -143,8 +155,11 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
           // スラッグを生成
           const slug = generateSlug(filePath, baseDir);
           
-          // IDを生成（言語プレフィックス付き）
-          const id = lang ? `${lang}/${slug}` : slug;
+          // IDはスラッグそのものを使用（コレクションで言語を区別）
+          const id = slug;
+          
+          // デバッグ情報
+          logger.info(`[${lang}] Processing: ${filePath} -> slug: ${slug}, id: ${id}`);
           
           // エントリを作成
           const entry: DocEntry = {
@@ -165,10 +180,10 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
           // ストアに格納
           store.set({
             id: entry.id,
+            slug: entry.slug,
             data: entry.data,
             body: entry.body,
             rendered: entry.rendered,
-            filePath: entry.filePath,
           });
           
           logger.debug(`VFM Loader: Processed ${id}`);

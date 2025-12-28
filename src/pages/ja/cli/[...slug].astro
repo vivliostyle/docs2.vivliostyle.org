@@ -1,0 +1,51 @@
+---
+/**
+ * CLI ドキュメントページ（日本語版）
+ * 動的ルーティング: /ja/cli/* にマッチ
+ */
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const cliDocs = await getCollection('cli-docs-ja');
+  
+  return cliDocs.map(doc => {
+    // [...slug] 形式のrestパラメータには文字列を渡す（Astroが自動的に分割）
+    // doc.slugはAstroが自動生成するが、常にidと同じとは限らない
+    const slug = doc.id === 'index' ? undefined : doc.id;
+    
+    return {
+      params: { 
+        slug: slug
+      },
+      props: { doc }
+    };
+  });
+}
+
+const { doc } = Astro.props;
+const htmlContent = doc.rendered?.html || '';
+const title = doc.data?.title || 'CLI ドキュメント';
+const description = doc.data?.description || '';
+---
+
+<DocsLayout title={title} description={description} lang="ja">
+  <nav slot="sidebar">
+    <h3>CLI ドキュメント</h3>
+    <ul>
+      <li><a href="/ja/">← ホームに戻る</a></li>
+      <li><a href="/ja/cli/index">概要</a></li>
+      <li><a href="/ja/cli/getting-started">はじめに</a></li>
+      <li><a href="/ja/cli/config">設定</a></li>
+      <li><a href="/ja/cli/using-config-file">設定ファイルの使用</a></li>
+      <li><a href="/ja/cli/themes-and-css">テーマとCSS</a></li>
+      <li><a href="/ja/cli/cover-page">表紙ページ</a></li>
+      <li><a href="/ja/cli/toc-page">目次ページ</a></li>
+      <li><a href="/ja/cli/special-output-settings">特殊な出力設定</a></li>
+      <li><a href="/ja/cli/frontend-framework-support">フロントエンドフレームワーク対応</a></li>
+      <li><a href="/ja/cli/api-javascript">JavaScript API</a></li>
+    </ul>
+  </nav>
+
+  <article set:html={htmlContent} />
+</DocsLayout>
