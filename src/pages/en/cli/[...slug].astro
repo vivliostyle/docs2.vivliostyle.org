@@ -8,22 +8,18 @@ import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
   const cliDocs = await getCollection('cli-docs-en');
-  
+
   return cliDocs.map(doc => {
-    // [...slug] 形式のrestパラメータには文字列を渡す（Astroが自動的に分割）
-    // doc.slugはAstroが自動生成するが、常にidと同じとは限らない
     const slug = doc.id === 'index' ? undefined : doc.id;
-    
+
     return {
-      params: { 
-        slug: slug
-      },
-      props: { doc }
+      params: { slug },
+      props: { doc, cliDocs }, // cliDocs を追加
     };
   });
 }
 
-const { doc } = Astro.props;
+const { doc, cliDocs } = Astro.props;
 const htmlContent = doc.rendered?.html || '';
 const title = doc.data?.title || 'CLI Documentation';
 const description = doc.data?.description || '';
@@ -34,16 +30,9 @@ const description = doc.data?.description || '';
     <h3>CLI Documentation</h3>
     <ul>
       <li><a href="/en/">← Back to Home</a></li>
-      <li><a href="/en/cli/index">Overview</a></li>
-      <li><a href="/en/cli/getting-started">Getting Started</a></li>
-      <li><a href="/en/cli/config">Configuration</a></li>
-      <li><a href="/en/cli/using-config-file">Using Config File</a></li>
-      <li><a href="/en/cli/themes-and-css">Themes and CSS</a></li>
-      <li><a href="/en/cli/cover-page">Cover Page</a></li>
-      <li><a href="/en/cli/toc-page">TOC Page</a></li>
-      <li><a href="/en/cli/special-output-settings">Special Output Settings</a></li>
-      <li><a href="/en/cli/frontend-framework-support">Frontend Framework Support</a></li>
-      <li><a href="/en/cli/api-javascript">JavaScript API</a></li>
+      {cliDocs && cliDocs.map(doc => (
+        <li><a href={`/en/cli/${doc.id}`}>{doc.data.title || doc.id}</a></li>
+      ))}
     </ul>
   </nav>
 

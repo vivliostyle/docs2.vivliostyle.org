@@ -34,6 +34,14 @@
   </noscript>
 </head>
 <body>
-  <p>Redirecting to <a href="/en/">English documentation</a>...</p>
+  <script>
+    if (typeof window !== 'undefined') {
+      window.location.href = '/en/';
+    }
+  </script>
+  <noscript>
+    <meta http-equiv="refresh" content="0; url=/en/">
+  </noscript>
+  <p>Welcome to the documentation. Please navigate to <a href="/en/">English documentation</a>.</p>
 </body>
 </html>
