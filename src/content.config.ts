@@ -34,7 +34,27 @@ const docsJa = defineCollection({
   schema: docsSchema,
 });
 
+// CLI ドキュメント（英語）
+const cliDocsEn = defineCollection({
+  loader: vfmLoader({
+    base: 'submodules/vivliostyle-cli/docs',
+    lang: 'en',
+  }),
+  schema: docsSchema,
+});
+
+// CLI ドキュメント（日本語）
+const cliDocsJa = defineCollection({
+  loader: vfmLoader({
+    base: 'submodules/vivliostyle-cli/docs/ja',
+    lang: 'ja',
+  }),
+  schema: docsSchema,
+});
+
 export const collections = {
   'docs-en': docsEn,
   'docs-ja': docsJa,
+  'cli-docs-en': cliDocsEn,
+  'cli-docs-ja': cliDocsJa,
 };
