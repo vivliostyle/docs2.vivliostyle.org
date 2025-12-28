@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main, astro-Install]
+    branches: ['**']  # 全ブランチでビルド可能
   workflow_dispatch:
 
 permissions:
@@ -42,6 +42,8 @@ jobs:
           path: ./dist
 
   deploy:
+    # mainブランチのみデプロイを実行
+    if: github.ref == 'refs/heads/main'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
