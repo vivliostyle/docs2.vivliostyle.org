@@ -202,3 +202,20 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
             },
             filePath: relative(config.root.pathname, actualFilePath),
           };
+          store.set({
+            id: entry.id,
+            slug: entry.slug,
+            data: entry.data,
+            body: entry.body,
+            rendered: entry.rendered,
+          });
+          logger.debug(`VFM Loader: Processed ${id}`);
+        } catch (error) {
+          logger.error(`VFM Loader: Failed to process ${actualFilePath}: ${error}`);
+        }
+      }
+      logger.info(`VFM Loader: Completed loading ${markdownFiles.length} documents`);
+    },
+  };
+
+export default vfmLoader;
