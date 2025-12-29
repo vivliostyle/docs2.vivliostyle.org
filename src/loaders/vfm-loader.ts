@@ -217,5 +217,6 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
       logger.info(`VFM Loader: Completed loading ${markdownFiles.length} documents`);
     },
   };
+}
 
 export default vfmLoader;
