@@ -125,16 +125,13 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
       if (lang === 'ja' && base.includes('vivliostyle-cli/docs/ja')) {
         const enBaseDir = join(config.root.pathname, 'submodules/vivliostyle-cli/docs');
         const jaFiles = await collectMarkdownFiles(baseDir, baseDir, excludeDirs);
-        // config.md
-        if (!jaFiles.some(f => f.endsWith('config.md'))) {
+        const hasConfigJa = jaFiles.some((f) => f.endsWith('config.md'));
+        const hasApiJavascriptJa = jaFiles.some((f) => f.endsWith('api-javascript.md'));
+        // 両方の日本語ファイルが存在しない場合のみ、英語ディレクトリにフォールバック
+        if (!hasConfigJa && !hasApiJavascriptJa) {
           baseDir = enBaseDir;
-        }
-        // api-javascript.md
-        if (!jaFiles.some(f => f.endsWith('api-javascript.md'))) {
-          baseDir = enBaseDir;
-        }
+        }      
       }
-      
       logger.info(`VFM Loader [${lang}]: Scanning ${baseDir}`);
       if (excludeDirs.length > 0) {
         logger.info(`VFM Loader [${lang}]: Excluding directories: ${excludeDirs.join(', ')}`);
@@ -234,3 +231,5 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
 }
 
 export default vfmLoader;
+
+// const fs = await import('fs/promises'); // Currently unused, but may be needed in the future.
