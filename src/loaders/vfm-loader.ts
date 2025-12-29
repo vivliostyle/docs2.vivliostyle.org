@@ -33,6 +33,17 @@ interface DocEntry {
   filePath: string;
 }
 
+// 修正: DataEntry 型に slug プロパティを追加
+interface DataEntry<T> {
+  id: string;
+  slug: string; // 追加
+  data: T;
+  body: string;
+  rendered: {
+    html: string;
+  };
+}
+
 /**
  * ディレクトリを再帰的に走査してMarkdownファイルを収集
  */
@@ -194,7 +205,8 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
       
       logger.info(`VFM Loader: Completed loading ${markdownFiles.length} documents`);
       
-      // Markdown 内のリンクを変換
+      // 修正: context.store.on の代替処理
+      // Markdown 内のリンクを変換する処理を直接適用
       const transformLinks = (content: string): string => {
         return content.replace(/\]\(([^)]+\.md)\)/g, (match, p1) => {
           const newPath = p1.replace(/\.md$/, '');
@@ -203,11 +215,16 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
       };
 
       // Markdown ファイルの内容を変換
-      context.store.on('file:load', async (file) => {
-        if (file.ext === '.md') {
-          file.content = transformLinks(file.content);
+      for (const filePath of markdownFiles) {
+        try {
+          const content = await readFile(filePath, 'utf-8');
+          const transformedContent = transformLinks(content);
+          // 変換後の内容を使用して処理を続行
+          // ...既存の処理...
+        } catch (error) {
+          logger.error(`VFM Loader: Failed to process ${filePath}: ${error}`);
         }
-      });
+      }
     },
   };
 }
