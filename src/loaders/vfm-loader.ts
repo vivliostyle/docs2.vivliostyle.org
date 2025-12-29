@@ -181,7 +181,7 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
 
             const slug = generateSlug(filePath, baseDir);
             const id = slug;
-            logger.info(`[${lang}] Processing: ${filePath} -> slug: ${slug}, id: ${id}`);
+            logger.info(`VFM Loader [${lang}]: Processing: ${filePath} -> slug: ${slug}, id: ${id}`);
 
             const entry: DocEntry = {
               id,
