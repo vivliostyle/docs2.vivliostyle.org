@@ -193,6 +193,21 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
       }
       
       logger.info(`VFM Loader: Completed loading ${markdownFiles.length} documents`);
+      
+      // Markdown 内のリンクを変換
+      const transformLinks = (content: string): string => {
+        return content.replace(/\]\(([^)]+\.md)\)/g, (match, p1) => {
+          const newPath = p1.replace(/\.md$/, '');
+          return match.replace(p1, newPath);
+        });
+      };
+
+      // Markdown ファイルの内容を変換
+      context.store.on('file:load', async (file) => {
+        if (file.ext === '.md') {
+          file.content = transformLinks(file.content);
+        }
+      });
     },
   };
 }
