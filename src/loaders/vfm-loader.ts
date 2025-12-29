@@ -40,9 +40,11 @@ interface DataEntry<T> {
   data: T;
 }
 
-// DataEntry 型を拡張して slug プロパティを追加
-interface ExtendedDataEntry<TData extends Record<string, unknown>> extends DataEntry<TData> {
-  slug: string;
+// DataEntry 型
+interface DataEntry<T> {
+  id: string;
+  slug: string; // 追加
+  data: T;
 }
 
 /**
@@ -210,7 +212,7 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
               data: entry.data,
               body: entry.body,
               rendered: entry.rendered,
-            } as ExtendedDataEntry<Record<string, unknown>>);
+            } as DataEntry<Record<string, unknown>>);
 
             logger.debug(`VFM Loader: Successfully stored entry for file: ${filePath}`);
           } catch (error) {
