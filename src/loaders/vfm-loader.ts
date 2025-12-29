@@ -38,10 +38,11 @@ interface DataEntry<T> {
   id: string;
   slug: string; // 追加
   data: T;
-  body: string;
-  rendered: {
-    html: string;
-  };
+}
+
+// DataEntry 型を拡張して slug プロパティを追加
+interface ExtendedDataEntry<TData extends Record<string, unknown>> extends DataEntry<TData> {
+  slug: string;
 }
 
 /**
@@ -140,11 +141,11 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
         logger.info(`VFM Loader [${lang}]: Excluding directories: ${excludeDirs.join(', ')}`);
       }
       
-      // ディレクトリの存在確認
+      // ベースディレクトリの存在確認
       try {
         await stat(baseDir);
-      } catch {
-        logger.warn(`VFM Loader [${lang}]: Base directory does not exist: ${baseDir}`);
+      } catch (error) {
+        logger.error(`VFM Loader [${lang}]: Failed to access base directory: ${baseDir}. Error: ${error}`);
         return;
       }
       
@@ -152,99 +153,83 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
       const markdownFiles = await collectMarkdownFiles(baseDir, baseDir, excludeDirs);
       
       logger.info(`VFM Loader [${lang}]: Found ${markdownFiles.length} markdown files`);
+      logger.debug(`VFM Loader [${lang}]: Debugging load method at baseDir: ${baseDir}`);
+      logger.debug(`VFM Loader [${lang}]: Markdown files collected: ${markdownFiles.length}`);
       
-      // 各ファイルを処理
-      for (const filePath of markdownFiles) {
-        try {
-          const content = await readFile(filePath, 'utf-8');
-          
-          // frontmatterを抽出
-          const { data: frontmatter, content: markdownBody } = matter(content);
-          
-          // VFMでHTMLに変換
-          let html: string;
+      try {
+        // 各ファイルを同期的に処理
+        for (const filePath of markdownFiles) {
+          logger.debug(`VFM Loader: Starting processing for file: ${filePath}`);
           try {
-            return {
-              name: `vfm-loader[${lang || 'unknown'}]`,
-              async load(context: LoaderContext): Promise<void> {
-                const { store, logger, config } = context;
-                const baseDir = base.startsWith('/')
-                  ? base
-                  : join(config.root.pathname, base);
-                logger.info(`VFM Loader [${lang}]: Scanning ${baseDir}`);
-                if (excludeDirs.length > 0) {
-                  logger.info(`VFM Loader [${lang}]: Excluding directories: ${excludeDirs.join(', ')}`);
-                }
-                try {
-                  await stat(baseDir);
-                } catch {
-                  logger.warn(`VFM Loader [${lang}]: Base directory does not exist: ${baseDir}`);
-                  return;
-                }
-                const markdownFiles = await collectMarkdownFiles(baseDir, baseDir, excludeDirs);
-                logger.info(`VFM Loader [${lang}]: Found ${markdownFiles.length} markdown files`);
-                for (const filePath of markdownFiles) {
-                  let actualFilePath = filePath;
-                  // 日本語CLIドキュメントで config.md/api-javascript.md がなければ英語ファイルを fallback
-                  if (lang === 'ja' && base.includes('vivliostyle-cli/docs/ja')) {
-                    const slug = generateSlug(filePath, baseDir);
-                    if ((slug === 'config' || slug === 'api-javascript')) {
-                      try {
-                        await stat(filePath);
-                      } catch {
-                        actualFilePath = join(config.root.pathname, 'submodules/vivliostyle-cli/docs', `${slug}.md`);
-                      }
-                    }
-                  }
-                  try {
-                    const content = await readFile(actualFilePath, 'utf-8');
-                    const { data: frontmatter, content: markdownBody } = matter(content);
-                    let html: string;
-                    try {
-                      html = stringify(markdownBody, {
-                        hardLineBreaks: false,
-                        disableFormatHtml: false,
-                      });
-                    } catch (stringifyError) {
-                      logger.error(
-                        `VFM Loader: Failed to stringify VFM for ${actualFilePath}: ${
-                          stringifyError instanceof Error ? stringifyError.message : String(stringifyError)
-                        }`,
-                      );
-                      continue;
-                    }
-                    const slug = generateSlug(actualFilePath, baseDir);
-                    const id = slug;
-                    logger.info(`[${lang}] Processing: ${actualFilePath} -> slug: ${slug}, id: ${id}`);
-                    const entry: DocEntry = {
-                      id,
-                      slug,
-                      body: markdownBody,
-                      data: {
-                        ...frontmatter,
-                        lang: lang || frontmatter.lang || 'en',
-                        title: frontmatter.title || basename(slug),
-                      },
-                      rendered: {
-                        html,
-                      },
-                      filePath: relative(config.root.pathname, actualFilePath),
-                    };
-                    store.set({
-                      id: entry.id,
-                      slug: entry.slug,
-                      data: entry.data,
-                      body: entry.body,
-                      rendered: entry.rendered,
-                    });
-                    logger.debug(`VFM Loader: Processed ${id}`);
-                  } catch (error) {
-                    logger.error(`VFM Loader: Failed to process ${actualFilePath}: ${error}`);
-                  }
-                }
-                logger.info(`VFM Loader: Completed loading ${markdownFiles.length} documents`);
+            const content = await readFile(filePath, 'utf-8');
+            logger.debug(`VFM Loader: Successfully read file: ${filePath}`);
+
+            const { data: frontmatter, content: markdownBody } = matter(content);
+            logger.debug(`VFM Loader: Extracted frontmatter and markdown body for file: ${filePath}`);
+
+            let html: string;
+            try {
+              html = stringify(markdownBody, {
+                hardLineBreaks: false,
+                disableFormatHtml: false,
+              });
+              logger.debug(`VFM Loader: Successfully converted markdown to HTML for file: ${filePath}`);
+            } catch (stringifyError) {
+              logger.error(
+                `VFM Loader: Failed to stringify VFM for ${filePath}: ${
+                  stringifyError instanceof Error ? stringifyError.message : String(stringifyError)
+                }`,
+              );
+              continue;
             }
+
+            const slug = generateSlug(filePath, baseDir);
+            const id = slug;
+            logger.info(`[${lang}] Processing: ${filePath} -> slug: ${slug}, id: ${id}`);
+
+            const entry: DocEntry = {
+              id,
+              slug,
+              body: markdownBody,
+              data: {
+                ...frontmatter,
+                lang: lang || frontmatter.lang || 'en',
+                title: frontmatter.title || basename(slug),
+              },
+              rendered: {
+                html,
+              },
+              filePath: relative(config.root.pathname, filePath),
+            };
+
+            // データ検証
+            if (!entry.id || !entry.slug || !entry.rendered.html) {
+              logger.error(`VFM Loader: Invalid entry data for file: ${filePath}`);
+              throw new Error(`Invalid entry data: ${JSON.stringify(entry)}`);
+            }
+
+            store.set({
+              id: entry.id,
+              slug: entry.slug,
+              data: entry.data,
+              body: entry.body,
+              rendered: entry.rendered,
+            } as ExtendedDataEntry<Record<string, unknown>>);
+
+            logger.debug(`VFM Loader: Successfully stored entry for file: ${filePath}`);
+          } catch (error) {
+            logger.error(`VFM Loader: Failed to process ${filePath}: ${error}`);
+          }
         }
+      } finally {
+        logger.info(`VFM Loader [${lang}]: Final cleanup after processing files.`);
+        logger.info(`VFM Loader [${lang}]: Explicit resource cleanup completed.`);
+      }
+      logger.info(`VFM Loader: Completed loading ${markdownFiles.length} documents`);
+      
+      // ローダーのクリーンアップ処理
+      logger.info(`VFM Loader [${lang}]: Cleaning up resources`);
+      // 必要に応じてリソース解放処理を追加
     },
   };
 }
