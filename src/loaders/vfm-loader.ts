@@ -116,9 +116,24 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
       const { store, logger, config } = context;
       
       // ベースディレクトリを解決
-      const baseDir = base.startsWith('/') 
+      let baseDir = base.startsWith('/') 
         ? base 
         : join(config.root.pathname, base);
+
+      // CLI日本語ドキュメント用: config/api-javascript.md がなければ英語版を読む
+      if (lang === 'ja' && base.includes('vivliostyle-cli/docs/ja')) {
+        const fs = await import('fs/promises');
+        const enBaseDir = join(config.root.pathname, 'submodules/vivliostyle-cli/docs');
+        const jaFiles = await collectMarkdownFiles(baseDir, baseDir, excludeDirs);
+        // config.md
+        if (!jaFiles.some(f => f.endsWith('config.md'))) {
+          baseDir = enBaseDir;
+        }
+        // api-javascript.md
+        if (!jaFiles.some(f => f.endsWith('api-javascript.md'))) {
+          baseDir = enBaseDir;
+        }
+      }
       
       logger.info(`VFM Loader [${lang}]: Scanning ${baseDir}`);
       if (excludeDirs.length > 0) {
