@@ -46,10 +46,26 @@ const cliDocsEn = defineCollection({
 
 // CLI ドキュメント（日本語）
 const cliDocsJa = defineCollection({
-  loader: vfmLoader({
-    base: 'submodules/vivliostyle-cli/docs',
-    lang: 'ja',
-  }),
+  loader: async (ctx) => {
+    const fs = await import('fs/promises');
+    const path = await import('path');
+    const jaBase = 'submodules/vivliostyle-cli/docs/ja';
+    const enBase = 'submodules/vivliostyle-cli/docs';
+    const slug = ctx.slug;
+    let filePath = path.join(ctx.config.root.pathname, jaBase, `${slug}.md`);
+    let exists = false;
+    try {
+      await fs.access(filePath);
+      exists = true;
+    } catch {}
+    if (!exists && (slug === 'config' || slug === 'api-javascript')) {
+      filePath = path.join(ctx.config.root.pathname, enBase, `${slug}.md`);
+    }
+    return vfmLoader({ base: exists ? jaBase : enBase, lang: 'ja' }).load({
+      ...ctx,
+      filePath,
+    });
+  },
   schema: docsSchema,
 });
 
