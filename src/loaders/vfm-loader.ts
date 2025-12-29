@@ -220,9 +220,73 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
           const content = await readFile(filePath, 'utf-8');
           const transformedContent = transformLinks(content);
           // 変換後の内容を使用して処理を続行
-          // ...既存の処理...
+          const { data: frontmatter, content: markdownBody } = matter(transformedContent);
+
+          // VFMでHTMLに変換
+          let html: string;
+          try {
+            html = stringify(markdownBody, {
+              hardLineBreaks: false,
+              disableFormatHtml: false,
+            });
+          } catch (stringifyError) {
+            logger.error(
+              `VFM Loader: Failed to stringify VFM for ${filePath}: ${
+                stringifyError instanceof Error ? stringifyError.message : String(stringifyError)
+              }`,
+            );
+            continue;
+          }
+
+          // スラッグを生成
+          const slug = generateSlug(filePath, baseDir);
+
+          // IDはスラッグそのものを使用（コレクションで言語を区別）
+          const id = slug;
+
+          // エントリを作成
+          const entry: DocEntry = {
+            id,
+            slug,
+            body: markdownBody,
+            data: {
+              ...frontmatter,
+              lang: lang || frontmatter.lang || 'en',
+              title: frontmatter.title || basename(slug),
+            },
+            rendered: {
+              html,
+            },
+            filePath: relative(config.root.pathname, filePath),
+          };
+
+          // ストアに格納
+          store.set({
+            id: entry.id,
+            slug: entry.slug,
+            data: entry.data,
+            body: entry.body,
+            rendered: entry.rendered,
+          });
         } catch (error) {
           logger.error(`VFM Loader: Failed to process ${filePath}: ${error}`);
+        }
+      }
+
+      // 特定のファイルを明示的に処理
+      const additionalFiles = [
+        join(config.root.pathname, 'submodules/vivliostyle-cli/docs/config.md'),
+        join(config.root.pathname, 'submodules/vivliostyle-cli/docs/api-javascript.md'),
+      ];
+      logger.info(`[${lang}] Updated additional files paths: ${additionalFiles.join(', ')}`);
+      for (const filePath of additionalFiles) {
+        try {
+          const content = await readFile(filePath, 'utf-8');
+          const { data: frontmatter, content: markdownBody } = matter(content);
+          const slug = generateSlug(filePath, baseDir);
+          logger.info(`[${lang}] Additional file processed: ${filePath} -> slug: ${slug}`);
+        } catch (error) {
+          logger.error(`[${lang}] Failed to process additional file: ${filePath}: ${error}`);
         }
       }
     },

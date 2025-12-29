@@ -47,7 +47,7 @@ const cliDocsEn = defineCollection({
 // CLI ドキュメント（日本語）
 const cliDocsJa = defineCollection({
   loader: vfmLoader({
-    base: 'submodules/vivliostyle-cli/docs/ja',
+    base: 'submodules/vivliostyle-cli/docs',
     lang: 'ja',
   }),
   schema: docsSchema,
