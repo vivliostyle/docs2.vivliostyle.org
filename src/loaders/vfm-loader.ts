@@ -220,10 +220,9 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
           }
         }
       } finally {
-        logger.info(`VFM Loader [${lang}]: Final cleanup after processing files.`);
-        logger.info(`VFM Loader [${lang}]: Explicit resource cleanup completed.`);
+        logger.info(`VFM Loader [${lang}]: Cleanup completed after processing ${markdownFiles.length} files.`);
       }
-      logger.info(`VFM Loader: Completed loading ${markdownFiles.length} documents`);
+      logger.info(`VFM Loader [${lang}]: Completed loading ${markdownFiles.length} documents`);
       
       // ローダーのクリーンアップ処理
       logger.info(`VFM Loader [${lang}]: Cleaning up resources`);
