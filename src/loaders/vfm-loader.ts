@@ -191,121 +191,86 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
           const entry: DocEntry = {
             id,
             slug,
-            body: markdownBody,
-            data: {
-              ...frontmatter,
-              lang: lang || frontmatter.lang || 'en',
-              title: frontmatter.title || basename(slug),
-            },
-            rendered: {
-              html,
-            },
-            filePath: relative(config.root.pathname, filePath),
+            return {
+              name: `vfm-loader[${lang || 'unknown'}]`,
+              async load(context: LoaderContext): Promise<void> {
+                const { store, logger, config } = context;
+                const baseDir = base.startsWith('/')
+                  ? base
+                  : join(config.root.pathname, base);
+                logger.info(`VFM Loader [${lang}]: Scanning ${baseDir}`);
+                if (excludeDirs.length > 0) {
+                  logger.info(`VFM Loader [${lang}]: Excluding directories: ${excludeDirs.join(', ')}`);
+                }
+                try {
+                  await stat(baseDir);
+                } catch {
+                  logger.warn(`VFM Loader [${lang}]: Base directory does not exist: ${baseDir}`);
+                  return;
+                }
+                const markdownFiles = await collectMarkdownFiles(baseDir, baseDir, excludeDirs);
+                logger.info(`VFM Loader [${lang}]: Found ${markdownFiles.length} markdown files`);
+                for (const filePath of markdownFiles) {
+                  let actualFilePath = filePath;
+                  // 日本語CLIドキュメントで config.md/api-javascript.md がなければ英語ファイルを fallback
+                  if (lang === 'ja' && base.includes('vivliostyle-cli/docs/ja')) {
+                    const slug = generateSlug(filePath, baseDir);
+                    if ((slug === 'config' || slug === 'api-javascript')) {
+                      // jaファイルがなければ英語ファイルを参照
+                      try {
+                        await stat(filePath);
+                      } catch {
+                        actualFilePath = join(config.root.pathname, 'submodules/vivliostyle-cli/docs', `${slug}.md`);
+                      }
+                    }
+                  }
+                  try {
+                    const content = await readFile(actualFilePath, 'utf-8');
+                    const { data: frontmatter, content: markdownBody } = matter(content);
+                    let html: string;
+                    try {
+                      html = stringify(markdownBody, {
+                        hardLineBreaks: false,
+                        disableFormatHtml: false,
+                      });
+                    } catch (stringifyError) {
+                      logger.error(
+                        `VFM Loader: Failed to stringify VFM for ${actualFilePath}: ${
+                          stringifyError instanceof Error ? stringifyError.message : String(stringifyError)
+                        }`,
+                      );
+                      continue;
+                    }
+                    const slug = generateSlug(actualFilePath, baseDir);
+                    const id = slug;
+                    logger.info(`[${lang}] Processing: ${actualFilePath} -> slug: ${slug}, id: ${id}`);
+                    const entry: DocEntry = {
+                      id,
+                      slug,
+                      body: markdownBody,
+                      data: {
+                        ...frontmatter,
+                        lang: lang || frontmatter.lang || 'en',
+                        title: frontmatter.title || basename(slug),
+                      },
+                      rendered: {
+                        html,
+                      },
+                      filePath: relative(config.root.pathname, actualFilePath),
+                    };
+                    store.set({
+                      id: entry.id,
+                      slug: entry.slug,
+                      data: entry.data,
+                      body: entry.body,
+                      rendered: entry.rendered,
+                    });
+                    logger.debug(`VFM Loader: Processed ${id}`);
+                  } catch (error) {
+                    logger.error(`VFM Loader: Failed to process ${actualFilePath}: ${error}`);
+                  }
+                }
+                logger.info(`VFM Loader: Completed loading ${markdownFiles.length} documents`);
+              },
+            };
           };
-          
-          // ストアに格納
-          store.set({
-            id: entry.id,
-            slug: entry.slug,
-            data: entry.data,
-            body: entry.body,
-            rendered: entry.rendered,
-          });
-          
-          logger.debug(`VFM Loader: Processed ${id}`);
-        } catch (error) {
-          logger.error(`VFM Loader: Failed to process ${filePath}: ${error}`);
-        }
-      }
-      
-      logger.info(`VFM Loader: Completed loading ${markdownFiles.length} documents`);
-      
-      // 修正: context.store.on の代替処理
-      // Markdown 内のリンクを変換する処理を直接適用
-      const transformLinks = (content: string): string => {
-        return content.replace(/\]\(([^)]+\.md)\)/g, (match, p1) => {
-          const newPath = p1.replace(/\.md$/, '');
-          return match.replace(p1, newPath);
-        });
-      };
-
-      // Markdown ファイルの内容を変換
-      for (const filePath of markdownFiles) {
-        try {
-          const content = await readFile(filePath, 'utf-8');
-          const transformedContent = transformLinks(content);
-          // 変換後の内容を使用して処理を続行
-          const { data: frontmatter, content: markdownBody } = matter(transformedContent);
-
-          // VFMでHTMLに変換
-          let html: string;
-          try {
-            html = stringify(markdownBody, {
-              hardLineBreaks: false,
-              disableFormatHtml: false,
-            });
-          } catch (stringifyError) {
-            logger.error(
-              `VFM Loader: Failed to stringify VFM for ${filePath}: ${
-                stringifyError instanceof Error ? stringifyError.message : String(stringifyError)
-              }`,
-            );
-            continue;
-          }
-
-          // スラッグを生成
-          const slug = generateSlug(filePath, baseDir);
-
-          // IDはスラッグそのものを使用（コレクションで言語を区別）
-          const id = slug;
-
-          // エントリを作成
-          const entry: DocEntry = {
-            id,
-            slug,
-            body: markdownBody,
-            data: {
-              ...frontmatter,
-              lang: lang || frontmatter.lang || 'en',
-              title: frontmatter.title || basename(slug),
-            },
-            rendered: {
-              html,
-            },
-            filePath: relative(config.root.pathname, filePath),
-          };
-
-          // ストアに格納
-          store.set({
-            id: entry.id,
-            slug: entry.slug,
-            data: entry.data,
-            body: entry.body,
-            rendered: entry.rendered,
-          });
-        } catch (error) {
-          logger.error(`VFM Loader: Failed to process ${filePath}: ${error}`);
-        }
-      }
-
-      // 特定のファイルを明示的に処理
-      const additionalFiles = [
-        join(config.root.pathname, 'submodules/vivliostyle-cli/docs/config.md'),
-        join(config.root.pathname, 'submodules/vivliostyle-cli/docs/api-javascript.md'),
-      ];
-      logger.info(`[${lang}] Updated additional files paths: ${additionalFiles.join(', ')}`);
-      for (const filePath of additionalFiles) {
-        try {
-          const content = await readFile(filePath, 'utf-8');
-          const { data: frontmatter, content: markdownBody } = matter(content);
-          const slug = generateSlug(filePath, baseDir);
-          logger.info(`[${lang}] Additional file processed: ${filePath} -> slug: ${slug}`);
-        } catch (error) {
-          logger.error(`[${lang}] Failed to process additional file: ${filePath}: ${error}`);
-        }
-      }
-    },
-  };
-}
-
-export default vfmLoader;
