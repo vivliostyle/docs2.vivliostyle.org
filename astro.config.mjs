@@ -13,5 +13,6 @@ export default defineConfig({
       noExternal: ['@vivliostyle/vfm'],
     },
   },
+  trailingSlash: 'always',
 });
 
