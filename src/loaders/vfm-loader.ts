@@ -162,8 +162,6 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
             }
 
             // HTMLのリンクを修正
-            // 1. タイポ修正: frotnend -> frontend
-            html = html.replace(/frotnend-framework-support/g, 'frontend-framework-support');
             
             // 2. ./ja/index.md のような言語ディレクトリへのリンクを削除（言語スイッチャーで対応）
             html = html.replace(/<li>\s*<a href="\.\/ja\/index[^"]*"[^>]*>.*?<\/a>\s*<\/li>/gi, '');
