@@ -119,21 +119,10 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
       const { store, logger, config } = context;
       
       // ベースディレクトリを解決
-      let baseDir = base.startsWith('/') 
+      const baseDir = base.startsWith('/') 
         ? base 
         : join(config.root.pathname, base);
-
-      // CLI日本語ドキュメント用: config/api-javascript.md がなければ英語版を読む
-      if (lang === 'ja' && base.includes('vivliostyle-cli/docs/ja')) {
-        const enBaseDir = join(config.root.pathname, 'submodules/vivliostyle-cli/docs');
-        const jaFiles = await collectMarkdownFiles(baseDir, baseDir, excludeDirs);
-        const hasConfigJa = jaFiles.some((f) => f.endsWith('config.md'));
-        const hasApiJavascriptJa = jaFiles.some((f) => f.endsWith('api-javascript.md'));
-        // 両方の日本語ファイルが存在しない場合のみ、英語ディレクトリにフォールバック
-        if (!hasConfigJa && !hasApiJavascriptJa) {
-          baseDir = enBaseDir;
-        }      
-      }
+      
       logger.info(`VFM Loader [${lang}]: Scanning ${baseDir}`);
       if (excludeDirs.length > 0) {
         logger.info(`VFM Loader [${lang}]: Excluding directories: ${excludeDirs.join(', ')}`);
@@ -183,7 +172,6 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
 
             const slug = generateSlug(filePath, baseDir);
             const id = slug;
-            logger.info(`VFM Loader [${lang}]: Processing: ${filePath} -> slug: ${slug}, id: ${id}`);
 
             const entry: DocEntry = {
               id,
@@ -208,7 +196,6 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
 
             store.set({
               id: entry.id,
-              slug: entry.slug,
               data: entry.data,
               body: entry.body,
               rendered: entry.rendered,

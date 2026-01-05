@@ -56,6 +56,6 @@ const cliDocsJa = defineCollection({
 export const collections = {
   'docs-en': docsEn,
   'docs-ja': docsJa,
-  'cli-docs-en': cliDocsEn,
-  'cli-docs-ja': cliDocsJa,
+  'vivliostyle-cli-en': cliDocsEn,
+  'vivliostyle-cli-ja': cliDocsJa,
 };

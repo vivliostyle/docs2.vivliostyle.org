@@ -7,14 +7,14 @@ import DocsLayout from '../../../layouts/DocsLayout.astro';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
-  const cliDocs = await getCollection('cli-docs-ja');
+  const cliDocs = await getCollection('vivliostyle-cli-ja');
 
   return cliDocs.map(doc => {
     const slug = doc.id === 'index' ? undefined : doc.id;
 
     return {
       params: { slug },
-      props: { doc, cliDocs }, // cliDocs を追加
+      props: { doc, cliDocs },
     };
   });
 }
