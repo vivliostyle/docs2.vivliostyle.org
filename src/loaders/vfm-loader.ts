@@ -140,6 +140,11 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
             const { data: frontmatter, content: markdownBody } = matter(content);
             logger.debug(`VFM Loader: Extracted frontmatter and markdown body for file: ${filePath}`);
 
+            // markdownBodyから最初の見出し（H1またはH2）をタイトルとして抽出
+            const h1Match = markdownBody.match(/^#\s+(.+)$/m);
+            const h2Match = markdownBody.match(/^##\s+(.+)$/m);
+            const headingTitle = h1Match ? h1Match[1].trim() : (h2Match ? h2Match[1].trim() : undefined);
+
             let html: string;
             try {
               html = stringify(markdownBody, {
@@ -156,6 +161,11 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
               continue;
             }
 
+            // HTMLのリンクを修正：.md拡張子を削除し、末尾スラッシュを追加
+            // 例: ./getting-started.md -> ./getting-started/
+            // 例: ../config.md -> ../config/
+            html = html.replace(/href="(\.\.[\/])?([^"]+)\.md"/g, 'href="$1$2/"');
+
             const slug = generateSlug(filePath, baseDir);
             const id = slug;
 
@@ -166,7 +176,7 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
               data: {
                 ...frontmatter,
                 lang: lang || frontmatter.lang || 'en',
-                title: frontmatter.title || basename(slug),
+                title: frontmatter.title || headingTitle || basename(slug),
               },
               rendered: {
                 html,
