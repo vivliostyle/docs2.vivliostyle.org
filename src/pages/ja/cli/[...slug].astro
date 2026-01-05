@@ -15,6 +15,9 @@ export async function getStaticPaths() {
   const enIds = new Set(cliDocsEn.map(d => d.id));
 
   return cliDocs.map(doc => {
+    // [...slug]パターンでは文字列でslugを渡す
+    // indexの場合はundefinedでルートパス（/ja/cli/）に
+    // それ以外はdoc.idをそのまま渡す（例: "getting-started"）
     const slug = doc.id === 'index' ? undefined : doc.id;
 
     return {
@@ -42,8 +45,9 @@ const sortedDocs = [...cliDocs].sort((a, b) => {
   return orderA - orderB;
 });
 
-const currentPath = `/ja/cli/${doc.id}`;
-const pagePath = `/cli/${doc.id}`;
+// 現在のページのパス（indexの場合は /ja/cli/、それ以外は /ja/cli/xxx/）
+const currentPath = doc.id === 'index' ? '/ja/cli/' : `/ja/cli/${doc.id}/`;
+const pagePath = doc.id === 'index' ? '/cli/' : `/cli/${doc.id}/`;
 ---
 
 <DocsLayout title={title} description={description} lang="ja">
@@ -55,7 +59,8 @@ const pagePath = `/cli/${doc.id}`;
     <ul>
       <li><a href="/ja/">← ホームに戻る</a></li>
       {sortedDocs.map(item => {
-        const itemPath = `/ja/cli/${item.id}`;
+        // indexの場合は /ja/cli/、それ以外は /ja/cli/xxx/ (末尾スラッシュ付き)
+        const itemPath = item.id === 'index' ? '/ja/cli/' : `/ja/cli/${item.id}/`;
         const isActive = itemPath === currentPath;
         return (
           <li class:list={[{ active: isActive }]}>
