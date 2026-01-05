@@ -4,37 +4,83 @@
  * 動的ルーティング: /ja/cli/* にマッチ
  */
 import DocsLayout from '../../../layouts/DocsLayout.astro';
+import LanguageSwitcher from '../../../components/LanguageSwitcher.astro';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
   const cliDocs = await getCollection('vivliostyle-cli-ja');
+  const cliDocsEn = await getCollection('vivliostyle-cli-en');
+  
+  // 英語版に存在するIDのセットを作成
+  const enIds = new Set(cliDocsEn.map(d => d.id));
 
   return cliDocs.map(doc => {
     const slug = doc.id === 'index' ? undefined : doc.id;
 
     return {
       params: { slug },
-      props: { doc, cliDocs },
+      props: { 
+        doc, 
+        cliDocs,
+        hasEnTranslation: enIds.has(doc.id)
+      },
     };
   });
 }
 
-const { doc, cliDocs } = Astro.props;
+const { doc, cliDocs, hasEnTranslation } = Astro.props;
 const htmlContent = doc.rendered?.html || '';
 const title = doc.data?.title || 'CLI ドキュメント';
 const description = doc.data?.description || '';
+
+// orderでソートし、indexを最初に配置
+const sortedDocs = [...cliDocs].sort((a, b) => {
+  if (a.id === 'index') return -1;
+  if (b.id === 'index') return 1;
+  const orderA = a.data.order ?? 999;
+  const orderB = b.data.order ?? 999;
+  return orderA - orderB;
+});
+
+const currentPath = `/ja/cli/${doc.id}`;
+const pagePath = `/cli/${doc.id}`;
 ---
 
 <DocsLayout title={title} description={description} lang="ja">
+  <div slot="header" class="language-switcher-container">
+    <LanguageSwitcher currentLang="ja" pagePath={pagePath} hasTranslation={hasEnTranslation} />
+  </div>
   <nav slot="sidebar">
     <h3>CLI ドキュメント</h3>
     <ul>
       <li><a href="/ja/">← ホームに戻る</a></li>
-      {cliDocs && cliDocs.map(doc => (
-        <li><a href={`/ja/cli/${doc.id}`}>{doc.data.title || doc.id}</a></li>
-      ))}
+      {sortedDocs.map(item => {
+        const itemPath = `/ja/cli/${item.id}`;
+        const isActive = itemPath === currentPath;
+        return (
+          <li class:list={[{ active: isActive }]}>
+            <a href={itemPath} aria-current={isActive ? 'page' : undefined}>
+              {item.data.title || item.id}
+            </a>
+          </li>
+        );
+      })}
     </ul>
   </nav>
 
   <article set:html={htmlContent} />
 </DocsLayout>
+
+<style>
+  nav ul {
+    list-style: none;
+    padding: 0;
+  }
+  nav li {
+    margin: 0.5rem 0;
+  }
+  nav li.active a {
+    font-weight: bold;
+    color: var(--color-primary, #0066cc);
+  }
+</style>

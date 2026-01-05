@@ -1,0 +1,83 @@
+---
+/**
+ * 言語切り替えコンポーネント
+ * 
+ * 現在のページに対応する他言語版のリンクを表示します。
+ * 例: /en/cli/getting-started ⇄ /ja/cli/getting-started
+ */
+
+export interface Props {
+  /** 現在の言語 */
+  currentLang: 'en' | 'ja';
+  /** 現在のページパス（言語プレフィックスを除く）例: '/cli/getting-started' */
+  pagePath: string;
+  /** 他言語版が存在するかどうか */
+  hasTranslation?: boolean;
+}
+
+const { currentLang, pagePath, hasTranslation = true } = Astro.props;
+
+const languages = {
+  en: { label: 'English', code: 'en' },
+  ja: { label: '日本語', code: 'ja' }
+};
+
+const otherLang = currentLang === 'en' ? 'ja' : 'en';
+const otherLangUrl = `/${otherLang}${pagePath}`;
+---
+
+<div class="language-switcher">
+  <span class="current-lang" aria-current="true">
+    {languages[currentLang].label}
+  </span>
+  {hasTranslation ? (
+    <>
+      <span class="separator">|</span>
+      <a href={otherLangUrl} hreflang={otherLang} class="lang-link">
+        {languages[otherLang].label}
+      </a>
+    </>
+  ) : (
+    <>
+      <span class="separator">|</span>
+      <span class="lang-unavailable" title="Translation not available">
+        {languages[otherLang].label}
+      </span>
+    </>
+  )}
+</div>
+
+<style>
+  .language-switcher {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .current-lang {
+    font-weight: bold;
+    color: var(--color-text, #333);
+  }
+
+  .separator {
+    color: var(--color-text-muted, #999);
+  }
+
+  .lang-link {
+    color: var(--color-primary, #0066cc);
+    text-decoration: none;
+    transition: opacity 0.2s;
+  }
+
+  .lang-link:hover {
+    opacity: 0.7;
+    text-decoration: underline;
+  }
+
+  .lang-unavailable {
+    color: var(--color-text-muted, #999);
+    cursor: not-allowed;
+    text-decoration: line-through;
+  }
+</style>
