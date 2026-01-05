@@ -36,12 +36,26 @@ const htmlContent = doc.rendered?.html || '';
 const title = doc.data?.title || 'CLI ドキュメント';
 const description = doc.data?.description || '';
 
-// orderでソートし、indexを最初に配置
+// index.mdに記載されている順番でソート
+const pageOrder = [
+  'index',
+  'getting-started',
+  'themes-and-css',
+  'using-config-file',
+  'toc-page',
+  'cover-page',
+  'special-output-settings',
+  'frontend-framework-support',
+  'config',
+  'api-javascript',
+];
+
 const sortedDocs = [...cliDocs].sort((a, b) => {
-  if (a.id === 'index') return -1;
-  if (b.id === 'index') return 1;
-  const orderA = a.data.order ?? 999;
-  const orderB = b.data.order ?? 999;
+  const indexA = pageOrder.indexOf(a.id);
+  const indexB = pageOrder.indexOf(b.id);
+  // リストにない項目は最後に配置
+  const orderA = indexA === -1 ? 999 : indexA;
+  const orderB = indexB === -1 ? 999 : indexB;
   return orderA - orderB;
 });
 
