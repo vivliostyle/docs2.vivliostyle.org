@@ -50,7 +50,7 @@ async function collectMarkdownFiles(dir: string, baseDir: string, excludeDirs: s
                               excludeDirs.includes(entry.name);
         
         if (shouldExclude) {
-          console.log(`[vfm-loader] Excluding directory: ${entry.name}`);
+          // ログはloadメソッド内でまとめて出力されるため、ここでは出力しない
           continue;
         }
         
@@ -177,8 +177,8 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
               // 日本語版から親ディレクトリへのリンクは英語版を参照
               html = html.replace(/href="\.\.\/([^"]+)\.md"/g, 'href="/en/cli/$1/"');
             } else {
-              // 英語版は通常の相対パス処理
-              html = html.replace(/href="\.\.\/([^"]+)\.md"/g, 'href="./$1/"');
+              // 英語版は親ディレクトリ参照を維持（.md拡張子削除と末尾スラッシュ追加）
+              html = html.replace(/href="\.\.\/([^"]+)\.md"/g, 'href="../$1/"');
             }
 
             const slug = generateSlug(filePath, baseDir);
