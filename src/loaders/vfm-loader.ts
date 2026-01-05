@@ -161,10 +161,27 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
               continue;
             }
 
-            // HTMLのリンクを修正：.md拡張子を削除し、末尾スラッシュを追加
+            // HTMLのリンクを修正
+            // 1. タイポ修正: frotnend -> frontend
+            html = html.replace(/frotnend-framework-support/g, 'frontend-framework-support');
+            
+            // 2. ./ja/index.md のような言語ディレクトリへのリンクを削除（言語スイッチャーで対応）
+            html = html.replace(/<li>\s*<a href="\.\/ja\/index[^"]*"[^>]*>.*?<\/a>\s*<\/li>/gi, '');
+            
+            // 3. 相対リンクの.md拡張子を削除し、末尾スラッシュを追加
             // 例: ./getting-started.md -> ./getting-started/
-            // 例: ../config.md -> ../config/
-            html = html.replace(/href="(\.\.[\/])?([^"]+)\.md"/g, 'href="$1$2/"');
+            html = html.replace(/href="\.\/([^"]+)\.md"/g, 'href="./$1/"');
+            
+            // 4. ../で始まるリンク（親ディレクトリ）の処理
+            // docs/ja/index.md から docs/config.md への参照を適切に変換
+            // ../config.md は /en/cli/config/ になるべき（英語版のみ存在）
+            if (lang === 'ja') {
+              // 日本語版から親ディレクトリへのリンクは英語版を参照
+              html = html.replace(/href="\.\.\/([^"]+)\.md"/g, 'href="/en/cli/$1/"');
+            } else {
+              // 英語版は通常の相対パス処理
+              html = html.replace(/href="\.\.\/([^"]+)\.md"/g, 'href="./$1/"');
+            }
 
             const slug = generateSlug(filePath, baseDir);
             const id = slug;
