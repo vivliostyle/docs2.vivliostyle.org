@@ -132,13 +132,13 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
       try {
         // 各ファイルを同期的に処理
         for (const filePath of markdownFiles) {
-          logger.debug(`VFM Loader: Starting processing for file: ${filePath}`);
+          logger.debug(`VFM Loader [${lang}]: Starting processing for file: ${filePath}`);
           try {
             const content = await readFile(filePath, 'utf-8');
-            logger.debug(`VFM Loader: Successfully read file: ${filePath}`);
+            logger.debug(`VFM Loader [${lang}]: Successfully read file: ${filePath}`);
 
             const { data: frontmatter, content: markdownBody } = matter(content);
-            logger.debug(`VFM Loader: Extracted frontmatter and markdown body for file: ${filePath}`);
+            logger.debug(`VFM Loader [${lang}]: Extracted frontmatter and markdown body for file: ${filePath}`);
 
             // markdownBodyから最初の見出し（H1またはH2）をタイトルとして抽出
             const h1Match = markdownBody.match(/^#\s+(.+)$/m);
@@ -151,10 +151,10 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
                 hardLineBreaks: false,
                 disableFormatHtml: false,
               });
-              logger.debug(`VFM Loader: Successfully converted markdown to HTML for file: ${filePath}`);
+              logger.debug(`VFM Loader [${lang}]: Successfully converted markdown to HTML for file: ${filePath}`);
             } catch (stringifyError) {
               logger.error(
-                `VFM Loader: Failed to stringify VFM for ${filePath}: ${
+                `VFM Loader [${lang}]: Failed to stringify VFM for ${filePath}: ${
                   stringifyError instanceof Error ? stringifyError.message : String(stringifyError)
                 }`,
               );
@@ -203,7 +203,7 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
 
             // データ検証
             if (!entry.id || !entry.slug || !entry.rendered.html) {
-              logger.error(`VFM Loader: Invalid entry data for file: ${filePath}`);
+              logger.error(`VFM Loader [${lang}]: Invalid entry data for file: ${filePath}`);
               throw new Error(`Invalid entry data: ${JSON.stringify(entry)}`);
             }
 
@@ -214,19 +214,14 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
               rendered: entry.rendered,
             });
 
-            logger.debug(`VFM Loader: Successfully stored entry for file: ${filePath}`);
+            logger.debug(`VFM Loader [${lang}]: Successfully stored entry for file: ${filePath}`);
           } catch (error) {
-            logger.error(`VFM Loader: Failed to process ${filePath}: ${error}`);
+            logger.error(`VFM Loader [${lang}]: Failed to process ${filePath}: ${error}`);
           }
         }
       } finally {
-        logger.info(`VFM Loader [${lang}]: Cleanup completed after processing ${markdownFiles.length} files.`);
+        logger.info(`VFM Loader [${lang}]: Completed loading ${markdownFiles.length} documents`);
       }
-      logger.info(`VFM Loader [${lang}]: Completed loading ${markdownFiles.length} documents`);
-      
-      // ローダーのクリーンアップ処理
-      logger.info(`VFM Loader [${lang}]: Cleaning up resources`);
-      // 必要に応じてリソース解放処理を追加
     },
   };
 }
