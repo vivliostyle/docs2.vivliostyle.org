@@ -33,20 +33,6 @@ interface DocEntry {
   filePath: string;
 }
 
-// 修正: DataEntry 型に slug プロパティを追加
-interface DataEntry<T> {
-  id: string;
-  slug: string; // 追加
-  data: T;
-}
-
-// DataEntry 型
-interface DataEntry<T> {
-  id: string;
-  slug: string; // 追加
-  data: T;
-}
-
 /**
  * ディレクトリを再帰的に走査してMarkdownファイルを収集
  */
@@ -199,7 +185,7 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
               data: entry.data,
               body: entry.body,
               rendered: entry.rendered,
-            } as DataEntry<Record<string, unknown>>);
+            });
 
             logger.debug(`VFM Loader: Successfully stored entry for file: ${filePath}`);
           } catch (error) {
@@ -219,5 +205,3 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
 }
 
 export default vfmLoader;
-
-// const fs = await import('fs/promises'); // Currently unused, but may be needed in the future.
