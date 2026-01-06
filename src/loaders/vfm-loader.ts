@@ -61,8 +61,11 @@ async function collectMarkdownFiles(dir: string, baseDir: string, excludeDirs: s
       } else if (entry.isFile() && /\.md$/i.test(entry.name)) {
         // includePatternが指定されている場合はフィルタリング
         if (includePattern) {
-          const relativePath = relative(baseDir, fullPath);
-          if (includePattern.test(relativePath)) {
+          let relativePath = relative(baseDir, fullPath);
+          // Windows対応: バックスラッシュをスラッシュに変換
+          relativePath = relativePath.replace(/\\/g, '/');
+          const matches = includePattern.test(relativePath);
+          if (matches) {
             files.push(fullPath);
           }
         } else {
@@ -106,10 +109,10 @@ function generateSlug(filePath: string, baseDir: string): string {
  * VFMローダーを作成
  */
 export function vfmLoader(options: VFMLoaderOptions): Loader {
-  const { base, lang, excludeDirs = [], includePattern } = options;
+  const { base, lang, excludeDirs = [], includePattern, collectionName } = options;
 
   return {
-    name: `vfm-loader[${lang || 'unknown'}]`,
+    name: `vfm-loader[${collectionName || lang || 'unknown'}]`,
     
     async load(context: LoaderContext): Promise<void> {
       const { store, logger, config } = context;
@@ -221,6 +224,7 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
               body: entry.body,
               rendered: entry.rendered,
             });
+
 
             logger.debug(`VFM Loader [${lang}]: Successfully stored entry for file: ${filePath}`);
           } catch (error) {

@@ -16,15 +16,15 @@ export async function getStaticPaths() {
 
   // 重複を避けるため、処理済みIDを追跡
   const processedIds = new Set();
-  
-  // 'ja' というIDのドキュメントを除外（ja/index.mdから生成された重複）
-  const filteredCliDocs = cliDocs.filter(doc => doc.id !== 'ja');
 
-  return filteredCliDocs.map(doc => {
+  return cliDocs.map(doc => {
     // doc.idから ja/ プレフィックスを除去（日本語ファイルの場合）
     let docId = doc.id;
     if (docId.startsWith('ja/')) {
       docId = docId.substring(3);
+    } else if (docId === 'ja') {
+      // ja/index.mdから生成されたjaはindexとして扱う
+      docId = 'index';
     }
     // 空文字列の場合はindexとして扱う
     if (!docId || docId === '') {
@@ -43,7 +43,8 @@ export async function getStaticPaths() {
     const slug = docId === 'index' ? undefined : docId;
 
     // 英語版が存在するかチェック
-    // config と api-javascript は英語版ファイルだが、英語版ページも存在する
+    // config と api-javascript は両方の言語で共有されている
+    // その他のファイルも英語版が存在する
     const hasTranslation = enIds.has(docId);
     
     return {
@@ -51,7 +52,7 @@ export async function getStaticPaths() {
       props: { 
         doc,
         docId, // ja/ プレフィックスを除去したID
-        cliDocs: filteredCliDocs, // フィルタ済みのドキュメントリストを渡す
+        cliDocs,
         hasEnTranslation: hasTranslation
       },
     };
@@ -77,12 +78,27 @@ const pageOrder = [
   'api-javascript',
 ];
 
-const sortedDocs = [...cliDocs].sort((a, b) => {
-  // a.idとb.idから ja/ プレフィックスを除去してソート
-  const aId = a.id.startsWith('ja/') ? a.id.substring(3) : a.id;
-  const bId = b.id.startsWith('ja/') ? b.id.substring(3) : b.id;
-  const indexA = pageOrder.indexOf(aId);
-  const indexB = pageOrder.indexOf(bId);
+// サイドバー用に重複を排除: ja/ プレフィックスを除去したIDで一意にする
+const uniqueDocs = new Map();
+cliDocs.forEach(doc => {
+  // 'ja' IDは除外（これはja/index.mdから生成された重複）
+  if (doc.id === 'ja') return;
+  
+  // ja/ プレフィックスを除去してIDを正規化
+  const normalizedId = doc.id.startsWith('ja/') ? doc.id.substring(3) : doc.id;
+  
+  // 既に存在しない場合のみ追加（ja/ プレフィックス付きを優先）
+  if (!uniqueDocs.has(normalizedId)) {
+    uniqueDocs.set(normalizedId, { ...doc, normalizedId });
+  } else if (doc.id.startsWith('ja/')) {
+    // ja/ プレフィックス付きのドキュメントで上書き（こちらを優先）
+    uniqueDocs.set(normalizedId, { ...doc, normalizedId });
+  }
+});
+
+const sortedDocs = Array.from(uniqueDocs.values()).sort((a, b) => {
+  const indexA = pageOrder.indexOf(a.normalizedId);
+  const indexB = pageOrder.indexOf(b.normalizedId);
   // リストにない項目は最後に配置
   const orderA = indexA === -1 ? 999 : indexA;
   const orderB = indexB === -1 ? 999 : indexB;
@@ -103,8 +119,8 @@ const pagePath = docId === 'index' ? '/cli/' : `/cli/${docId}/`;
     <ul>
       <li><a href="/ja/">← ホームに戻る</a></li>
       {sortedDocs.map(item => {
-        // item.idから ja/ プレフィックスを除去
-        const itemId = item.id.startsWith('ja/') ? item.id.substring(3) : item.id;
+        // normalizedIdを使用（既に正規化済み）
+        const itemId = item.normalizedId;
         // indexの場合は /ja/cli/、それ以外は /ja/cli/xxx/ (末尾スラッシュ付き)
         const itemPath = itemId === 'index' ? '/ja/cli/' : `/ja/cli/${itemId}/`;
         const isActive = itemPath === currentPath;

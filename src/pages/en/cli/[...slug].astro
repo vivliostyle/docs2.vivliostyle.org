@@ -13,10 +13,15 @@ export async function getStaticPaths() {
   
   // 日本語版に存在するIDのセットを作成
   // 日本語ファイルは ja/ プレフィックスを除去したIDでチェックする必要がある
+  // config.md と api-javascript.md は両方の言語で共有されているため、常にtrueとする
   const jaIds = new Set(
     cliDocsJa
-      .filter(d => d.id !== 'ja') // ja/index.mdから生成された重複を除外
       .map(d => {
+        // ja/index.mdから生成された 'ja' IDは 'index' に変換
+        if (d.id === 'ja') {
+          return 'index';
+        }
+        // ja/ プレフィックスを除去
         if (d.id.startsWith('ja/')) {
           return d.id.substring(3);
         }

@@ -21,6 +21,7 @@ const docsEn = defineCollection({
   loader: vfmLoader({
     base: 'content/en',
     lang: 'en',
+    collectionName: 'docs-en',
   }),
   schema: docsSchema,
 });
@@ -30,6 +31,7 @@ const docsJa = defineCollection({
   loader: vfmLoader({
     base: 'content/ja',
     lang: 'ja',
+    collectionName: 'docs-ja',
   }),
   schema: docsSchema,
 });
@@ -40,6 +42,7 @@ const cliDocsEn = defineCollection({
     base: 'submodules/vivliostyle-cli/docs',
     lang: 'en',
     excludeDirs: ['ja'], // 日本語ディレクトリを除外
+    collectionName: 'vivliostyle-cli-en',
   }),
   schema: docsSchema,
 });
@@ -53,6 +56,7 @@ const cliDocsJa = defineCollection({
     base: 'submodules/vivliostyle-cli/docs',
     lang: 'ja',
     includePattern: /^(ja\/.+|config|api-javascript)\.md$/,
+    collectionName: 'vivliostyle-cli-ja',
   }),
   schema: docsSchema,
 });
