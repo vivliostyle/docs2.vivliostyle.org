@@ -45,10 +45,14 @@ const cliDocsEn = defineCollection({
 });
 
 // CLI ドキュメント（日本語）
+// 注: config.md と api-javascript.md は英語版のみ存在するため、
+// 日本語コレクションでも docs ディレクトリ全体をスキャンし、
+// 日本語ファイルと API リファレンスファイルを含める
 const cliDocsJa = defineCollection({
   loader: vfmLoader({
-    base: 'submodules/vivliostyle-cli/docs/ja',
+    base: 'submodules/vivliostyle-cli/docs',
     lang: 'ja',
+    includePattern: /^(ja\/.+|config|api-javascript)\.md$/,
   }),
   schema: docsSchema,
 });

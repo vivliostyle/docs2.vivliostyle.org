@@ -20,6 +20,8 @@ export interface VFMLoaderOptions {
   lang?: string;
   /** 除外するディレクトリ名の配列 */
   excludeDirs?: string[];
+  /** 含めるファイルパターン（正規表現、ベースディレクトリからの相対パスにマッチ） */
+  includePattern?: RegExp;
 }
 
 interface DocEntry {
@@ -36,7 +38,7 @@ interface DocEntry {
 /**
  * ディレクトリを再帰的に走査してMarkdownファイルを収集
  */
-async function collectMarkdownFiles(dir: string, baseDir: string, excludeDirs: string[] = []): Promise<string[]> {
+async function collectMarkdownFiles(dir: string, baseDir: string, excludeDirs: string[] = [], includePattern?: RegExp): Promise<string[]> {
   const files: string[] = [];
   
   try {
@@ -54,10 +56,18 @@ async function collectMarkdownFiles(dir: string, baseDir: string, excludeDirs: s
           continue;
         }
         
-        const subFiles = await collectMarkdownFiles(fullPath, baseDir, excludeDirs);
+        const subFiles = await collectMarkdownFiles(fullPath, baseDir, excludeDirs, includePattern);
         files.push(...subFiles);
       } else if (entry.isFile() && /\.md$/i.test(entry.name)) {
-        files.push(fullPath);
+        // includePatternが指定されている場合はフィルタリング
+        if (includePattern) {
+          const relativePath = relative(baseDir, fullPath);
+          if (includePattern.test(relativePath)) {
+            files.push(fullPath);
+          }
+        } else {
+          files.push(fullPath);
+        }
       }
     }
   } catch (error) {
@@ -96,7 +106,7 @@ function generateSlug(filePath: string, baseDir: string): string {
  * VFMローダーを作成
  */
 export function vfmLoader(options: VFMLoaderOptions): Loader {
-  const { base, lang, excludeDirs = [] } = options;
+  const { base, lang, excludeDirs = [], includePattern } = options;
 
   return {
     name: `vfm-loader[${lang || 'unknown'}]`,
@@ -123,7 +133,7 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
       }
       
       // Markdownファイルを収集
-      const markdownFiles = await collectMarkdownFiles(baseDir, baseDir, excludeDirs);
+      const markdownFiles = await collectMarkdownFiles(baseDir, baseDir, excludeDirs, includePattern);
       
       logger.info(`VFM Loader [${lang}]: Found ${markdownFiles.length} markdown files`);
       logger.debug(`VFM Loader [${lang}]: Debugging load method at baseDir: ${baseDir}`);

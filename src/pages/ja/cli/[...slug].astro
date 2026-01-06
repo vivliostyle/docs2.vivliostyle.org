@@ -14,24 +14,47 @@ export async function getStaticPaths() {
   // 英語版に存在するIDのセットを作成
   const enIds = new Set(cliDocsEn.map(d => d.id));
 
+  // 重複を避けるため、処理済みIDを追跡
+  const processedIds = new Set();
+
   return cliDocs.map(doc => {
+    // doc.idから ja/ プレフィックスを除去（日本語ファイルの場合）
+    let docId = doc.id;
+    if (docId.startsWith('ja/')) {
+      docId = docId.substring(3);
+    } else if (docId === 'ja') {
+      // `ja/index.md` から生成された `ja` slug を `index` に変換
+      docId = 'index';
+    }
+    // 空文字列の場合はindexとして扱う
+    if (!docId || docId === '') {
+      docId = 'index';
+    }
+    
+    // 重複チェック：すでに処理済みのIDはスキップ
+    if (processedIds.has(docId)) {
+      return null;
+    }
+    processedIds.add(docId);
+    
     // [...slug]パターンでは文字列でslugを渡す
     // indexの場合はundefinedでルートパス（/ja/cli/）に
-    // それ以外はdoc.idをそのまま渡す（例: "getting-started"）
-    const slug = doc.id === 'index' ? undefined : doc.id;
+    // それ以外はdocIdをそのまま渡す（例: "getting-started"）
+    const slug = docId === 'index' ? undefined : docId;
 
     return {
       params: { slug },
       props: { 
-        doc, 
+        doc,
+        docId, // ja/ プレフィックスを除去したID
         cliDocs,
-        hasEnTranslation: enIds.has(doc.id)
+        hasEnTranslation: enIds.has(docId)
       },
     };
-  });
+  }).filter(Boolean); // nullを除外
 }
 
-const { doc, cliDocs, hasEnTranslation } = Astro.props;
+const { doc, docId, cliDocs, hasEnTranslation } = Astro.props;
 const htmlContent = doc.rendered?.html || '';
 const title = doc.data?.title || 'CLI ドキュメント';
 const description = doc.data?.description || '';
@@ -51,8 +74,11 @@ const pageOrder = [
 ];
 
 const sortedDocs = [...cliDocs].sort((a, b) => {
-  const indexA = pageOrder.indexOf(a.id);
-  const indexB = pageOrder.indexOf(b.id);
+  // a.idとb.idから ja/ プレフィックスを除去してソート
+  const aId = a.id.startsWith('ja/') ? a.id.substring(3) : a.id;
+  const bId = b.id.startsWith('ja/') ? b.id.substring(3) : b.id;
+  const indexA = pageOrder.indexOf(aId);
+  const indexB = pageOrder.indexOf(bId);
   // リストにない項目は最後に配置
   const orderA = indexA === -1 ? 999 : indexA;
   const orderB = indexB === -1 ? 999 : indexB;
@@ -60,8 +86,8 @@ const sortedDocs = [...cliDocs].sort((a, b) => {
 });
 
 // 現在のページのパス（indexの場合は /ja/cli/、それ以外は /ja/cli/xxx/）
-const currentPath = doc.id === 'index' ? '/ja/cli/' : `/ja/cli/${doc.id}/`;
-const pagePath = doc.id === 'index' ? '/cli/' : `/cli/${doc.id}/`;
+const currentPath = docId === 'index' ? '/ja/cli/' : `/ja/cli/${docId}/`;
+const pagePath = docId === 'index' ? '/cli/' : `/cli/${docId}/`;
 ---
 
 <DocsLayout title={title} description={description} lang="ja">
@@ -73,13 +99,15 @@ const pagePath = doc.id === 'index' ? '/cli/' : `/cli/${doc.id}/`;
     <ul>
       <li><a href="/ja/">← ホームに戻る</a></li>
       {sortedDocs.map(item => {
+        // item.idから ja/ プレフィックスを除去
+        const itemId = item.id.startsWith('ja/') ? item.id.substring(3) : item.id;
         // indexの場合は /ja/cli/、それ以外は /ja/cli/xxx/ (末尾スラッシュ付き)
-        const itemPath = item.id === 'index' ? '/ja/cli/' : `/ja/cli/${item.id}/`;
+        const itemPath = itemId === 'index' ? '/ja/cli/' : `/ja/cli/${itemId}/`;
         const isActive = itemPath === currentPath;
         return (
           <li class:list={[{ active: isActive }]}>
             <a href={itemPath} aria-current={isActive ? 'page' : undefined}>
-              {item.data.title || item.id}
+              {item.data.title || itemId}
             </a>
           </li>
         );
