@@ -16,15 +16,15 @@ export async function getStaticPaths() {
 
   // 重複を避けるため、処理済みIDを追跡
   const processedIds = new Set();
+  
+  // 'ja' というIDのドキュメントを除外（ja/index.mdから生成された重複）
+  const filteredCliDocs = cliDocs.filter(doc => doc.id !== 'ja');
 
-  return cliDocs.map(doc => {
+  return filteredCliDocs.map(doc => {
     // doc.idから ja/ プレフィックスを除去（日本語ファイルの場合）
     let docId = doc.id;
     if (docId.startsWith('ja/')) {
       docId = docId.substring(3);
-    } else if (docId === 'ja') {
-      // `ja/index.md` から生成された `ja` slug を `index` に変換
-      docId = 'index';
     }
     // 空文字列の場合はindexとして扱う
     if (!docId || docId === '') {
@@ -42,16 +42,16 @@ export async function getStaticPaths() {
     // それ以外はdocIdをそのまま渡す（例: "getting-started"）
     const slug = docId === 'index' ? undefined : docId;
 
-    // config と api-javascript は英語版のみ存在するため、
-    // 日本語版から英語版への「翻訳」は存在しないとみなす
-    const hasTranslation = (docId === 'config' || docId === 'api-javascript') ? false : enIds.has(docId);
+    // 英語版が存在するかチェック
+    // config と api-javascript は英語版ファイルだが、英語版ページも存在する
+    const hasTranslation = enIds.has(docId);
     
     return {
       params: { slug },
       props: { 
         doc,
         docId, // ja/ プレフィックスを除去したID
-        cliDocs,
+        cliDocs: filteredCliDocs, // フィルタ済みのドキュメントリストを渡す
         hasEnTranslation: hasTranslation
       },
     };
@@ -77,10 +77,7 @@ const pageOrder = [
   'api-javascript',
 ];
 
-// 'ja' というIDのドキュメントを除外（ja/index.mdから生成された重複）
-const filteredDocs = cliDocs.filter(doc => doc.id !== 'ja');
-
-const sortedDocs = [...filteredDocs].sort((a, b) => {
+const sortedDocs = [...cliDocs].sort((a, b) => {
   // a.idとb.idから ja/ プレフィックスを除去してソート
   const aId = a.id.startsWith('ja/') ? a.id.substring(3) : a.id;
   const bId = b.id.startsWith('ja/') ? b.id.substring(3) : b.id;

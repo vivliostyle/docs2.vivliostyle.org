@@ -12,7 +12,17 @@ export async function getStaticPaths() {
   const cliDocsJa = await getCollection('vivliostyle-cli-ja');
   
   // 日本語版に存在するIDのセットを作成
-  const jaIds = new Set(cliDocsJa.map(d => d.id));
+  // 日本語ファイルは ja/ プレフィックスを除去したIDでチェックする必要がある
+  const jaIds = new Set(
+    cliDocsJa
+      .filter(d => d.id !== 'ja') // ja/index.mdから生成された重複を除外
+      .map(d => {
+        if (d.id.startsWith('ja/')) {
+          return d.id.substring(3);
+        }
+        return d.id;
+      })
+  );
 
   return cliDocs.map(doc => {
     // [...slug]パターンでは文字列でslugを渡す
