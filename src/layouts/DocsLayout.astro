@@ -36,8 +36,9 @@ const { title, description = '', lang = 'en' } = Astro.props;
         </nav>
         <div class="lang-switcher">
           <slot name="header">
-            <a href="/en/" class:list={[{ active: lang === 'en' }]}>EN</a>
-            <a href="/ja/" class:list={[{ active: lang === 'ja' }]}>JA</a>
+            <a href="/ja/" class:list={[{ active: lang === 'ja' }]}>日本語</a>
+            <span class="separator">|</span>
+            <a href="/en/" class:list={[{ active: lang === 'en' }]}>English</a>
           </slot>
         </div>
       </div>
@@ -116,6 +117,11 @@ const { title, description = '', lang = 'en' } = Astro.props;
   .lang-switcher {
     display: flex;
     gap: 0.5rem;
+    align-items: center;
+  }
+  
+  .lang-switcher .separator {
+    color: var(--color-text-muted);
   }
   
   .lang-switcher a {
@@ -127,8 +133,8 @@ const { title, description = '', lang = 'en' } = Astro.props;
   }
   
   .lang-switcher a.active {
-    background: var(--color-primary);
-    color: white;
+    font-weight: bold;
+    color: var(--color-text);
   }
   
   .main-container {
