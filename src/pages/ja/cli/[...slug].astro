@@ -108,6 +108,11 @@ const sortedDocs = Array.from(uniqueDocs.values()).sort((a, b) => {
 // 現在のページのパス（indexの場合は /ja/cli/、それ以外は /ja/cli/xxx/）
 const currentPath = docId === 'index' ? '/ja/cli/' : `/ja/cli/${docId}/`;
 const pagePath = docId === 'index' ? '/cli/' : `/cli/${docId}/`;
+
+// 前へ/次へナビゲーション用に現在のページのインデックスを取得
+const currentIndex = sortedDocs.findIndex(item => item.normalizedId === docId);
+const prevPage = currentIndex > 0 ? sortedDocs[currentIndex - 1] : null;
+const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex + 1] : null;
 ---
 
 <DocsLayout title={title} description={description} lang="ja">
@@ -136,6 +141,28 @@ const pagePath = docId === 'index' ? '/cli/' : `/cli/${docId}/`;
   </nav>
 
   <article set:html={htmlContent} />
+  
+  <nav class="page-navigation">
+    <div class="nav-links">
+      {prevPage ? (
+        <a href={`/ja/cli/${prevPage.normalizedId === 'index' ? '' : prevPage.normalizedId + '/'}`} class="nav-link nav-prev">
+          <span class="nav-label">← 前へ</span>
+          <span class="nav-title">{prevPage.data.title || prevPage.normalizedId}</span>
+        </a>
+      ) : (
+        <div class="nav-link nav-prev nav-disabled"></div>
+      )}
+      
+      {nextPage ? (
+        <a href={`/ja/cli/${nextPage.normalizedId === 'index' ? '' : nextPage.normalizedId + '/'}`} class="nav-link nav-next">
+          <span class="nav-label">次へ →</span>
+          <span class="nav-title">{nextPage.data.title || nextPage.normalizedId}</span>
+        </a>
+      ) : (
+        <div class="nav-link nav-next nav-disabled"></div>
+      )}
+    </div>
+  </nav>
 </DocsLayout>
 
 <style>
@@ -149,5 +176,64 @@ const pagePath = docId === 'index' ? '/cli/' : `/cli/${docId}/`;
   nav li.active a {
     font-weight: bold;
     color: var(--color-primary, #0066cc);
+  }
+  
+  /* ページナビゲーション */
+  .page-navigation {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-border, #e5e7eb);
+  }
+  
+  .nav-links {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+  
+  .nav-link {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    border: 1px solid var(--color-border, #e5e7eb);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--color-text, #1f2937);
+    transition: border-color 0.2s, background-color 0.2s;
+  }
+  
+  .nav-link:not(.nav-disabled):hover {
+    border-color: var(--color-primary, #0066cc);
+    background-color: var(--color-bg-hover, #f9fafb);
+  }
+  
+  .nav-link.nav-disabled {
+    border: none;
+  }
+  
+  .nav-prev {
+    text-align: left;
+  }
+  
+  .nav-next {
+    text-align: right;
+  }
+  
+  .nav-label {
+    font-size: 0.875rem;
+    color: var(--color-primary, #0066cc);
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+  
+  .nav-title {
+    font-weight: 500;
+    color: var(--color-text, #1f2937);
+  }
+  
+  @media (max-width: 640px) {
+    .nav-links {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
