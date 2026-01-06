@@ -42,13 +42,17 @@ export async function getStaticPaths() {
     // それ以外はdocIdをそのまま渡す（例: "getting-started"）
     const slug = docId === 'index' ? undefined : docId;
 
+    // config と api-javascript は英語版のみ存在するため、
+    // 日本語版から英語版への「翻訳」は存在しないとみなす
+    const hasTranslation = (docId === 'config' || docId === 'api-javascript') ? false : enIds.has(docId);
+    
     return {
       params: { slug },
       props: { 
         doc,
         docId, // ja/ プレフィックスを除去したID
         cliDocs,
-        hasEnTranslation: enIds.has(docId)
+        hasEnTranslation: hasTranslation
       },
     };
   }).filter(Boolean); // nullを除外
@@ -73,7 +77,10 @@ const pageOrder = [
   'api-javascript',
 ];
 
-const sortedDocs = [...cliDocs].sort((a, b) => {
+// 'ja' というIDのドキュメントを除外（ja/index.mdから生成された重複）
+const filteredDocs = cliDocs.filter(doc => doc.id !== 'ja');
+
+const sortedDocs = [...filteredDocs].sort((a, b) => {
   // a.idとb.idから ja/ プレフィックスを除去してソート
   const aId = a.id.startsWith('ja/') ? a.id.substring(3) : a.id;
   const bId = b.id.startsWith('ja/') ? b.id.substring(3) : b.id;
