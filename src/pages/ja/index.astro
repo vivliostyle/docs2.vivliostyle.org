@@ -3,6 +3,7 @@
  * 日本語版トップページ
  */
 import DocsLayout from '../../layouts/DocsLayout.astro';
+import LanguageSwitcher from '../../components/LanguageSwitcher.astro';
 import { getCollection } from 'astro:content';
 
 // VFMでコンバートされたドキュメントを取得
@@ -25,6 +26,7 @@ const description = indexDoc?.data?.description || 'Vivliostyle公式ドキュ�
 ---
 
 <DocsLayout title={title} description={description} lang="ja">
+  <LanguageSwitcher slot="header" currentLang="ja" pagePath="/" hasTranslation={true} />
   <nav slot="sidebar">
     <h3>ドキュメント</h3>
     <ul>

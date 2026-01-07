@@ -179,6 +179,9 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
             // 2. ./ja/index.md のような言語ディレクトリへのリンクを削除（言語スイッチャーで対応）
             html = html.replace(/<li>\s*<a href="\.\/ja\/index[^"]*"[^>]*>.*?<\/a>\s*<\/li>/gi, '');
             
+            // 2.5. 空のli要素を削除（Markdownの構造による空箇条書き項目を削除）
+            html = html.replace(/<li>\s*<\/li>/gi, '');
+            
             // 3. 相対リンクの.md拡張子を削除し、末尾スラッシュを追加
             // 例: ./getting-started.md -> ./getting-started/
             html = html.replace(/href="\.\/([^"]+)\.md"/g, 'href="./$1/"');
