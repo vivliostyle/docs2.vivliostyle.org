@@ -50,7 +50,9 @@ export async function getStaticPaths() {
 const { doc, cliDocs, hasJaTranslation } = Astro.props;
 const htmlContent = doc.rendered?.html || '';
 const title = doc.data?.title || 'CLI Documentation';
-const description = doc.data?.description || '';const doctocToc = doc.data?.doctocToc; // doctoc TOC (if exists)
+const description = doc.data?.description || '';
+const doctocToc = doc.data?.doctocToc; // doctoc TOC (if exists)
+
 // Sort by the order specified in index.md
 const pageOrder = [
   'index',
