@@ -36,6 +36,7 @@ const { doc, themesDocs, hasEnTranslation } = Astro.props;
 const htmlContent = doc.rendered?.html || '';
 const title = doc.data?.title || 'Themes ドキュメント';
 const description = doc.data?.description || '';
+const doctocToc = doc.data?.doctocToc; // doctoc TOC（存在する場合）
 
 // ページの順序を定義
 const pageOrder = [
@@ -79,6 +80,10 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
         return (
           <li class:list={[{ active: isActive }]}>
             <a href={itemPath}>{item.data.title || item.id}</a>
+            {/* 現在のページでdoctocTOCがある場合は、そのページのサブメニューとして表示 */}
+            {isActive && doctocToc && (
+              <div class="page-toc" set:html={doctocToc} />
+            )}
           </li>
         );
       })}

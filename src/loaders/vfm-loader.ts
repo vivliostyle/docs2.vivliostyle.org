@@ -153,14 +153,24 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
             const { data: frontmatter, content: markdownBody } = matter(content);
             logger.debug(`VFM Loader [${lang}]: Extracted frontmatter and markdown body for file: ${filePath}`);
 
+            // doctoc生成TOCを抽出（<!-- START doctoc generated TOC --> ... <!-- END doctoc generated TOC --> の部分）
+            let doctocToc: string | undefined;
+            let processedMarkdownBody = markdownBody;
+            const doctocMatch = markdownBody.match(/<!-- START doctoc generated TOC -->\s*\n([\s\S]*?)\n<!-- END doctoc generated TOC -->/);
+            if (doctocMatch) {
+              doctocToc = doctocMatch[1].trim();
+              // TOC部分をMarkdownから削除
+              processedMarkdownBody = markdownBody.replace(/<!-- START doctoc generated TOC -->\s*\n[\s\S]*?\n<!-- END doctoc generated TOC -->\s*\n?/, '');
+            }
+
             // markdownBodyから最初の見出し（H1またはH2）をタイトルとして抽出
-            const h1Match = markdownBody.match(/^#\s+(.+)$/m);
-            const h2Match = markdownBody.match(/^##\s+(.+)$/m);
+            const h1Match = processedMarkdownBody.match(/^#\s+(.+)$/m);
+            const h2Match = processedMarkdownBody.match(/^##\s+(.+)$/m);
             const headingTitle = h1Match ? h1Match[1].trim() : (h2Match ? h2Match[1].trim() : undefined);
 
             let html: string;
             try {
-              html = stringify(markdownBody, {
+              html = stringify(processedMarkdownBody, {
                 hardLineBreaks: false,
                 disableFormatHtml: false,
               });
@@ -172,6 +182,19 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
                 }`,
               );
               continue;
+            }
+
+            // doctoc TOCをHTMLに変換（存在する場合）
+            let doctocTocHtml: string | undefined;
+            if (doctocToc) {
+              try {
+                doctocTocHtml = stringify(doctocToc, {
+                  hardLineBreaks: false,
+                  disableFormatHtml: false,
+                });
+              } catch (tocError) {
+                logger.warn(`VFM Loader [${lang}]: Failed to convert doctoc TOC to HTML: ${tocError}`);
+              }
             }
 
             // HTMLのリンクと画像パスを修正
@@ -216,11 +239,12 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
             const entry: DocEntry = {
               id,
               slug,
-              body: markdownBody,
+              body: processedMarkdownBody,
               data: {
                 ...frontmatter,
                 lang: lang || frontmatter.lang || 'en',
                 title: frontmatter.title || headingTitle || basename(slug),
+                doctocToc: doctocTocHtml, // doctoc TOCをデータに追加
               },
               rendered: {
                 html,
