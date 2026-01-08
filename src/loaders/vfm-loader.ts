@@ -176,11 +176,17 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
 
             // HTMLのリンクと画像パスを修正
             
-            // 1. Themesの画像パスを修正: ../assets/ -> /themes/assets/
-            // これはThemesドキュメント内の画像参照を正しく解決するため
-            if (collectionName && collectionName.includes('themes')) {
-              html = html.replace(/src="\.\.\/assets\//g, 'src="/themes/assets/');
-              html = html.replace(/src="\.\/assets\//g, 'src="/themes/assets/');
+            // 1. 画像パスを修正: ../assets/ -> /{product}/assets/
+            // すべてのsubmoduleドキュメントで docs/assets に画像を格納する前提
+            // collectionNameから製品名を抽出して適切なパスに変換
+            // 例: vivliostyle-cli-en → /cli/assets/, vivliostyle-themes-ja → /themes/assets/
+            if (collectionName && collectionName.startsWith('vivliostyle-')) {
+              const productMatch = collectionName.match(/^vivliostyle-([^-]+)/);
+              if (productMatch) {
+                const productName = productMatch[1]; // cli, themes, vfm など
+                html = html.replace(/src="\.\.\/assets\//g, `src="/${productName}/assets/`);
+                html = html.replace(/src="\.\/assets\//g, `src="/${productName}/assets/`);
+              }
             }
             
             // 2. ./ja/index.md のような言語ディレクトリへのリンクを削除（言語スイッチャーで対応）
