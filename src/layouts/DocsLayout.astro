@@ -35,8 +35,7 @@ const { title, description = '', lang = 'en' } = Astro.props;
           <a href={`/${lang}/viewer/`}>Viewer</a>
         </nav>
         <div class="lang-switcher">
-          <a href="/en/" class:list={[{ active: lang === 'en' }]}>EN</a>
-          <a href="/ja/" class:list={[{ active: lang === 'ja' }]}>JA</a>
+          <slot name="header" />
         </div>
       </div>
     </header>
@@ -54,7 +53,7 @@ const { title, description = '', lang = 'en' } = Astro.props;
     </div>
     
     <footer class="footer">
-      <p>&copy; {new Date().getFullYear()} Vivliostyle Foundation. Licensed under <a href="https://github.com/vivliostyle/vivliostyle/blob/master/LICENSE.md">AGPL-3.0</a>.</p>
+      <p>&copy; {new Date().getFullYear()} Vivliostyle Foundation.</p>
     </footer>
   </div>
 </body>
@@ -114,6 +113,11 @@ const { title, description = '', lang = 'en' } = Astro.props;
   .lang-switcher {
     display: flex;
     gap: 0.5rem;
+    align-items: center;
+  }
+  
+  .lang-switcher .separator {
+    color: var(--color-text-muted);
   }
   
   .lang-switcher a {
@@ -125,8 +129,8 @@ const { title, description = '', lang = 'en' } = Astro.props;
   }
   
   .lang-switcher a.active {
-    background: var(--color-primary);
-    color: white;
+    font-weight: bold;
+    color: var(--color-text);
   }
   
   .main-container {

@@ -21,6 +21,7 @@ const docsEn = defineCollection({
   loader: vfmLoader({
     base: 'content/en',
     lang: 'en',
+    collectionName: 'docs-en',
   }),
   schema: docsSchema,
 });
@@ -30,6 +31,32 @@ const docsJa = defineCollection({
   loader: vfmLoader({
     base: 'content/ja',
     lang: 'ja',
+    collectionName: 'docs-ja',
+  }),
+  schema: docsSchema,
+});
+
+// CLI ドキュメント（英語）
+const cliDocsEn = defineCollection({
+  loader: vfmLoader({
+    base: 'submodules/vivliostyle-cli/docs',
+    lang: 'en',
+    excludeDirs: ['ja'], // 日本語ディレクトリを除外
+    collectionName: 'vivliostyle-cli-en',
+  }),
+  schema: docsSchema,
+});
+
+// CLI ドキュメント（日本語）
+// 注: config.md と api-javascript.md は英語版のみ存在するため、
+// 日本語コレクションでも docs ディレクトリ全体をスキャンし、
+// 日本語ファイルと API リファレンスファイルを含める
+const cliDocsJa = defineCollection({
+  loader: vfmLoader({
+    base: 'submodules/vivliostyle-cli/docs',
+    lang: 'ja',
+    includePattern: /^(ja\/.+|config|api-javascript)\.md$/,
+    collectionName: 'vivliostyle-cli-ja',
   }),
   schema: docsSchema,
 });
@@ -37,4 +64,6 @@ const docsJa = defineCollection({
 export const collections = {
   'docs-en': docsEn,
   'docs-ja': docsJa,
+  'vivliostyle-cli-en': cliDocsEn,
+  'vivliostyle-cli-ja': cliDocsJa,
 };

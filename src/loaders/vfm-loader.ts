@@ -18,6 +18,10 @@ export interface VFMLoaderOptions {
   pattern?: string;
   /** 言語コード（en, ja など） */
   lang?: string;
+  /** 除外するディレクトリ名の配列 */
+  excludeDirs?: string[];
+  /** 含めるファイルパターン（正規表現、ベースディレクトリからの相対パスにマッチ） */
+  includePattern?: RegExp;
 }
 
 interface DocEntry {
@@ -34,7 +38,7 @@ interface DocEntry {
 /**
  * ディレクトリを再帰的に走査してMarkdownファイルを収集
  */
-async function collectMarkdownFiles(dir: string, baseDir: string): Promise<string[]> {
+async function collectMarkdownFiles(dir: string, baseDir: string, excludeDirs: string[] = [], includePattern?: RegExp): Promise<string[]> {
   const files: string[] = [];
   
   try {
@@ -42,13 +46,31 @@ async function collectMarkdownFiles(dir: string, baseDir: string): Promise<strin
     for (const entry of entries) {
       const fullPath = join(dir, entry.name);
       if (entry.isDirectory()) {
-        // node_modules, .git などは除外
-        if (!entry.name.startsWith('.') && entry.name !== 'node_modules') {
-          const subFiles = await collectMarkdownFiles(fullPath, baseDir);
-          files.push(...subFiles);
+        // 除外ディレクトリかチェック
+        const shouldExclude = entry.name.startsWith('.') || 
+                              entry.name === 'node_modules' || 
+                              excludeDirs.includes(entry.name);
+        
+        if (shouldExclude) {
+          // ログはloadメソッド内でまとめて出力されるため、ここでは出力しない
+          continue;
         }
+        
+        const subFiles = await collectMarkdownFiles(fullPath, baseDir, excludeDirs, includePattern);
+        files.push(...subFiles);
       } else if (entry.isFile() && /\.md$/i.test(entry.name)) {
-        files.push(fullPath);
+        // includePatternが指定されている場合はフィルタリング
+        if (includePattern) {
+          let relativePath = relative(baseDir, fullPath);
+          // Windows対応: バックスラッシュをスラッシュに変換
+          relativePath = relativePath.replace(/\\/g, '/');
+          const matches = includePattern.test(relativePath);
+          if (matches) {
+            files.push(fullPath);
+          }
+        } else {
+          files.push(fullPath);
+        }
       }
     }
   } catch (error) {
@@ -87,10 +109,10 @@ function generateSlug(filePath: string, baseDir: string): string {
  * VFMローダーを作成
  */
 export function vfmLoader(options: VFMLoaderOptions): Loader {
-  const { base, lang } = options;
+  const { base, lang, excludeDirs = [], includePattern, collectionName } = options;
 
   return {
-    name: 'vfm-loader',
+    name: `vfm-loader[${collectionName || lang || 'unknown'}]`,
     
     async load(context: LoaderContext): Promise<void> {
       const { store, logger, config } = context;
@@ -100,84 +122,121 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
         ? base 
         : join(config.root.pathname, base);
       
-      logger.info(`VFM Loader: Scanning ${baseDir}`);
+      logger.info(`VFM Loader [${lang}]: Scanning ${baseDir}`);
+      if (excludeDirs.length > 0) {
+        logger.info(`VFM Loader [${lang}]: Excluding directories: ${excludeDirs.join(', ')}`);
+      }
       
-      // ディレクトリの存在確認
+      // ベースディレクトリの存在確認
       try {
         await stat(baseDir);
-      } catch {
-        logger.warn(`VFM Loader: Base directory does not exist: ${baseDir}`);
+      } catch (error) {
+        logger.error(`VFM Loader [${lang}]: Failed to access base directory: ${baseDir}. Error: ${error}`);
         return;
       }
       
       // Markdownファイルを収集
-      const markdownFiles = await collectMarkdownFiles(baseDir, baseDir);
+      const markdownFiles = await collectMarkdownFiles(baseDir, baseDir, excludeDirs, includePattern);
       
-      logger.info(`VFM Loader: Found ${markdownFiles.length} markdown files`);
+      logger.info(`VFM Loader [${lang}]: Found ${markdownFiles.length} markdown files`);
+      logger.debug(`VFM Loader [${lang}]: Debugging load method at baseDir: ${baseDir}`);
+      logger.debug(`VFM Loader [${lang}]: Markdown files collected: ${markdownFiles.length}`);
       
-      // 各ファイルを処理
-      for (const filePath of markdownFiles) {
-        try {
-          const content = await readFile(filePath, 'utf-8');
-          
-          // frontmatterを抽出
-          const { data: frontmatter, content: markdownBody } = matter(content);
-          
-          // VFMでHTMLに変換
-          let html: string;
+      try {
+        // 各ファイルを同期的に処理
+        for (const filePath of markdownFiles) {
+          logger.debug(`VFM Loader [${lang}]: Starting processing for file: ${filePath}`);
           try {
-            html = stringify(markdownBody, {
-              hardLineBreaks: false,
-              disableFormatHtml: false,
+            const content = await readFile(filePath, 'utf-8');
+            logger.debug(`VFM Loader [${lang}]: Successfully read file: ${filePath}`);
+
+            const { data: frontmatter, content: markdownBody } = matter(content);
+            logger.debug(`VFM Loader [${lang}]: Extracted frontmatter and markdown body for file: ${filePath}`);
+
+            // markdownBodyから最初の見出し（H1またはH2）をタイトルとして抽出
+            const h1Match = markdownBody.match(/^#\s+(.+)$/m);
+            const h2Match = markdownBody.match(/^##\s+(.+)$/m);
+            const headingTitle = h1Match ? h1Match[1].trim() : (h2Match ? h2Match[1].trim() : undefined);
+
+            let html: string;
+            try {
+              html = stringify(markdownBody, {
+                hardLineBreaks: false,
+                disableFormatHtml: false,
+              });
+              logger.debug(`VFM Loader [${lang}]: Successfully converted markdown to HTML for file: ${filePath}`);
+            } catch (stringifyError) {
+              logger.error(
+                `VFM Loader [${lang}]: Failed to stringify VFM for ${filePath}: ${
+                  stringifyError instanceof Error ? stringifyError.message : String(stringifyError)
+                }`,
+              );
+              continue;
+            }
+
+            // HTMLのリンクを修正
+            
+            // 2. ./ja/index.md のような言語ディレクトリへのリンクを削除（言語スイッチャーで対応）
+            html = html.replace(/<li>\s*<a href="\.\/ja\/index[^"]*"[^>]*>.*?<\/a>\s*<\/li>/gi, '');
+            
+            // 2.5. 空のli要素を削除（Markdownの構造による空箇条書き項目を削除）
+            html = html.replace(/<li>\s*<\/li>/gi, '');
+            
+            // 3. 相対リンクの.md拡張子を削除し、末尾スラッシュを追加
+            // 例: ./getting-started.md -> ./getting-started/
+            html = html.replace(/href="\.\/([^"]+)\.md"/g, 'href="./$1/"');
+            
+            // 4. ../で始まるリンク（親ディレクトリ）の処理
+            // docs/ja/index.md から docs/config.md への参照を適切に変換
+            // ../config.md は /en/cli/config/ になるべき（英語版のみ存在）
+            if (lang === 'ja') {
+              // 日本語版から親ディレクトリへのリンクは英語版を参照
+              html = html.replace(/href="\.\.\/([^"]+)\.md"/g, 'href="/en/cli/$1/"');
+            } else {
+              // 英語版は親ディレクトリ参照を維持（.md拡張子削除と末尾スラッシュ追加）
+              html = html.replace(/href="\.\.\/([^"]+)\.md"/g, 'href="../$1/"');
+            }
+
+            const slug = generateSlug(filePath, baseDir);
+            const id = slug;
+
+            const entry: DocEntry = {
+              id,
+              slug,
+              body: markdownBody,
+              data: {
+                ...frontmatter,
+                lang: lang || frontmatter.lang || 'en',
+                title: frontmatter.title || headingTitle || basename(slug),
+              },
+              rendered: {
+                html,
+              },
+              filePath: relative(config.root.pathname, filePath),
+            };
+
+            // データ検証
+            if (!entry.id || !entry.slug || !entry.rendered.html) {
+              logger.error(`VFM Loader [${lang}]: Invalid entry data for file: ${filePath}`);
+              throw new Error(`Invalid entry data: ${JSON.stringify(entry)}`);
+            }
+
+            store.set({
+              id: entry.id,
+              data: entry.data,
+              body: entry.body,
+              rendered: entry.rendered,
             });
-          } catch (stringifyError) {
-            logger.error(
-              `VFM Loader: Failed to stringify VFM for ${filePath}: ${
-                stringifyError instanceof Error ? stringifyError.message : String(stringifyError)
-              }`,
-            );
-            // このファイルの処理をスキップし、他のファイルの処理を継続
-            continue;
+
+
+            logger.debug(`VFM Loader [${lang}]: Successfully stored entry for file: ${filePath}`);
+          } catch (error) {
+            logger.error(`VFM Loader [${lang}]: Failed to process ${filePath}: ${error}`);
           }
-          
-          // スラッグを生成
-          const slug = generateSlug(filePath, baseDir);
-          
-          // IDを生成（言語プレフィックス付き）
-          const id = lang ? `${lang}/${slug}` : slug;
-          
-          // エントリを作成
-          const entry: DocEntry = {
-            id,
-            slug,
-            body: markdownBody,
-            data: {
-              ...frontmatter,
-              lang: lang || frontmatter.lang || 'en',
-              title: frontmatter.title || basename(slug),
-            },
-            rendered: {
-              html,
-            },
-            filePath: relative(config.root.pathname, filePath),
-          };
-          
-          // ストアに格納
-          store.set({
-            id: entry.id,
-            data: entry.data,
-            body: entry.body,
-            rendered: entry.rendered,
-            filePath: entry.filePath,
-          });
-          
-          logger.debug(`VFM Loader: Processed ${id}`);
-        } catch (error) {
-          logger.error(`VFM Loader: Failed to process ${filePath}: ${error}`);
         }
+      } finally {
+        logger.info(`VFM Loader [${lang}]: Completed loading ${markdownFiles.length} documents`);
       }
-      
-      logger.info(`VFM Loader: Completed loading ${markdownFiles.length} documents`);
     },
   };
 }

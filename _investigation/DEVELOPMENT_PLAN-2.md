@@ -227,28 +227,28 @@ export function vfmLoader({ pattern, base }): Loader {
 
 ### Phase 1: 基盤構築
 
-- [ ] Astro プロジェクトのセットアップ
-- [ ] **SSMO対応CSSの実装**
-  - [ ] CSS変数・共通スタイル設計
-  - [ ] Web用レイアウト（ナビ、サイドバー）
-  - [ ] レスポンシブ対応
-  - [ ] ダークモード
-  - [ ] @media print スタイル
-- [ ] **VFM カスタムローダーの実装**
-  - [ ] @vivliostyle/vfm パッケージのインストール
-  - [ ] vfm-loader.ts の作成
-  - [ ] Content Collections 設定 (src/content.config.ts)
-  - [ ] Frontmatter 抽出・スキーマ定義
-- [ ] 基本レイアウトコンポーネント作成
-- [ ] 言語検出・リダイレクト機能の実装
-- [ ] GitHub Pages デプロイ設定（GitHub Actions）
+- [x] Astro プロジェクトのセットアップ
+- [x] **SSMO対応CSSの実装**
+  - [x] CSS変数・共通スタイル設計
+  - [x] Web用レイアウト（ナビ、サイドバー）
+  - [x] レスポンシブ対応
+  - [x] ダークモード
+  - [x] @media print スタイル
+- [x] **VFM カスタムローダーの実装**
+  - [x] @vivliostyle/vfm パッケージのインストール
+  - [x] vfm-loader.ts の作成
+  - [x] Content Collections 設定 (src/content.config.ts)
+  - [x] Frontmatter 抽出・スキーマ定義
+- [x] 基本レイアウトコンポーネント作成
+- [x] 言語検出・リダイレクト機能の実装
+- [x] GitHub Pages デプロイ設定（GitHub Actions）
 
 ### Phase 2: CLI ドキュメントの統合（優先）
 
-- [ ] vivliostyle-cli を submodule として追加
-- [ ] CLI ドキュメントの表示確認
-- [ ] サイドバーナビゲーション実装
-- [ ] 言語切り替え機能実装
+- [x] vivliostyle-cli を submodule として追加
+- [x] CLI ドキュメントの表示確認
+- [x] サイドバーナビゲーション実装
+- [x] 言語切り替え機能実装
 
 ### Phase 3: 他プロダクトのドキュメント統合
 
