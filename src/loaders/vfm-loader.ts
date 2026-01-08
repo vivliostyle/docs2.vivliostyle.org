@@ -174,7 +174,14 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
               continue;
             }
 
-            // HTMLのリンクを修正
+            // HTMLのリンクと画像パスを修正
+            
+            // 1. Themesの画像パスを修正: ../assets/ -> /themes/assets/
+            // これはThemesドキュメント内の画像参照を正しく解決するため
+            if (collectionName && collectionName.includes('themes')) {
+              html = html.replace(/src="\.\.\/assets\//g, 'src="/themes/assets/');
+              html = html.replace(/src="\.\/assets\//g, 'src="/themes/assets/');
+            }
             
             // 2. ./ja/index.md のような言語ディレクトリへのリンクを削除（言語スイッチャーで対応）
             html = html.replace(/<li>\s*<a href="\.\/ja\/index[^"]*"[^>]*>.*?<\/a>\s*<\/li>/gi, '');
