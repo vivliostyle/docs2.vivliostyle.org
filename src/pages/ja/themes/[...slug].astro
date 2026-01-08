@@ -1,0 +1,260 @@
+---
+/**
+ * Themes ドキュメントページ（日本語版）
+ * 動的ルーティング: /ja/themes/* にマッチ
+ */
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import LanguageSwitcher from '../../../components/LanguageSwitcher.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const themesDocs = await getCollection('vivliostyle-themes-ja');
+  const themesDocsEn = await getCollection('vivliostyle-themes-en');
+  
+  // 英語版に存在するIDのセットを作成
+  const enIds = new Set(themesDocsEn.map(d => d.id));
+
+  return themesDocs.map(doc => {
+    // [...slug]パターンでは文字列でslugを渡す
+    // indexの場合はundefinedでルートパス（/ja/themes/）に
+    // それ以外はdoc.idをそのまま渡す
+    const slug = doc.id === 'index' ? undefined : doc.id;
+
+    return {
+      params: { slug },
+      props: { 
+        doc, 
+        themesDocs,
+        hasEnTranslation: enIds.has(doc.id)
+      },
+    };
+  });
+}
+
+const { doc, themesDocs, hasEnTranslation } = Astro.props;
+const htmlContent = doc.rendered?.html || '';
+const title = doc.data?.title || 'Themes ドキュメント';
+const description = doc.data?.description || '';
+
+// ページの順序を定義
+const pageOrder = [
+  'index',
+  'spec',
+  'gallery',
+  'official',
+  'development',
+];
+
+const sortedDocs = [...themesDocs].sort((a, b) => {
+  const indexA = pageOrder.indexOf(a.id);
+  const indexB = pageOrder.indexOf(b.id);
+  // リストにないアイテムは最後に配置
+  const orderA = indexA === -1 ? 999 : indexA;
+  const orderB = indexB === -1 ? 999 : indexB;
+  return orderA - orderB;
+});
+
+// 現在のページパス
+const currentPath = doc.id === 'index' ? '/ja/themes/' : `/ja/themes/${doc.id}/`;
+const pagePath = doc.id === 'index' ? '/themes/' : `/themes/${doc.id}/`;
+
+// 前/次のナビゲーション
+const currentIndex = sortedDocs.findIndex(item => item.id === doc.id);
+const prevPage = currentIndex > 0 ? sortedDocs[currentIndex - 1] : null;
+const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex + 1] : null;
+---
+
+<DocsLayout title={title} description={description} lang="ja">
+  <div slot="header" class="language-switcher-container">
+    <LanguageSwitcher currentLang="ja" pagePath={pagePath} hasTranslation={hasEnTranslation} />
+  </div>
+  <nav slot="sidebar">
+    <h3>Themes ドキュメント</h3>
+    <ul>
+      <li><a href="/ja/">← ホームに戻る</a></li>
+      {sortedDocs.map(item => {
+        const itemPath = item.id === 'index' ? '/ja/themes/' : `/ja/themes/${item.id}/`;
+        const isActive = itemPath === currentPath;
+        return (
+          <li class:list={[{ active: isActive }]}>
+            <a href={itemPath}>{item.data.title || item.id}</a>
+          </li>
+        );
+      })}
+    </ul>
+  </nav>
+  <main>
+    <h1>{title}</h1>
+    {description && <p class="description">{description}</p>}
+    <div class="content" set:html={htmlContent} />
+    <nav class="page-nav">
+      {prevPage && (
+        <a href={prevPage.id === 'index' ? '/ja/themes/' : `/ja/themes/${prevPage.id}/`} class="prev">
+          ← {prevPage.data.title || prevPage.id}
+        </a>
+      )}
+      {nextPage && (
+        <a href={nextPage.id === 'index' ? '/ja/themes/' : `/ja/themes/${nextPage.id}/`} class="next">
+          {nextPage.data.title || nextPage.id} →
+        </a>
+      )}
+    </nav>
+  </main>
+</DocsLayout>
+
+<style>
+  .language-switcher-container {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  main {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  h1 {
+    color: var(--text-color);
+    margin-bottom: 1rem;
+  }
+
+  .description {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+
+  .content {
+    line-height: 1.7;
+    color: var(--text-color);
+  }
+
+  .content :global(h2) {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    color: var(--text-color);
+  }
+
+  .content :global(h3) {
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-color);
+  }
+
+  .content :global(pre) {
+    background-color: var(--code-bg);
+    padding: 1rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin: 1rem 0;
+  }
+
+  .content :global(code) {
+    background-color: var(--code-bg);
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+  }
+
+  .content :global(pre code) {
+    background-color: transparent;
+    padding: 0;
+  }
+
+  .content :global(a) {
+    color: var(--link-color);
+    text-decoration: none;
+  }
+
+  .content :global(a:hover) {
+    text-decoration: underline;
+  }
+
+  .content :global(ul), .content :global(ol) {
+    margin-left: 1.5rem;
+  }
+
+  .content :global(li) {
+    margin-bottom: 0.5rem;
+  }
+
+  .content :global(table) {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+  }
+
+  .content :global(th), .content :global(td) {
+    border: 1px solid var(--border-color);
+    padding: 0.5rem;
+    text-align: left;
+  }
+
+  .content :global(th) {
+    background-color: var(--code-bg);
+    font-weight: bold;
+  }
+
+  .content :global(blockquote) {
+    border-left: 4px solid var(--border-color);
+    padding-left: 1rem;
+    margin: 1rem 0;
+    color: var(--text-muted);
+  }
+
+  .page-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+  }
+
+  .page-nav a {
+    color: var(--link-color);
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    transition: background-color 0.2s;
+  }
+
+  .page-nav a:hover {
+    background-color: var(--code-bg);
+  }
+
+  .page-nav .prev {
+    margin-right: auto;
+  }
+
+  .page-nav .next {
+    margin-left: auto;
+  }
+
+  nav ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  nav li {
+    margin-bottom: 0.5rem;
+  }
+
+  nav li.active a {
+    font-weight: bold;
+    color: var(--link-color);
+  }
+
+  nav a {
+    color: var(--text-color);
+    text-decoration: none;
+    display: block;
+    padding: 0.5rem;
+    border-radius: 4px;
+  }
+
+  nav a:hover {
+    background-color: var(--code-bg);
+  }
+</style>

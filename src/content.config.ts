@@ -61,9 +61,32 @@ const cliDocsJa = defineCollection({
   schema: docsSchema,
 });
 
+// Themes ドキュメント（英語）
+const themesDocsEn = defineCollection({
+  loader: vfmLoader({
+    base: 'submodules/themes/docs',
+    lang: 'en',
+    excludeDirs: ['ja'], // 日本語ディレクトリを除外
+    collectionName: 'vivliostyle-themes-en',
+  }),
+  schema: docsSchema,
+});
+
+// Themes ドキュメント（日本語）
+const themesDocsJa = defineCollection({
+  loader: vfmLoader({
+    base: 'submodules/themes/docs/ja',
+    lang: 'ja',
+    collectionName: 'vivliostyle-themes-ja',
+  }),
+  schema: docsSchema,
+});
+
 export const collections = {
   'docs-en': docsEn,
   'docs-ja': docsJa,
   'vivliostyle-cli-en': cliDocsEn,
   'vivliostyle-cli-ja': cliDocsJa,
+  'vivliostyle-themes-en': themesDocsEn,
+  'vivliostyle-themes-ja': themesDocsJa,
 };

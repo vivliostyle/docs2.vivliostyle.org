@@ -1,3 +1,6 @@
 [submodule "submodules/vivliostyle-cli"]
 	path = submodules/vivliostyle-cli
 	url = https://github.com/vivliostyle/vivliostyle-cli.git
+[submodule "submodules/themes"]
+	path = submodules/themes
+	url = https://github.com/vivliostyle/themes.git
