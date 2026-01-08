@@ -35,11 +35,7 @@ const { title, description = '', lang = 'en' } = Astro.props;
           <a href={`/${lang}/viewer/`}>Viewer</a>
         </nav>
         <div class="lang-switcher">
-          <slot name="header">
-            <a href="/ja/" class:list={[{ active: lang === 'ja' }]}>日本語</a>
-            <span class="separator">|</span>
-            <a href="/en/" class:list={[{ active: lang === 'en' }]}>English</a>
-          </slot>
+          <slot name="header" />
         </div>
       </div>
     </header>
