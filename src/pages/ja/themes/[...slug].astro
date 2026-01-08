@@ -5,6 +5,7 @@
  */
 import DocsLayout from '../../../layouts/DocsLayout.astro';
 import LanguageSwitcher from '../../../components/LanguageSwitcher.astro';
+import PageNavigation from '../../../components/PageNavigation.astro';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -87,18 +88,13 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
     <h1>{title}</h1>
     {description && <p class="description">{description}</p>}
     <div class="content" set:html={htmlContent} />
-    <nav class="page-nav">
-      {prevPage && (
-        <a href={prevPage.id === 'index' ? '/ja/themes/' : `/ja/themes/${prevPage.id}/`} class="prev">
-          ← {prevPage.data.title || prevPage.id}
-        </a>
-      )}
-      {nextPage && (
-        <a href={nextPage.id === 'index' ? '/ja/themes/' : `/ja/themes/${nextPage.id}/`} class="next">
-          {nextPage.data.title || nextPage.id} →
-        </a>
-      )}
-    </nav>
+    <PageNavigation
+      prevPage={prevPage}
+      nextPage={nextPage}
+      basePath="/ja/themes/"
+      prevLabel="← 前へ"
+      nextLabel="次へ →"
+    />
   </main>
 </DocsLayout>
 
@@ -201,35 +197,6 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
     padding-left: 1rem;
     margin: 1rem 0;
     color: var(--text-muted);
-  }
-
-  .page-nav {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--border-color);
-  }
-
-  .page-nav a {
-    color: var(--link-color);
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    transition: background-color 0.2s;
-  }
-
-  .page-nav a:hover {
-    background-color: var(--code-bg);
-  }
-
-  .page-nav .prev {
-    margin-right: auto;
-  }
-
-  .page-nav .next {
-    margin-left: auto;
   }
 
   nav ul {

@@ -5,6 +5,7 @@
  */
 import DocsLayout from '../../../layouts/DocsLayout.astro';
 import LanguageSwitcher from '../../../components/LanguageSwitcher.astro';
+import PageNavigation from '../../../components/PageNavigation.astro';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -109,27 +110,13 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
 
   <article set:html={htmlContent} />
   
-  <nav class="page-navigation">
-    <div class="nav-links">
-      {prevPage ? (
-        <a href={`/en/cli/${prevPage.id === 'index' ? '' : prevPage.id + '/'}`} class="nav-link nav-prev">
-          <span class="nav-label">← Previous</span>
-          <span class="nav-title">{prevPage.data.title || prevPage.id}</span>
-        </a>
-      ) : (
-        <div class="nav-link nav-prev nav-disabled"></div>
-      )}
-      
-      {nextPage ? (
-        <a href={`/en/cli/${nextPage.id === 'index' ? '' : nextPage.id + '/'}`} class="nav-link nav-next">
-          <span class="nav-label">Next →</span>
-          <span class="nav-title">{nextPage.data.title || nextPage.id}</span>
-        </a>
-      ) : (
-        <div class="nav-link nav-next nav-disabled"></div>
-      )}
-    </div>
-  </nav>
+  <PageNavigation
+    prevPage={prevPage}
+    nextPage={nextPage}
+    basePath="/en/cli/"
+    prevLabel="← Previous"
+    nextLabel="Next →"
+  />
 </DocsLayout>
 
 <style>
@@ -143,64 +130,5 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
   nav li.active a {
     font-weight: bold;
     color: var(--color-primary, #0066cc);
-  }
-  
-  /* Page Navigation */
-  .page-navigation {
-    margin-top: 3rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--color-border, #e5e7eb);
-  }
-  
-  .nav-links {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
-  
-  .nav-link {
-    display: flex;
-    flex-direction: column;
-    padding: 1rem;
-    border: 1px solid var(--color-border, #e5e7eb);
-    border-radius: 8px;
-    text-decoration: none;
-    color: var(--color-text, #1f2937);
-    transition: border-color 0.2s, background-color 0.2s;
-  }
-  
-  .nav-link:not(.nav-disabled):hover {
-    border-color: var(--color-primary, #0066cc);
-    background-color: var(--color-bg-hover, #f9fafb);
-  }
-  
-  .nav-link.nav-disabled {
-    border: none;
-  }
-  
-  .nav-prev {
-    text-align: left;
-  }
-  
-  .nav-next {
-    text-align: right;
-  }
-  
-  .nav-label {
-    font-size: 0.875rem;
-    color: var(--color-primary, #0066cc);
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-  }
-  
-  .nav-title {
-    font-weight: 500;
-    color: var(--color-text, #1f2937);
-  }
-  
-  @media (max-width: 640px) {
-    .nav-links {
-      grid-template-columns: 1fr;
-    }
   }
 </style>
