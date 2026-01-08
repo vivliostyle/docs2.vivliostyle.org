@@ -83,41 +83,22 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
       })}
     </ul>
   </nav>
-  <main>
-    <h1>{title}</h1>
-    {description && <p class="description">{description}</p>}
-    <div class="content" set:html={htmlContent} />
-    <PageNavigation
-      prevPage={prevPage}
-      nextPage={nextPage}
-      basePath="/en/themes/"
-      prevLabel="← Previous"
-      nextLabel="Next →"
-    />
-  </main>
+
+  <article set:html={htmlContent} />
+  
+  <PageNavigation
+    prevPage={prevPage}
+    nextPage={nextPage}
+    basePath="/en/themes/"
+    prevLabel="← Previous"
+    nextLabel="Next →"
+  />
 </DocsLayout>
 
 <style>
   .language-switcher-container {
     padding: 1rem;
     border-bottom: 1px solid var(--border-color);
-  }
-
-  main {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 2rem;
-  }
-
-  h1 {
-    color: var(--text-color);
-    margin-bottom: 1rem;
-  }
-
-  .description {
-    color: var(--text-muted);
-    font-size: 1.1rem;
-    margin-bottom: 2rem;
   }
 
   .content {
