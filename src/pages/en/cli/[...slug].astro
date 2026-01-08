@@ -50,8 +50,7 @@ export async function getStaticPaths() {
 const { doc, cliDocs, hasJaTranslation } = Astro.props;
 const htmlContent = doc.rendered?.html || '';
 const title = doc.data?.title || 'CLI Documentation';
-const description = doc.data?.description || '';
-
+const description = doc.data?.description || '';const doctocToc = doc.data?.doctocToc; // doctoc TOC (if exists)
 // Sort by the order specified in index.md
 const pageOrder = [
   'index',
@@ -102,6 +101,10 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
             <a href={itemPath} aria-current={isActive ? 'page' : undefined}>
               {item.data.title || item.id}
             </a>
+            {/* If current page has doctocTOC, show it as submenu */}
+            {isActive && doctocToc && (
+              <div class="page-toc" set:html={doctocToc} />
+            )}
           </li>
         );
       })}

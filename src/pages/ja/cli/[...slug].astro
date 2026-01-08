@@ -64,6 +64,7 @@ const { doc, docId, cliDocs, hasEnTranslation } = Astro.props;
 const htmlContent = doc.rendered?.html || '';
 const title = doc.data?.title || 'CLI ドキュメント';
 const description = doc.data?.description || '';
+const doctocToc = doc.data?.doctocToc; // doctoc TOC（存在する場合）
 
 // index.mdに記載されている順番でソート
 const pageOrder = [
@@ -135,6 +136,10 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
             <a href={itemPath} aria-current={isActive ? 'page' : undefined}>
               {item.data.title || itemId}
             </a>
+            {/* 現在のページでdoctocTOCがある場合は、そのページのサブメニューとして表示 */}
+            {isActive && doctocToc && (
+              <div class="page-toc" set:html={doctocToc} />
+            )}
           </li>
         );
       })}

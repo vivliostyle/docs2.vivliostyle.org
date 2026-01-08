@@ -153,14 +153,14 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
             const { data: frontmatter, content: markdownBody } = matter(content);
             logger.debug(`VFM Loader [${lang}]: Extracted frontmatter and markdown body for file: ${filePath}`);
 
-            // doctoc生成TOCを抽出（<!-- START doctoc generated TOC --> ... <!-- END doctoc generated TOC --> の部分）
+            // doctoc生成TOCを抽出（<!-- START doctoc generated TOC ... --> ... <!-- END doctoc generated TOC --> の部分）
             let doctocToc: string | undefined;
             let processedMarkdownBody = markdownBody;
-            const doctocMatch = markdownBody.match(/<!-- START doctoc generated TOC -->\s*\n([\s\S]*?)\n<!-- END doctoc generated TOC -->/);
+            const doctocMatch = markdownBody.match(/<!-- START doctoc generated TOC[^\n]*-->\s*\n([\s\S]*?)\n<!-- END doctoc generated TOC[^\n]*-->/);
             if (doctocMatch) {
               doctocToc = doctocMatch[1].trim();
               // TOC部分をMarkdownから削除
-              processedMarkdownBody = markdownBody.replace(/<!-- START doctoc generated TOC -->\s*\n[\s\S]*?\n<!-- END doctoc generated TOC -->\s*\n?/, '');
+              processedMarkdownBody = markdownBody.replace(/<!-- START doctoc generated TOC[^\n]*-->\s*\n[\s\S]*?\n<!-- END doctoc generated TOC[^\n]*-->\s*\n?/, '');
             }
 
             // markdownBodyから最初の見出し（H1またはH2）をタイトルとして抽出

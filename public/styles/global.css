@@ -346,3 +346,40 @@ body {
     margin-top: 50mm;
   }
 }
+
+/* ==========================================================================
+   Sidebar TOC Styles - サイドバーのdoctoc目次スタイル（Web専用）
+   ========================================================================== */
+
+@media screen {
+  .page-toc {
+    margin-top: 0.75rem;
+    margin-left: 0.5rem;
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .page-toc ul {
+    list-style: none;
+    padding-left: 0.75rem;
+    margin: 0.25rem 0;
+  }
+
+  .page-toc li {
+    margin: 0.25rem 0;
+  }
+
+  .page-toc a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .page-toc a:hover {
+    color: var(--color-primary);
+  }
+
+  .page-toc ul ul {
+    padding-left: 1rem;
+  }
+}
