@@ -226,6 +226,8 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
                 const productName = productMatch[1]; // cli, themes, vfm など
                 html = html.replace(/src="\.\.\/assets\//g, `src="/${productName}/assets/`);
                 html = html.replace(/src="\.\/assets\//g, `src="/${productName}/assets/`);
+                // vivliostyle.js (viewer) の場合: ../../assets/ -> /viewer/assets/
+                html = html.replace(/src="\.\.\/\.\.\/assets\//g, `src="/${productName}/assets/`);
                 // VFMなど、docsディレクトリ直下に画像がある場合も対応
                 // ./image.svg -> /vfm/assets/image.svg
                 html = html.replace(/src="\.\/([^/]+\.(svg|png|jpg|jpeg|gif|webp))"/g, `src="/${productName}/assets/$1"`);
