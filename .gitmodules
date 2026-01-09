@@ -7,3 +7,6 @@
 [submodule "submodules/vfm"]
 	path = submodules/vfm
 	url = https://github.com/vivliostyle/vfm.git
+[submodule "submodules/vivliostyle.js"]
+	path = submodules/vivliostyle.js
+	url = https://github.com/vivliostyle/vivliostyle.js.git
