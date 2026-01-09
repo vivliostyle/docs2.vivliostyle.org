@@ -165,8 +165,8 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
               processedMarkdownBody = markdownBody.replace(/<!-- START doctoc generated TOC[^\n]*-->\s*\n[\s\S]*?\n<!-- END doctoc generated TOC[^\n]*-->\s*\n?/, '');
             } else {
               // doctocマーカーがない場合、「## 目次」または「## Table of Contents」セクションを探す
-              // セクション開始から次のH2セクションまたは文書の終わりまでを抽出
-              const manualTocMatch = markdownBody.match(/##\s+(目次|Table of Contents|Contents)\s*\n([\s\S]*?)(?=\n##\s+|$)/m);
+              // セクション開始から次のH2セクションまでを抽出
+              const manualTocMatch = markdownBody.match(/##\s+(目次|Table of Contents|Contents)\s*\n([\s\S]*?)(?=\n##\s)/m);
               if (manualTocMatch) {
                 // 説明文とリストを含む全体から、リスト部分のみを抽出
                 const tocContent = manualTocMatch[2];
@@ -176,7 +176,7 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
                   doctocToc = listMatch[1].trim();
                 }
                 // TOC部分をMarkdownから削除（見出しと内容全体）
-                processedMarkdownBody = markdownBody.replace(/##\s+(目次|Table of Contents|Contents)\s*\n[\s\S]*?(?=\n##\s+|$)/m, '');
+                processedMarkdownBody = markdownBody.replace(/##\s+(目次|Table of Contents|Contents)\s*\n[\s\S]*?(?=\n##\s)/m, '');
               }
             }
 
