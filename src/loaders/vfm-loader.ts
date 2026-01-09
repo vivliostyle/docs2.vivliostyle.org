@@ -170,9 +170,10 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
               if (manualTocMatch) {
                 // 説明文とリストを含む全体から、リスト部分のみを抽出
                 const tocContent = manualTocMatch[2];
-                const listMatch = tocContent.match(/- .*\n(?:(?:  - .*\n)|(?:- .*\n))*/);
+                // 空行や説明文を考慮して、最初のリスト項目から最後のリスト項目までを抽出
+                const listMatch = tocContent.match(/^(?:.*\n)*?(- .*(?:\n(?:  - .*|- .*))*)/m);
                 if (listMatch) {
-                  doctocToc = listMatch[0].trim();
+                  doctocToc = listMatch[1].trim();
                 }
                 // TOC部分をMarkdownから削除（見出しと内容全体）
                 processedMarkdownBody = markdownBody.replace(/##\s+(目次|Table of Contents|Contents)\s*\n[\s\S]*?(?=\n##\s+|$)/m, '');
