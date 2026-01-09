@@ -1,0 +1,239 @@
+---
+/**
+ * Vivliostyle Reference Pages (English)
+ * Dynamic routing: matches /en/reference/*
+ */
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import LanguageSwitcher from '../../../components/LanguageSwitcher.astro';
+import PageNavigation from '../../../components/PageNavigation.astro';
+import TableOfContents from '../../../components/TableOfContents.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const referenceDocs = await getCollection('vivliostyle-reference-en');
+  const referenceDocsJa = await getCollection('vivliostyle-reference-ja');
+  
+  // CLI、Themes、VFMのContributingドキュメントも取得
+  const cliContributing = await getCollection('vivliostyle-cli-contributing-en');
+  const themesContributing = await getCollection('vivliostyle-themes-contributing-en');
+  const vfmContributing = await getCollection('vivliostyle-vfm-contributing-en');
+  
+  // 日本語版に存在するIDのセットを作成
+  const jaIds = new Set(referenceDocsJa.map(d => d.id));
+
+  const paths = [];
+  
+  // 通常のリファレンスドキュメント
+  referenceDocs.forEach(doc => {
+    paths.push({
+      params: { slug: doc.id },
+      props: { 
+        doc, 
+        referenceDocs,
+        hasJaTranslation: jaIds.has(doc.id),
+        isContributing: false,
+      },
+    });
+  });
+  
+  // CLI Contributing
+  cliContributing.forEach(doc => {
+    paths.push({
+      params: { slug: 'contributing-cli' },
+      props: {
+        doc: {
+          ...doc,
+          id: 'contributing-cli',
+          data: {
+            ...doc.data,
+            title: doc.data?.title || 'Vivliostyle CLI Contribution Guide',
+          },
+        },
+        referenceDocs,
+        hasJaTranslation: true,
+        isContributing: true,
+      },
+    });
+  });
+  
+  // Themes Contributing
+  themesContributing.forEach(doc => {
+    paths.push({
+      params: { slug: 'contributing-themes' },
+      props: {
+        doc: {
+          ...doc,
+          id: 'contributing-themes',
+          data: {
+            ...doc.data,
+            title: doc.data?.title || 'Vivliostyle Themes Contribution Guide',
+          },
+        },
+        referenceDocs,
+        hasJaTranslation: true,
+        isContributing: true,
+      },
+    });
+  });
+  
+  // VFM Contributing
+  vfmContributing.forEach(doc => {
+    paths.push({
+      params: { slug: 'contributing-vfm' },
+      props: {
+        doc: {
+          ...doc,
+          id: 'contributing-vfm',
+          data: {
+            ...doc.data,
+            title: doc.data?.title || 'VFM Contribution Guide',
+          },
+        },
+        referenceDocs,
+        hasJaTranslation: true,
+        isContributing: true,
+      },
+    });
+  });
+
+  return paths;
+}
+
+const { doc, referenceDocs, hasJaTranslation, isContributing } = Astro.props;
+const htmlContent = doc.rendered?.html || '';
+const title = doc.data?.title || 'Vivliostyle Reference';
+const description = doc.data?.description || '';
+const doctocToc = doc.data?.doctocToc; // doctoc TOC if exists
+
+// Generate table of contents from headings
+const headings = doc.data?.headings || [];
+
+// Define page order (match index.md order)
+const pageOrder = [
+  'supported-css-features',
+  'api',
+  'contribution-guide',
+  'contributing-cli',
+  'contributing-vfm',
+  'contributing-themes',
+];
+
+// Combine all documents (reference docs + contributing pages)
+const allDocs = [
+  ...referenceDocs,
+  // Add virtual documents for contributing pages (for navigation)
+  { id: 'contributing-cli', data: { title: 'Vivliostyle CLI Contribution Guide' } },
+  { id: 'contributing-vfm', data: { title: 'VFM Contribution Guide' } },
+  { id: 'contributing-themes', data: { title: 'Vivliostyle Themes Contribution Guide' } },
+];
+
+const sortedDocs = allDocs.sort((a, b) => {
+  const indexA = pageOrder.indexOf(a.id);
+  const indexB = pageOrder.indexOf(b.id);
+  // Place items not in pageOrder at the end
+  if (indexA === -1 && indexB === -1) return a.id.localeCompare(b.id);
+  if (indexA === -1) return 1;
+  if (indexB === -1) return -1;
+  return indexA - indexB;
+});
+
+// Get current page index
+const currentIndex = sortedDocs.findIndex(d => d.id === doc.id);
+const prevPage = currentIndex > 0 ? sortedDocs[currentIndex - 1] : null;
+const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex + 1] : null;
+---
+
+<DocsLayout 
+  title={title} 
+  description={description}
+  lang="en"
+  section="reference"
+>
+  <!-- Language switcher in header -->
+  {hasJaTranslation && (
+    <div slot="header">
+      <LanguageSwitcher 
+        currentLang="en" 
+        pagePath={`/reference/${doc.id}`}
+        hasTranslation={hasJaTranslation}
+      />
+    </div>
+  )}
+
+  <!-- Table of contents in sidebar -->
+  <TableOfContents slot="sidebar" headings={headings} />
+
+  <!-- Main content -->
+  <article class="docs-content">
+    <h1>{title}</h1>
+    
+    <!-- Display doctoc TOC if exists -->
+    {doctocToc && (
+      <div class="toc" set:html={doctocToc}></div>
+    )}
+    
+    <div set:html={htmlContent}></div>
+  </article>
+
+  <!-- Page navigation -->
+  <PageNavigation
+    prevPage={prevPage}
+    nextPage={nextPage}
+    basePath="/en/reference"
+    prevLabel="← Previous"
+    nextLabel="Next →"
+  />
+</DocsLayout>
+
+<style>
+  .docs-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .docs-content h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--color-text);
+    border-bottom: 2px solid var(--color-border);
+    padding-bottom: 0.5rem;
+  }
+
+  .toc {
+    background: var(--color-background-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .toc :global(ul) {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  .toc :global(li) {
+    margin: 0.5rem 0;
+  }
+
+  .toc :global(a) {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
+  .toc :global(a:hover) {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .docs-content {
+      padding: 1rem;
+    }
+
+    .docs-content h1 {
+      font-size: 2rem;
+    }
+  }
+</style>

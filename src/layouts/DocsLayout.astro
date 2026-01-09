@@ -33,10 +33,11 @@ const { title, description = '', lang = 'en' } = Astro.props;
           <span class="logo-text">Vivliostyle Docs</span>
         </a>
         <nav class="header-nav">
+          <a href={`/${lang}/viewer/`}>Viewer</a>
           <a href={`/${lang}/cli/`}>CLI</a>
           <a href={`/${lang}/vfm/`}>VFM</a>
           <a href={`/${lang}/themes/`}>Themes</a>
-          <a href={`/${lang}/viewer/`}>Viewer</a>
+          <a href={`/${lang}/reference/`}>{lang === 'ja' ? 'リファレンス' : 'Reference'}</a>
         </nav>
         <div class="lang-switcher">
           <slot name="header" />

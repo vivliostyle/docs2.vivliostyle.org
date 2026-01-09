@@ -16,19 +16,23 @@ interface Props {
 
 const { headings } = Astro.props;
 
-// 目次に表示するのは h2 から h3 まで
-const tocHeadings = headings.filter(h => h.depth >= 2 && h.depth <= 3);
+// 目次に表示するのは h2 から h3 まで（有効なslugを持つもののみ）
+const tocHeadings = (headings || []).filter(h => h && h.slug && h.depth >= 2 && h.depth <= 3);
 ---
 
 {tocHeadings.length > 0 && (
   <nav class="toc" role="doc-toc" aria-label="目次">
     <h2 class="toc-title">目次</h2>
     <ul class="toc-list">
-      {tocHeadings.map((heading) => (
-        <li class={`toc-item toc-level-${heading.depth}`}>
-          <a href={`#${heading.slug}`}>{heading.text}</a>
-        </li>
-      ))}
+      {tocHeadings.map((heading) => {
+        const slug = heading.slug || '';
+        const text = heading.text || '';
+        return (
+          <li class={`toc-item toc-level-${heading.depth}`}>
+            <a href={`#${slug}`} set:html={text}></a>
+          </li>
+        );
+      })}
     </ul>
   </nav>
 )}

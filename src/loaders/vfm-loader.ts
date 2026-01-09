@@ -255,19 +255,13 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
               html = html.replace(/href="\.\.\/([^"]+)\.md"/g, 'href="../$1/"');
             }
 
-            // Markdownから見出しを抽出（h2, h3）
+            // HTMLから見出しを抽出（h2, h3）
             const headings: Array<{ depth: number; slug: string; text: string }> = [];
-            const headingMatches = processedMarkdownBody.matchAll(/^(#{2,3})\s+(.+)$/gm);
+            const headingMatches = html.matchAll(/<h([23])[^>]*id="([^"]+)"[^>]*>(.*?)<\/h\1>/gi);
             for (const match of headingMatches) {
-              const depth = match[1].length; // ## = 2, ### = 3
-              const text = match[2].trim();
-              // スラッグを生成（小文字化、スペースをハイフンに、特殊文字削除）
-              const slug = text
-                .toLowerCase()
-                .replace(/[^\w\s\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FFF-]/g, '') // 英数字、日本語、ハイフンのみ保持
-                .replace(/\s+/g, '-') // スペースをハイフンに
-                .replace(/-+/g, '-') // 連続ハイフンを1つに
-                .replace(/^-|-$/g, ''); // 先頭・末尾のハイフンを削除
+              const depth = parseInt(match[1], 10); // 2 or 3
+              const slug = match[2];
+              const text = match[3].trim(); // すでにHTMLなのでそのまま使用
               
               if (slug) {
                 headings.push({ depth, slug, text });
