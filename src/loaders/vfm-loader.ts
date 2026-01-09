@@ -227,7 +227,7 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
                 html = html.replace(/src="\.\/assets\//g, `src="/${productName}/assets/`);
                 // VFMなど、docsディレクトリ直下に画像がある場合も対応
                 // ./image.svg -> /vfm/assets/image.svg
-                html = html.replace(/src="\.\/([^/]+\.(svg|png|jpg|jpeg|gif|webp))"/gi, `src="/${productName}/assets/$1"`);
+                html = html.replace(/src="\.\/([^/]+\.(svg|png|jpg|jpeg|gif|webp))"/g, `src="/${productName}/assets/$1"`);
               }
             }
             
