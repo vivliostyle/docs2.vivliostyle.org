@@ -94,6 +94,23 @@ body {
   background-color: var(--color-bg);
 }
 
+/* 丸付き数字（❶❷❸❹❺❻❼❽❾❿）のフォント指定
+ * Unicode範囲: U+2776-277F (黒背景丸付き数字 1-10)
+ * これらの文字を Noto Sans JP で表示するように強制
+ */
+@font-face {
+  font-family: "Fallback JP";
+  font-style: normal;
+  font-weight: 400;
+  src: local("Noto Sans JP"), local("Noto Sans CJK JP");
+  unicode-range: U+2776-277F;
+}
+
+body {
+  /* フォールバック用のフォントファミリーを追加 */
+  font-family: "Fallback JP", var(--font-sans);
+}
+
 /* ==========================================================================
    Typography - 文章スタイル（SSMO共通）
    ========================================================================== */
