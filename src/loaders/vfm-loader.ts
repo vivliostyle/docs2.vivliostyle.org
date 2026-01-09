@@ -22,6 +22,8 @@ export interface VFMLoaderOptions {
   excludeDirs?: string[];
   /** 含めるファイルパターン（正規表現、ベースディレクトリからの相対パスにマッチ） */
   includePattern?: RegExp;
+  /** コレクション名 */
+  collectionName?: string;
 }
 
 interface DocEntry {

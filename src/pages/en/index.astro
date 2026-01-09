@@ -16,7 +16,7 @@ try {
   
   // デバッグ: すべてのドキュメントIDを表示
   docs.forEach(doc => {
-    console.log('Doc ID:', doc.id, 'Slug:', doc.slug);
+    console.log('Doc ID:', doc.id);
   });
   
   indexDoc = docs.find(doc => doc.id === 'en/index' || doc.id.endsWith('/index') || doc.id === 'index');
