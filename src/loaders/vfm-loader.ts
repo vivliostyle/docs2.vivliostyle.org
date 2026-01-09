@@ -163,6 +163,20 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
               doctocToc = doctocMatch[1].trim();
               // TOC部分をMarkdownから削除
               processedMarkdownBody = markdownBody.replace(/<!-- START doctoc generated TOC[^\n]*-->\s*\n[\s\S]*?\n<!-- END doctoc generated TOC[^\n]*-->\s*\n?/, '');
+            } else {
+              // doctocマーカーがない場合、「## 目次」または「## Table of Contents」セクションを探す
+              // セクション開始から次のH2セクションまでを抽出
+              const manualTocMatch = markdownBody.match(/##\s+(目次|Table of Contents|Contents)\s*\n([\s\S]*?)(?=\n##\s+)/m);
+              if (manualTocMatch) {
+                // 説明文とリストを含む全体から、リスト部分のみを抽出
+                const tocContent = manualTocMatch[2];
+                const listMatch = tocContent.match(/- .*\n(?:(?:  - .*\n)|(?:- .*\n))*/);
+                if (listMatch) {
+                  doctocToc = listMatch[0].trim();
+                }
+                // TOC部分をMarkdownから削除（見出しと内容全体）
+                processedMarkdownBody = markdownBody.replace(/##\s+(目次|Table of Contents|Contents)\s*\n[\s\S]*?(?=\n##\s+)/m, '');
+              }
             }
 
             // markdownBodyから最初の見出し（H1またはH2）をタイトルとして抽出
@@ -201,7 +215,7 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
 
             // HTMLのリンクと画像パスを修正
             
-            // 1. 画像パスを修正: ../assets/ -> /{product}/assets/
+            // 1. 画像パスを修正: ../assets/ -> /{product}/assets/, ./image.svg -> /{product}/assets/image.svg
             // すべてのsubmoduleドキュメントで docs/assets に画像を格納する前提
             // collectionNameから製品名を抽出して適切なパスに変換
             // 例: vivliostyle-cli-en → /cli/assets/, vivliostyle-themes-ja → /themes/assets/
@@ -211,6 +225,9 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
                 const productName = productMatch[1]; // cli, themes, vfm など
                 html = html.replace(/src="\.\.\/assets\//g, `src="/${productName}/assets/`);
                 html = html.replace(/src="\.\/assets\//g, `src="/${productName}/assets/`);
+                // VFMなど、docsディレクトリ直下に画像がある場合も対応
+                // ./image.svg -> /vfm/assets/image.svg
+                html = html.replace(/src="\.\/([^/]+\.(svg|png|jpg|jpeg|gif|webp))"/gi, `src="/${productName}/assets/$1"`);
               }
             }
             

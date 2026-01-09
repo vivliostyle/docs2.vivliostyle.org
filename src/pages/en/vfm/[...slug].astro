@@ -17,9 +17,9 @@ export async function getStaticPaths() {
 
   return vfmDocs.map(doc => {
     // [...slug]パターンでは文字列でslugを渡す
-    // indexの場合はundefinedでルートパス（/en/vfm/）に
+    // READMEの場合はundefinedでルートパス（/en/vfm/）に
     // それ以外はdoc.idをそのまま渡す
-    const slug = doc.id === 'index' ? undefined : doc.id;
+    const slug = doc.id === 'README' ? undefined : doc.id;
 
     return {
       params: { slug },
@@ -54,7 +54,7 @@ const sortedDocs = [...vfmDocs].sort((a, b) => {
   return orderA - orderB;
 });
 
-// 現在のページパス
+// 現在のページパス（READMEはルートパス）
 const currentPath = doc.id === 'README' ? '/en/vfm/' : `/en/vfm/${doc.id}/`;
 const pagePath = doc.id === 'README' ? '/vfm/' : `/vfm/${doc.id}/`;
 
