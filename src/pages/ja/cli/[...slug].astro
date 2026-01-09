@@ -6,6 +6,7 @@
 import DocsLayout from '../../../layouts/DocsLayout.astro';
 import LanguageSwitcher from '../../../components/LanguageSwitcher.astro';
 import PageNavigation from '../../../components/PageNavigation.astro';
+import TableOfContents from '../../../components/TableOfContents.astro';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -65,6 +66,9 @@ const htmlContent = doc.rendered?.html || '';
 const title = doc.data?.title || 'CLI ドキュメント';
 const description = doc.data?.description || '';
 const doctocToc = doc.data?.doctocToc; // doctoc TOC（存在する場合）
+
+// 見出しから目次を生成
+const headings = doc.data?.headings || [];
 
 // index.mdに記載されている順番でソート
 const pageOrder = [
@@ -144,6 +148,13 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
         );
       })}
     </ul>
+    
+    <!-- ページ内目次 -->
+    {headings.length > 0 && (
+      <div class="page-table-of-contents">
+        <TableOfContents headings={headings} />
+      </div>
+    )}
   </nav>
 
   <article set:html={htmlContent} />

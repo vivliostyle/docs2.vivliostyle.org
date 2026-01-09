@@ -6,6 +6,7 @@
 import DocsLayout from '../../../layouts/DocsLayout.astro';
 import LanguageSwitcher from '../../../components/LanguageSwitcher.astro';
 import PageNavigation from '../../../components/PageNavigation.astro';
+import TableOfContents from '../../../components/TableOfContents.astro';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -37,6 +38,9 @@ const title = doc.data?.title || 'Vivliostyle.js ドキュメント';
 const description = doc.data?.description || '';
 const doctocToc = doc.data?.doctocToc; // doctoc TOC（存在する場合）
 
+// 見出しから目次を生成
+const headings = doc.data?.headings || [];
+
 // ページの順序を定義
 const pageOrder = [
   'vivliostyle-viewer',
@@ -67,6 +71,9 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
   lang="ja"
   section="viewer"
 >
+  <!-- サイドバーに目次を表示 -->
+  <TableOfContents slot="sidebar" headings={headings} />
+
   <!-- 言語切り替え -->
   {hasEnTranslation && (
     <div class="language-switcher-container">
