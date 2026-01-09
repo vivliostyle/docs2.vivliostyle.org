@@ -4,3 +4,6 @@
 [submodule "submodules/themes"]
 	path = submodules/themes
 	url = https://github.com/vivliostyle/themes.git
+[submodule "submodules/vfm"]
+	path = submodules/vfm
+	url = https://github.com/vivliostyle/vfm.git

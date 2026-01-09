@@ -1,0 +1,114 @@
+---
+/**
+ * VFM ドキュメントページ（日本語版）
+ * 動的ルーティング: /ja/vfm/* にマッチ
+ */
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import LanguageSwitcher from '../../../components/LanguageSwitcher.astro';
+import PageNavigation from '../../../components/PageNavigation.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const vfmDocs = await getCollection('vivliostyle-vfm-ja');
+  const vfmDocsEn = await getCollection('vivliostyle-vfm-en');
+  
+  // 英語版に存在するIDのセットを作成
+  const enIds = new Set(vfmDocsEn.map(d => d.id));
+
+  return vfmDocs.map(doc => {
+    // [...slug]パターンでは文字列でslugを渡す
+    // indexの場合はundefinedでルートパス（/ja/vfm/）に
+    // それ以外はdoc.idをそのまま渡す
+    const slug = doc.id === 'README' ? undefined : doc.id;
+
+    return {
+      params: { slug },
+      props: { 
+        doc, 
+        vfmDocs,
+        hasEnTranslation: enIds.has(doc.id)
+      },
+    };
+  });
+}
+
+const { doc, vfmDocs, hasEnTranslation } = Astro.props;
+const htmlContent = doc.rendered?.html || '';
+const title = doc.data?.title || 'VFM ドキュメント';
+const description = doc.data?.description || '';
+const doctocToc = doc.data?.doctocToc; // doctoc TOC（存在する場合）
+
+// ページの順序を定義（README.md → その他のドキュメント）
+const pageOrder = [
+  'README',
+  'vfm',
+  'hooks',
+];
+
+const sortedDocs = [...vfmDocs].sort((a, b) => {
+  const indexA = pageOrder.indexOf(a.id);
+  const indexB = pageOrder.indexOf(b.id);
+  // リストにないアイテムは最後に配置
+  const orderA = indexA === -1 ? 999 : indexA;
+  const orderB = indexB === -1 ? 999 : indexB;
+  return orderA - orderB;
+});
+
+// 現在のページパス
+const currentPath = doc.id === 'README' ? '/ja/vfm/' : `/ja/vfm/${doc.id}/`;
+const pagePath = doc.id === 'README' ? '/vfm/' : `/vfm/${doc.id}/`;
+
+// 前/次のナビゲーション
+const currentIndex = sortedDocs.findIndex(item => item.id === doc.id);
+const prevPage = currentIndex > 0 ? sortedDocs[currentIndex - 1] : null;
+const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex + 1] : null;
+---
+
+<DocsLayout title={title} description={description} lang="ja">
+  <div slot="header" class="language-switcher-container">
+    <LanguageSwitcher currentLang="ja" pagePath={pagePath} hasTranslation={hasEnTranslation} />
+  </div>
+  <nav slot="sidebar">
+    <h3>VFM ドキュメント</h3>
+    <ul>
+      <li><a href="/ja/">← ホームに戻る</a></li>
+      {sortedDocs.map(item => {
+        const itemPath = item.id === 'README' ? '/ja/vfm/' : `/ja/vfm/${item.id}/`;
+        const isActive = itemPath === currentPath;
+        return (
+          <li class:list={[{ active: isActive }]}>
+            <a href={itemPath}>{item.data.title || item.id}</a>
+            {/* 現在のページでdoctocTOCがある場合は、そのページのサブメニューとして表示 */}
+            {isActive && doctocToc && (
+              <div class="page-toc" set:html={doctocToc} />
+            )}
+          </li>
+        );
+      })}
+    </ul>
+  </nav>
+
+  <article set:html={htmlContent} />
+  
+  <PageNavigation
+    prevPage={prevPage}
+    nextPage={nextPage}
+    basePath="/ja/vfm/"
+    prevLabel="← 前へ"
+    nextLabel="次へ →"
+  />
+</DocsLayout>
+
+<style>
+  nav ul {
+    list-style: none;
+    padding: 0;
+  }
+  nav li {
+    margin: 0.5rem 0;
+  }
+  nav li.active a {
+    font-weight: bold;
+    color: var(--color-primary, #0066cc);
+  }
+</style>

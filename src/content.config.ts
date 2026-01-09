@@ -83,6 +83,27 @@ const themesDocsJa = defineCollection({
   schema: docsSchema,
 });
 
+// VFM ドキュメント（英語）
+const vfmDocsEn = defineCollection({
+  loader: vfmLoader({
+    base: 'submodules/vfm/docs',
+    lang: 'en',
+    excludeDirs: ['ja'], // 日本語ディレクトリを除外
+    collectionName: 'vivliostyle-vfm-en',
+  }),
+  schema: docsSchema,
+});
+
+// VFM ドキュメント（日本語）
+const vfmDocsJa = defineCollection({
+  loader: vfmLoader({
+    base: 'submodules/vfm/docs/ja',
+    lang: 'ja',
+    collectionName: 'vivliostyle-vfm-ja',
+  }),
+  schema: docsSchema,
+});
+
 export const collections = {
   'docs-en': docsEn,
   'docs-ja': docsJa,
@@ -90,4 +111,6 @@ export const collections = {
   'vivliostyle-cli-ja': cliDocsJa,
   'vivliostyle-themes-en': themesDocsEn,
   'vivliostyle-themes-ja': themesDocsJa,
+  'vivliostyle-vfm-en': vfmDocsEn,
+  'vivliostyle-vfm-ja': vfmDocsJa,
 };
