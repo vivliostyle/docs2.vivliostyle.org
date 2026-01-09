@@ -70,12 +70,9 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
   lang="en"
   section="viewer"
 >
-  <!-- サイドバーに目次を表示 -->
-  <TableOfContents slot="sidebar" headings={headings} />
-
-  <!-- 言語切り替え -->
+  <!-- ヘッダーに言語切り替え -->
   {hasJaTranslation && (
-    <div class="language-switcher-container">
+    <div slot="header" class="language-switcher-container">
       <LanguageSwitcher 
         currentLang="en" 
         pagePath={`/viewer/${doc.id}`}
@@ -83,6 +80,9 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
       />
     </div>
   )}
+
+  <!-- サイドバーに目次を表示 -->
+  <TableOfContents slot="sidebar" headings={headings} />
 
   <!-- メインコンテンツ -->
   <article class="docs-content">
@@ -107,10 +107,6 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
 </DocsLayout>
 
 <style>
-  .language-switcher-container {
-    margin-bottom: 2rem;
-  }
-
   .docs-content {
     max-width: 800px;
     margin: 0 auto;
