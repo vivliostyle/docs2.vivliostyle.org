@@ -20,6 +20,9 @@ const { title, description = '', lang = 'en' } = Astro.props;
   <meta name="description" content={description}>
   <title>{title} | Vivliostyle Documentation</title>
   <link rel="stylesheet" href="/styles/global.css">
+  <!-- Prism.js syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" media="(prefers-color-scheme: light)">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" media="(prefers-color-scheme: dark)">
 </head>
 <body>
   <div class="layout">
