@@ -78,7 +78,8 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
     <div class="language-switcher-container">
       <LanguageSwitcher 
         currentLang="en" 
-        alternateUrl={`/ja/viewer/${doc.id}`}
+        pagePath={`/viewer/${doc.id}`}
+        hasTranslation={hasJaTranslation}
       />
     </div>
   )}
