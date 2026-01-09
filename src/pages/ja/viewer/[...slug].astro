@@ -36,7 +36,7 @@ const { doc, viewerDocs, hasEnTranslation } = Astro.props;
 const htmlContent = doc.rendered?.html || '';
 const title = doc.data?.title || 'Vivliostyle.js ドキュメント';
 const description = doc.data?.description || '';
-const doctocToc = doc.data?.doctocToc; // doctoc TOC（存在する場合）
+const extractedToc = doc.data?.extractedToc; // 抽出したTOC（存在する場合）
 
 // 見出しから目次を生成
 const headings = doc.data?.headings || [];
@@ -89,9 +89,9 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
   <article class="docs-content">
     <h1>{title}</h1>
     
-    <!-- doctoc TOCが存在する場合は表示 -->
-    {doctocToc && (
-      <div class="toc" set:html={doctocToc}></div>
+    <!-- 抽出したTOCが存在する場合は表示 -->
+    {extractedToc && (
+      <div class="toc" set:html={extractedToc}></div>
     )}
     
     <div set:html={htmlContent}></div>

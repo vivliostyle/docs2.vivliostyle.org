@@ -22,7 +22,7 @@ export interface VFMLoaderOptions {
   excludeDirs?: string[];
   /** 含めるファイルパターン（正規表現、ベースディレクトリからの相対パスにマッチ） */
   includePattern?: RegExp;
-  /** コレクション名 */
+  /** コレクション名（画像パス変換に使用。例: vivliostyle-cli-en → cli） */
   collectionName?: string;
 }
 
@@ -156,11 +156,11 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
             logger.debug(`VFM Loader [${lang}]: Extracted frontmatter and markdown body for file: ${filePath}`);
 
             // doctoc生成TOCを抽出（<!-- START doctoc generated TOC ... --> ... <!-- END doctoc generated TOC --> の部分）
-            let doctocToc: string | undefined;
+            let extractedToc: string | undefined;
             let processedMarkdownBody = markdownBody;
             const doctocMatch = markdownBody.match(/<!-- START doctoc generated TOC[^\n]*-->\s*\n([\s\S]*?)\n<!-- END doctoc generated TOC[^\n]*-->/);
             if (doctocMatch) {
-              doctocToc = doctocMatch[1].trim();
+              extractedToc = doctocMatch[1].trim();
               // TOC部分をMarkdownから削除
               processedMarkdownBody = markdownBody.replace(/<!-- START doctoc generated TOC[^\n]*-->\s*\n[\s\S]*?\n<!-- END doctoc generated TOC[^\n]*-->\s*\n?/, '');
             } else {
@@ -173,7 +173,7 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
                 // 空行や説明文を考慮して、最初のリスト項目から最後のリスト項目までを抽出
                 const listMatch = tocContent.match(/^(?:.*\n)*?(- .*(?:\n(?:  - .*|- .*))*)/m);
                 if (listMatch) {
-                  doctocToc = listMatch[1].trim();
+                  extractedToc = listMatch[1].trim();
                 }
                 // TOC部分をMarkdownから削除（見出しと内容全体）
                 processedMarkdownBody = markdownBody.replace(/##\s+(目次|Table of Contents|Contents)\s*\n[\s\S]*?(?=\n##\s)/m, '');
@@ -202,10 +202,10 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
             }
 
             // doctoc TOCをHTMLに変換（存在する場合）
-            let doctocTocHtml: string | undefined;
-            if (doctocToc) {
+            let extractedTocHtml: string | undefined;
+            if (extractedToc) {
               try {
-                doctocTocHtml = stringify(doctocToc, {
+                extractedTocHtml = stringify(extractedToc, {
                   hardLineBreaks: false,
                   disableFormatHtml: false,
                 });
@@ -279,7 +279,7 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
                 ...frontmatter,
                 lang: lang || frontmatter.lang || 'en',
                 title: frontmatter.title || headingTitle || basename(slug),
-                doctocToc: doctocTocHtml, // doctoc TOCをデータに追加
+                extractedToc: extractedTocHtml, // 抽出したTOCをデータに追加
                 headings, // 見出しデータを追加
               },
               rendered: {

@@ -37,7 +37,7 @@ const { doc, vfmDocs, hasJaTranslation } = Astro.props;
 const htmlContent = doc.rendered?.html || '';
 const title = doc.data?.title || 'VFM Documentation';
 const description = doc.data?.description || '';
-const doctocToc = doc.data?.doctocToc; // doctoc TOC (if exists)
+const extractedToc = doc.data?.extractedToc; // extracted TOC (if exists)
 const headings = doc.data?.headings || [];
 
 // ページの順序を定義（README.md → その他のドキュメント）
@@ -81,9 +81,9 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
         return (
           <li class:list={[{ active: isActive }]}>
             <a href={itemPath}>{item.data.title || item.id}</a>
-            {/* If current page has doctocTOC, show it as submenu */}
-            {isActive && doctocToc && (
-              <div class="page-toc" set:html={doctocToc} />
+            {/* If current page has extractedTOC, show it as submenu */}
+            {isActive && extractedToc && (
+              <div class="page-toc" set:html={extractedToc} />
             )}
           </li>
         );

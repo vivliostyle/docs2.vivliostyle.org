@@ -103,7 +103,7 @@ const { doc, referenceDocs, hasJaTranslation, isContributing } = Astro.props;
 const htmlContent = doc.rendered?.html || '';
 const title = doc.data?.title || 'Vivliostyle Reference';
 const description = doc.data?.description || '';
-const doctocToc = doc.data?.doctocToc; // doctoc TOC if exists
+const extractedToc = doc.data?.extractedToc; // extracted TOC if exists
 
 // Generate table of contents from headings
 const headings = doc.data?.headings || [];
@@ -167,9 +167,9 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
   <article class="docs-content">
     <h1>{title}</h1>
     
-    <!-- Display doctoc TOC if exists -->
-    {doctocToc && (
-      <div class="toc" set:html={doctocToc}></div>
+    <!-- Display extracted TOC if exists -->
+    {extractedToc && (
+      <div class="toc" set:html={extractedToc}></div>
     )}
     
     <div set:html={htmlContent}></div>

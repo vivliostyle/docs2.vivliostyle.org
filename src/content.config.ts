@@ -14,7 +14,7 @@ const docsSchema = z.object({
   lang: z.string().default('en'),
   order: z.number().optional(),
   draft: z.boolean().optional().default(false),
-  doctocToc: z.string().optional(),
+  extractedToc: z.string().optional(),
 });
 
 // 英語ドキュメントコレクション
