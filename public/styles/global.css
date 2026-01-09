@@ -28,7 +28,8 @@
   --color-border-dark: #cccccc;
   
   /* タイポグラフィ */
-  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Noto Sans JP";
+  /* Noto Sans JP を先頭に配置して丸付き数字（❶-❿）を確実にカバー */
+  --font-sans: "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
   
   --font-size-base: 16px;
@@ -92,23 +93,6 @@ body {
   line-height: var(--line-height-base);
   color: var(--color-text);
   background-color: var(--color-bg);
-}
-
-/* 丸付き数字（❶❷❸❹❺❻❼❽❾❿）のフォント指定
- * Unicode範囲: U+2776-277F (黒背景丸付き数字 1-10)
- * これらの文字を Noto Sans JP で表示するように強制
- */
-@font-face {
-  font-family: "Fallback JP";
-  font-style: normal;
-  font-weight: 400;
-  src: local("Noto Sans JP"), local("Noto Sans CJK JP");
-  unicode-range: U+2776-277F;
-}
-
-body {
-  /* フォールバック用のフォントファミリーを追加 */
-  font-family: "Fallback JP", var(--font-sans);
 }
 
 /* ==========================================================================
