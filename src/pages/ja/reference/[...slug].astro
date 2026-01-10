@@ -162,11 +162,7 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
 
   <!-- サイドバーにナビゲーションと目次を表示 -->
   <nav slot="sidebar">
-    <h3>リファレンス</h3>
-    <ul>
-      <li><a href="/ja/">← ホームに戻る</a></li>
-    </ul>
-    <TableOfContents headings={headings} />
+    <a href="/ja/" class="back-to-home">← ホームに戻る</a>
   </nav>
 
   <!-- メインコンテンツ -->

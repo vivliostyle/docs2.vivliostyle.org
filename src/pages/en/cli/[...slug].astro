@@ -105,20 +105,10 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
             <a href={itemPath} aria-current={isActive ? 'page' : undefined}>
               {item.data.title || item.id}
             </a>
-            {/* If current page has extractedTOC, show it as submenu */}
-            {isActive && extractedToc && (
-              <div class="page-toc" set:html={extractedToc} />
-            )}
           </li>
         );
       })}
     </ul>
-    <!-- ページ内目次 -->
-    {headings.length > 0 && (
-      <div class="page-table-of-contents">
-        <TableOfContents headings={headings} />
-      </div>
-    )}
   </nav>
 
   <article set:html={htmlContent} />

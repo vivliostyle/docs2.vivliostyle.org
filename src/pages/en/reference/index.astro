@@ -36,6 +36,11 @@ const description = indexDoc?.data?.description || 'Reference documentation for 
     </div>
   )}
 
+  <!-- Sidebar -->
+  <nav slot="sidebar">
+    <a href="/en/" class="back-to-home">← Back to Home</a>
+  </nav>
+
   <article class="docs-content">
     {htmlContent ? (
       <Fragment set:html={htmlContent} />

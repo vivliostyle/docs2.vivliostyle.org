@@ -67,7 +67,6 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
 ---
 
 <DocsLayout title={title} description={description} lang="ja">
-  <TableOfContents slot="sidebar" headings={headings} />
   <div slot="header" class="language-switcher-container">
     <LanguageSwitcher currentLang="ja" pagePath={pagePath} hasTranslation={hasEnTranslation} />
   </div>
@@ -81,10 +80,6 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
         return (
           <li class:list={[{ active: isActive }]}>
             <a href={itemPath}>{item.data.title || item.id}</a>
-            {/* 現在のページでextractedTOCがある場合は、そのページのサブメニューとして表示 */}
-            {isActive && extractedToc && (
-              <div class="page-toc" set:html={extractedToc} />
-            )}
           </li>
         );
       })}

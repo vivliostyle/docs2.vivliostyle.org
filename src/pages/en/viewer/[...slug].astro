@@ -40,6 +40,9 @@ const extractedToc = doc.data?.extractedToc; // extracted TOC (if exists)
 // 見出しから目次を生成
 const headings = doc.data?.headings || [];
 
+// Filter headings for TOC (h2 to h3 with valid slugs)
+const tocHeadings = (headings || []).filter(h => h && h.slug && h.depth >= 2 && h.depth <= 3);
+
 // ページの順序を定義
 const pageOrder = [
   'vivliostyle-viewer',
@@ -83,11 +86,21 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
 
   <!-- Sidebar navigation and table of contents -->
   <nav slot="sidebar">
-    <h3>Vivliostyle.js Documentation</h3>
-    <ul>
-      <li><a href="/en/">← Back to Home</a></li>
-    </ul>
-    <TableOfContents headings={headings} />
+    <h3>Vivliostyle Viewer Documentation</h3>
+    <a href="/en/" class="back-to-home">← Back to Home</a>
+    {tocHeadings.length > 0 && (
+      <ul class="toc-list" style="list-style: none; padding-left: 0;">
+        {tocHeadings.map((heading) => {
+          const slug = heading.slug || '';
+          const text = heading.text || '';
+          return (
+            <li class={`toc-item toc-level-${heading.depth}`}>
+              <a href={`#${slug}`} set:html={text}></a>
+            </li>
+          );
+        })}
+      </ul>
+    )}
   </nav>
 
   <!-- メインコンテンツ -->
