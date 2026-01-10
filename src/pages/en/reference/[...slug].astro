@@ -113,7 +113,8 @@ const pageOrder = [
   'supported-css-features',
   'api',
   'contribution-guide-heading',  // Heading only (for sidebar display)
-  'contribution-guide',  // Actual page (for page navigation)
+  'contribution-guide',  // Actual page (for page navigation, hidden in sidebar)
+  'contributing-viewer',  // Sidebar display (links to contribution-guide, skip in page navigation)
   'contributing-cli',
   'contributing-vfm',
   'contributing-themes',
@@ -143,10 +144,11 @@ const sortedDocs = allDocs.sort((a, b) => {
 // Get current page index
 const currentIndex = sortedDocs.findIndex(d => d.id === doc.id);
 
-// Calculate prevPage/nextPage (only pages in pageOrder)
+// Calculate prevPage/nextPage (only pages in pageOrder, exclude headings and virtual docs)
 let prevPage = null;
 for (let i = currentIndex - 1; i >= 0; i--) {
-  if (pageOrder.includes(sortedDocs[i].id)) {
+  const itemId = sortedDocs[i].id;
+  if (pageOrder.includes(itemId) && itemId !== 'contribution-guide-heading' && itemId !== 'contributing-viewer') {
     prevPage = sortedDocs[i];
     break;
   }
@@ -154,7 +156,8 @@ for (let i = currentIndex - 1; i >= 0; i--) {
 
 let nextPage = null;
 for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
-  if (pageOrder.includes(sortedDocs[i].id)) {
+  const itemId = sortedDocs[i].id;
+  if (pageOrder.includes(itemId) && itemId !== 'contribution-guide-heading' && itemId !== 'contributing-viewer') {
     nextPage = sortedDocs[i];
     break;
   }

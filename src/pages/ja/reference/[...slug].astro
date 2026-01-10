@@ -113,7 +113,8 @@ const pageOrder = [
   'supported-css-features',
   'api',
   'contribution-guide-heading',  // 見出し専用（サイドバー表示用）
-  'contribution-guide',  // 実際のページ（ページナビゲーション用）
+  'contribution-guide',  // 実際のページ（ページナビゲーション用、サイドバーでは非表示）
+  'contributing-viewer',  // サイドバー表示用（contribution-guideへリンク、ページナビゲーションではスキップ）
   'contributing-cli',
   'contributing-vfm',
   'contributing-themes',
@@ -143,10 +144,11 @@ const sortedDocs = allDocs.sort((a, b) => {
 // 現在のページのインデックスを取得
 const currentIndex = sortedDocs.findIndex(d => d.id === doc.id);
 
-// prevPage/nextPageを計算（pageOrderに含まれるページのみ）
+// prevPage/nextPageを計算（pageOrderに含まれるページのみ、見出しと仮想ドキュメントは除外）
 let prevPage = null;
 for (let i = currentIndex - 1; i >= 0; i--) {
-  if (pageOrder.includes(sortedDocs[i].id)) {
+  const itemId = sortedDocs[i].id;
+  if (pageOrder.includes(itemId) && itemId !== 'contribution-guide-heading' && itemId !== 'contributing-viewer') {
     prevPage = sortedDocs[i];
     break;
   }
@@ -154,7 +156,8 @@ for (let i = currentIndex - 1; i >= 0; i--) {
 
 let nextPage = null;
 for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
-  if (pageOrder.includes(sortedDocs[i].id)) {
+  const itemId = sortedDocs[i].id;
+  if (pageOrder.includes(itemId) && itemId !== 'contribution-guide-heading' && itemId !== 'contributing-viewer') {
     nextPage = sortedDocs[i];
     break;
   }
