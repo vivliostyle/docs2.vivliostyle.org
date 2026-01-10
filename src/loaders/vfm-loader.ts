@@ -165,18 +165,24 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
               processedMarkdownBody = markdownBody.replace(/<!-- START doctoc generated TOC[^\n]*-->\s*\n[\s\S]*?\n<!-- END doctoc generated TOC[^\n]*-->\s*\n?/, '');
             } else {
               // doctocマーカーがない場合、「## 目次」または「## Table of Contents」セクションを探す
-              // セクション開始から次のH2セクションまでを抽出
+              // api.mdの場合は見出しだけ削除してリストは残す、それ以外は従来通り
+              const fileBaseName = basename(filePath);
               const manualTocMatch = markdownBody.match(/##\s+(目次|Table of Contents|Contents)\s*\n([\s\S]*?)(?=\n##\s)/m);
+              
               if (manualTocMatch) {
-                // 説明文とリストを含む全体から、リスト部分のみを抽出
-                const tocContent = manualTocMatch[2];
-                // 空行や説明文を考慮して、最初のリスト項目から最後のリスト項目までを抽出
-                const listMatch = tocContent.match(/^(?:.*\n)*?(- .*(?:\n(?:  - .*|- .*))*)/m);
-                if (listMatch) {
-                  extractedToc = listMatch[1].trim();
+                if (fileBaseName === 'api.md') {
+                  // api.mdの場合：見出しだけ削除、リストはそのまま残す
+                  processedMarkdownBody = markdownBody.replace(/##\s+(目次|Table of Contents|Contents)\s*\n/, '');
+                  // extractedTocには何も入れない（リストはMarkdown本体に残る）
+                } else {
+                  // それ以外：従来通り、TOCを抽出してMarkdownから削除
+                  const tocContent = manualTocMatch[2];
+                  const listMatch = tocContent.match(/^(?:.*\n)*?(- .*(?:\n(?:  - .*|- .*))*)/m);
+                  if (listMatch) {
+                    extractedToc = listMatch[1].trim();
+                  }
+                  processedMarkdownBody = markdownBody.replace(/##\s+(目次|Table of Contents|Contents)\s*\n[\s\S]*?(?=\n##\s)/m, '');
                 }
-                // TOC部分をMarkdownから削除（見出しと内容全体）
-                processedMarkdownBody = markdownBody.replace(/##\s+(目次|Table of Contents|Contents)\s*\n[\s\S]*?(?=\n##\s)/m, '');
               }
             }
 
@@ -214,6 +220,9 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
               }
             }
 
+            // api.mdの場合、「## 目次」または「## Table of Contents」の見出しだけを削除
+            // (リスト構造はそのまま残す) - すでにMarkdown段階で処理済みなので、この処理は不要
+            
             // HTMLのリンクと画像パスを修正
             
             // 1. 画像パスを修正: ../assets/ -> /{product}/assets/, ./image.svg -> /{product}/assets/image.svg
