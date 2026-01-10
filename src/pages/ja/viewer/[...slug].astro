@@ -82,8 +82,14 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
     </div>
   )}
 
-  <!-- サイドバーに目次を表示 -->
-  <TableOfContents slot="sidebar" headings={headings} />
+  <!-- サイドバーにナビゲーションと目次を表示 -->
+  <nav slot="sidebar">
+    <h3>Vivliostyle.js ドキュメント</h3>
+    <ul>
+      <li><a href="/ja/">← ホームに戻る</a></li>
+    </ul>
+    <TableOfContents headings={headings} />
+  </nav>
 
   <!-- メインコンテンツ -->
   <article class="docs-content">

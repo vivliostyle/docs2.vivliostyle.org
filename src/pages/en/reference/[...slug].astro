@@ -160,8 +160,14 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
     </div>
   )}
 
-  <!-- Table of contents in sidebar -->
-  <TableOfContents slot="sidebar" headings={headings} />
+  <!-- Sidebar navigation and table of contents -->
+  <nav slot="sidebar">
+    <h3>Reference</h3>
+    <ul>
+      <li><a href="/en/">← Back to Home</a></li>
+    </ul>
+    <TableOfContents headings={headings} />
+  </nav>
 
   <!-- Main content -->
   <article class="docs-content">

@@ -69,7 +69,6 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
 ---
 
 <DocsLayout title={title} description={description} lang="ja">
-  <TableOfContents slot="sidebar" headings={headings} />
   <div slot="header" class="language-switcher-container">
     <LanguageSwitcher currentLang="ja" pagePath={pagePath} hasTranslation={hasEnTranslation} />
   </div>
