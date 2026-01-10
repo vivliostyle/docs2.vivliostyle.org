@@ -105,8 +105,6 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
 
   <!-- メインコンテンツ -->
   <article class="docs-content">
-    <h1>{title}</h1>
-    
     <!-- Display extracted TOC if exists -->
     {extractedToc && (
       <div class="toc" set:html={extractedToc}></div>
