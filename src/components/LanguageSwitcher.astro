@@ -23,7 +23,9 @@ const languages = {
 };
 
 const otherLang = currentLang === 'en' ? 'ja' : 'en';
-const otherLangUrl = `/${otherLang}${pagePath}`;
+// 末尾スラッシュを追加（Astroの動的ルーティングでは末尾スラッシュが必要）
+const normalizedPath = pagePath.endsWith('/') ? pagePath : `${pagePath}/`;
+const otherLangUrl = `/${otherLang}${normalizedPath}`;
 ---
 
 <div class="language-switcher">

@@ -1,0 +1,297 @@
+---
+/**
+ * Vivliostyle Reference Pages (English)
+ * Dynamic routing: matches /en/reference/*
+ */
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import LanguageSwitcher from '../../../components/LanguageSwitcher.astro';
+import PageNavigation from '../../../components/PageNavigation.astro';
+import TableOfContents from '../../../components/TableOfContents.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const referenceDocs = await getCollection('vivliostyle-reference-en');
+  const referenceDocsJa = await getCollection('vivliostyle-reference-ja');
+  
+  // CLI、Themes、VFMのContributingドキュメントも取得
+  const cliContributing = await getCollection('vivliostyle-cli-contributing-en');
+  const themesContributing = await getCollection('vivliostyle-themes-contributing-en');
+  const vfmContributing = await getCollection('vivliostyle-vfm-contributing-en');
+  
+  // 日本語版に存在するIDのセットを作成
+  const jaIds = new Set(referenceDocsJa.map(d => d.id));
+
+  const paths = [];
+  
+  // 通常のリファレンスドキュメント
+  referenceDocs.forEach(doc => {
+    paths.push({
+      params: { slug: doc.id },
+      props: { 
+        doc, 
+        referenceDocs,
+        hasJaTranslation: jaIds.has(doc.id),
+        isContributing: false,
+      },
+    });
+  });
+  
+  // CLI Contributing
+  cliContributing.forEach(doc => {
+    paths.push({
+      params: { slug: 'contributing-cli' },
+      props: {
+        doc: {
+          ...doc,
+          id: 'contributing-cli',
+          data: {
+            ...doc.data,
+            title: doc.data?.title || 'Vivliostyle CLI Contribution Guide',
+          },
+        },
+        referenceDocs,
+        hasJaTranslation: true,
+        isContributing: true,
+      },
+    });
+  });
+  
+  // Themes Contributing
+  themesContributing.forEach(doc => {
+    paths.push({
+      params: { slug: 'contributing-themes' },
+      props: {
+        doc: {
+          ...doc,
+          id: 'contributing-themes',
+          data: {
+            ...doc.data,
+            title: doc.data?.title || 'Vivliostyle Themes Contribution Guide',
+          },
+        },
+        referenceDocs,
+        hasJaTranslation: true,
+        isContributing: true,
+      },
+    });
+  });
+  
+  // VFM Contributing
+  vfmContributing.forEach(doc => {
+    paths.push({
+      params: { slug: 'contributing-vfm' },
+      props: {
+        doc: {
+          ...doc,
+          id: 'contributing-vfm',
+          data: {
+            ...doc.data,
+            title: doc.data?.title || 'VFM Contribution Guide',
+          },
+        },
+        referenceDocs,
+        hasJaTranslation: true,
+        isContributing: true,
+      },
+    });
+  });
+
+  return paths;
+}
+
+const { doc, referenceDocs, hasJaTranslation, isContributing } = Astro.props;
+const htmlContent = doc.rendered?.html || '';
+const title = doc.data?.title || 'Vivliostyle Reference';
+const description = doc.data?.description || '';
+const extractedToc = doc.data?.extractedToc; // extracted TOC if exists
+
+// Generate table of contents from headings
+const headings = doc.data?.headings || [];
+
+// Define page order (match index.md order)
+const pageOrder = [
+  'supported-css-features',
+  'api',
+  'contribution-guide-heading',  // Heading only (for sidebar display)
+  'contribution-guide',  // Actual page (for page navigation, hidden in sidebar)
+  'contributing-viewer',  // Sidebar display (links to contribution-guide, skip in page navigation)
+  'contributing-cli',
+  'contributing-vfm',
+  'contributing-themes',
+];
+
+// Combine all documents (regular reference + contributing pages)
+const allDocs = [
+  ...referenceDocs,  // includes contribution-guide
+  // Add virtual documents for sidebar display
+  { id: 'contribution-guide-heading', data: { title: 'Contribution Guidelines' } },  // Heading only
+  { id: 'contributing-viewer', data: { title: 'Vivliostyle Viewer' } },
+  { id: 'contributing-cli', data: { title: 'Vivliostyle CLI' } },
+  { id: 'contributing-vfm', data: { title: 'VFM' } },
+  { id: 'contributing-themes', data: { title: 'Vivliostyle Themes' } },
+];
+
+const sortedDocs = allDocs.sort((a, b) => {
+  const indexA = pageOrder.indexOf(a.id);
+  const indexB = pageOrder.indexOf(b.id);
+  // Place items not in pageOrder at the end
+  if (indexA === -1 && indexB === -1) return a.id.localeCompare(b.id);
+  if (indexA === -1) return 1;
+  if (indexB === -1) return -1;
+  return indexA - indexB;
+});
+
+// Get current page index
+const currentIndex = sortedDocs.findIndex(d => d.id === doc.id);
+
+// Calculate prevPage/nextPage (only pages in pageOrder, exclude headings and virtual docs)
+let prevPage = null;
+for (let i = currentIndex - 1; i >= 0; i--) {
+  const itemId = sortedDocs[i].id;
+  if (pageOrder.includes(itemId) && itemId !== 'contribution-guide-heading' && itemId !== 'contributing-viewer') {
+    prevPage = sortedDocs[i];
+    break;
+  }
+}
+
+let nextPage = null;
+for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
+  const itemId = sortedDocs[i].id;
+  if (pageOrder.includes(itemId) && itemId !== 'contribution-guide-heading' && itemId !== 'contributing-viewer') {
+    nextPage = sortedDocs[i];
+    break;
+  }
+}
+---
+
+<DocsLayout 
+  title={title} 
+  description={description}
+  lang="en"
+  section="reference"
+>
+  <!-- Language switcher in header -->
+  {hasJaTranslation && (
+    <div slot="header">
+      <LanguageSwitcher 
+        currentLang="en" 
+        pagePath={`/reference/${doc.id}`}
+        hasTranslation={hasJaTranslation}
+      />
+    </div>
+  )}
+
+  <!-- Sidebar navigation and table of contents -->
+  <nav slot="sidebar">
+    <h3>Reference</h3>
+    <ul style="list-style: none; padding-left: 0;">
+      <li><a href="/en/">← Back to Home</a></li>
+      {sortedDocs.map(item => {
+        let itemPath = `/en/reference/${item.id}/`;
+        const currentPath = `/en/reference/${doc.id}/`;
+        
+        // contributing-viewer's actual link is contribution-guide
+        if (item.id === 'contributing-viewer') {
+          itemPath = '/en/reference/contribution-guide/';
+        }
+        
+        const isActive = itemPath === currentPath;
+        const isContributingItem = item.id.startsWith('contributing-');
+        
+        // Customize titles
+        let displayTitle = item.data.title || item.id;
+        if (item.id === 'supported-css-features') displayTitle = 'Supported CSS Features';
+        if (item.id === 'api') displayTitle = 'Core API Reference';
+        if (item.id === 'contributing-viewer') displayTitle = 'Vivliostyle Viewer';
+        
+        // contribution-guide-heading displays as heading (no link)
+        if (item.id === 'contribution-guide-heading') {
+          return (
+            <li style="font-weight: bold;">{displayTitle}</li>
+          );
+        }
+        
+        return (
+          <li class:list={[{ active: isActive }]} style={isContributingItem ? 'padding-left: 1rem;' : ''}>
+            <a href={itemPath} aria-current={isActive ? 'page' : undefined}>
+              {displayTitle}
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  </nav>
+
+  <!-- Main content -->
+  <article class="docs-content">
+
+    <!-- Display extracted TOC if exists -->
+    {extractedToc && (
+      <div class="toc" set:html={extractedToc}></div>
+    )}
+    
+    <div set:html={htmlContent}></div>
+  </article>
+
+  <!-- Page navigation -->
+  <PageNavigation
+    prevPage={prevPage}
+    nextPage={nextPage}
+    basePath="/en/reference"
+    prevLabel="← Previous"
+    nextLabel="Next →"
+  />
+</DocsLayout>
+
+<style>
+  .docs-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .docs-content h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--color-text);
+    border-bottom: 2px solid var(--color-border);
+    padding-bottom: 0.5rem;
+  }
+
+  .toc {
+    background: var(--color-background-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .toc :global(ul) {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  .toc :global(li) {
+    margin: 0.5rem 0;
+  }
+
+  .toc :global(a) {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
+  .toc :global(a:hover) {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .docs-content {
+      padding: 1rem;
+    }
+
+    .docs-content h1 {
+      font-size: 2rem;
+    }
+  }
+</style>

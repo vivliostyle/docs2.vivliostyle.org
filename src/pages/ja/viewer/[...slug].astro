@@ -1,0 +1,162 @@
+---
+/**
+ * Vivliostyle.js ドキュメントページ（日本語版）
+ * 動的ルーティング: /ja/viewer/* にマッチ
+ */
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import LanguageSwitcher from '../../../components/LanguageSwitcher.astro';
+import PageNavigation from '../../../components/PageNavigation.astro';
+import TableOfContents from '../../../components/TableOfContents.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const viewerDocs = await getCollection('vivliostyle-viewer-ja');
+  const viewerDocsEn = await getCollection('vivliostyle-viewer-en');
+  
+  // 英語版に存在するIDのセットを作成
+  const enIds = new Set(viewerDocsEn.map(d => d.id));
+
+  return viewerDocs.map(doc => {
+    // [...slug]パターンでは文字列でslugを渡す
+    // README.mdは日本語版には存在しないため、それぞれのファイル名で処理
+    const slug = doc.id;
+
+    return {
+      params: { slug },
+      props: { 
+        doc, 
+        viewerDocs,
+        hasEnTranslation: enIds.has(doc.id)
+      },
+    };
+  });
+}
+
+const { doc, viewerDocs, hasEnTranslation } = Astro.props;
+const htmlContent = doc.rendered?.html || '';
+const title = doc.data?.title || 'Vivliostyle.js ドキュメント';
+const description = doc.data?.description || '';
+const extractedToc = doc.data?.extractedToc; // 抽出したTOC（存在する場合）
+
+// 見出しから目次を生成
+const headings = doc.data?.headings || [];
+
+// 目次に表示するのは h2 から h3 まで（有効なslugを持つもののみ）
+const tocHeadings = (headings || []).filter(h => h && h.slug && h.depth >= 2 && h.depth <= 3);
+
+// ページの順序を定義
+const pageOrder = [
+  'vivliostyle-viewer',
+  'supported-css-features',
+  'api',
+  'contribution-guide',
+];
+
+const sortedDocs = [...viewerDocs].sort((a, b) => {
+  const indexA = pageOrder.indexOf(a.id);
+  const indexB = pageOrder.indexOf(b.id);
+  // pageOrderにないものは最後に配置
+  if (indexA === -1 && indexB === -1) return a.id.localeCompare(b.id);
+  if (indexA === -1) return 1;
+  if (indexB === -1) return -1;
+  return indexA - indexB;
+});
+
+// 現在のページのインデックスを取得
+const currentIndex = sortedDocs.findIndex(d => d.id === doc.id);
+const prevPage = currentIndex > 0 ? sortedDocs[currentIndex - 1] : null;
+const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex + 1] : null;
+---
+
+<DocsLayout 
+  title={title} 
+  description={description}
+  lang="ja"
+  section="viewer"
+>
+  <!-- ヘッダーに言語切り替え -->
+  {hasEnTranslation && (
+    <div slot="header" class="language-switcher-container">
+      <LanguageSwitcher 
+        currentLang="ja" 
+        pagePath={`/viewer/${doc.id}`}
+        hasTranslation={hasEnTranslation}
+      />
+    </div>
+  )}
+
+  <!-- サイドバーにナビゲーションと目次を表示 -->
+  <nav slot="sidebar">
+    <h3>Vivliostyle Viewer ドキュメント</h3>
+    <a href="/ja/" class="back-to-home">← ホームに戻る</a>
+    {tocHeadings.length > 0 && (
+      <ul class="toc-list" style="list-style: none; padding-left: 0;">
+        {tocHeadings.map((heading) => {
+          const slug = heading.slug || '';
+          const text = heading.text || '';
+          return (
+            <li class={`toc-item toc-level-${heading.depth}`}>
+              <a href={`#${slug}`} set:html={text}></a>
+            </li>
+          );
+        })}
+      </ul>
+    )}
+  </nav>
+
+  <!-- メインコンテンツ -->
+  <article class="docs-content">
+    <!-- 抽出したTOCが存在する場合は表示 -->
+    {extractedToc && (
+      <div class="toc" set:html={extractedToc}></div>
+    )}
+    
+    <div set:html={htmlContent}></div>
+  </article>
+
+  <!-- ページナビゲーション -->
+  <PageNavigation
+    prevPage={prevPage}
+    nextPage={nextPage}
+    basePath="/ja/viewer"
+    prevLabel="← 前へ"
+    nextLabel="次へ →"
+  />
+</DocsLayout>
+
+<style>
+  .docs-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+  }
+
+  .docs-content h1 {
+    margin-bottom: 1.5rem;
+  }
+
+  .toc {
+    background: var(--color-bg-secondary, #f5f5f5);
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1.5rem 0;
+  }
+
+  .toc :global(ul) {
+    list-style: none;
+    padding-left: 1rem;
+  }
+
+  .toc :global(li) {
+    margin: 0.5rem 0;
+  }
+
+  .toc :global(a) {
+    color: var(--color-text-primary, #333);
+    text-decoration: none;
+  }
+
+  .toc :global(a:hover) {
+    text-decoration: underline;
+  }
+</style>

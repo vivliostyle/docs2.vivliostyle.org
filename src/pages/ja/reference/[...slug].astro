@@ -1,0 +1,301 @@
+---
+/**
+ * Vivliostyle リファレンスページ（日本語版）
+ * 動的ルーティング: /ja/reference/* にマッチ
+ */
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import LanguageSwitcher from '../../../components/LanguageSwitcher.astro';
+import PageNavigation from '../../../components/PageNavigation.astro';
+import TableOfContents from '../../../components/TableOfContents.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const referenceDocs = await getCollection('vivliostyle-reference-ja');
+  const referenceDocsEn = await getCollection('vivliostyle-reference-en');
+  
+  // CLI、Themes、VFMのContributingドキュメントも取得
+  const cliContributing = await getCollection('vivliostyle-cli-contributing-en');
+  const themesContributing = await getCollection('vivliostyle-themes-contributing-en');
+  const vfmContributing = await getCollection('vivliostyle-vfm-contributing-en');
+  
+  // 英語版に存在するIDのセットを作成
+  const enIds = new Set(referenceDocsEn.map(d => d.id));
+
+  const paths = [];
+  
+  // 通常のリファレンスドキュメント
+  referenceDocs.forEach(doc => {
+    paths.push({
+      params: { slug: doc.id },
+      props: { 
+        doc, 
+        referenceDocs,
+        hasEnTranslation: enIds.has(doc.id),
+        isContributing: false,
+      },
+    });
+  });
+  
+  // CLI Contributing（CONTRIBUTING.mdをcontributing-cliとしてマップ）
+  cliContributing.forEach(doc => {
+    paths.push({
+      params: { slug: 'contributing-cli' },
+      props: {
+        doc: {
+          ...doc,
+          id: 'contributing-cli',
+          data: {
+            ...doc.data,
+            title: doc.data?.title || 'Vivliostyle CLI コントリビューションガイド',
+          },
+        },
+        referenceDocs,
+        hasEnTranslation: true,
+        isContributing: true,
+      },
+    });
+  });
+  
+  // Themes Contributing
+  themesContributing.forEach(doc => {
+    paths.push({
+      params: { slug: 'contributing-themes' },
+      props: {
+        doc: {
+          ...doc,
+          id: 'contributing-themes',
+          data: {
+            ...doc.data,
+            title: doc.data?.title || 'Vivliostyle Themes コントリビューションガイド',
+          },
+        },
+        referenceDocs,
+        hasEnTranslation: true,
+        isContributing: true,
+      },
+    });
+  });
+  
+  // VFM Contributing
+  vfmContributing.forEach(doc => {
+    paths.push({
+      params: { slug: 'contributing-vfm' },
+      props: {
+        doc: {
+          ...doc,
+          id: 'contributing-vfm',
+          data: {
+            ...doc.data,
+            title: doc.data?.title || 'VFM コントリビューションガイド',
+          },
+        },
+        referenceDocs,
+        hasEnTranslation: true,
+        isContributing: true,
+      },
+    });
+  });
+
+  return paths;
+}
+
+const { doc, referenceDocs, hasEnTranslation, isContributing } = Astro.props;
+const htmlContent = doc.rendered?.html || '';
+const title = doc.data?.title || 'Vivliostyle リファレンス';
+const description = doc.data?.description || '';
+const extractedToc = doc.data?.extractedToc; // 抽出したTOC（存在する場合）
+
+// 見出しから目次を生成
+const headings = doc.data?.headings || [];
+
+// ページの順序を定義（index.mdの順番に合わせる）
+const pageOrder = [
+  'supported-css-features',
+  'api',
+  'contribution-guide-heading',  // 見出し専用（サイドバー表示用）
+  'contribution-guide',  // 実際のページ（ページナビゲーション用、サイドバーでは非表示）
+  'contributing-viewer',  // サイドバー表示用（contribution-guideへリンク、ページナビゲーションではスキップ）
+  'contributing-cli',
+  'contributing-vfm',
+  'contributing-themes',
+];
+
+// 全てのドキュメント（通常のリファレンス + contributingページ）を統合
+const allDocs = [
+  ...referenceDocs,  // contribution-guide含む
+  // サイドバー表示用の仮想ドキュメントを追加
+  { id: 'contribution-guide-heading', data: { title: 'コントリビューションガイド' } },  // 見出し専用
+  { id: 'contributing-viewer', data: { title: 'Vivliostyle Viewer' } },
+  { id: 'contributing-cli', data: { title: 'Vivliostyle CLI' } },
+  { id: 'contributing-vfm', data: { title: 'VFM' } },
+  { id: 'contributing-themes', data: { title: 'Vivliostyle Themes' } },
+];
+
+const sortedDocs = allDocs.sort((a, b) => {
+  const indexA = pageOrder.indexOf(a.id);
+  const indexB = pageOrder.indexOf(b.id);
+  // pageOrderにないものは最後に配置
+  if (indexA === -1 && indexB === -1) return a.id.localeCompare(b.id);
+  if (indexA === -1) return 1;
+  if (indexB === -1) return -1;
+  return indexA - indexB;
+});
+
+// 現在のページのインデックスを取得
+const currentIndex = sortedDocs.findIndex(d => d.id === doc.id);
+
+// prevPage/nextPageを計算（pageOrderに含まれるページのみ、見出しと仮想ドキュメントは除外）
+let prevPage = null;
+for (let i = currentIndex - 1; i >= 0; i--) {
+  const itemId = sortedDocs[i].id;
+  if (pageOrder.includes(itemId) && itemId !== 'contribution-guide-heading' && itemId !== 'contributing-viewer') {
+    prevPage = sortedDocs[i];
+    break;
+  }
+}
+
+let nextPage = null;
+for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
+  const itemId = sortedDocs[i].id;
+  if (pageOrder.includes(itemId) && itemId !== 'contribution-guide-heading' && itemId !== 'contributing-viewer') {
+    nextPage = sortedDocs[i];
+    break;
+  }
+}
+---
+
+<DocsLayout 
+  title={title} 
+  description={description}
+  lang="ja"
+  section="reference"
+>
+  <!-- ヘッダーに言語切り替え -->
+  {hasEnTranslation && (
+    <div slot="header">
+      <LanguageSwitcher 
+        currentLang="ja" 
+        pagePath={`/reference/${doc.id}`}
+        hasTranslation={hasEnTranslation}
+      />
+    </div>
+  )}
+
+  <!-- サイドバーにナビゲーションと目次を表示 -->
+  <nav slot="sidebar">
+    <h3>リファレンス</h3>
+    <ul style="list-style: none; padding-left: 0;">
+      <li><a href="/ja/">← ホームに戻る</a></li>
+      {sortedDocs.map(item => {
+        // contribution-guideはサイドバーで非表示（contribution-guide-headingとcontributing-viewerで代替）
+        if (item.id === 'contribution-guide') {
+          return null;
+        }
+        
+        let itemPath = `/ja/reference/${item.id}/`;
+        const currentPath = `/ja/reference/${doc.id}/`;
+        
+        // contributing-viewerの実際のリンク先はcontribution-guide
+        if (item.id === 'contributing-viewer') {
+          itemPath = '/ja/reference/contribution-guide/';
+        }
+        
+        const isActive = itemPath === currentPath;
+        const isContributingItem = item.id.startsWith('contributing-');
+        
+        // タイトルをカスタマイズ
+        let displayTitle = item.data.title || item.id;
+        if (item.id === 'supported-css-features') displayTitle = 'サポートする CSS 機能';
+        if (item.id === 'api') displayTitle = 'Core API リファレンス';
+        if (item.id === 'contributing-viewer') displayTitle = 'Vivliostyle Viewer';
+        
+        // contribution-guide-headingは見出しとして表示（リンクなし）
+        if (item.id === 'contribution-guide-heading') {
+          return (
+            <li style="font-weight: bold;">{displayTitle}</li>
+          );
+        }
+        
+        return (
+          <li class:list={[{ active: isActive }]} style={isContributingItem ? 'padding-left: 1rem;' : ''}>
+            <a href={itemPath} aria-current={isActive ? 'page' : undefined}>
+              {displayTitle}
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  </nav>
+
+  <!-- メインコンテンツ -->
+  <article class="docs-content">
+    <!-- 抽出したTOCが存在する場合は表示 -->
+    {extractedToc && (
+      <div class="toc" set:html={extractedToc}></div>
+    )}
+    
+    <div set:html={htmlContent}></div>
+  </article>
+
+  <!-- ページナビゲーション -->
+  <PageNavigation
+    prevPage={prevPage}
+    nextPage={nextPage}
+    basePath="/ja/reference"
+    prevLabel="← 前へ"
+    nextLabel="次へ →"
+  />
+</DocsLayout>
+
+<style>
+  .docs-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .docs-content h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--color-text);
+    border-bottom: 2px solid var(--color-border);
+    padding-bottom: 0.5rem;
+  }
+
+  .toc {
+    background: var(--color-background-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .toc :global(ul) {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  .toc :global(li) {
+    margin: 0.5rem 0;
+  }
+
+  .toc :global(a) {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
+  .toc :global(a:hover) {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .docs-content {
+      padding: 1rem;
+    }
+
+    .docs-content h1 {
+      font-size: 2rem;
+    }
+  }
+</style>

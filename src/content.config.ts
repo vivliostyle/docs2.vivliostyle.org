@@ -14,6 +14,7 @@ const docsSchema = z.object({
   lang: z.string().default('en'),
   order: z.number().optional(),
   draft: z.boolean().optional().default(false),
+  extractedToc: z.string().optional(),
 });
 
 // 英語ドキュメントコレクション
@@ -61,9 +62,163 @@ const cliDocsJa = defineCollection({
   schema: docsSchema,
 });
 
+// Themes ドキュメント（英語）
+const themesDocsEn = defineCollection({
+  loader: vfmLoader({
+    base: 'submodules/themes/docs',
+    lang: 'en',
+    excludeDirs: ['ja'], // 日本語ディレクトリを除外
+    collectionName: 'vivliostyle-themes-en',
+  }),
+  schema: docsSchema,
+});
+
+// Themes ドキュメント（日本語）
+const themesDocsJa = defineCollection({
+  loader: vfmLoader({
+    base: 'submodules/themes/docs/ja',
+    lang: 'ja',
+    collectionName: 'vivliostyle-themes-ja',
+  }),
+  schema: docsSchema,
+});
+
+// VFM ドキュメント（英語）
+const vfmDocsEn = defineCollection({
+  loader: vfmLoader({
+    base: 'submodules/vfm/docs',
+    lang: 'en',
+    excludeDirs: ['ja'], // 日本語ディレクトリを除外
+    collectionName: 'vivliostyle-vfm-en',
+  }),
+  schema: docsSchema,
+});
+
+// VFM ドキュメント（日本語）
+const vfmDocsJa = defineCollection({
+  loader: vfmLoader({
+    base: 'submodules/vfm/docs/ja',
+    lang: 'ja',
+    collectionName: 'vivliostyle-vfm-ja',
+  }),
+  schema: docsSchema,
+});
+
+// Vivliostyle.js ドキュメント（英語）- Viewerのみ
+const viewerDocsEn = defineCollection({
+  loader: vfmLoader({
+    base: 'submodules/vivliostyle.js/docs',
+    lang: 'en',
+    excludeDirs: ['ja'],
+    includePattern: /^vivliostyle-viewer\.md$/, // Viewerページのみ
+    collectionName: 'vivliostyle-viewer-en',
+  }),
+  schema: docsSchema,
+});
+
+// Vivliostyle.js ドキュメント（日本語）- Viewerのみ
+const viewerDocsJa = defineCollection({
+  loader: vfmLoader({
+    base: 'submodules/vivliostyle.js/docs/ja',
+    lang: 'ja',
+    includePattern: /^vivliostyle-viewer\.md$/, // Viewerページのみ
+    collectionName: 'vivliostyle-viewer-ja',
+  }),
+  schema: docsSchema,
+});
+
+// Reference ドキュメント（英語）- API、CSS機能、コントリビューションガイド
+const referenceDocsEn = defineCollection({
+  loader: vfmLoader({
+    base: 'submodules/vivliostyle.js/docs',
+    lang: 'en',
+    excludeDirs: ['ja'],
+    includePattern: /^(api|supported-css-features|contribution-guide)\.md$/,
+    collectionName: 'vivliostyle-reference-en',
+  }),
+  schema: docsSchema,
+});
+
+// Reference ドキュメント（日本語）- API、CSS機能、コントリビューションガイド
+const referenceDocsJa = defineCollection({
+  loader: vfmLoader({
+    base: 'submodules/vivliostyle.js/docs/ja',
+    lang: 'ja',
+    includePattern: /^(api|supported-css-features|contribution-guide)\.md$/,
+    collectionName: 'vivliostyle-reference-ja',
+  }),
+  schema: docsSchema,
+});
+
+// Reference Index ページ（英語）
+const referenceIndexEn = defineCollection({
+  loader: vfmLoader({
+    base: 'content/en/reference',
+    lang: 'en',
+    collectionName: 'vivliostyle-reference-index-en',
+  }),
+  schema: docsSchema,
+});
+
+// Reference Index ページ（日本語）
+const referenceIndexJa = defineCollection({
+  loader: vfmLoader({
+    base: 'content/ja/reference',
+    lang: 'ja',
+    collectionName: 'vivliostyle-reference-index-ja',
+  }),
+  schema: docsSchema,
+});
+
+// CLI Contributing（英語）
+const cliContributingEn = defineCollection({
+  loader: vfmLoader({
+    base: 'submodules/vivliostyle-cli',
+    lang: 'en',
+    includePattern: /^CONTRIBUTING\.md$/,
+    collectionName: 'vivliostyle-cli-contributing-en',
+  }),
+  schema: docsSchema,
+});
+
+// Themes Contributing（英語）
+const themesContributingEn = defineCollection({
+  loader: vfmLoader({
+    base: 'submodules/themes',
+    lang: 'en',
+    includePattern: /^CONTRIBUTING\.md$/,
+    collectionName: 'vivliostyle-themes-contributing-en',
+  }),
+  schema: docsSchema,
+});
+
+// VFM Contributing（英語）
+const vfmContributingEn = defineCollection({
+  loader: vfmLoader({
+    base: 'submodules/vfm',
+    lang: 'en',
+    includePattern: /^CONTRIBUTING\.md$/,
+    collectionName: 'vivliostyle-vfm-contributing-en',
+  }),
+  schema: docsSchema,
+});
+
 export const collections = {
   'docs-en': docsEn,
   'docs-ja': docsJa,
   'vivliostyle-cli-en': cliDocsEn,
   'vivliostyle-cli-ja': cliDocsJa,
+  'vivliostyle-themes-en': themesDocsEn,
+  'vivliostyle-themes-ja': themesDocsJa,
+  'vivliostyle-vfm-en': vfmDocsEn,
+  'vivliostyle-vfm-ja': vfmDocsJa,
+  'vivliostyle-viewer-en': viewerDocsEn,
+  'vivliostyle-viewer-ja': viewerDocsJa,
+  'vivliostyle-reference-en': referenceDocsEn,
+  'vivliostyle-reference-ja': referenceDocsJa,
+  'vivliostyle-reference-index-en': referenceIndexEn,
+  'vivliostyle-reference-index-ja': referenceIndexJa,
+  'vivliostyle-cli-contributing-en': cliContributingEn,
+  'vivliostyle-themes-contributing-en': themesContributingEn,
+  'vivliostyle-vfm-contributing-en': vfmContributingEn,
 };

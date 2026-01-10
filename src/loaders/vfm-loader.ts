@@ -22,6 +22,8 @@ export interface VFMLoaderOptions {
   excludeDirs?: string[];
   /** 含めるファイルパターン（正規表現、ベースディレクトリからの相対パスにマッチ） */
   includePattern?: RegExp;
+  /** コレクション名（画像パス変換に使用。例: vivliostyle-cli-en → cli） */
+  collectionName?: string;
 }
 
 interface DocEntry {
@@ -153,14 +155,45 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
             const { data: frontmatter, content: markdownBody } = matter(content);
             logger.debug(`VFM Loader [${lang}]: Extracted frontmatter and markdown body for file: ${filePath}`);
 
+            // doctoc生成TOCを抽出（<!-- START doctoc generated TOC ... --> ... <!-- END doctoc generated TOC --> の部分）
+            let extractedToc: string | undefined;
+            let processedMarkdownBody = markdownBody;
+            const doctocMatch = markdownBody.match(/<!-- START doctoc generated TOC[^\n]*-->\s*\n([\s\S]*?)\n<!-- END doctoc generated TOC[^\n]*-->/);
+            if (doctocMatch) {
+              extractedToc = doctocMatch[1].trim();
+              // TOC部分をMarkdownから削除
+              processedMarkdownBody = markdownBody.replace(/<!-- START doctoc generated TOC[^\n]*-->\s*\n[\s\S]*?\n<!-- END doctoc generated TOC[^\n]*-->\s*\n?/, '');
+            } else {
+              // doctocマーカーがない場合、「## 目次」または「## Table of Contents」セクションを探す
+              // api.mdの場合は見出しだけ削除してリストは残す、それ以外は従来通り
+              const fileBaseName = basename(filePath);
+              const manualTocMatch = markdownBody.match(/##\s+(目次|Table of Contents|Contents)\s*\n([\s\S]*?)(?=\n##\s)/m);
+              
+              if (manualTocMatch) {
+                if (fileBaseName === 'api.md') {
+                  // api.mdの場合：見出しだけ削除、リストはそのまま残す
+                  processedMarkdownBody = markdownBody.replace(/##\s+(目次|Table of Contents|Contents)\s*\n/, '');
+                  // extractedTocには何も入れない（リストはMarkdown本体に残る）
+                } else {
+                  // それ以外：従来通り、TOCを抽出してMarkdownから削除
+                  const tocContent = manualTocMatch[2];
+                  const listMatch = tocContent.match(/^(?:.*\n)*?(- .*(?:\n(?:  - .*|- .*))*)/m);
+                  if (listMatch) {
+                    extractedToc = listMatch[1].trim();
+                  }
+                  processedMarkdownBody = markdownBody.replace(/##\s+(目次|Table of Contents|Contents)\s*\n[\s\S]*?(?=\n##\s)/m, '');
+                }
+              }
+            }
+
             // markdownBodyから最初の見出し（H1またはH2）をタイトルとして抽出
-            const h1Match = markdownBody.match(/^#\s+(.+)$/m);
-            const h2Match = markdownBody.match(/^##\s+(.+)$/m);
+            const h1Match = processedMarkdownBody.match(/^#\s+(.+)$/m);
+            const h2Match = processedMarkdownBody.match(/^##\s+(.+)$/m);
             const headingTitle = h1Match ? h1Match[1].trim() : (h2Match ? h2Match[1].trim() : undefined);
 
             let html: string;
             try {
-              html = stringify(markdownBody, {
+              html = stringify(processedMarkdownBody, {
                 hardLineBreaks: false,
                 disableFormatHtml: false,
               });
@@ -174,7 +207,41 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
               continue;
             }
 
-            // HTMLのリンクを修正
+            // doctoc TOCをHTMLに変換（存在する場合）
+            let extractedTocHtml: string | undefined;
+            if (extractedToc) {
+              try {
+                extractedTocHtml = stringify(extractedToc, {
+                  hardLineBreaks: false,
+                  disableFormatHtml: false,
+                });
+              } catch (tocError) {
+                logger.warn(`VFM Loader [${lang}]: Failed to convert doctoc TOC to HTML: ${tocError}`);
+              }
+            }
+
+            // api.mdの場合、「## 目次」または「## Table of Contents」の見出しだけを削除
+            // (リスト構造はそのまま残す) - すでにMarkdown段階で処理済みなので、この処理は不要
+            
+            // HTMLのリンクと画像パスを修正
+            
+            // 1. 画像パスを修正: ../assets/ -> /{product}/assets/, ./image.svg -> /{product}/assets/image.svg
+            // すべてのsubmoduleドキュメントで docs/assets に画像を格納する前提
+            // collectionNameから製品名を抽出して適切なパスに変換
+            // 例: vivliostyle-cli-en → /cli/assets/, vivliostyle-themes-ja → /themes/assets/
+            if (collectionName && collectionName.startsWith('vivliostyle-')) {
+              const productMatch = collectionName.match(/^vivliostyle-([^-]+)/);
+              if (productMatch) {
+                const productName = productMatch[1]; // cli, themes, vfm など
+                html = html.replace(/src="\.\.\/assets\//g, `src="/${productName}/assets/`);
+                html = html.replace(/src="\.\/assets\//g, `src="/${productName}/assets/`);
+                // vivliostyle.js (viewer) の場合: ../../assets/ -> /viewer/assets/
+                html = html.replace(/src="\.\.\/\.\.\/assets\//g, `src="/${productName}/assets/`);
+                // VFMなど、docsディレクトリ直下に画像がある場合も対応
+                // ./image.svg -> /vfm/assets/image.svg
+                html = html.replace(/src="\.\/([^/]+\.(svg|png|jpg|jpeg|gif|webp))"/g, `src="/${productName}/assets/$1"`);
+              }
+            }
             
             // 2. ./ja/index.md のような言語ディレクトリへのリンクを削除（言語スイッチャーで対応）
             html = html.replace(/<li>\s*<a href="\.\/ja\/index[^"]*"[^>]*>.*?<\/a>\s*<\/li>/gi, '');
@@ -182,11 +249,16 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
             // 2.5. 空のli要素を削除（Markdownの構造による空箇条書き項目を削除）
             html = html.replace(/<li>\s*<\/li>/gi, '');
             
-            // 3. 相対リンクの.md拡張子を削除し、末尾スラッシュを追加
+            // 3. Themes Contributing専用: ./docs/spec.md -> /[lang]/themes/spec/
+            if (collectionName && collectionName.includes('themes-contributing')) {
+              html = html.replace(/href="\.\/docs\/([^"]+)\.md"/g, `href="/${lang}/themes/$1/"`);
+            }
+            
+            // 4. 相対リンクの.md拡張子を削除し、末尾スラッシュを追加
             // 例: ./getting-started.md -> ./getting-started/
             html = html.replace(/href="\.\/([^"]+)\.md"/g, 'href="./$1/"');
             
-            // 4. ../で始まるリンク（親ディレクトリ）の処理
+            // 5. ../で始まるリンク（親ディレクトリ）の処理
             // docs/ja/index.md から docs/config.md への参照を適切に変換
             // ../config.md は /en/cli/config/ になるべき（英語版のみ存在）
             if (lang === 'ja') {
@@ -197,17 +269,32 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
               html = html.replace(/href="\.\.\/([^"]+)\.md"/g, 'href="../$1/"');
             }
 
+            // HTMLから見出しを抽出（h2, h3）
+            const headings: Array<{ depth: number; slug: string; text: string }> = [];
+            const headingMatches = html.matchAll(/<h([23])[^>]*id="([^"]+)"[^>]*>(.*?)<\/h\1>/gi);
+            for (const match of headingMatches) {
+              const depth = parseInt(match[1], 10); // 2 or 3
+              const slug = match[2];
+              const text = match[3].trim(); // すでにHTMLなのでそのまま使用
+              
+              if (slug) {
+                headings.push({ depth, slug, text });
+              }
+            }
+
             const slug = generateSlug(filePath, baseDir);
             const id = slug;
 
             const entry: DocEntry = {
               id,
               slug,
-              body: markdownBody,
+              body: processedMarkdownBody,
               data: {
                 ...frontmatter,
                 lang: lang || frontmatter.lang || 'en',
                 title: frontmatter.title || headingTitle || basename(slug),
+                extractedToc: extractedTocHtml, // 抽出したTOCをデータに追加
+                headings, // 見出しデータを追加
               },
               rendered: {
                 html,
