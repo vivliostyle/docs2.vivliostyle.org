@@ -249,11 +249,16 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
             // 2.5. 空のli要素を削除（Markdownの構造による空箇条書き項目を削除）
             html = html.replace(/<li>\s*<\/li>/gi, '');
             
-            // 3. 相対リンクの.md拡張子を削除し、末尾スラッシュを追加
+            // 3. Themes Contributing専用: ./docs/spec.md -> /[lang]/themes/spec/
+            if (collectionName && collectionName.includes('themes-contributing')) {
+              html = html.replace(/href="\.\/docs\/([^"]+)\.md"/g, `href="/${lang}/themes/$1/"`);
+            }
+            
+            // 4. 相対リンクの.md拡張子を削除し、末尾スラッシュを追加
             // 例: ./getting-started.md -> ./getting-started/
             html = html.replace(/href="\.\/([^"]+)\.md"/g, 'href="./$1/"');
             
-            // 4. ../で始まるリンク（親ディレクトリ）の処理
+            // 5. ../で始まるリンク（親ディレクトリ）の処理
             // docs/ja/index.md から docs/config.md への参照を適切に変換
             // ../config.md は /en/cli/config/ になるべき（英語版のみ存在）
             if (lang === 'ja') {
