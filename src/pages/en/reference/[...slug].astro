@@ -113,18 +113,20 @@ const pageOrder = [
   'supported-css-features',
   'api',
   'contribution-guide',
+  'contributing-viewer',
   'contributing-cli',
   'contributing-vfm',
   'contributing-themes',
 ];
 
-// Combine all documents (reference docs + contributing pages)
+// Combine all documents (regular reference + contributing pages)
 const allDocs = [
   ...referenceDocs,
   // Add virtual documents for contributing pages (for navigation)
-  { id: 'contributing-cli', data: { title: 'Vivliostyle CLI Contribution Guide' } },
-  { id: 'contributing-vfm', data: { title: 'VFM Contribution Guide' } },
-  { id: 'contributing-themes', data: { title: 'Vivliostyle Themes Contribution Guide' } },
+  { id: 'contributing-viewer', data: { title: 'Vivliostyle Viewer' } },
+  { id: 'contributing-cli', data: { title: 'Vivliostyle CLI' } },
+  { id: 'contributing-vfm', data: { title: 'VFM' } },
+  { id: 'contributing-themes', data: { title: 'Vivliostyle Themes' } },
 ];
 
 const sortedDocs = allDocs.sort((a, b) => {
@@ -162,13 +164,49 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
 
   <!-- Sidebar navigation and table of contents -->
   <nav slot="sidebar">
-    <a href="/en/" class="back-to-home">← Back to Home</a>
+    <h3>Reference</h3>
+    <ul style="list-style: none; padding-left: 0;">
+      <li><a href="/en/">← Back to Home</a></li>
+      {sortedDocs.map(item => {
+        let itemPath = `/en/reference/${item.id}/`;
+        const currentPath = `/en/reference/${doc.id}/`;
+        
+        // contributing-viewer's actual link is contribution-guide
+        if (item.id === 'contributing-viewer') {
+          itemPath = '/en/reference/contribution-guide/';
+        }
+        
+        const isActive = itemPath === currentPath;
+        const isContributingItem = item.id.startsWith('contributing-') && item.id !== 'contribution-guide';
+        
+        // Customize titles
+        let displayTitle = item.data.title || item.id;
+        if (item.id === 'supported-css-features') displayTitle = 'Supported CSS Features';
+        if (item.id === 'api') displayTitle = 'Core API Reference';
+        if (item.id === 'contribution-guide') displayTitle = 'Contribution Guide';
+        if (item.id === 'contributing-viewer') displayTitle = 'Vivliostyle Viewer';
+        
+        // contribution-guide is text only without link
+        if (item.id === 'contribution-guide') {
+          return (
+            <li style="font-weight: bold;">{displayTitle}</li>
+          );
+        }
+        
+        return (
+          <li class:list={[{ active: isActive }]} style={isContributingItem ? 'padding-left: 1rem;' : ''}>
+            <a href={itemPath} aria-current={isActive ? 'page' : undefined}>
+              {displayTitle}
+            </a>
+          </li>
+        );
+      })}
+    </ul>
   </nav>
 
   <!-- Main content -->
   <article class="docs-content">
-    <h1>{title}</h1>
-    
+
     <!-- Display extracted TOC if exists -->
     {extractedToc && (
       <div class="toc" set:html={extractedToc}></div>

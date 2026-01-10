@@ -113,6 +113,7 @@ const pageOrder = [
   'supported-css-features',
   'api',
   'contribution-guide',
+  'contributing-viewer',
   'contributing-cli',
   'contributing-vfm',
   'contributing-themes',
@@ -122,9 +123,10 @@ const pageOrder = [
 const allDocs = [
   ...referenceDocs,
   // contributingページ用の仮想ドキュメントを追加（ナビゲーション用）
-  { id: 'contributing-cli', data: { title: 'Vivliostyle CLI コントリビューションガイド' } },
-  { id: 'contributing-vfm', data: { title: 'VFM コントリビューションガイド' } },
-  { id: 'contributing-themes', data: { title: 'Vivliostyle Themes コントリビューションガイド' } },
+  { id: 'contributing-viewer', data: { title: 'Vivliostyle Viewer' } },
+  { id: 'contributing-cli', data: { title: 'Vivliostyle CLI' } },
+  { id: 'contributing-vfm', data: { title: 'VFM' } },
+  { id: 'contributing-themes', data: { title: 'Vivliostyle Themes' } },
 ];
 
 const sortedDocs = allDocs.sort((a, b) => {
@@ -162,13 +164,48 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
 
   <!-- サイドバーにナビゲーションと目次を表示 -->
   <nav slot="sidebar">
-    <a href="/ja/" class="back-to-home">← ホームに戻る</a>
+    <h3>リファレンス</h3>
+    <ul style="list-style: none; padding-left: 0;">
+      <li><a href="/ja/">← ホームに戻る</a></li>
+      {sortedDocs.map(item => {
+        let itemPath = `/ja/reference/${item.id}/`;
+        const currentPath = `/ja/reference/${doc.id}/`;
+        
+        // contributing-viewerの実際のリンク先はcontribution-guide
+        if (item.id === 'contributing-viewer') {
+          itemPath = '/ja/reference/contribution-guide/';
+        }
+        
+        const isActive = itemPath === currentPath;
+        const isContributingItem = item.id.startsWith('contributing-') && item.id !== 'contribution-guide';
+        
+        // タイトルをカスタマイズ
+        let displayTitle = item.data.title || item.id;
+        if (item.id === 'supported-css-features') displayTitle = 'サポートする CSS 機能';
+        if (item.id === 'api') displayTitle = 'Core API リファレンス';
+        if (item.id === 'contribution-guide') displayTitle = 'コントリビューションガイド';
+        if (item.id === 'contributing-viewer') displayTitle = 'Vivliostyle Viewer';
+        
+        // contribution-guideはリンクなしのテキストのみ
+        if (item.id === 'contribution-guide') {
+          return (
+            <li style="font-weight: bold;">{displayTitle}</li>
+          );
+        }
+        
+        return (
+          <li class:list={[{ active: isActive }]} style={isContributingItem ? 'padding-left: 1rem;' : ''}>
+            <a href={itemPath} aria-current={isActive ? 'page' : undefined}>
+              {displayTitle}
+            </a>
+          </li>
+        );
+      })}
+    </ul>
   </nav>
 
   <!-- メインコンテンツ -->
   <article class="docs-content">
-    <h1>{title}</h1>
-    
     <!-- 抽出したTOCが存在する場合は表示 -->
     {extractedToc && (
       <div class="toc" set:html={extractedToc}></div>
