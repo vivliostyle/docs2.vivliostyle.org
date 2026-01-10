@@ -109,11 +109,11 @@ const extractedToc = doc.data?.extractedToc; // 抽出したTOC（存在する�
 const headings = doc.data?.headings || [];
 
 // ページの順序を定義（index.mdの順番に合わせる）
+// contributing-viewerは仮想ドキュメント（サイドバー用）なので、ナビゲーションからは除外
 const pageOrder = [
   'supported-css-features',
   'api',
   'contribution-guide',
-  'contributing-viewer',
   'contributing-cli',
   'contributing-vfm',
   'contributing-themes',

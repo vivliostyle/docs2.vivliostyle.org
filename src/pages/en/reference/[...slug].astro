@@ -109,11 +109,11 @@ const extractedToc = doc.data?.extractedToc; // extracted TOC if exists
 const headings = doc.data?.headings || [];
 
 // Define page order (match index.md order)
+// contributing-viewer is a virtual document (for sidebar) so exclude from navigation
 const pageOrder = [
   'supported-css-features',
   'api',
   'contribution-guide',
-  'contributing-viewer',
   'contributing-cli',
   'contributing-vfm',
   'contributing-themes',
