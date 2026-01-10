@@ -119,8 +119,10 @@ const pageOrder = [
 ];
 
 // Combine all documents (regular reference + contributing pages)
+// contribution-guide is not displayed as a page, only as a heading
+const filteredReferenceDocs = referenceDocs.filter(doc => doc.id !== 'contribution-guide');
 const allDocs = [
-  ...referenceDocs,
+  ...filteredReferenceDocs,
   // Add virtual documents for sidebar display
   { id: 'contribution-guide-heading', data: { title: 'Contribution Guidelines' } },  // Heading only
   { id: 'contributing-viewer', data: { title: 'Vivliostyle Viewer' } },

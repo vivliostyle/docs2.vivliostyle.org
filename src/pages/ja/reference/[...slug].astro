@@ -119,8 +119,10 @@ const pageOrder = [
 ];
 
 // 全てのドキュメント（通常のリファレンス + contributingページ）を統合
+// contribution-guide は実際のページとして表示せず、見出しのみ表示
+const filteredReferenceDocs = referenceDocs.filter(doc => doc.id !== 'contribution-guide');
 const allDocs = [
-  ...referenceDocs,
+  ...filteredReferenceDocs,
   // サイドバー表示用の仮想ドキュメントを追加
   { id: 'contribution-guide-heading', data: { title: 'コントリビューションガイド' } },  // 見出し専用
   { id: 'contributing-viewer', data: { title: 'Vivliostyle Viewer' } },
