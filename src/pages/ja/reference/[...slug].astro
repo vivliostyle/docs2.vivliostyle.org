@@ -109,11 +109,10 @@ const extractedToc = doc.data?.extractedToc; // 抽出したTOC（存在する�
 const headings = doc.data?.headings || [];
 
 // ページの順序を定義（index.mdの順番に合わせる）
-// contributing-viewerは仮想ドキュメント（サイドバー用）なので、ナビゲーションからは除外
 const pageOrder = [
   'supported-css-features',
   'api',
-  'contribution-guide',
+  'contributing-viewer',  // contribution-guideへのリンク（「Vivliostyle Viewer」として表示）
   'contributing-cli',
   'contributing-vfm',
   'contributing-themes',
@@ -122,7 +121,8 @@ const pageOrder = [
 // 全てのドキュメント（通常のリファレンス + contributingページ）を統合
 const allDocs = [
   ...referenceDocs,
-  // contributingページ用の仮想ドキュメントを追加（ナビゲーション用）
+  // サイドバー表示用の仮想ドキュメントを追加
+  { id: 'contribution-guide-heading', data: { title: 'コントリビューションガイド' } },  // 見出し専用
   { id: 'contributing-viewer', data: { title: 'Vivliostyle Viewer' } },
   { id: 'contributing-cli', data: { title: 'Vivliostyle CLI' } },
   { id: 'contributing-vfm', data: { title: 'VFM' } },
@@ -192,17 +192,16 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
         }
         
         const isActive = itemPath === currentPath;
-        const isContributingItem = item.id.startsWith('contributing-') && item.id !== 'contribution-guide';
+        const isContributingItem = item.id.startsWith('contributing-');
         
         // タイトルをカスタマイズ
         let displayTitle = item.data.title || item.id;
         if (item.id === 'supported-css-features') displayTitle = 'サポートする CSS 機能';
         if (item.id === 'api') displayTitle = 'Core API リファレンス';
-        if (item.id === 'contribution-guide') displayTitle = 'コントリビューションガイド';
         if (item.id === 'contributing-viewer') displayTitle = 'Vivliostyle Viewer';
         
-        // contribution-guideはリンクなしのテキストのみ
-        if (item.id === 'contribution-guide') {
+        // contribution-guide-headingは見出しとして表示（リンクなし）
+        if (item.id === 'contribution-guide-heading') {
           return (
             <li style="font-weight: bold;">{displayTitle}</li>
           );

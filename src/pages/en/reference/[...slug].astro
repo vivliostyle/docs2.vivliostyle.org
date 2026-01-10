@@ -109,11 +109,10 @@ const extractedToc = doc.data?.extractedToc; // extracted TOC if exists
 const headings = doc.data?.headings || [];
 
 // Define page order (match index.md order)
-// contributing-viewer is a virtual document (for sidebar) so exclude from navigation
 const pageOrder = [
   'supported-css-features',
   'api',
-  'contribution-guide',
+  'contributing-viewer',  // Link to contribution-guide (displayed as "Vivliostyle Viewer")
   'contributing-cli',
   'contributing-vfm',
   'contributing-themes',
@@ -122,7 +121,8 @@ const pageOrder = [
 // Combine all documents (regular reference + contributing pages)
 const allDocs = [
   ...referenceDocs,
-  // Add virtual documents for contributing pages (for navigation)
+  // Add virtual documents for sidebar display
+  { id: 'contribution-guide-heading', data: { title: 'Contribution Guidelines' } },  // Heading only
   { id: 'contributing-viewer', data: { title: 'Vivliostyle Viewer' } },
   { id: 'contributing-cli', data: { title: 'Vivliostyle CLI' } },
   { id: 'contributing-vfm', data: { title: 'VFM' } },
@@ -192,17 +192,16 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
         }
         
         const isActive = itemPath === currentPath;
-        const isContributingItem = item.id.startsWith('contributing-') && item.id !== 'contribution-guide';
+        const isContributingItem = item.id.startsWith('contributing-');
         
         // Customize titles
         let displayTitle = item.data.title || item.id;
         if (item.id === 'supported-css-features') displayTitle = 'Supported CSS Features';
         if (item.id === 'api') displayTitle = 'Core API Reference';
-        if (item.id === 'contribution-guide') displayTitle = 'Contribution Guide';
         if (item.id === 'contributing-viewer') displayTitle = 'Vivliostyle Viewer';
         
-        // contribution-guide is text only without link
-        if (item.id === 'contribution-guide') {
+        // contribution-guide-heading displays as heading (no link)
+        if (item.id === 'contribution-guide-heading') {
           return (
             <li style="font-weight: bold;">{displayTitle}</li>
           );
