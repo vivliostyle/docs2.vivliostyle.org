@@ -112,6 +112,7 @@ const headings = doc.data?.headings || [];
 const pageOrder = [
   'supported-css-features',
   'api',
+  'contribution-guide-heading',  // 見出しのみ（ページナビゲーションではスキップ）
   'contributing-viewer',  // contribution-guideへのリンク（「Vivliostyle Viewer」として表示）
   'contributing-cli',
   'contributing-vfm',
@@ -144,10 +145,10 @@ const sortedDocs = allDocs.sort((a, b) => {
 // 現在のページのインデックスを取得
 const currentIndex = sortedDocs.findIndex(d => d.id === doc.id);
 
-// prevPage/nextPageを計算（pageOrderに含まれるページのみ）
+// prevPage/nextPageを計算（pageOrderに含まれるページのみ、見出しは除外）
 let prevPage = null;
 for (let i = currentIndex - 1; i >= 0; i--) {
-  if (pageOrder.includes(sortedDocs[i].id)) {
+  if (pageOrder.includes(sortedDocs[i].id) && sortedDocs[i].id !== 'contribution-guide-heading') {
     prevPage = sortedDocs[i];
     break;
   }
@@ -155,7 +156,7 @@ for (let i = currentIndex - 1; i >= 0; i--) {
 
 let nextPage = null;
 for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
-  if (pageOrder.includes(sortedDocs[i].id)) {
+  if (pageOrder.includes(sortedDocs[i].id) && sortedDocs[i].id !== 'contribution-guide-heading') {
     nextPage = sortedDocs[i];
     break;
   }

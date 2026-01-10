@@ -112,6 +112,7 @@ const headings = doc.data?.headings || [];
 const pageOrder = [
   'supported-css-features',
   'api',
+  'contribution-guide-heading',  // Heading only (skip in page navigation)
   'contributing-viewer',  // Link to contribution-guide (displayed as "Vivliostyle Viewer")
   'contributing-cli',
   'contributing-vfm',
@@ -144,10 +145,10 @@ const sortedDocs = allDocs.sort((a, b) => {
 // Get current page index
 const currentIndex = sortedDocs.findIndex(d => d.id === doc.id);
 
-// Calculate prevPage/nextPage (only pages in pageOrder)
+// Calculate prevPage/nextPage (only pages in pageOrder, exclude headings)
 let prevPage = null;
 for (let i = currentIndex - 1; i >= 0; i--) {
-  if (pageOrder.includes(sortedDocs[i].id)) {
+  if (pageOrder.includes(sortedDocs[i].id) && sortedDocs[i].id !== 'contribution-guide-heading') {
     prevPage = sortedDocs[i];
     break;
   }
@@ -155,7 +156,7 @@ for (let i = currentIndex - 1; i >= 0; i--) {
 
 let nextPage = null;
 for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
-  if (pageOrder.includes(sortedDocs[i].id)) {
+  if (pageOrder.includes(sortedDocs[i].id) && sortedDocs[i].id !== 'contribution-guide-heading') {
     nextPage = sortedDocs[i];
     break;
   }
