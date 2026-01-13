@@ -444,6 +444,14 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
     color: var(--color-primary);
   }
 
+  .accordion-toggle .toggle-icon {
+    margin-right: 0.5rem;
+  }
+
+  .accordion-toggle[aria-expanded="true"] .toggle-icon {
+    transform: rotate(90deg);
+  }
+
   .accordion-content li {
     margin: 0.25rem 0;
   }

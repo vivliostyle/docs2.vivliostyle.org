@@ -415,11 +415,77 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
       font-size: 2rem;
     }
   }
+
+  /* アコーディオンメニューのスタイル */
+  .sidebar-accordion {
+    margin-top: 0.5rem;
+  }
+
+  .accordion-section {
+    margin-bottom: 0.5rem;
+  }
+
+  .accordion-toggle {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0.25rem 0;
+    text-align: left;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-text);
+  }
+
+  .accordion-toggle:hover {
+    color: var(--color-primary);
+  }
+
+  .accordion-toggle .toggle-icon {
+    margin-right: 0.5rem;
+  }
+
+  .accordion-toggle[aria-expanded="true"] .toggle-icon {
+    transform: rotate(90deg);
+  }
+
+  .accordion-content li {
+    margin: 0.25rem 0;
+  }
+
+  .accordion-content a {
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: 1rem;
+  }
+
+  .accordion-content a:hover {
+    color: var(--color-primary);
+  }
 </style>
 
 <script>
   // アコーディオンメニューの開閉処理
   document.addEventListener('DOMContentLoaded', () => {
+    // サイドバーアコーディオンのトグル
+    const accordionToggles = document.querySelectorAll('.accordion-toggle');
+    accordionToggles.forEach(toggle => {
+      toggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = toggle.getAttribute('data-target');
+        const content = document.getElementById(targetId!);
+        const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+        
+        toggle.setAttribute('aria-expanded', String(!isExpanded));
+        if (content) {
+          content.style.display = isExpanded ? 'none' : 'block';
+        }
+      });
+    });
+
+    // TOCトグル
     const toggleButtons = document.querySelectorAll('.toc-toggle');
     
     toggleButtons.forEach(button => {
