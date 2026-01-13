@@ -154,6 +154,14 @@ const { title, description = '', lang = 'en' } = Astro.props;
     top: 4rem;
     height: calc(100vh - 4rem);
     overflow-y: auto;
+    font-size: 1rem;
+  }
+  
+  .sidebar :global(nav),
+  .sidebar :global(ul),
+  .sidebar :global(li),
+  .sidebar :global(a) {
+    font-size: 1rem;
   }
   
   .content {
