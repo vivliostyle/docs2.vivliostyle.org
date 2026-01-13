@@ -183,46 +183,54 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
 
   <!-- サイドバーにナビゲーションと目次を表示 -->
   <nav slot="sidebar" id="sidebar-nav">
-    <h3>リファレンス</h3>
+    <h3><a href="/ja/reference/" style="color: inherit; text-decoration: none;">リファレンス</a></h3>
     
     <!-- 特定ページでのみ見出しリストを表示 -->
-    {(doc.id === 'supported-css-features' || doc.id === 'api' || doc.id === 'vivliostyle-viewer') ? (
-      <div class="toc-headings">
-        <ul style="list-style: none; padding-left: 0;">
-          {headings.filter(h => h.depth === 2 || h.depth === 3).map((heading, index) => {
-            // H2見出しのみ処理（H3は後で追加）
-            if (heading.depth !== 2) return null;
-            
-            // 次のH2までのH3を収集
-            const nextH2Index = headings.slice(index + 1).findIndex(h => h.depth === 2);
-            const h3List = headings
-              .slice(index + 1, nextH2Index === -1 ? undefined : index + 1 + nextH2Index)
-              .filter(h => h.depth === 3);
-            
-            return (
-              <li class="toc-h2">
-                <button 
-                  class="toc-toggle" 
-                  data-target={`toc-group-${index}`}
-                  aria-expanded="false"
-                >
-                  <span class="toggle-icon">▶</span>
-                  <a href={`#${heading.slug}`} set:html={heading.text}></a>
-                </button>
-                {h3List.length > 0 && (
-                  <ul id={`toc-group-${index}`} class="toc-h3-list" style="display: none; list-style: none; padding-left: 1.5rem;">
-                    {h3List.map(h3 => (
-                      <li class="toc-h3">
-                        <a href={`#${h3.slug}`} set:html={h3.text}></a>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </li>
-            );
-          })}
+    {(doc.id === 'supported-css-features' || doc.id === 'api' || doc.id === 'vivliostyle-viewer' || doc.id === 'contribution-guide') ? (
+      <>
+        <ul style="list-style: none; padding-left: 0; margin-bottom: 1rem;">
+          <li><a href="/ja/">← ホームに戻る</a></li>
         </ul>
-      </div>
+        <div class="toc-headings">
+          <ul style="list-style: none; padding-left: 0;">
+            {headings.filter(h => h.depth === 2 || h.depth === 3).map((heading, index) => {
+              // H2見出しのみ処理（H3は後で追加）
+              if (heading.depth !== 2) return null;
+              
+              // 次のH2までのH3を収集
+              const nextH2Index = headings.slice(index + 1).findIndex(h => h.depth === 2);
+              const h3List = headings
+                .slice(index + 1, nextH2Index === -1 ? undefined : index + 1 + nextH2Index)
+                .filter(h => h.depth === 3);
+              
+              return (
+                <li class="toc-h2">
+                  {h3List.length > 0 ? (
+                    <button 
+                      class="toc-toggle" 
+                      data-target={`toc-group-${index}`}
+                      aria-expanded="false"
+                    >
+                      <span class="toggle-icon">▶</span><a href={`#${heading.slug}`} set:html={heading.text}></a>
+                    </button>
+                  ) : (
+                    <a href={`#${heading.slug}`} class="toc-h2-link" set:html={heading.text}></a>
+                  )}
+                  {h3List.length > 0 && (
+                    <ul id={`toc-group-${index}`} class="toc-h3-list" style="display: none; list-style: none; padding-left: 1.5rem;">
+                      {h3List.map(h3 => (
+                        <li class="toc-h3">
+                          <a href={`#${h3.slug}`} set:html={h3.text}></a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </>
     ) : (
       <ul style="list-style: none; padding-left: 0;">
         <li><a href="/ja/">← ホームに戻る</a></li>
@@ -339,6 +347,17 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
     margin: 0.5rem 0;
   }
   
+  .toc-h2-link {
+    color: var(--color-text);
+    text-decoration: none;
+    display: block;
+    padding: 0.25rem 0;
+  }
+  
+  .toc-h2-link:hover {
+    color: var(--color-primary);
+  }
+  
   .toc-toggle {
     display: flex;
     align-items: flex-start;
@@ -348,7 +367,7 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
     padding: 0;
     text-align: left;
     cursor: pointer;
-    gap: 0.5rem;
+    gap: 0;
   }
   
   .toggle-icon {
@@ -365,7 +384,6 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
   .toc-toggle a {
     color: var(--color-text);
     text-decoration: none;
-    flex: 1;
   }
   
   .toc-toggle a:hover {

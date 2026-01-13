@@ -88,18 +88,54 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
   <nav slot="sidebar">
     <h3>Vivliostyle Viewer Documentation</h3>
     <a href="/en/" class="back-to-home">← Back to Home</a>
-    {tocHeadings.length > 0 && (
-      <ul class="toc-list" style="list-style: none; padding-left: 0;">
-        {tocHeadings.map((heading) => {
-          const slug = heading.slug || '';
-          const text = heading.text || '';
-          return (
-            <li class={`toc-item toc-level-${heading.depth}`}>
-              <a href={`#${slug}`} set:html={text}></a>
-            </li>
-          );
-        })}
-      </ul>
+    {doc.id === 'vivliostyle-viewer' ? (
+      <>
+        <div class="toc-headings">
+          {headings.filter(h => h.depth === 2 || h.depth === 3).map((heading, index, arr) => {
+            if (heading.depth !== 2) return null;
+            
+            const nextH2Index = arr.findIndex((h, i) => i > index && h.depth === 2);
+            const h3List = headings
+              .slice(index + 1, nextH2Index === -1 ? headings.length : arr.findIndex((h, i) => i > index && h.depth === 2))
+              .filter(h => h.depth === 3);
+            
+            return (
+              <li class="toc-h2">
+                {h3List.length > 0 ? (
+                  <button class="toc-toggle" data-target={`toc-group-${index}`} aria-expanded="false">
+                    <span class="toggle-icon">▶</span><a href={`#${heading.slug}`} set:html={heading.text}></a>
+                  </button>
+                ) : (
+                  <a href={`#${heading.slug}`} class="toc-h2-link" set:html={heading.text}></a>
+                )}
+                {h3List.length > 0 && (
+                  <ul class="toc-h3-list" id={`toc-group-${index}`} style="display: none;">
+                    {h3List.map(h3 => (
+                      <li class="toc-h3">
+                        <a href={`#${h3.slug}`} set:html={h3.text}></a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            );
+          })}
+        </div>
+      </>
+    ) : (
+      tocHeadings.length > 0 && (
+        <ul class="toc-list" style="list-style: none; padding-left: 0;">
+          {tocHeadings.map((heading) => {
+            const slug = heading.slug || '';
+            const text = heading.text || '';
+            return (
+              <li class={`toc-item toc-level-${heading.depth}`}>
+                <a href={`#${slug}`} set:html={text}></a>
+              </li>
+            );
+          })}
+        </ul>
+      )
     )}
   </nav>
 
@@ -158,4 +194,103 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
   .toc :global(a:hover) {
     text-decoration: underline;
   }
+
+  /* アコーディオンメニュースタイル */
+  .toc-headings {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+  }
+
+  .toc-h2 {
+    margin: 0.5rem 0;
+  }
+
+  .toc-toggle {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0;
+    text-align: left;
+    cursor: pointer;
+    gap: 0;
+  }
+
+  .toggle-icon {
+    display: inline-block;
+    transition: transform 0.2s;
+    font-size: 0.7rem;
+    padding-top: 0.2rem;
+  }
+
+  .toc-toggle[aria-expanded="true"] .toggle-icon {
+    transform: rotate(90deg);
+  }
+
+  .toc-toggle a {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .toc-toggle a:hover {
+    color: var(--color-primary);
+  }
+
+  .toc-h2-link {
+    color: var(--color-text);
+    text-decoration: none;
+    display: block;
+    padding: 0.25rem 0;
+  }
+
+  .toc-h2-link:hover {
+    color: var(--color-primary);
+  }
+
+  .toc-h3-list {
+    list-style: none;
+    padding-left: 1rem;
+    margin: 0.25rem 0 0 0;
+  }
+
+  .toc-h3 {
+    margin: 0.25rem 0;
+  }
+
+  .toc-h3 a {
+    color: var(--color-text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+
+  .toc-h3 a:hover {
+    color: var(--color-primary);
+  }
 </style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggleButtons = document.querySelectorAll('.toc-toggle');
+    
+    toggleButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        // リンククリックの場合は通常の動作を許可
+        if (e.target.tagName === 'A') {
+          return;
+        }
+        
+        e.preventDefault();
+        const targetId = button.getAttribute('data-target');
+        const targetList = document.getElementById(targetId);
+        const isExpanded = button.getAttribute('aria-expanded') === 'true';
+        
+        button.setAttribute('aria-expanded', !isExpanded);
+        if (targetList) {
+          targetList.style.display = isExpanded ? 'none' : 'block';
+        }
+      });
+    });
+  });
+</script>
