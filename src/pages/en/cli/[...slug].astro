@@ -123,6 +123,57 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
 </DocsLayout>
 
 <style>
+  .sidebar-accordion {
+    margin-top: 0.5rem;
+  }
+
+  .accordion-section {
+    margin-bottom: 0.5rem;
+  }
+
+  .accordion-toggle {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0.25rem 0;
+    text-align: left;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-text);
+  }
+
+  .accordion-toggle:hover {
+    color: var(--color-primary);
+  }
+
+  .toggle-icon {
+    display: inline-block;
+    transition: transform 0.2s;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+  }
+
+  .accordion-toggle[aria-expanded="true"] .toggle-icon {
+    transform: rotate(90deg);
+  }
+
+  .accordion-content li {
+    margin: 0.25rem 0;
+  }
+
+  .accordion-content a {
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: 1rem;
+  }
+
+  .accordion-content a:hover {
+    color: var(--color-primary);
+  }
+
   nav ul {
     list-style: none;
     padding: 0;
@@ -135,3 +186,23 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
     color: var(--color-primary, #0066cc);
   }
 </style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggleButtons = document.querySelectorAll('.accordion-toggle');
+    
+    toggleButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = button.getAttribute('data-target');
+        const targetContent = document.getElementById(targetId);
+        const isExpanded = button.getAttribute('aria-expanded') === 'true';
+        
+        button.setAttribute('aria-expanded', !isExpanded);
+        if (targetContent) {
+          targetContent.style.display = isExpanded ? 'none' : 'block';
+        }
+      });
+    });
+  });
+</script>
