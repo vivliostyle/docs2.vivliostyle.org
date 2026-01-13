@@ -232,42 +232,45 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
         </div>
       </>
     ) : (
-      <ul style="list-style: none; padding-left: 0;">
-        <li><a href="/en/">← Back to Home</a></li>
-        {sortedDocs.map(item => {
-          let itemPath = `/en/reference/${item.id}/`;
-          const currentPath = `/en/reference/${doc.id}/`;
-          
-          // contributing-viewer's actual link is contribution-guide
-          if (item.id === 'contributing-viewer') {
-            itemPath = '/en/reference/contribution-guide/';
-          }
-          
-          const isActive = itemPath === currentPath;
-          const isContributingItem = item.id.startsWith('contributing-');
-          
-          // Customize titles
-          let displayTitle = item.data.title || item.id;
-          if (item.id === 'supported-css-features') displayTitle = 'Supported CSS Features';
-          if (item.id === 'api') displayTitle = 'Core API Reference';
-          if (item.id === 'contributing-viewer') displayTitle = 'Vivliostyle Viewer';
-          
-          // contribution-guide-heading displays as heading (no link)
-          if (item.id === 'contribution-guide-heading') {
-            return (
-              <li style="font-weight: bold;">{displayTitle}</li>
-            );
-          }
-          
-          return (
-            <li class:list={[{ active: isActive }]} style={isContributingItem ? 'padding-left: 1rem;' : ''}>
-              <a href={itemPath} aria-current={isActive ? 'page' : undefined}>
-                {displayTitle}
-              </a>
-            </li>
-          );
-        })}
-      </ul>
+      <>
+        <ul style="list-style: none; padding-left: 0; margin-bottom: 1rem;">
+          <li><a href="/en/">← Back to Home</a></li>
+        </ul>
+        <div class="sidebar-accordion">
+          <div class="accordion-section">
+            <button class="accordion-toggle" data-target="docs-group" aria-expanded="true">
+              <span class="toggle-icon">▶</span>Documentation
+            </button>
+            <ul class="accordion-content" id="docs-group" style="display: block; list-style: none; padding-left: 1.5rem; margin: 0.25rem 0 0 0;">
+              <li class:list={[{ active: doc.id === 'supported-css-features' }]}>
+                <a href="/en/reference/supported-css-features/" aria-current={doc.id === 'supported-css-features' ? 'page' : undefined}>Supported CSS Features</a>
+              </li>
+              <li class:list={[{ active: doc.id === 'api' }]}>
+                <a href="/en/reference/api/" aria-current={doc.id === 'api' ? 'page' : undefined}>Core API Reference</a>
+              </li>
+            </ul>
+          </div>
+          <div class="accordion-section">
+            <button class="accordion-toggle" data-target="contrib-group" aria-expanded="true">
+              <span class="toggle-icon">▶</span>Contribution Guides
+            </button>
+            <ul class="accordion-content" id="contrib-group" style="display: block; list-style: none; padding-left: 1.5rem; margin: 0.25rem 0 0 0;">
+              <li class:list={[{ active: doc.id === 'contribution-guide' }]}>
+                <a href="/en/reference/contribution-guide/" aria-current={doc.id === 'contribution-guide' ? 'page' : undefined}>Vivliostyle Viewer</a>
+              </li>
+              <li class:list={[{ active: doc.id === 'contributing-cli' }]}>
+                <a href="/en/reference/contributing-cli/" aria-current={doc.id === 'contributing-cli' ? 'page' : undefined}>Vivliostyle CLI</a>
+              </li>
+              <li class:list={[{ active: doc.id === 'contributing-vfm' }]}>
+                <a href="/en/reference/contributing-vfm/" aria-current={doc.id === 'contributing-vfm' ? 'page' : undefined}>VFM</a>
+              </li>
+              <li class:list={[{ active: doc.id === 'contributing-themes' }]}>
+                <a href="/en/reference/contributing-themes/" aria-current={doc.id === 'contributing-themes' ? 'page' : undefined}>Vivliostyle Themes</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </>
     )}
   </nav>
 
@@ -413,11 +416,69 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
       font-size: 2rem;
     }
   }
+
+  /* Accordion menu styles */
+  .sidebar-accordion {
+    margin-top: 0.5rem;
+  }
+
+  .accordion-section {
+    margin-bottom: 0.5rem;
+  }
+
+  .accordion-toggle {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0.25rem 0;
+    text-align: left;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-text);
+  }
+
+  .accordion-toggle:hover {
+    color: var(--color-primary);
+  }
+
+  .accordion-content li {
+    margin: 0.25rem 0;
+  }
+
+  .accordion-content a {
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: 1rem;
+  }
+
+  .accordion-content a:hover {
+    color: var(--color-primary);
+  }
 </style>
 
 <script>
-  // Accordion menu toggle handling
+  // Accordion menu and TOC toggle handling
   document.addEventListener('DOMContentLoaded', () => {
+    // Accordion toggle
+    const accordionToggles = document.querySelectorAll('.accordion-toggle');
+    accordionToggles.forEach(toggle => {
+      toggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = toggle.getAttribute('data-target');
+        const content = document.getElementById(targetId!);
+        const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+        
+        toggle.setAttribute('aria-expanded', String(!isExpanded));
+        if (content) {
+          content.style.display = isExpanded ? 'none' : 'block';
+        }
+      });
+    });
+
+    // TOC toggle
     const toggleButtons = document.querySelectorAll('.toc-toggle');
     
     toggleButtons.forEach(button => {

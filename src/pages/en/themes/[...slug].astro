@@ -73,15 +73,8 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
   </div>
   <nav slot="sidebar">
     <h3>Themes Documentation</h3>
-    <ul style="list-style: none; padding-left: 0; margin-bottom: 1rem;">
+    <ul style="list-style: none; padding-left: 0;">
       <li><a href="/en/">← Back to Home</a></li>
-    </ul>
-    <div class="sidebar-accordion">
-      <div class="accordion-section">
-        <button class="accordion-toggle" data-target="themes-docs-group" aria-expanded="true">
-          <span class="toggle-icon">▶</span>Documentation
-        </button>
-        <ul class="accordion-content" id="themes-docs-group" style="display: block; list-style: none; padding-left: 1.5rem; margin: 0.25rem 0 0 0;">
           {sortedDocs.map(item => {
             const itemPath = item.id === 'index' ? '/en/themes/' : `/en/themes/${item.id}/`;
             const isActive = itemPath === currentPath;

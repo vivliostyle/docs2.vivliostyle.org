@@ -232,47 +232,45 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
         </div>
       </>
     ) : (
-      <ul style="list-style: none; padding-left: 0;">
-        <li><a href="/ja/">← ホームに戻る</a></li>
-        {sortedDocs.map(item => {
-          // contribution-guideはサイドバーで非表示（contribution-guide-headingとcontributing-viewerで代替）
-          if (item.id === 'contribution-guide') {
-            return null;
-          }
-          
-          let itemPath = `/ja/reference/${item.id}/`;
-          const currentPath = `/ja/reference/${doc.id}/`;
-          
-          // contributing-viewerの実際のリンク先はcontribution-guide
-          if (item.id === 'contributing-viewer') {
-            itemPath = '/ja/reference/contribution-guide/';
-          }
-          
-          const isActive = itemPath === currentPath;
-          const isContributingItem = item.id.startsWith('contributing-');
-          
-          // タイトルをカスタマイズ
-          let displayTitle = item.data.title || item.id;
-          if (item.id === 'supported-css-features') displayTitle = 'サポートする CSS 機能';
-          if (item.id === 'api') displayTitle = 'Core API リファレンス';
-          if (item.id === 'contributing-viewer') displayTitle = 'Vivliostyle Viewer';
-          
-          // contribution-guide-headingは見出しとして表示（リンクなし）
-          if (item.id === 'contribution-guide-heading') {
-            return (
-              <li style="font-weight: bold;">{displayTitle}</li>
-            );
-          }
-          
-          return (
-            <li class:list={[{ active: isActive }]} style={isContributingItem ? 'padding-left: 1rem;' : ''}>
-              <a href={itemPath} aria-current={isActive ? 'page' : undefined}>
-                {displayTitle}
-              </a>
-            </li>
-          );
-        })}
-      </ul>
+      <>
+        <ul style="list-style: none; padding-left: 0; margin-bottom: 1rem;">
+          <li><a href="/ja/">← ホームに戻る</a></li>
+        </ul>
+        <div class="sidebar-accordion">
+          <div class="accordion-section">
+            <button class="accordion-toggle" data-target="docs-group" aria-expanded="true">
+              <span class="toggle-icon">▶</span>ドキュメント
+            </button>
+            <ul class="accordion-content" id="docs-group" style="display: block; list-style: none; padding-left: 1.5rem; margin: 0.25rem 0 0 0;">
+              <li class:list={[{ active: doc.id === 'supported-css-features' }]}>
+                <a href="/ja/reference/supported-css-features/" aria-current={doc.id === 'supported-css-features' ? 'page' : undefined}>サポートする CSS 機能</a>
+              </li>
+              <li class:list={[{ active: doc.id === 'api' }]}>
+                <a href="/ja/reference/api/" aria-current={doc.id === 'api' ? 'page' : undefined}>Core API リファレンス</a>
+              </li>
+            </ul>
+          </div>
+          <div class="accordion-section">
+            <button class="accordion-toggle" data-target="contrib-group" aria-expanded="true">
+              <span class="toggle-icon">▶</span>コントリビューションガイド
+            </button>
+            <ul class="accordion-content" id="contrib-group" style="display: block; list-style: none; padding-left: 1.5rem; margin: 0.25rem 0 0 0;">
+              <li class:list={[{ active: doc.id === 'contribution-guide' }]}>
+                <a href="/ja/reference/contribution-guide/" aria-current={doc.id === 'contribution-guide' ? 'page' : undefined}>Vivliostyle Viewer</a>
+              </li>
+              <li class:list={[{ active: doc.id === 'contributing-cli' }]}>
+                <a href="/ja/reference/contributing-cli/" aria-current={doc.id === 'contributing-cli' ? 'page' : undefined}>Vivliostyle CLI</a>
+              </li>
+              <li class:list={[{ active: doc.id === 'contributing-vfm' }]}>
+                <a href="/ja/reference/contributing-vfm/" aria-current={doc.id === 'contributing-vfm' ? 'page' : undefined}>VFM</a>
+              </li>
+              <li class:list={[{ active: doc.id === 'contributing-themes' }]}>
+                <a href="/ja/reference/contributing-themes/" aria-current={doc.id === 'contributing-themes' ? 'page' : undefined}>Vivliostyle Themes</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </>
     )}
   </nav>
 
