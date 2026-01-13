@@ -182,44 +182,85 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
   )}
 
   <!-- Sidebar navigation and table of contents -->
-  <nav slot="sidebar">
+  <nav slot="sidebar" id="sidebar-nav">
     <h3>Reference</h3>
-    <ul style="list-style: none; padding-left: 0;">
-      <li><a href="/en/">← Back to Home</a></li>
-      {sortedDocs.map(item => {
-        let itemPath = `/en/reference/${item.id}/`;
-        const currentPath = `/en/reference/${doc.id}/`;
-        
-        // contributing-viewer's actual link is contribution-guide
-        if (item.id === 'contributing-viewer') {
-          itemPath = '/en/reference/contribution-guide/';
-        }
-        
-        const isActive = itemPath === currentPath;
-        const isContributingItem = item.id.startsWith('contributing-');
-        
-        // Customize titles
-        let displayTitle = item.data.title || item.id;
-        if (item.id === 'supported-css-features') displayTitle = 'Supported CSS Features';
-        if (item.id === 'api') displayTitle = 'Core API Reference';
-        if (item.id === 'contributing-viewer') displayTitle = 'Vivliostyle Viewer';
-        
-        // contribution-guide-heading displays as heading (no link)
-        if (item.id === 'contribution-guide-heading') {
+    
+    <!-- Show heading list only for specific pages -->
+    {(doc.id === 'supported-css-features' || doc.id === 'api' || doc.id === 'vivliostyle-viewer') ? (
+      <div class="toc-headings">
+        <ul style="list-style: none; padding-left: 0;">
+          {headings.filter(h => h.depth === 2 || h.depth === 3).map((heading, index) => {
+            // H2見出しのみ処理（H3は後で追加）
+            if (heading.depth !== 2) return null;
+            
+            // 次のH2までのH3を収集
+            const nextH2Index = headings.slice(index + 1).findIndex(h => h.depth === 2);
+            const h3List = headings
+              .slice(index + 1, nextH2Index === -1 ? undefined : index + 1 + nextH2Index)
+              .filter(h => h.depth === 3);
+            
+            return (
+              <li class="toc-h2">
+                <button 
+                  class="toc-toggle" 
+                  data-target={`toc-group-${index}`}
+                  aria-expanded="false"
+                >
+                  <span class="toggle-icon">▶</span>
+                  <a href={`#${heading.slug}`} set:html={heading.text}></a>
+                </button>
+                {h3List.length > 0 && (
+                  <ul id={`toc-group-${index}`} class="toc-h3-list" style="display: none; list-style: none; padding-left: 1.5rem;">
+                    {h3List.map(h3 => (
+                      <li class="toc-h3">
+                        <a href={`#${h3.slug}`} set:html={h3.text}></a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    ) : (
+      <ul style="list-style: none; padding-left: 0;">
+        <li><a href="/en/">← Back to Home</a></li>
+        {sortedDocs.map(item => {
+          let itemPath = `/en/reference/${item.id}/`;
+          const currentPath = `/en/reference/${doc.id}/`;
+          
+          // contributing-viewer's actual link is contribution-guide
+          if (item.id === 'contributing-viewer') {
+            itemPath = '/en/reference/contribution-guide/';
+          }
+          
+          const isActive = itemPath === currentPath;
+          const isContributingItem = item.id.startsWith('contributing-');
+          
+          // Customize titles
+          let displayTitle = item.data.title || item.id;
+          if (item.id === 'supported-css-features') displayTitle = 'Supported CSS Features';
+          if (item.id === 'api') displayTitle = 'Core API Reference';
+          if (item.id === 'contributing-viewer') displayTitle = 'Vivliostyle Viewer';
+          
+          // contribution-guide-heading displays as heading (no link)
+          if (item.id === 'contribution-guide-heading') {
+            return (
+              <li style="font-weight: bold;">{displayTitle}</li>
+            );
+          }
+          
           return (
-            <li style="font-weight: bold;">{displayTitle}</li>
+            <li class:list={[{ active: isActive }]} style={isContributingItem ? 'padding-left: 1rem;' : ''}>
+              <a href={itemPath} aria-current={isActive ? 'page' : undefined}>
+                {displayTitle}
+              </a>
+            </li>
           );
-        }
-        
-        return (
-          <li class:list={[{ active: isActive }]} style={isContributingItem ? 'padding-left: 1rem;' : ''}>
-            <a href={itemPath} aria-current={isActive ? 'page' : undefined}>
-              {displayTitle}
-            </a>
-          </li>
-        );
-      })}
-    </ul>
+        })}
+      </ul>
+    )}
   </nav>
 
   <!-- Main content -->
@@ -284,6 +325,66 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
   .toc :global(a:hover) {
     text-decoration: underline;
   }
+  
+  /* Sidebar heading list styles */
+  .toc-headings {
+    font-size: 0.875rem;
+  }
+  
+  .toc-h2 {
+    margin: 0.5rem 0;
+  }
+  
+  .toc-toggle {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0;
+    text-align: left;
+    cursor: pointer;
+    gap: 0.5rem;
+  }
+  
+  .toggle-icon {
+    display: inline-block;
+    transition: transform 0.2s;
+    font-size: 0.7rem;
+    padding-top: 0.2rem;
+  }
+  
+  .toc-toggle[aria-expanded="true"] .toggle-icon {
+    transform: rotate(90deg);
+  }
+  
+  .toc-toggle a {
+    color: var(--color-text);
+    text-decoration: none;
+    flex: 1;
+  }
+  
+  .toc-toggle a:hover {
+    color: var(--color-primary);
+  }
+  
+  .toc-h3-list {
+    margin-top: 0.25rem;
+  }
+  
+  .toc-h3 {
+    margin: 0.25rem 0;
+  }
+  
+  .toc-h3 a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    font-size: 0.8125rem;
+  }
+  
+  .toc-h3 a:hover {
+    color: var(--color-primary);
+  }
 
   @media (max-width: 768px) {
     .docs-content {
@@ -295,3 +396,29 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
     }
   }
 </style>
+
+<script>
+  // Accordion menu toggle handling
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggleButtons = document.querySelectorAll('.toc-toggle');
+    
+    toggleButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        // Allow link default action
+        if ((e.target as HTMLElement).tagName === 'A') {
+          return;
+        }
+        
+        e.preventDefault();
+        const targetId = button.getAttribute('data-target');
+        const targetList = document.getElementById(targetId!);
+        const isExpanded = button.getAttribute('aria-expanded') === 'true';
+        
+        if (targetList) {
+          button.setAttribute('aria-expanded', String(!isExpanded));
+          targetList.style.display = isExpanded ? 'none' : 'block';
+        }
+      });
+    });
+  });
+</script>
