@@ -110,10 +110,10 @@ const jsonLd = {
         {item.isCurrentPage ? (
           <span aria-current="page">{item.label}</span>
         ) : (
-          <>
-            <a href={item.url}>{item.label}</a>
-            {index < breadcrumbs.length - 1 && <span class="separator" aria-hidden="true">›</span>}
-          </>
+          <a href={item.url}>{item.label}</a>
+        )}
+        {index < breadcrumbs.length - 1 && (
+          <span class="separator" aria-hidden="true">›</span>
         )}
       </li>
     ))}
