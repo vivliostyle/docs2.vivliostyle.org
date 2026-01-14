@@ -1,7 +1,7 @@
 ---
 /**
- * CLI ドキュメントページ（英語版）
- * 動的ルーティング: /en/cli/* にマッチ
+ * VFM ドキュメントページ（英語版）
+ * 動的ルーティング: /en/vfm/* にマッチ
  */
 import DocsLayout from '../../../layouts/DocsLayout.astro';
 import LanguageSwitcher from '../../../components/LanguageSwitcher.astro';
@@ -10,79 +10,57 @@ import TableOfContents from '../../../components/TableOfContents.astro';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
-  const cliDocs = await getCollection('vivliostyle-cli-en');
-  const cliDocsJa = await getCollection('vivliostyle-cli-ja');
+  const vfmDocs = await getCollection('vivliostyle-vfm-en');
+  const vfmDocsJa = await getCollection('vivliostyle-vfm-ja');
   
   // 日本語版に存在するIDのセットを作成
-  // 日本語ファイルは ja/ プレフィックスを除去したIDでチェックする必要がある
-  // config.md と api-javascript.md は両方の言語で共有されているため、常にtrueとする
-  const jaIds = new Set(
-    cliDocsJa
-      .map(d => {
-        // ja/index.mdから生成された 'ja' IDは 'index' に変換
-        if (d.id === 'ja') {
-          return 'index';
-        }
-        // ja/ プレフィックスを除去
-        if (d.id.startsWith('ja/')) {
-          return d.id.substring(3);
-        }
-        return d.id;
-      })
-  );
+  const jaIds = new Set(vfmDocsJa.map(d => d.id));
 
-  return cliDocs.map(doc => {
+  return vfmDocs.map(doc => {
     // [...slug]パターンでは文字列でslugを渡す
-    // indexの場合はundefinedでルートパス（/en/cli/）に
-    // それ以外はdoc.idをそのまま渡す（例: "getting-started"）
-    const slug = doc.id === 'index' ? undefined : doc.id;
+    // READMEの場合はundefinedでルートパス（/en/vfm/）に
+    // それ以外はdoc.idをそのまま渡す
+    const slug = doc.id === 'README' ? undefined : doc.id;
 
     return {
       params: { slug },
       props: { 
         doc, 
-        cliDocs,
+        vfmDocs,
         hasJaTranslation: jaIds.has(doc.id)
       },
     };
   });
 }
 
-const { doc, cliDocs, hasJaTranslation } = Astro.props;
+const { doc, vfmDocs, hasJaTranslation } = Astro.props;
 const htmlContent = doc.rendered?.html || '';
-const title = doc.data?.title || 'CLI Documentation';
+const title = doc.data?.title || 'VFM Documentation';
 const description = doc.data?.description || '';
 const extractedToc = doc.data?.extractedToc; // extracted TOC (if exists)
 const headings = doc.data?.headings || [];
 
-// Sort by the order specified in index.md
+// ページの順序を定義（README.md → その他のドキュメント）
 const pageOrder = [
-  'index',
-  'getting-started',
-  'themes-and-css',
-  'using-config-file',
-  'toc-page',
-  'cover-page',
-  'special-output-settings',
-  'frontend-framework-support',
-  'config',
-  'api-javascript',
+  'README',
+  'vfm',
+  'hooks',
 ];
 
-const sortedDocs = [...cliDocs].sort((a, b) => {
+const sortedDocs = [...vfmDocs].sort((a, b) => {
   const indexA = pageOrder.indexOf(a.id);
   const indexB = pageOrder.indexOf(b.id);
-  // Items not in the list are placed at the end
+  // リストにないアイテムは最後に配置
   const orderA = indexA === -1 ? 999 : indexA;
   const orderB = indexB === -1 ? 999 : indexB;
   return orderA - orderB;
 });
 
-// Current page path (for index: /en/cli/, otherwise: /en/cli/xxx/)
-const currentPath = doc.id === 'index' ? '/en/cli/' : `/en/cli/${doc.id}/`;
-const pagePath = doc.id === 'index' ? '/cli/' : `/cli/${doc.id}/`;
+// 現在のページパス（READMEはルートパス）
+const currentPath = doc.id === 'README' ? '/en/vfm/' : `/en/vfm/${doc.id}/`;
+const pagePath = doc.id === 'README' ? '/vfm/' : `/vfm/${doc.id}/`;
 
-// Previous/Next navigation: find current page index in sorted docs
+// 前/次のナビゲーション
 const currentIndex = sortedDocs.findIndex(item => item.id === doc.id);
 const prevPage = currentIndex > 0 ? sortedDocs[currentIndex - 1] : null;
 const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex + 1] : null;
@@ -93,17 +71,15 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
     <LanguageSwitcher currentLang="en" pagePath={pagePath} hasTranslation={hasJaTranslation} />
   </div>
   <nav slot="sidebar">
-    <h3>CLI Documentation</h3>
+    <h3>VFM Documentation</h3>
     <ul style="list-style: none; padding-left: 0;">
       <li><a href="/en/">← Back to Home</a></li>
           {sortedDocs.map(item => {
-            const itemPath = item.id === 'index' ? '/en/cli/' : `/en/cli/${item.id}/`;
+            const itemPath = item.id === 'README' ? '/en/vfm/' : `/en/vfm/${item.id}/`;
             const isActive = itemPath === currentPath;
             return (
               <li class:list={[{ active: isActive }]}>
-                <a href={itemPath} aria-current={isActive ? 'page' : undefined}>
-                  {item.data.title || item.id}
-                </a>
+                <a href={itemPath}>{item.data.title || item.id}</a>
               </li>
             );
           })}
@@ -117,7 +93,7 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
   <PageNavigation
     prevPage={prevPage}
     nextPage={nextPage}
-    basePath="/en/cli/"
+    basePath="/en/vfm/"
     prevLabel="← Previous"
     nextLabel="Next →"
   />

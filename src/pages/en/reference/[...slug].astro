@@ -1,0 +1,516 @@
+---
+/**
+ * Vivliostyle Reference Pages (English)
+ * Dynamic routing: matches /en/reference/*
+ */
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import LanguageSwitcher from '../../../components/LanguageSwitcher.astro';
+import PageNavigation from '../../../components/PageNavigation.astro';
+import TableOfContents from '../../../components/TableOfContents.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const referenceDocs = await getCollection('vivliostyle-reference-en');
+  const referenceDocsJa = await getCollection('vivliostyle-reference-ja');
+  
+  // CLI、Themes、VFMのContributingドキュメントも取得
+  const cliContributing = await getCollection('vivliostyle-cli-contributing-en');
+  const themesContributing = await getCollection('vivliostyle-themes-contributing-en');
+  const vfmContributing = await getCollection('vivliostyle-vfm-contributing-en');
+  
+  // 日本語版に存在するIDのセットを作成
+  const jaIds = new Set(referenceDocsJa.map(d => d.id));
+
+  const paths = [];
+  
+  // 通常のリファレンスドキュメント
+  referenceDocs.forEach(doc => {
+    paths.push({
+      params: { slug: doc.id },
+      props: { 
+        doc, 
+        referenceDocs,
+        hasJaTranslation: jaIds.has(doc.id),
+        isContributing: false,
+      },
+    });
+  });
+  
+  // CLI Contributing
+  cliContributing.forEach(doc => {
+    paths.push({
+      params: { slug: 'contributing-cli' },
+      props: {
+        doc: {
+          ...doc,
+          id: 'contributing-cli',
+          data: {
+            ...doc.data,
+            title: doc.data?.title || 'Vivliostyle CLI Contribution Guide',
+          },
+        },
+        referenceDocs,
+        hasJaTranslation: true,
+        isContributing: true,
+      },
+    });
+  });
+  
+  // Themes Contributing
+  themesContributing.forEach(doc => {
+    paths.push({
+      params: { slug: 'contributing-themes' },
+      props: {
+        doc: {
+          ...doc,
+          id: 'contributing-themes',
+          data: {
+            ...doc.data,
+            title: doc.data?.title || 'Vivliostyle Themes Contribution Guide',
+          },
+        },
+        referenceDocs,
+        hasJaTranslation: true,
+        isContributing: true,
+      },
+    });
+  });
+  
+  // VFM Contributing
+  vfmContributing.forEach(doc => {
+    paths.push({
+      params: { slug: 'contributing-vfm' },
+      props: {
+        doc: {
+          ...doc,
+          id: 'contributing-vfm',
+          data: {
+            ...doc.data,
+            title: doc.data?.title || 'VFM Contribution Guide',
+          },
+        },
+        referenceDocs,
+        hasJaTranslation: true,
+        isContributing: true,
+      },
+    });
+  });
+
+  return paths;
+}
+
+const { doc, referenceDocs, hasJaTranslation, isContributing } = Astro.props;
+const htmlContent = doc.rendered?.html || '';
+const title = doc.data?.title || 'Vivliostyle Reference';
+const description = doc.data?.description || '';
+const extractedToc = doc.data?.extractedToc; // extracted TOC if exists
+
+// Generate table of contents from headings
+const headings = doc.data?.headings || [];
+
+// Define page order (match index.md order)
+const pageOrder = [
+  'supported-css-features',
+  'api',
+  'contribution-guide-heading',  // Heading only (for sidebar display)
+  'contribution-guide',  // Actual page (for page navigation, hidden in sidebar)
+  'contributing-viewer',  // Sidebar display (links to contribution-guide, skip in page navigation)
+  'contributing-cli',
+  'contributing-vfm',
+  'contributing-themes',
+];
+
+// Combine all documents (regular reference + contributing pages)
+const allDocs = [
+  ...referenceDocs,  // includes contribution-guide
+  // Add virtual documents for sidebar display
+  { id: 'contribution-guide-heading', data: { title: 'Contribution Guidelines' } },  // Heading only
+  { id: 'contributing-viewer', data: { title: 'Vivliostyle Viewer' } },
+  { id: 'contributing-cli', data: { title: 'Vivliostyle CLI' } },
+  { id: 'contributing-vfm', data: { title: 'VFM' } },
+  { id: 'contributing-themes', data: { title: 'Vivliostyle Themes' } },
+];
+
+const sortedDocs = allDocs.sort((a, b) => {
+  const indexA = pageOrder.indexOf(a.id);
+  const indexB = pageOrder.indexOf(b.id);
+  // Place items not in pageOrder at the end
+  if (indexA === -1 && indexB === -1) return a.id.localeCompare(b.id);
+  if (indexA === -1) return 1;
+  if (indexB === -1) return -1;
+  return indexA - indexB;
+});
+
+// Get current page index
+const currentIndex = sortedDocs.findIndex(d => d.id === doc.id);
+
+// Calculate prevPage/nextPage (only pages in pageOrder, exclude headings and virtual docs)
+let prevPage = null;
+for (let i = currentIndex - 1; i >= 0; i--) {
+  const itemId = sortedDocs[i].id;
+  if (pageOrder.includes(itemId) && itemId !== 'contribution-guide-heading' && itemId !== 'contributing-viewer') {
+    prevPage = sortedDocs[i];
+    break;
+  }
+}
+
+let nextPage = null;
+for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
+  const itemId = sortedDocs[i].id;
+  if (pageOrder.includes(itemId) && itemId !== 'contribution-guide-heading' && itemId !== 'contributing-viewer') {
+    nextPage = sortedDocs[i];
+    break;
+  }
+}
+---
+
+<DocsLayout 
+  title={title} 
+  description={description}
+  lang="en"
+  section="reference"
+>
+  <!-- Language switcher in header -->
+  {hasJaTranslation && (
+    <div slot="header">
+      <LanguageSwitcher 
+        currentLang="en" 
+        pagePath={`/reference/${doc.id}`}
+        hasTranslation={hasJaTranslation}
+      />
+    </div>
+  )}
+
+  <!-- Sidebar navigation and table of contents -->
+  <nav slot="sidebar" id="sidebar-nav">
+    <h3><a href="/en/reference/" style="color: inherit; text-decoration: none;">Reference</a></h3>
+    
+    <!-- Show heading list only for specific pages -->
+    {(doc.id === 'supported-css-features' || doc.id === 'api' || doc.id === 'vivliostyle-viewer' || doc.id === 'contribution-guide') ? (
+      <>
+        <ul style="list-style: none; padding-left: 0; margin-bottom: 1rem;">
+          <li><a href="/en/">← Back to Home</a></li>
+        </ul>
+        <div class="toc-headings">
+          <ul style="list-style: none; padding-left: 0;">
+            {headings.filter(h => h.depth === 2 || h.depth === 3).map((heading, index) => {
+              // H2見出しのみ処理（H3は後で追加）
+              if (heading.depth !== 2) return null;
+              
+              // 次のH2までのH3を収集
+              const nextH2Index = headings.slice(index + 1).findIndex(h => h.depth === 2);
+              const h3List = headings
+                .slice(index + 1, nextH2Index === -1 ? undefined : index + 1 + nextH2Index)
+                .filter(h => h.depth === 3);
+              
+              // HTMLタグを除去してプレーンテキストのみを取得
+              const getPlainText = (html: string) => {
+                return html.replace(/<[^>]*>/g, '');
+              };
+              
+              return (
+                <li class="toc-h2">
+                  {h3List.length > 0 ? (
+                    <button 
+                      class="toc-toggle" 
+                      data-target={`toc-group-${index}`}
+                      aria-expanded="false"
+                    >
+                      <span class="toggle-icon">▶</span><a href={`#${heading.slug}`}>{getPlainText(heading.text)}</a>
+                    </button>
+                  ) : (
+                    <a href={`#${heading.slug}`} class="toc-h2-link">{getPlainText(heading.text)}</a>
+                  )}
+                  {h3List.length > 0 && (
+                    <ul id={`toc-group-${index}`} class="toc-h3-list" style="display: none; list-style: none; padding-left: 1.5rem;">
+                      {h3List.map(h3 => (
+                        <li class="toc-h3">
+                          <a href={`#${h3.slug}`}>{getPlainText(h3.text)}</a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </>
+    ) : (
+      <>
+        <ul style="list-style: none; padding-left: 0; margin-bottom: 1rem;">
+          <li><a href="/en/">← Back to Home</a></li>
+        </ul>
+        <div class="sidebar-accordion">
+          <div class="accordion-section">
+            <button class="accordion-toggle" data-target="docs-group" aria-expanded="true">
+              <span class="toggle-icon">▶</span>Documentation
+            </button>
+            <ul class="accordion-content" id="docs-group" style="display: block; list-style: none; padding-left: 1.5rem; margin: 0.25rem 0 0 0;">
+              <li class:list={[{ active: doc.id === 'supported-css-features' }]}>
+                <a href="/en/reference/supported-css-features/" aria-current={doc.id === 'supported-css-features' ? 'page' : undefined}>Supported CSS Features</a>
+              </li>
+              <li class:list={[{ active: doc.id === 'api' }]}>
+                <a href="/en/reference/api/" aria-current={doc.id === 'api' ? 'page' : undefined}>Core API Reference</a>
+              </li>
+            </ul>
+          </div>
+          <div class="accordion-section">
+            <button class="accordion-toggle" data-target="contrib-group" aria-expanded="true">
+              <span class="toggle-icon">▶</span>Contribution Guides
+            </button>
+            <ul class="accordion-content" id="contrib-group" style="display: block; list-style: none; padding-left: 1.5rem; margin: 0.25rem 0 0 0;">
+              <li class:list={[{ active: doc.id === 'contribution-guide' }]}>
+                <a href="/en/reference/contribution-guide/" aria-current={doc.id === 'contribution-guide' ? 'page' : undefined}>Vivliostyle Viewer</a>
+              </li>
+              <li class:list={[{ active: doc.id === 'contributing-cli' }]}>
+                <a href="/en/reference/contributing-cli/" aria-current={doc.id === 'contributing-cli' ? 'page' : undefined}>Vivliostyle CLI</a>
+              </li>
+              <li class:list={[{ active: doc.id === 'contributing-vfm' }]}>
+                <a href="/en/reference/contributing-vfm/" aria-current={doc.id === 'contributing-vfm' ? 'page' : undefined}>VFM</a>
+              </li>
+              <li class:list={[{ active: doc.id === 'contributing-themes' }]}>
+                <a href="/en/reference/contributing-themes/" aria-current={doc.id === 'contributing-themes' ? 'page' : undefined}>Vivliostyle Themes</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </>
+    )}
+  </nav>
+
+  <!-- Main content -->
+  <article class="docs-content">
+
+    <!-- Display extracted TOC if exists -->
+    {extractedToc && (
+      <div class="toc" set:html={extractedToc}></div>
+    )}
+    
+    <div set:html={htmlContent}></div>
+  </article>
+
+  <!-- Page navigation -->
+  <PageNavigation
+    prevPage={prevPage}
+    nextPage={nextPage}
+    basePath="/en/reference"
+    prevLabel="← Previous"
+    nextLabel="Next →"
+  />
+</DocsLayout>
+
+<style>
+  .docs-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .docs-content h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--color-text);
+    border-bottom: 2px solid var(--color-border);
+    padding-bottom: 0.5rem;
+  }
+
+  .toc {
+    background: var(--color-background-secondary);
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    margin: 2rem 0;
+  }
+
+  .toc :global(ul) {
+    list-style: none;
+    padding-left: 0;
+  }
+
+  .toc :global(li) {
+    margin: 0.5rem 0;
+  }
+
+  .toc :global(a) {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
+  .toc :global(a:hover) {
+    text-decoration: underline;
+  }
+  
+  /* Sidebar heading list styles */
+  .toc-headings {
+    font-size: 0.875rem;
+  }
+  
+  .toc-h2 {
+    margin: 0.5rem 0;
+  }
+  
+  .toc-h2-link {
+    color: var(--color-text);
+    text-decoration: none;
+    display: block;
+    padding: 0.25rem 0;
+  }
+  
+  .toc-h2-link:hover {
+    color: var(--color-primary);
+  }
+  
+  .toc-toggle {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0;
+    text-align: left;
+    cursor: pointer;
+    gap: 0;
+  }
+  
+  .toggle-icon {
+    display: inline-block;
+    transition: transform 0.2s;
+    font-size: 0.7rem;
+    padding-top: 0.2rem;
+  }
+  
+  .toc-toggle[aria-expanded="true"] .toggle-icon {
+    transform: rotate(90deg);
+  }
+  
+  .toc-toggle a {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+  
+  .toc-toggle a:hover {
+    color: var(--color-primary);
+  }
+  
+  .toc-h3-list {
+    margin-top: 0.25rem;
+  }
+  
+  .toc-h3 {
+    margin: 0.25rem 0;
+  }
+  
+  .toc-h3 a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    font-size: 1rem;
+  }
+  
+  .toc-h3 a:hover {
+    color: var(--color-primary);
+  }
+
+  @media (max-width: 768px) {
+    .docs-content {
+      padding: 1rem;
+    }
+
+    .docs-content h1 {
+      font-size: 2rem;
+    }
+  }
+
+  /* Accordion menu styles */
+  .sidebar-accordion {
+    margin-top: 0.5rem;
+  }
+
+  .accordion-section {
+    margin-bottom: 0.5rem;
+  }
+
+  .accordion-toggle {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0.25rem 0;
+    text-align: left;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-text);
+  }
+
+  .accordion-toggle:hover {
+    color: var(--color-primary);
+  }
+
+  .accordion-toggle .toggle-icon {
+    margin-right: 0.5rem;
+  }
+
+  .accordion-toggle[aria-expanded="true"] .toggle-icon {
+    transform: rotate(90deg);
+  }
+
+  .accordion-content li {
+    margin: 0.25rem 0;
+  }
+
+  .accordion-content a {
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: 1rem;
+  }
+
+  .accordion-content a:hover {
+    color: var(--color-primary);
+  }
+</style>
+
+<script>
+  // Accordion menu and TOC toggle handling
+  document.addEventListener('DOMContentLoaded', () => {
+    // Accordion toggle
+    const accordionToggles = document.querySelectorAll('.accordion-toggle');
+    accordionToggles.forEach(toggle => {
+      toggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = toggle.getAttribute('data-target');
+        const content = document.getElementById(targetId!);
+        const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+        
+        toggle.setAttribute('aria-expanded', String(!isExpanded));
+        if (content) {
+          content.style.display = isExpanded ? 'none' : 'block';
+        }
+      });
+    });
+
+    // TOC toggle
+    const toggleButtons = document.querySelectorAll('.toc-toggle');
+    
+    toggleButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        // Allow link default action
+        if ((e.target as HTMLElement).tagName === 'A') {
+          return;
+        }
+        
+        e.preventDefault();
+        const targetId = button.getAttribute('data-target');
+        const targetList = document.getElementById(targetId!);
+        const isExpanded = button.getAttribute('aria-expanded') === 'true';
+        
+        if (targetList) {
+          button.setAttribute('aria-expanded', String(!isExpanded));
+          targetList.style.display = isExpanded ? 'none' : 'block';
+        }
+      });
+    });
+  });
+</script>

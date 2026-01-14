@@ -1,0 +1,215 @@
+---
+/**
+ * Vivliostyle リファレンス インデックスページ（日本語版）
+ */
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import LanguageSwitcher from '../../../components/LanguageSwitcher.astro';
+import { getCollection } from 'astro:content';
+
+// リファレンスindexドキュメントを取得
+const indexDocs = await getCollection('vivliostyle-reference-index-ja');
+const indexDoc = indexDocs.find(doc => doc.id === 'index' || doc.id.endsWith('/index'));
+
+// 英語版が存在するか確認
+const indexDocsEn = await getCollection('vivliostyle-reference-index-en');
+const hasEnTranslation = indexDocsEn.length > 0;
+
+const htmlContent = indexDoc?.rendered?.html || '';
+const title = indexDoc?.data?.title || 'リファレンス';
+const description = indexDoc?.data?.description || 'Vivliostyle関連ドキュメントのリファレンス集';
+---
+
+<DocsLayout 
+  title={title} 
+  description={description}
+  lang="ja"
+  section="reference"
+>
+  <!-- ヘッダーに言語切り替え -->
+  {hasEnTranslation && (
+    <div slot="header">
+      <LanguageSwitcher 
+        currentLang="ja" 
+        pagePath="/reference/"
+        hasTranslation={hasEnTranslation}
+      />
+    </div>
+  )}
+
+  <!-- サイドバー -->
+  <nav slot="sidebar">
+    <h3>リファレンス</h3>
+    <ul style="list-style: none; padding-left: 0; margin-bottom: 1rem;">
+      <li><a href="/ja/">← ホームに戻る</a></li>
+    </ul>
+    <div class="sidebar-accordion">
+      <div class="accordion-section">
+        <button class="accordion-toggle" data-target="docs-group" aria-expanded="true">
+          <span class="toggle-icon">▶</span>ドキュメント
+        </button>
+        <ul class="accordion-content" id="docs-group" style="display: block; list-style: none; padding-left: 1.5rem; margin: 0.25rem 0 0 0;">
+          <li><a href="/ja/reference/supported-css-features/">サポートする CSS 機能</a></li>
+          <li><a href="/ja/reference/api/">Core API リファレンス</a></li>
+        </ul>
+      </div>
+      <div class="accordion-section">
+        <button class="accordion-toggle" data-target="contrib-group" aria-expanded="true">
+          <span class="toggle-icon">▶</span>コントリビューションガイド
+        </button>
+        <ul class="accordion-content" id="contrib-group" style="display: block; list-style: none; padding-left: 1.5rem; margin: 0.25rem 0 0 0;">
+          <li><a href="/ja/reference/contribution-guide/">Vivliostyle Viewer</a></li>
+          <li><a href="/ja/reference/contributing-cli/">Vivliostyle CLI</a></li>
+          <li><a href="/ja/reference/contributing-vfm/">VFM</a></li>
+          <li><a href="/ja/reference/contributing-themes/">Vivliostyle Themes</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <article class="docs-content">
+    {htmlContent ? (
+      <Fragment set:html={htmlContent} />
+    ) : (
+      <div>
+        <h1>{title}</h1>
+        <p>リファレンスドキュメントを読み込み中...</p>
+      </div>
+    )}
+  </article>
+</DocsLayout>
+
+<style>
+  nav h3 {
+    font-size: 1rem;
+  }
+
+  .sidebar-accordion {
+    margin-top: 0.5rem;
+  }
+
+  .accordion-section {
+    margin-bottom: 0.5rem;
+  }
+
+  .accordion-toggle {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0.25rem 0;
+    text-align: left;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-text);
+  }
+
+  .accordion-toggle:hover {
+    color: var(--color-primary);
+  }
+
+  .toggle-icon {
+    display: inline-block;
+    transition: transform 0.2s;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+  }
+
+  .accordion-toggle[aria-expanded="true"] .toggle-icon {
+    transform: rotate(90deg);
+  }
+
+  .accordion-content li {
+    margin: 0.25rem 0;
+  }
+
+  .accordion-content a {
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: 1rem;
+  }
+
+  .accordion-content a:hover {
+    color: var(--color-primary);
+  }
+
+  .docs-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  .docs-content h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    color: var(--color-text);
+    border-bottom: 2px solid var(--color-border);
+    padding-bottom: 0.5rem;
+  }
+
+  .docs-content h2 {
+    font-size: 2rem;
+    font-weight: 600;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .docs-content h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .docs-content ul {
+    list-style: disc;
+    padding-left: 2rem;
+    margin: 1rem 0;
+  }
+
+  .docs-content li {
+    margin: 0.5rem 0;
+  }
+
+  .docs-content a {
+    color: var(--color-primary);
+    text-decoration: none;
+  }
+
+  .docs-content a:hover {
+    text-decoration: underline;
+  }
+
+  @media (max-width: 768px) {
+    .docs-content {
+      padding: 1rem;
+    }
+
+    .docs-content h1 {
+      font-size: 2rem;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggleButtons = document.querySelectorAll('.accordion-toggle');
+    
+    toggleButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = button.getAttribute('data-target');
+        const targetContent = document.getElementById(targetId);
+        const isExpanded = button.getAttribute('aria-expanded') === 'true';
+        
+        button.setAttribute('aria-expanded', !isExpanded);
+        if (targetContent) {
+          targetContent.style.display = isExpanded ? 'none' : 'block';
+        }
+      });
+    });
+  });
+</script>
+

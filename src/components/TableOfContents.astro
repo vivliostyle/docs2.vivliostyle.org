@@ -1,0 +1,142 @@
+---
+/**
+ * 目次コンポーネント
+ * ページ内の見出しから目次を自動生成
+ */
+
+export interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings: Heading[];
+}
+
+const { headings } = Astro.props;
+
+// 目次に表示するのは h2 から h3 まで（有効なslugを持つもののみ）
+const tocHeadings = (headings || []).filter(h => h && h.slug && h.depth >= 2 && h.depth <= 3);
+---
+
+{tocHeadings.length > 0 && (
+  <nav class="toc" role="doc-toc" aria-label="目次">
+    <h2 class="toc-title">目次</h2>
+    <ul class="toc-list">
+      {tocHeadings.map((heading) => {
+        const slug = heading.slug || '';
+        const text = heading.text || '';
+        return (
+          <li class={`toc-item toc-level-${heading.depth}`}>
+            <a href={`#${slug}`} set:html={text}></a>
+          </li>
+        );
+      })}
+    </ul>
+  </nav>
+)}
+
+<style>
+  .toc {
+    position: sticky;
+    top: 1rem;
+  }
+  
+  .toc-title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 0.75rem 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  
+  .toc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+  
+  .toc-item {
+    margin: 0;
+  }
+  
+  .toc-item a {
+    display: block;
+    padding: 0.25rem 0;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    padding-left: 0.75rem;
+    transition: all 0.2s;
+  }
+  
+  .toc-item a:hover {
+    color: var(--color-text);
+    border-left-color: var(--color-primary);
+  }
+  
+  .toc-level-2 {
+    margin-left: 0;
+  }
+  
+  .toc-level-3 {
+    margin-left: 1rem;
+    font-size: 0.8125rem;
+  }
+  
+  .toc-level-3 a {
+    padding-left: 0.5rem;
+  }
+  
+  /* アクティブ状態のスタイル */
+  .toc-item a.active {
+    color: var(--color-primary);
+    font-weight: 600;
+    border-left-color: var(--color-primary);
+  }
+  
+  /* 印刷時は非表示 */
+  @media print {
+    .toc {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  // スクロールに応じてアクティブな目次項目をハイライト
+  function updateActiveTocItem() {
+    const headings = document.querySelectorAll('.prose h2[id], .prose h3[id]');
+    const tocLinks = document.querySelectorAll('.toc-item a');
+    
+    if (headings.length === 0 || tocLinks.length === 0) return;
+    
+    const scrollPosition = window.scrollY + 100; // ヘッダー分のオフセット
+    
+    let activeHeading: Element | null = null;
+    
+    headings.forEach((heading) => {
+      const top = (heading as HTMLElement).offsetTop;
+      if (scrollPosition >= top) {
+        activeHeading = heading;
+      }
+    });
+    
+    tocLinks.forEach((link) => {
+      link.classList.remove('active');
+      if (activeHeading && link.getAttribute('href') === `#${activeHeading.id}`) {
+        link.classList.add('active');
+      }
+    });
+  }
+  
+  // 初回実行とスクロールイベント
+  document.addEventListener('DOMContentLoaded', () => {
+    updateActiveTocItem();
+    window.addEventListener('scroll', updateActiveTocItem, { passive: true });
+  });
+</script>

@@ -19,7 +19,11 @@ const { title, description = '', lang = 'en' } = Astro.props;
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content={description}>
   <title>{title} | Vivliostyle Documentation</title>
+  <link rel="icon" type="image/png" href="/favicon.png">
   <link rel="stylesheet" href="/styles/global.css">
+  <!-- Prism.js syntax highlighting -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" media="(prefers-color-scheme: light)">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" media="(prefers-color-scheme: dark)">
 </head>
 <body>
   <div class="layout">
@@ -29,10 +33,11 @@ const { title, description = '', lang = 'en' } = Astro.props;
           <span class="logo-text">Vivliostyle Docs</span>
         </a>
         <nav class="header-nav">
+          <a href={`/${lang}/viewer/`}>Viewer</a>
           <a href={`/${lang}/cli/`}>CLI</a>
           <a href={`/${lang}/vfm/`}>VFM</a>
           <a href={`/${lang}/themes/`}>Themes</a>
-          <a href={`/${lang}/viewer/`}>Viewer</a>
+          <a href={`/${lang}/reference/`}>{lang === 'ja' ? 'リファレンス' : 'Reference'}</a>
         </nav>
         <div class="lang-switcher">
           <slot name="header" />
@@ -149,6 +154,14 @@ const { title, description = '', lang = 'en' } = Astro.props;
     top: 4rem;
     height: calc(100vh - 4rem);
     overflow-y: auto;
+    font-size: 1rem;
+  }
+  
+  .sidebar :global(nav),
+  .sidebar :global(ul),
+  .sidebar :global(li),
+  .sidebar :global(a) {
+    font-size: 1rem;
   }
   
   .content {
