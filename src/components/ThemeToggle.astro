@@ -5,7 +5,7 @@
  */
 ---
 
-<button class="theme-toggle" aria-label="テーマ切り替え" title="テーマ切り替え">
+<button class="theme-toggle" data-theme-mode="auto" aria-label="テーマ切り替え" title="テーマ切り替え">
   <svg class="theme-icon sun" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
     <circle cx="12" cy="12" r="5"></circle>
     <line x1="12" y1="1" x2="12" y2="3"></line>
@@ -19,6 +19,9 @@
   </svg>
   <svg class="theme-icon moon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
     <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+  </svg>
+  <svg class="theme-icon auto" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none">
+    <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"></path>
   </svg>
 </button>
 
@@ -49,12 +52,17 @@
   }
   
   /* ライトモード時は太陽アイコンを表示 */
-  :root:not([data-theme="dark"]) .theme-icon.sun {
+  .theme-toggle[data-theme-mode="light"] .theme-icon.sun {
     display: block;
   }
   
   /* ダークモード時は月アイコンを表示 */
-  :root[data-theme="dark"] .theme-icon.moon {
+  .theme-toggle[data-theme-mode="dark"] .theme-icon.moon {
+    display: block;
+  }
+  
+  /* autoモード時は循環矢印アイコンを表示 */
+  .theme-toggle[data-theme-mode="auto"] .theme-icon.auto {
     display: block;
   }
   
@@ -123,6 +131,14 @@
     
     // アクセシビリティ: 変更を通知
     updateAriaLabel(next);
+    updateButtonIcon(next);
+  }
+  
+  // ボタンのアイコン表示を更新
+  function updateButtonIcon(theme: Theme) {
+    const button = document.querySelector('.theme-toggle') as HTMLButtonElement;
+    if (!button) return;
+    button.setAttribute('data-theme-mode', theme);
   }
   
   // ボタンのaria-labelを更新
@@ -146,6 +162,7 @@
     const effective = getEffectiveTheme(preference);
     applyTheme(effective);
     updateAriaLabel(preference);
+    updateButtonIcon(preference);
     
     // システム設定の変更を監視（autoモードの時のみ）
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
