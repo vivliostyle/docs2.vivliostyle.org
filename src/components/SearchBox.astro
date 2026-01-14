@@ -262,26 +262,36 @@ const isDev = import.meta.env.DEV;
   };
 
   // キーボードショートカット: / または Ctrl+K
-  document.addEventListener('keydown', (e) => {
-    const searchInput = document.querySelector('.pagefind-ui__search-input') as HTMLInputElement;
-    
-    // / キーで検索ボックスにフォーカス（入力フィールド内でなければ）
-    if (e.key === '/' && !isEditableTarget(e.target)) {
-      e.preventDefault();
-      searchInput?.focus();
+  // 重複登録を防ぐため、初期化済みフラグをチェック
+  const initKeyboardShortcuts = () => {
+    if ((window as any).__pagefindKeyboardInitialized) {
+      return;
     }
-    
-    // Ctrl+K または Cmd+K で検索ボックスにフォーカス
-    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
-      e.preventDefault();
-      searchInput?.focus();
-    }
-    
-    // Escape キーで検索ボックスからフォーカスを外す
-    if (e.key === 'Escape' && document.activeElement === searchInput) {
-      searchInput?.blur();
-    }
-  });
+    (window as any).__pagefindKeyboardInitialized = true;
+
+    document.addEventListener('keydown', (e) => {
+      const searchInput = document.querySelector('.pagefind-ui__search-input') as HTMLInputElement;
+      
+      // / キーで検索ボックスにフォーカス（入力フィールド内でなければ）
+      if (e.key === '/' && !isEditableTarget(e.target)) {
+        e.preventDefault();
+        searchInput?.focus();
+      }
+      
+      // Ctrl+K または Cmd+K で検索ボックスにフォーカス
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        searchInput?.focus();
+      }
+      
+      // Escape キーで検索ボックスからフォーカスを外す
+      if (e.key === 'Escape' && document.activeElement === searchInput) {
+        searchInput?.blur();
+      }
+    });
+  };
+
+  initKeyboardShortcuts();
 
   // ページロード時に初期化
   if (document.readyState === 'loading') {
