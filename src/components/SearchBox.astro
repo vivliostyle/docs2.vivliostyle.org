@@ -171,16 +171,13 @@ const isDev = import.meta.env.DEV;
   }
 </style>
 
-<script define:vars={{ isDev }}>
-  // 開発環境では実行しない
-  if (isDev) {
-    console.info('[SearchBox] Search is only available in production builds. Run `npm run build && npm run preview` to test search functionality.');
-  } else {
-    // Pagefind UI の初期化
-    const initPagefind = async () => {
-      try {
-        // @ts-ignore - Pagefind UIはビルド時に生成される
-        const { PagefindUI } = await import('/_pagefind/pagefind-ui.js');
+{!isDev && (
+<script>
+  // Pagefind UI の初期化
+  const initPagefind = async () => {
+    try {
+      // @ts-ignore - Pagefind UIはビルド時に生成される
+      const { PagefindUI } = await import('/_pagefind/pagefind-ui.js');
       
       const searchElement = document.querySelector('#search');
       if (searchElement) {
@@ -238,5 +235,5 @@ const isDev = import.meta.env.DEV;
   } else {
     initPagefind();
   }
-  }
 </script>
+)}
