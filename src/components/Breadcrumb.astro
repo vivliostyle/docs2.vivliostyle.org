@@ -36,10 +36,10 @@ const sectionNames = {
   },
 };
 
-const homeLabel = lang === 'ja' ? 'ホーム' : 'Home';
-
 // パスを解析してパンくずアイテムを生成
 function generateBreadcrumbs(path: string, language: 'en' | 'ja', title?: string): BreadcrumbItem[] {
+  const homeLabel = language === 'ja' ? 'ホーム' : 'Home';
+  
   const items: BreadcrumbItem[] = [
     {
       label: homeLabel,
