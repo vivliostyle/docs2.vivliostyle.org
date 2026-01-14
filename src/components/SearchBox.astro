@@ -10,29 +10,24 @@ interface Props {
 }
 
 const { lang = 'en' } = Astro.props;
-
-const placeholder = lang === 'ja' ? 'ドキュメントを検索...' : 'Search documentation...';
-const ariaLabel = lang === 'ja' ? '検索' : 'Search';
 const isDev = import.meta.env.DEV;
 ---
 
-{!isDev && (
-<div class="search-container">
-  <div id="search-wrapper">
-    <div id="search"></div>
+{isDev ? (
+  <div class="search-container search-dev-notice">
+    <div class="dev-notice">
+      {lang === 'ja' ? '検索: 本番ビルドでのみ利用可' : 'Search: Production only'}
+    </div>
   </div>
-</div>
+) : (
+  <div class="search-container">
+    <div id="search-wrapper">
+      <div id="search"></div>
+    </div>
+  </div>
 )}
 
-{isDev && (
-<div class="search-container search-dev-notice">
-  <div class="dev-notice">
-    {lang === 'ja' ? '検索機能は本番ビルドでのみ利用可能です' : 'Search available in production build only'}
-  </div>
-</div>
-)}
-
-<!-- Pagefind UI CSS -->
+<!-- Pagefind UI CSS (本番環境のみ) -->
 {!isDev && <link href="/_pagefind/pagefind-ui.css" rel="stylesheet">}
 
 <style>
@@ -179,14 +174,23 @@ const isDev = import.meta.env.DEV;
   // Pagefind UI の初期化
   const initPagefind = async () => {
     try {
-      // @ts-ignore - Pagefind UIはビルド時に生成される
-      const { PagefindUI } = await import('/_pagefind/pagefind-ui.js');
+      // Pagefind UIをグローバルスコープに読み込む
+      await import('/_pagefind/pagefind-ui.js');
+      
+      // グローバルオブジェクトからPagefindUIを取得
+      // @ts-ignore
+      const PagefindUI = window.PagefindUI;
+      
+      if (!PagefindUI) {
+        throw new Error('PagefindUI not loaded on window object');
+      }
       
       const searchElement = document.querySelector('#search');
       if (searchElement) {
         const lang = document.documentElement.lang || 'en';
         new PagefindUI({
           element: searchElement,
+          bundlePath: '/_pagefind/',
           showImages: false,
           showSubResults: true,
           excerptLength: 15,

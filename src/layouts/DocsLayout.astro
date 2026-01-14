@@ -44,6 +44,7 @@ const currentPath = Astro.url.pathname;
           <a href={`/${lang}/reference/`}>{lang === 'ja' ? 'リファレンス' : 'Reference'}</a>
         </nav>
         <div class="header-actions">
+          <!-- TEST: SearchBox should render here -->
           <SearchBox lang={lang as 'en' | 'ja'} />
           <div class="lang-switcher">
             <slot name="header" />
