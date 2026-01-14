@@ -10,6 +10,12 @@ interface Props {
   pageTitle?: string;
 }
 
+interface BreadcrumbItem {
+  label: string;
+  url: string;
+  isCurrentPage?: boolean;
+}
+
 const { currentPath, lang, pageTitle } = Astro.props;
 
 // セクション名のマッピング
@@ -33,8 +39,8 @@ const sectionNames = {
 const homeLabel = lang === 'ja' ? 'ホーム' : 'Home';
 
 // パスを解析してパンくずアイテムを生成
-function generateBreadcrumbs(path: string, language: 'en' | 'ja', title?: string) {
-  const items = [
+function generateBreadcrumbs(path: string, language: 'en' | 'ja', title?: string): BreadcrumbItem[] {
+  const items: BreadcrumbItem[] = [
     {
       label: homeLabel,
       url: `/${language}/`,
