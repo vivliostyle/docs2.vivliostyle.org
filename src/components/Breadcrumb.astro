@@ -1,0 +1,174 @@
+---
+/**
+ * パンくずリストコンポーネント
+ * URLパスから階層構造を自動生成し、ナビゲーションとSEO（JSON-LD）を提供
+ */
+
+interface Props {
+  currentPath: string;
+  lang: 'en' | 'ja';
+  pageTitle?: string;
+}
+
+const { currentPath, lang, pageTitle } = Astro.props;
+
+// セクション名のマッピング
+const sectionNames = {
+  en: {
+    cli: 'CLI',
+    vfm: 'VFM',
+    themes: 'Themes',
+    viewer: 'Viewer',
+    reference: 'Reference',
+  },
+  ja: {
+    cli: 'CLI',
+    vfm: 'VFM',
+    themes: 'Themes',
+    viewer: 'Viewer',
+    reference: 'リファレンス',
+  },
+};
+
+const homeLabel = lang === 'ja' ? 'ホーム' : 'Home';
+
+// パスを解析してパンくずアイテムを生成
+function generateBreadcrumbs(path: string, language: 'en' | 'ja', title?: string) {
+  const items = [
+    {
+      label: homeLabel,
+      url: `/${language}/`,
+    },
+  ];
+
+  // パスをクリーンアップ（先頭・末尾のスラッシュ除去）
+  const cleanPath = path.replace(/^\/|\/$/g, '');
+  const segments = cleanPath.split('/').filter(Boolean);
+
+  // 言語セグメントをスキップ
+  const pathSegments = segments[0] === language ? segments.slice(1) : segments;
+
+  let currentUrl = `/${language}`;
+
+  pathSegments.forEach((segment, index) => {
+    currentUrl += `/${segment}`;
+    
+    // 最後のセグメントの場合
+    if (index === pathSegments.length - 1) {
+      items.push({
+        label: title || segment,
+        url: currentUrl + '/',
+        isCurrentPage: true,
+      });
+    } else if (index === 0) {
+      // 最初のセグメント（セクション名）
+      const sectionLabel = sectionNames[language][segment as keyof typeof sectionNames.en] || segment;
+      items.push({
+        label: sectionLabel,
+        url: currentUrl + '/',
+      });
+    } else {
+      // 中間のセグメント
+      items.push({
+        label: segment.replace(/-/g, ' '),
+        url: currentUrl + '/',
+      });
+    }
+  });
+
+  return items;
+}
+
+const breadcrumbs = generateBreadcrumbs(currentPath, lang, pageTitle);
+
+// JSON-LD構造化データを生成（SEO対策）
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: breadcrumbs.map((item, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: item.label,
+    item: `https://docs2.vivliostyle.org${item.url}`,
+  })),
+};
+---
+
+<nav aria-label="Breadcrumb" class="breadcrumb">
+  <ol>
+    {breadcrumbs.map((item, index) => (
+      <li>
+        {item.isCurrentPage ? (
+          <span aria-current="page">{item.label}</span>
+        ) : (
+          <>
+            <a href={item.url}>{item.label}</a>
+            {index < breadcrumbs.length - 1 && <span class="separator" aria-hidden="true">›</span>}
+          </>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<!-- JSON-LD構造化データ -->
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+<style>
+  .breadcrumb {
+    margin-bottom: 1.5rem;
+    font-size: 0.875rem;
+  }
+
+  .breadcrumb ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 0.5rem;
+  }
+
+  .breadcrumb li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .breadcrumb a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .breadcrumb a:hover {
+    color: var(--color-primary-light);
+    text-decoration: underline;
+  }
+
+  .breadcrumb span[aria-current="page"] {
+    color: var(--color-text);
+    font-weight: 500;
+  }
+
+  .separator {
+    color: var(--color-text-muted);
+    user-select: none;
+  }
+
+  /* モバイル対応: 長いパスの場合は省略 */
+  @media (max-width: 768px) {
+    .breadcrumb {
+      font-size: 0.8125rem;
+    }
+
+    .breadcrumb ol {
+      gap: 0.375rem;
+    }
+
+    .breadcrumb li {
+      gap: 0.375rem;
+    }
+  }
+</style>

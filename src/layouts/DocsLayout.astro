@@ -3,14 +3,17 @@
  * ドキュメントページ用メインレイアウト
  * SSMO対応: Web/PDF/EPUB共通スタイルを使用
  */
+import Breadcrumb from '../components/Breadcrumb.astro';
 
 interface Props {
   title: string;
   description?: string;
   lang?: string;
+  showBreadcrumb?: boolean;
 }
 
-const { title, description = '', lang = 'en' } = Astro.props;
+const { title, description = '', lang = 'en', showBreadcrumb = true } = Astro.props;
+const currentPath = Astro.url.pathname;
 ---
 <!DOCTYPE html>
 <html lang={lang}>
@@ -51,6 +54,9 @@ const { title, description = '', lang = 'en' } = Astro.props;
       </aside>
       
       <main class="content">
+        {showBreadcrumb && (
+          <Breadcrumb currentPath={currentPath} lang={lang as 'en' | 'ja'} pageTitle={title} />
+        )}
         <article class="prose">
           <slot />
         </article>
