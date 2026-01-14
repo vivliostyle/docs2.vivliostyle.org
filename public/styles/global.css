@@ -114,6 +114,11 @@ body {
   background-color: var(--color-bg);
 }
 
+/* アンカーリンクでのスクロール時、ヘッダー分のオフセットを確保 */
+h1, h2, h3, h4, h5, h6 {
+  scroll-margin-top: 5rem;
+}
+
 /* ==========================================================================
    Typography - 文章スタイル（SSMO共通）
    ========================================================================== */
@@ -133,6 +138,7 @@ body {
   font-weight: 700;
   line-height: var(--line-height-tight);
   color: var(--color-text);
+  scroll-margin-top: 5rem; /* ヘッダー分のオフセット */
 }
 
 .prose h1 {
