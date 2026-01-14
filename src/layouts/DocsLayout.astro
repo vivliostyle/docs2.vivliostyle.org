@@ -416,7 +416,7 @@ const currentPath = Astro.url.pathname;
     });
     
     // ウィンドウリサイズ時の処理
-    let resizeTimer: number;
+    let resizeTimer: ReturnType<typeof setTimeout>;
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimer);
       resizeTimer = window.setTimeout(() => {
