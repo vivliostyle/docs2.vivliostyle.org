@@ -3,6 +3,7 @@
  * Pagefind検索ボックスコンポーネント
  * キーボードショートカット: / または Ctrl+K
  * 日英両言語対応
+ * 注意: 開発環境では動作しません。npm run preview で確認してください。
  */
 interface Props {
   lang?: 'en' | 'ja';
@@ -12,16 +13,27 @@ const { lang = 'en' } = Astro.props;
 
 const placeholder = lang === 'ja' ? 'ドキュメントを検索...' : 'Search documentation...';
 const ariaLabel = lang === 'ja' ? '検索' : 'Search';
+const isDev = import.meta.env.DEV;
 ---
 
+{!isDev && (
 <div class="search-container">
   <div id="search-wrapper">
     <div id="search"></div>
   </div>
 </div>
+)}
+
+{isDev && (
+<div class="search-container search-dev-notice">
+  <div class="dev-notice">
+    {lang === 'ja' ? '検索機能は本番ビルドでのみ利用可能です' : 'Search available in production build only'}
+  </div>
+</div>
+)}
 
 <!-- Pagefind UI CSS -->
-<link href="/_pagefind/pagefind-ui.css" rel="stylesheet">
+{!isDev && <link href="/_pagefind/pagefind-ui.css" rel="stylesheet">}
 
 <style>
   .search-container {
@@ -34,6 +46,30 @@ const ariaLabel = lang === 'ja' ? '検索' : 'Search';
 
   #search-wrapper {
     width: 100%;
+  }
+
+  /* 開発環境の通知スタイル */
+  .search-dev-notice {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .dev-notice {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    color: #6b7280;
+    background-color: #f3f4f6;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .dev-notice {
+      color: #9ca3af;
+      background-color: #374151;
+      border-color: #4b5563;
+    }
   }
 
   /* Pagefind UIのカスタマイズ */
@@ -135,12 +171,16 @@ const ariaLabel = lang === 'ja' ? '検索' : 'Search';
   }
 </style>
 
-<script>
-  // Pagefind UI の初期化
-  const initPagefind = async () => {
-    try {
-      // @ts-ignore - Pagefind UIはビルド時に生成される
-      const { PagefindUI } = await import('/_pagefind/pagefind-ui.js');
+<script define:vars={{ isDev }}>
+  // 開発環境では実行しない
+  if (isDev) {
+    console.info('[SearchBox] Search is only available in production builds. Run `npm run build && npm run preview` to test search functionality.');
+  } else {
+    // Pagefind UI の初期化
+    const initPagefind = async () => {
+      try {
+        // @ts-ignore - Pagefind UIはビルド時に生成される
+        const { PagefindUI } = await import('/_pagefind/pagefind-ui.js');
       
       const searchElement = document.querySelector('#search');
       if (searchElement) {
@@ -197,5 +237,6 @@ const ariaLabel = lang === 'ja' ? '検索' : 'Search';
     document.addEventListener('DOMContentLoaded', initPagefind);
   } else {
     initPagefind();
+  }
   }
 </script>
