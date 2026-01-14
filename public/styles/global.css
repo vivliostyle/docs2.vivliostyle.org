@@ -40,6 +40,7 @@
   
   --color-bg: #ffffff;
   --color-bg-header: #fafafa;
+  --color-bg-secondary: #f5f5f5;
   --color-bg-code: #f5f5f5;
   --color-bg-highlight: #fff9e6;
   
@@ -73,21 +74,54 @@
   --prose-max-width: 65ch;
 }
 
-/* ダークモード */
+/* ダークモード - システム設定 */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme="light"]) {
     --color-text: #e5e5e5;
     --color-text-muted: #a0a0a0;
     --color-text-light: #808080;
     
     --color-bg: #1a1a1a;
     --color-bg-header: #252525;
+    --color-bg-secondary: #2d2d2d;
     --color-bg-code: #2d2d2d;
     --color-bg-highlight: #3d3520;
     
     --color-border: #404040;
     --color-border-dark: #505050;
   }
+}
+
+/* ダークモード - 手動設定 */
+:root[data-theme="dark"] {
+  --color-text: #e5e5e5;
+  --color-text-muted: #a0a0a0;
+  --color-text-light: #808080;
+  
+  --color-bg: #1a1a1a;
+  --color-bg-header: #252525;
+  --color-bg-secondary: #2d2d2d;
+  --color-bg-code: #2d2d2d;
+  --color-bg-highlight: #3d3520;
+  
+  --color-border: #404040;
+  --color-border-dark: #505050;
+}
+
+/* ライトモード - 手動設定（明示的） */
+:root[data-theme="light"] {
+  --color-text: #333333;
+  --color-text-muted: #666666;
+  --color-text-light: #999999;
+  
+  --color-bg: #ffffff;
+  --color-bg-header: #fafafa;
+  --color-bg-secondary: #f5f5f5;
+  --color-bg-code: #f5f5f5;
+  --color-bg-highlight: #fff9e6;
+  
+  --color-border: #e5e5e5;
+  --color-border-dark: #cccccc;
 }
 
 /* ==========================================================================

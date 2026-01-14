@@ -5,6 +5,7 @@
  */
 import Breadcrumb from '../components/Breadcrumb.astro';
 import SearchBox from '../components/SearchBox.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
 
 interface Props {
   title: string;
@@ -52,6 +53,7 @@ const currentPath = Astro.url.pathname;
         </nav>
         <div class="header-actions">
           <SearchBox lang={lang as 'en' | 'ja'} />
+          <ThemeToggle />
           <div class="lang-switcher">
             <slot name="header" />
           </div>
