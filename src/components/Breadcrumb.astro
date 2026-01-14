@@ -81,6 +81,9 @@ function generateBreadcrumbs(path: string, language: 'en' | 'ja', title?: string
 
 const breadcrumbs = generateBreadcrumbs(currentPath, lang, pageTitle);
 
+// サイトのベースURLを取得（設定またはリクエストURLから）
+const siteUrl = Astro.site?.origin || Astro.url.origin;
+
 // JSON-LD構造化データを生成（SEO対策）
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -89,7 +92,7 @@ const jsonLd = {
     '@type': 'ListItem',
     position: index + 1,
     name: item.label,
-    item: `https://docs2.vivliostyle.org${item.url}`,
+    item: `${siteUrl}${item.url}`,
   })),
 };
 ---
