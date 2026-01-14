@@ -99,20 +99,25 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
               .slice(index + 1, nextH2Index === -1 ? headings.length : arr.findIndex((h, i) => i > index && h.depth === 2))
               .filter(h => h.depth === 3);
             
+            // HTMLタグを除去してプレーンテキストのみを取得
+            const getPlainText = (html: string) => {
+              return html.replace(/<[^>]*>/g, '');
+            };
+            
             return (
               <li class="toc-h2">
                 {h3List.length > 0 ? (
                   <button class="toc-toggle" data-target={`toc-group-${index}`} aria-expanded="false">
-                    <span class="toggle-icon">▶</span><a href={`#${heading.slug}`} set:html={heading.text}></a>
+                    <span class="toggle-icon">▶</span><a href={`#${heading.slug}`}>{getPlainText(heading.text)}</a>
                   </button>
                 ) : (
-                  <a href={`#${heading.slug}`} class="toc-h2-link" set:html={heading.text}></a>
+                  <a href={`#${heading.slug}`} class="toc-h2-link">{getPlainText(heading.text)}</a>
                 )}
                 {h3List.length > 0 && (
                   <ul class="toc-h3-list" id={`toc-group-${index}`} style="display: none;">
                     {h3List.map(h3 => (
                       <li class="toc-h3">
-                        <a href={`#${h3.slug}`} set:html={h3.text}></a>
+                        <a href={`#${h3.slug}`}>{getPlainText(h3.text)}</a>
                       </li>
                     ))}
                   </ul>
@@ -128,9 +133,11 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
           {tocHeadings.map((heading) => {
             const slug = heading.slug || '';
             const text = heading.text || '';
+            // HTMLタグを除去してプレーンテキストのみを取得
+            const plainText = text.replace(/<[^>]*>/g, '');
             return (
               <li class={`toc-item toc-level-${heading.depth}`}>
-                <a href={`#${slug}`} set:html={text}></a>
+                <a href={`#${slug}`}>{plainText}</a>
               </li>
             );
           })}

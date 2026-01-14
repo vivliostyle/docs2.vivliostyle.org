@@ -203,6 +203,11 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
                 .slice(index + 1, nextH2Index === -1 ? undefined : index + 1 + nextH2Index)
                 .filter(h => h.depth === 3);
               
+              // HTMLタグを除去してプレーンテキストのみを取得
+              const getPlainText = (html: string) => {
+                return html.replace(/<[^>]*>/g, '');
+              };
+              
               return (
                 <li class="toc-h2">
                   {h3List.length > 0 ? (
@@ -211,16 +216,16 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
                       data-target={`toc-group-${index}`}
                       aria-expanded="false"
                     >
-                      <span class="toggle-icon">▶</span><a href={`#${heading.slug}`} set:html={heading.text}></a>
+                      <span class="toggle-icon">▶</span><a href={`#${heading.slug}`}>{getPlainText(heading.text)}</a>
                     </button>
                   ) : (
-                    <a href={`#${heading.slug}`} class="toc-h2-link" set:html={heading.text}></a>
+                    <a href={`#${heading.slug}`} class="toc-h2-link">{getPlainText(heading.text)}</a>
                   )}
                   {h3List.length > 0 && (
                     <ul id={`toc-group-${index}`} class="toc-h3-list" style="display: none; list-style: none; padding-left: 1.5rem;">
                       {h3List.map(h3 => (
                         <li class="toc-h3">
-                          <a href={`#${h3.slug}`} set:html={h3.text}></a>
+                          <a href={`#${h3.slug}`}>{getPlainText(h3.text)}</a>
                         </li>
                       ))}
                     </ul>
