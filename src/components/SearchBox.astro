@@ -240,12 +240,33 @@ const isDev = import.meta.env.DEV;
     }
   };
 
+  // 編集可能な要素かどうかを判定
+  const isEditableTarget = (target: EventTarget | null): boolean => {
+    const el = target as HTMLElement | null;
+    if (!el) return false;
+    
+    // contenteditable属性やisContentEditableがtrueの場合
+    if (el.isContentEditable) return true;
+    
+    const tagName = el.tagName;
+    if (['INPUT', 'TEXTAREA', 'SELECT'].includes(tagName)) {
+      return true;
+    }
+    
+    const role = el.getAttribute('role');
+    if (role === 'textbox' || role === 'searchbox') {
+      return true;
+    }
+    
+    return false;
+  };
+
   // キーボードショートカット: / または Ctrl+K
   document.addEventListener('keydown', (e) => {
     const searchInput = document.querySelector('.pagefind-ui__search-input') as HTMLInputElement;
     
     // / キーで検索ボックスにフォーカス（入力フィールド内でなければ）
-    if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)) {
+    if (e.key === '/' && !isEditableTarget(e.target)) {
       e.preventDefault();
       searchInput?.focus();
     }
