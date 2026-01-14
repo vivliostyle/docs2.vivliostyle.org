@@ -108,8 +108,14 @@
     if (theme === 'dark') {
       root.setAttribute('data-theme', 'dark');
     } else {
-      root.removeAttribute('data-theme');
+      root.setAttribute('data-theme', 'light');
     }
+  }
+  
+  // autoモード時: data-theme属性を削除してシステム設定に従う
+  function applyAutoMode() {
+    const root = document.documentElement;
+    root.removeAttribute('data-theme');
   }
   
   // テーマを切り替え
@@ -127,7 +133,13 @@
     }
     
     localStorage.setItem(STORAGE_KEY, next);
-    applyTheme(getEffectiveTheme(next));
+    
+    // autoモードの場合は属性を削除、それ以外は適用
+    if (next === 'auto') {
+      applyAutoMode();
+    } else {
+      applyTheme(getEffectiveTheme(next));
+    }
     
     // アクセシビリティ: 変更を通知
     updateAriaLabel(next);
@@ -159,15 +171,21 @@
   // 初期化
   function initTheme() {
     const preference = getStoredTheme();
-    const effective = getEffectiveTheme(preference);
-    applyTheme(effective);
     updateAriaLabel(preference);
     updateButtonIcon(preference);
+    
+    // autoモードの場合は属性を削除、それ以外は適用
+    if (preference === 'auto') {
+      applyAutoMode();
+    } else {
+      applyTheme(getEffectiveTheme(preference));
+    }
     
     // システム設定の変更を監視（autoモードの時のみ）
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
       if (getStoredTheme() === 'auto') {
-        applyTheme(e.matches ? 'dark' : 'light');
+        // autoモード時はdata-theme属性なしでシステム設定に従う
+        applyAutoMode();
       }
     });
   }
