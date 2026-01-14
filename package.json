@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && npx pagefind --site dist --output-subdir _pagefind",
     "preview": "astro preview",
     "astro": "astro"
   },
@@ -12,5 +12,8 @@
     "@vivliostyle/vfm": "^2.5.0",
     "astro": "^5.16.6",
     "gray-matter": "^4.0.3"
+  },
+  "devDependencies": {
+    "pagefind": "^1.4.0"
   }
 }

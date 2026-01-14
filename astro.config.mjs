@@ -12,6 +12,11 @@ export default defineConfig({
     ssr: {
       noExternal: ['@vivliostyle/vfm'],
     },
+    build: {
+      rollupOptions: {
+        external: ['/_pagefind/pagefind-ui.js'],
+      },
+    },
   },
   trailingSlash: 'always',
 });

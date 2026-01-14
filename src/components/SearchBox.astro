@@ -1,0 +1,201 @@
+---
+/**
+ * Pagefind検索ボックスコンポーネント
+ * キーボードショートカット: / または Ctrl+K
+ * 日英両言語対応
+ */
+interface Props {
+  lang?: 'en' | 'ja';
+}
+
+const { lang = 'en' } = Astro.props;
+
+const placeholder = lang === 'ja' ? 'ドキュメントを検索...' : 'Search documentation...';
+const ariaLabel = lang === 'ja' ? '検索' : 'Search';
+---
+
+<div class="search-container">
+  <div id="search-wrapper">
+    <div id="search"></div>
+  </div>
+</div>
+
+<!-- Pagefind UI CSS -->
+<link href="/_pagefind/pagefind-ui.css" rel="stylesheet">
+
+<style>
+  .search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  #search-wrapper {
+    width: 100%;
+  }
+
+  /* Pagefind UIのカスタマイズ */
+  :global(.pagefind-ui) {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #2563eb;
+    --pagefind-ui-text: #374151;
+    --pagefind-ui-background: #ffffff;
+    --pagefind-ui-border: #e5e7eb;
+    --pagefind-ui-tag: #f3f4f6;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 8px;
+    --pagefind-ui-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  /* ダークモード対応 */
+  @media (prefers-color-scheme: dark) {
+    :global(.pagefind-ui) {
+      --pagefind-ui-primary: #60a5fa;
+      --pagefind-ui-text: #e5e7eb;
+      --pagefind-ui-background: #1f2937;
+      --pagefind-ui-border: #374151;
+      --pagefind-ui-tag: #374151;
+    }
+  }
+
+  /* 検索ボックスのスタイル調整 */
+  :global(.pagefind-ui__search-input) {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    font-size: 0.95rem;
+    border: 1px solid var(--pagefind-ui-border);
+    border-radius: var(--pagefind-ui-border-radius);
+    background: var(--pagefind-ui-background);
+    color: var(--pagefind-ui-text);
+    transition: border-color 0.2s;
+  }
+
+  :global(.pagefind-ui__search-input:focus) {
+    outline: none;
+    border-color: var(--pagefind-ui-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+
+  /* 検索結果のスタイル */
+  :global(.pagefind-ui__results) {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 0.5rem;
+    max-height: 400px;
+    overflow-y: auto;
+    background: var(--pagefind-ui-background);
+    border: 1px solid var(--pagefind-ui-border);
+    border-radius: var(--pagefind-ui-border-radius);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+
+  :global(.pagefind-ui__result) {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--pagefind-ui-border);
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  :global(.pagefind-ui__result:hover) {
+    background-color: var(--pagefind-ui-tag);
+  }
+
+  :global(.pagefind-ui__result:last-child) {
+    border-bottom: none;
+  }
+
+  :global(.pagefind-ui__result-title) {
+    font-weight: 600;
+    color: var(--pagefind-ui-primary);
+    margin-bottom: 0.25rem;
+  }
+
+  :global(.pagefind-ui__result-excerpt) {
+    font-size: 0.875rem;
+    color: var(--pagefind-ui-text);
+    line-height: 1.5;
+  }
+
+  /* モバイル対応 */
+  @media (max-width: 768px) {
+    .search-container {
+      max-width: 100%;
+    }
+
+    :global(.pagefind-ui__results) {
+      left: -1rem;
+      right: -1rem;
+      max-height: 300px;
+    }
+  }
+</style>
+
+<script>
+  // Pagefind UI の初期化
+  const initPagefind = async () => {
+    try {
+      // @ts-ignore - Pagefind UIはビルド時に生成される
+      const { PagefindUI } = await import('/_pagefind/pagefind-ui.js');
+      
+      const searchElement = document.querySelector('#search');
+      if (searchElement) {
+        const lang = document.documentElement.lang || 'en';
+        new PagefindUI({
+          element: searchElement,
+          showImages: false,
+          showSubResults: true,
+          excerptLength: 15,
+          translations: lang === 'ja' ? {
+            placeholder: 'ドキュメントを検索...',
+            clear_search: 'クリア',
+            load_more: 'さらに読み込む',
+            search_label: '検索',
+            filters_label: 'フィルター',
+            zero_results: '結果が見つかりませんでした。',
+            many_results: '[SEARCH_TERM] の検索結果: [COUNT] 件',
+            one_result: '[SEARCH_TERM] の検索結果: 1 件',
+            alt_search: '[SEARCH_TERM] の検索結果はありません。代わりに [DIFFERENT_TERM] を検索中',
+            search_suggestion: '[SEARCH_TERM] の検索結果はありません。以下のいずれかを試してください:',
+            searching: '検索中...',
+          } : undefined,
+        });
+      }
+    } catch (error) {
+      console.warn('Pagefind not available:', error);
+    }
+  };
+
+  // キーボードショートカット: / または Ctrl+K
+  document.addEventListener('keydown', (e) => {
+    const searchInput = document.querySelector('.pagefind-ui__search-input') as HTMLInputElement;
+    
+    // / キーで検索ボックスにフォーカス（入力フィールド内でなければ）
+    if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)) {
+      e.preventDefault();
+      searchInput?.focus();
+    }
+    
+    // Ctrl+K または Cmd+K で検索ボックスにフォーカス
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+      e.preventDefault();
+      searchInput?.focus();
+    }
+    
+    // Escape キーで検索ボックスからフォーカスを外す
+    if (e.key === 'Escape' && document.activeElement === searchInput) {
+      searchInput?.blur();
+    }
+  });
+
+  // ページロード時に初期化
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPagefind);
+  } else {
+    initPagefind();
+  }
+</script>

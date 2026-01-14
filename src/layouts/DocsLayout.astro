@@ -4,6 +4,7 @@
  * SSMO対応: Web/PDF/EPUB共通スタイルを使用
  */
 import Breadcrumb from '../components/Breadcrumb.astro';
+import SearchBox from '../components/SearchBox.astro';
 
 interface Props {
   title: string;
@@ -42,8 +43,11 @@ const currentPath = Astro.url.pathname;
           <a href={`/${lang}/themes/`}>Themes</a>
           <a href={`/${lang}/reference/`}>{lang === 'ja' ? 'リファレンス' : 'Reference'}</a>
         </nav>
-        <div class="lang-switcher">
-          <slot name="header" />
+        <div class="header-actions">
+          <SearchBox lang={lang as 'en' | 'ja'} />
+          <div class="lang-switcher">
+            <slot name="header" />
+          </div>
         </div>
       </div>
     </header>
@@ -119,6 +123,12 @@ const currentPath = Astro.url.pathname;
   
   .header-nav a:hover {
     color: var(--color-primary);
+  }
+  
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
   }
   
   .lang-switcher {
