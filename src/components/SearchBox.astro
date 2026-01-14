@@ -167,6 +167,16 @@ const isDev = import.meta.env.DEV;
       max-height: 300px;
     }
   }
+
+  /* クリアボタンのスタイル調整 */
+  :global(.pagefind-ui__search-clear) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem;
+    min-width: 24px;
+    height: 24px;
+  }
 </style>
 
 {!isDev && (
@@ -196,7 +206,7 @@ const isDev = import.meta.env.DEV;
           excerptLength: 15,
           translations: lang === 'ja' ? {
             placeholder: 'ドキュメントを検索...',
-            clear_search: 'クリア',
+            clear_search: '✕',
             load_more: 'さらに読み込む',
             search_label: '検索',
             filters_label: 'フィルター',
@@ -206,7 +216,9 @@ const isDev = import.meta.env.DEV;
             alt_search: '[SEARCH_TERM] の検索結果はありません。代わりに [DIFFERENT_TERM] を検索中',
             search_suggestion: '[SEARCH_TERM] の検索結果はありません。以下のいずれかを試してください:',
             searching: '検索中...',
-          } : undefined,
+          } : {
+            clear_search: '✕',
+          },
         });
       }
     } catch (error) {
