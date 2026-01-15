@@ -1,0 +1,22 @@
+export default {
+  title: 'Vivliostyle CLI Documentation',
+  author: 'Vivliostyle Foundation',
+  language: 'en',
+  size: 'A4',
+  theme: './packages/theme-docs',
+  entry: [
+    'dist/en/cli/index.html',
+    'dist/en/cli/getting-started/index.html',
+    'dist/en/cli/using-config-file/index.html',
+    'dist/en/cli/config/index.html',
+    'dist/en/cli/themes-and-css/index.html',
+    'dist/en/cli/cover-page/index.html',
+    'dist/en/cli/toc-page/index.html',
+    'dist/en/cli/special-output-settings/index.html',
+    'dist/en/cli/frontend-framework-support/index.html',
+    'dist/en/cli/api-javascript/index.html',
+  ],
+  output: 'public/downloads/vivliostyle-cli-en.pdf',
+  workspaceDir: '.vivliostyle',
+  toc: true,
+};

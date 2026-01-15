@@ -6,7 +6,19 @@
     "dev": "astro dev",
     "build": "astro build && npx pagefind --site dist --output-subdir _pagefind",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "build:pdf": "npm run build:pdf:cli-ja && npm run build:pdf:cli-en && npm run build:pdf:vfm-ja && npm run build:pdf:vfm-en && npm run build:pdf:themes-ja && npm run build:pdf:themes-en && npm run build:pdf:viewer-ja && npm run build:pdf:viewer-en && npm run build:pdf:reference-ja && npm run build:pdf:reference-en",
+    "build:pdf:cli-ja": "vivliostyle build -c vivliostyle.config-cli-ja.js",
+    "build:pdf:cli-en": "vivliostyle build -c vivliostyle.config-cli-en.js",
+    "build:pdf:vfm-ja": "vivliostyle build -c vivliostyle.config-vfm-ja.js",
+    "build:pdf:vfm-en": "vivliostyle build -c vivliostyle.config-vfm-en.js",
+    "build:pdf:themes-ja": "vivliostyle build -c vivliostyle.config-themes-ja.js",
+    "build:pdf:themes-en": "vivliostyle build -c vivliostyle.config-themes-en.js",
+    "build:pdf:viewer-ja": "vivliostyle build -c vivliostyle.config-viewer-ja.js",
+    "build:pdf:viewer-en": "vivliostyle build -c vivliostyle.config-viewer-en.js",
+    "build:pdf:reference-ja": "vivliostyle build -c vivliostyle.config-reference-ja.js",
+    "build:pdf:reference-en": "vivliostyle build -c vivliostyle.config-reference-en.js",
+    "build:all": "npm run build && npm run build:pdf"
   },
   "dependencies": {
     "@vivliostyle/vfm": "^2.5.0",
@@ -14,6 +26,8 @@
     "gray-matter": "^4.0.3"
   },
   "devDependencies": {
+    "@vivliostyle/cli": "^10.3.0",
+    "@vivliostyle/theme-techbook": "^2.0.1",
     "pagefind": "^1.4.0"
   }
 }

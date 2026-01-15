@@ -1,0 +1,34 @@
+{
+  "name": "@vivliostyle/theme-PDF",
+  "description": "Vivliostyle theme for PDF generation from documentation websites",
+  "version": "1.0.0",
+  "author": "Vivliostyle Foundation",
+  "main": "theme.css",
+  "license": "AGPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vivliostyle/docs2.vivliostyle.org"
+  },
+  "files": [
+    "*.css",
+    "README.md"
+  ],
+  "keywords": [
+    "vivliostyle",
+    "vivliostyle-theme",
+    "documentation",
+    "pdf",
+    "print"
+  ],
+  "vivliostyle": {
+    "theme": {
+      "name": "Vivliostyle PDF Theme",
+      "author": "Vivliostyle Foundation",
+      "category": "misc",
+      "topics": [
+        "documentation",
+        "pdf"
+      ]
+    }
+  }
+}
