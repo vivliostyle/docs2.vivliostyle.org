@@ -3,14 +3,19 @@
  * ドキュメントページ用メインレイアウト
  * SSMO対応: Web/PDF/EPUB共通スタイルを使用
  */
+import Breadcrumb from '../components/Breadcrumb.astro';
+import SearchBox from '../components/SearchBox.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
 
 interface Props {
   title: string;
   description?: string;
   lang?: string;
+  showBreadcrumb?: boolean;
 }
 
-const { title, description = '', lang = 'en' } = Astro.props;
+const { title, description = '', lang = 'en', showBreadcrumb = true } = Astro.props;
+const currentPath = Astro.url.pathname;
 ---
 <!DOCTYPE html>
 <html lang={lang}>
@@ -29,6 +34,13 @@ const { title, description = '', lang = 'en' } = Astro.props;
   <div class="layout">
     <header class="header">
       <div class="header-content">
+        <button class="mobile-menu-toggle" aria-label={lang === 'ja' ? 'メニューを開く' : 'Toggle menu'} aria-expanded="false">
+          <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
         <a href={`/${lang}/`} class="logo">
           <span class="logo-text">Vivliostyle Docs</span>
         </a>
@@ -39,18 +51,35 @@ const { title, description = '', lang = 'en' } = Astro.props;
           <a href={`/${lang}/themes/`}>Themes</a>
           <a href={`/${lang}/reference/`}>{lang === 'ja' ? 'リファレンス' : 'Reference'}</a>
         </nav>
-        <div class="lang-switcher">
-          <slot name="header" />
+        <div class="header-actions">
+          <SearchBox lang={lang as 'en' | 'ja'} />
+          <ThemeToggle />
+          <div class="lang-switcher">
+            <slot name="header" />
+          </div>
         </div>
       </div>
     </header>
     
+    <div class="sidebar-overlay"></div>
+    
     <div class="main-container">
       <aside class="sidebar">
+        <div class="sidebar-header">
+          <button class="sidebar-close" aria-label={lang === 'ja' ? 'メニューを閉じる' : 'Close menu'}>
+            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
         <slot name="sidebar" />
       </aside>
       
       <main class="content">
+        {showBreadcrumb && (
+          <Breadcrumb currentPath={currentPath} lang={lang as 'en' | 'ja'} pageTitle={title} />
+        )}
         <article class="prose">
           <slot />
         </article>
@@ -115,10 +144,83 @@ const { title, description = '', lang = 'en' } = Astro.props;
     color: var(--color-primary);
   }
   
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+  }
+  
+  .mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: var(--color-text);
+    margin-right: 0.5rem;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+  }
+  
+  .mobile-menu-toggle:hover {
+    background-color: var(--color-bg-secondary);
+  }
+  
+  .mobile-menu-toggle:active {
+    transform: scale(0.95);
+  }
+  
+  .sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 99;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  
+  .sidebar-overlay.active {
+    display: block;
+    opacity: 1;
+  }
+  
+  .sidebar-header {
+    display: none;
+    justify-content: flex-end;
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 1rem;
+  }
+  
+  .sidebar-close {
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: var(--color-text);
+    border-radius: 4px;
+    transition: background-color 0.2s;
+  }
+  
+  .sidebar-close:hover {
+    background-color: var(--color-bg-secondary);
+  }
+  
+  .sidebar-close:active {
+    transform: scale(0.95);
+  }
+  
   .lang-switcher {
     display: flex;
     gap: 0.5rem;
     align-items: center;
+    flex-shrink: 0;
+    white-space: nowrap;
   }
   
   .lang-switcher .separator {
@@ -131,6 +233,7 @@ const { title, description = '', lang = 'en' } = Astro.props;
     text-decoration: none;
     color: var(--color-text-muted);
     font-size: 0.875rem;
+    white-space: nowrap;
   }
   
   .lang-switcher a.active {
@@ -183,13 +286,68 @@ const { title, description = '', lang = 'en' } = Astro.props;
   }
   
   /* レスポンシブ */
+  @media (max-width: 1024px) {
+    .main-container {
+      padding-right: 0;
+    }
+  }
+  
   @media (max-width: 768px) {
-    .sidebar {
-      display: none;
+    .mobile-menu-toggle {
+      display: block;
     }
     
     .header-nav {
       display: none;
+    }
+    
+    .header-actions {
+      gap: 0.5rem;
+    }
+    
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: -100%;
+      width: 280px;
+      max-width: 80vw;
+      height: 100vh;
+      z-index: 100;
+      background: var(--color-bg);
+      border-right: 1px solid var(--color-border);
+      transition: left 0.3s ease;
+      overflow-y: auto;
+    }
+    
+    .sidebar.active {
+      left: 0;
+    }
+    
+    .sidebar-header {
+      display: flex;
+    }
+    
+    .content {
+      padding: 1rem;
+    }
+  }
+  
+  @media (max-width: 640px) {
+    .header-content {
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+    }
+    
+    .logo-text {
+      font-size: 1rem;
+    }
+    
+    .header-actions {
+      gap: 0.25rem;
+    }
+    
+    .lang-switcher {
+      gap: 0.25rem;
     }
   }
   
@@ -211,3 +369,68 @@ const { title, description = '', lang = 'en' } = Astro.props;
     }
   }
 </style>
+
+<script>
+  // モバイルメニュー機能
+  const initMobileMenu = () => {
+    const menuToggle = document.querySelector('.mobile-menu-toggle') as HTMLButtonElement;
+    const sidebar = document.querySelector('.sidebar') as HTMLElement;
+    const sidebarClose = document.querySelector('.sidebar-close') as HTMLButtonElement;
+    const overlay = document.querySelector('.sidebar-overlay') as HTMLElement;
+    
+    if (!menuToggle || !sidebar || !overlay) return;
+    
+    const openMenu = () => {
+      sidebar.classList.add('active');
+      overlay.classList.add('active');
+      menuToggle.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    };
+    
+    const closeMenu = () => {
+      sidebar.classList.remove('active');
+      overlay.classList.remove('active');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    };
+    
+    menuToggle.addEventListener('click', openMenu);
+    sidebarClose?.addEventListener('click', closeMenu);
+    overlay.addEventListener('click', closeMenu);
+    
+    // サイドバー内のリンククリックで閉じる
+    sidebar.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        // モバイル表示の時のみ閉じる
+        if (window.innerWidth <= 768) {
+          closeMenu();
+        }
+      });
+    });
+    
+    // Escapeキーで閉じる
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && sidebar.classList.contains('active')) {
+        closeMenu();
+      }
+    });
+    
+    // ウィンドウリサイズ時の処理
+    let resizeTimer: ReturnType<typeof setTimeout>;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = window.setTimeout(() => {
+        if (window.innerWidth > 768 && sidebar.classList.contains('active')) {
+          closeMenu();
+        }
+      }, 250);
+    });
+  };
+  
+  // DOMContentLoaded時に初期化
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMobileMenu);
+  } else {
+    initMobileMenu();
+  }
+</script>

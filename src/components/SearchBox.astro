@@ -1,0 +1,303 @@
+---
+/**
+ * Pagefind検索ボックスコンポーネント
+ * キーボードショートカット: / または Ctrl+K
+ * 日英両言語対応
+ * 注意: 開発環境では動作しません。npm run preview で確認してください。
+ */
+interface Props {
+  lang?: 'en' | 'ja';
+}
+
+const { lang = 'en' } = Astro.props;
+const isDev = import.meta.env.DEV;
+---
+
+{isDev ? (
+  <div class="search-container search-dev-notice">
+    <div class="dev-notice">
+      {lang === 'ja' ? '検索: 本番ビルドでのみ利用可' : 'Search: Production only'}
+    </div>
+  </div>
+) : (
+  <div class="search-container">
+    <div id="search-wrapper">
+      <div id="search"></div>
+    </div>
+  </div>
+)}
+
+<!-- Pagefind UI CSS (本番環境のみ) -->
+{!isDev && <link href="/_pagefind/pagefind-ui.css" rel="stylesheet">}
+
+<style>
+  .search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 280px;
+    min-width: 200px;
+  }
+
+  #search-wrapper {
+    width: 100%;
+  }
+
+  /* 開発環境の通知スタイル */
+  .search-dev-notice {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 280px;
+  }
+
+  .dev-notice {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+    color: #6b7280;
+    background-color: #f3f4f6;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+    white-space: nowrap;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .dev-notice {
+      color: #9ca3af;
+      background-color: #374151;
+      border-color: #4b5563;
+    }
+  }
+
+  :root[data-theme="dark"] .dev-notice {
+    color: #9ca3af;
+    background-color: #374151;
+    border-color: #4b5563;
+  }
+
+  /* Pagefind UIのカスタマイズ */
+  :global(.pagefind-ui) {
+    --pagefind-ui-scale: 0.9;
+    --pagefind-ui-primary: #2563eb;
+    --pagefind-ui-text: #374151;
+    --pagefind-ui-background: #ffffff;
+    --pagefind-ui-border: #e5e7eb;
+    --pagefind-ui-tag: #f3f4f6;
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 8px;
+    --pagefind-ui-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  /* ダークモード対応 */
+  @media (prefers-color-scheme: dark) {
+    :global(.pagefind-ui) {
+      --pagefind-ui-primary: #60a5fa;
+      --pagefind-ui-text: #e5e7eb;
+      --pagefind-ui-background: #1f2937;
+      --pagefind-ui-border: #374151;
+      --pagefind-ui-tag: #374151;
+    }
+  }
+
+  :root[data-theme="dark"] :global(.pagefind-ui) {
+    --pagefind-ui-primary: #60a5fa;
+    --pagefind-ui-text: #e5e7eb;
+    --pagefind-ui-background: #1f2937;
+    --pagefind-ui-border: #374151;
+    --pagefind-ui-tag: #374151;
+  }
+
+  /* 検索ボックスのスタイル調整 */
+  :global(.pagefind-ui__search-input) {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    font-size: 0.95rem;
+    border: 1px solid var(--pagefind-ui-border);
+    border-radius: var(--pagefind-ui-border-radius);
+    background: var(--pagefind-ui-background);
+    color: var(--pagefind-ui-text);
+    transition: border-color 0.2s;
+  }
+
+  :global(.pagefind-ui__search-input:focus) {
+    outline: none;
+    border-color: var(--pagefind-ui-primary);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  }
+
+  /* 検索結果のスタイル */
+  :global(.pagefind-ui__results) {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    margin-top: 0.5rem;
+    max-height: 400px;
+    overflow-y: auto;
+    background: var(--pagefind-ui-background);
+    border: 1px solid var(--pagefind-ui-border);
+    border-radius: var(--pagefind-ui-border-radius);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+  }
+
+  :global(.pagefind-ui__result) {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--pagefind-ui-border);
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  :global(.pagefind-ui__result:hover) {
+    background-color: var(--pagefind-ui-tag);
+  }
+
+  :global(.pagefind-ui__result:last-child) {
+    border-bottom: none;
+  }
+
+  :global(.pagefind-ui__result-title) {
+    font-weight: 600;
+    color: var(--pagefind-ui-primary);
+    margin-bottom: 0.25rem;
+  }
+
+  :global(.pagefind-ui__result-excerpt) {
+    font-size: 0.875rem;
+    color: var(--pagefind-ui-text);
+    line-height: 1.5;
+  }
+
+  /* モバイル対応 */
+  @media (max-width: 768px) {
+    .search-container {
+      max-width: 100%;
+    }
+
+    :global(.pagefind-ui__results) {
+      left: -1rem;
+      right: -1rem;
+      max-height: 300px;
+    }
+  }
+
+  /* クリアボタンのスタイル調整 */
+  :global(.pagefind-ui__search-clear) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem;
+    min-width: 24px;
+    height: 24px;
+  }
+</style>
+
+{!isDev && (
+<script>
+  // Pagefind UI の初期化
+  const initPagefind = async () => {
+    try {
+      // Pagefind UIをグローバルスコープに読み込む
+      await import('/_pagefind/pagefind-ui.js');
+      
+      // グローバルオブジェクトからPagefindUIを取得
+      // @ts-ignore
+      const PagefindUI = window.PagefindUI;
+      
+      if (!PagefindUI) {
+        throw new Error('PagefindUI not loaded on window object');
+      }
+      
+      const searchElement = document.querySelector('#search');
+      if (searchElement) {
+        const lang = document.documentElement.lang || 'en';
+        new PagefindUI({
+          element: searchElement,
+          bundlePath: '/_pagefind/',
+          showImages: false,
+          showSubResults: true,
+          excerptLength: 15,
+          translations: lang === 'ja' ? {
+            placeholder: 'ドキュメントを検索...',
+            clear_search: '✕',
+            load_more: 'さらに読み込む',
+            search_label: '検索',
+            filters_label: 'フィルター',
+            zero_results: '結果が見つかりませんでした。',
+            many_results: '[SEARCH_TERM] の検索結果: [COUNT] 件',
+            one_result: '[SEARCH_TERM] の検索結果: 1 件',
+            alt_search: '[SEARCH_TERM] の検索結果はありません。代わりに [DIFFERENT_TERM] を検索中',
+            search_suggestion: '[SEARCH_TERM] の検索結果はありません。以下のいずれかを試してください:',
+            searching: '検索中...',
+          } : {
+            clear_search: '✕',
+          },
+        });
+      }
+    } catch (error) {
+      console.warn('Pagefind not available:', error);
+    }
+  };
+
+  // 編集可能な要素かどうかを判定
+  const isEditableTarget = (target: EventTarget | null): boolean => {
+    const el = target as HTMLElement | null;
+    if (!el) return false;
+    
+    // contenteditable属性やisContentEditableがtrueの場合
+    if (el.isContentEditable) return true;
+    
+    const tagName = el.tagName;
+    if (['INPUT', 'TEXTAREA', 'SELECT'].includes(tagName)) {
+      return true;
+    }
+    
+    const role = el.getAttribute('role');
+    if (role === 'textbox' || role === 'searchbox') {
+      return true;
+    }
+    
+    return false;
+  };
+
+  // キーボードショートカット: / または Ctrl+K
+  // 重複登録を防ぐため、初期化済みフラグをチェック
+  const initKeyboardShortcuts = () => {
+    if ((window as any).__pagefindKeyboardInitialized) {
+      return;
+    }
+    (window as any).__pagefindKeyboardInitialized = true;
+
+    document.addEventListener('keydown', (e) => {
+      const searchInput = document.querySelector('.pagefind-ui__search-input') as HTMLInputElement;
+      
+      // / キーで検索ボックスにフォーカス（入力フィールド内でなければ）
+      if (e.key === '/' && !isEditableTarget(e.target)) {
+        e.preventDefault();
+        searchInput?.focus();
+      }
+      
+      // Ctrl+K または Cmd+K で検索ボックスにフォーカス
+      if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        searchInput?.focus();
+      }
+      
+      // Escape キーで検索ボックスからフォーカスを外す
+      if (e.key === 'Escape' && document.activeElement === searchInput) {
+        searchInput?.blur();
+      }
+    });
+  };
+
+  initKeyboardShortcuts();
+
+  // ページロード時に初期化
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPagefind);
+  } else {
+    initPagefind();
+  }
+</script>
+)}
