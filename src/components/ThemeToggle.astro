@@ -149,15 +149,15 @@
   
   // ボタンのアイコン表示を更新
   function updateButtonIcon(theme: Theme) {
-    const button = document.querySelector('.theme-toggle') as HTMLButtonElement;
-    if (!button) return;
-    button.setAttribute('data-theme-mode', theme);
+    const buttons = document.querySelectorAll('.theme-toggle') as NodeListOf<HTMLButtonElement>;
+    buttons.forEach(button => {
+      button.setAttribute('data-theme-mode', theme);
+    });
   }
   
   // ボタンのaria-labelを更新
   function updateAriaLabel(theme: Theme) {
-    const button = document.querySelector('.theme-toggle') as HTMLButtonElement;
-    if (!button) return;
+    const buttons = document.querySelectorAll('.theme-toggle') as NodeListOf<HTMLButtonElement>;
     
     const labels = {
       light: 'ダークモードに切り替え',
@@ -165,8 +165,10 @@
       auto: 'ライトモードに切り替え',
     };
     
-    button.setAttribute('aria-label', labels[theme]);
-    button.setAttribute('title', labels[theme]);
+    buttons.forEach(button => {
+      button.setAttribute('aria-label', labels[theme]);
+      button.setAttribute('title', labels[theme]);
+    });
   }
   
   // 初期化
@@ -193,10 +195,10 @@
   
   // ボタンのクリックイベント
   function setupToggle() {
-    const button = document.querySelector('.theme-toggle');
-    if (button) {
+    const buttons = document.querySelectorAll('.theme-toggle');
+    buttons.forEach(button => {
       button.addEventListener('click', cycleTheme);
-    }
+    });
   }
   
   // ページロード前にテーマを適用（ちらつき防止）
