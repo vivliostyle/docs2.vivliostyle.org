@@ -2,7 +2,7 @@
 
 ## 現状の課題
 
-**現在のアクセントカラー:** ![#6b4fa2](https://via.placeholder.com/80x30/6b4fa2/ffffff?text=%236b4fa2) `#6b4fa2`（紫系）
+**現在のアクセントカラー:** ![#6b4fa2](https://img.shields.io/badge/%236b4fa2-%236b4fa2?style=for-the-badge) `#6b4fa2`（紫系）
 
 **問題点:**
 - ダークモードでの視認性が低い
@@ -15,7 +15,7 @@
 
 | メイン | ライト | ダーク |
 |:------:|:------:|:------:|
-| ![#3b9eff](https://via.placeholder.com/120x40/3b9eff/ffffff?text=%233b9eff) | ![#5eb0ff](https://via.placeholder.com/120x40/5eb0ff/ffffff?text=%235eb0ff) | ![#2080e0](https://via.placeholder.com/120x40/2080e0/ffffff?text=%232080e0) |
+| ![#3b9eff](https://img.shields.io/badge/%233b9eff-%233b9eff?style=for-the-badge) | ![#5eb0ff](https://img.shields.io/badge/%235eb0ff-%235eb0ff?style=for-the-badge) | ![#2080e0](https://img.shields.io/badge/%232080e0-%232080e0?style=for-the-badge) |
 | `#3b9eff` | `#5eb0ff` | `#2080e0` |
 
 ```css
@@ -46,7 +46,7 @@
 
 | メイン | ライト | ダーク |
 |:------:|:------:|:------:|
-| ![#22d3ee](https://via.placeholder.com/120x40/22d3ee/ffffff?text=%2322d3ee) | ![#5eead4](https://via.placeholder.com/120x40/5eead4/000000?text=%235eead4) | ![#14b8a6](https://via.placeholder.com/120x40/14b8a6/ffffff?text=%2314b8a6) |
+| ![#22d3ee](https://img.shields.io/badge/%2322d3ee-%2322d3ee?style=for-the-badge) | ![#5eead4](https://img.shields.io/badge/%235eead4-%235eead4?style=for-the-badge) | ![#14b8a6](https://img.shields.io/badge/%2314b8a6-%2314b8a6?style=for-the-badge) |
 | `#22d3ee` | `#5eead4` | `#14b8a6` |
 
 ```css
@@ -77,7 +77,7 @@
 
 | メイン | ライト | ダーク |
 |:------:|:------:|:------:|
-| ![#ff7849](https://via.placeholder.com/120x40/ff7849/ffffff?text=%23ff7849) | ![#ff9770](https://via.placeholder.com/120x40/ff9770/ffffff?text=%23ff9770) | ![#f05a2c](https://via.placeholder.com/120x40/f05a2c/ffffff?text=%23f05a2c) |
+| ![#ff7849](https://img.shields.io/badge/%23ff7849-%23ff7849?style=for-the-badge) | ![#ff9770](https://img.shields.io/badge/%23ff9770-%23ff9770?style=for-the-badge) | ![#f05a2c](https://img.shields.io/badge/%23f05a2c-%23f05a2c?style=for-the-badge) |
 | `#ff7849` | `#ff9770` | `#f05a2c` |
 
 ```css
@@ -130,9 +130,9 @@
 
 | 項目 | 現在 | 変更後（候補1） |
 |:-----|:----:|:---------------:|
-| **primary** | ![#6b4fa2](https://via.placeholder.com/100x30/6b4fa2/ffffff?text=%236b4fa2) | ![#3b9eff](https://via.placeholder.com/100x30/3b9eff/ffffff?text=%233b9eff) |
-| **primary-light** | ![#8b6fc2](https://via.placeholder.com/100x30/8b6fc2/ffffff?text=%238b6fc2) | ![#5eb0ff](https://via.placeholder.com/100x30/5eb0ff/ffffff?text=%235eb0ff) |
-| **primary-dark** | ![#4b2f82](https://via.placeholder.com/100x30/4b2f82/ffffff?text=%234b2f82) | ![#2080e0](https://via.placeholder.com/100x30/2080e0/ffffff?text=%232080e0) |
+| **primary** | ![#6b4fa2](https://img.shields.io/badge/%236b4fa2-%236b4fa2?style=for-the-badge) | ![#3b9eff](https://img.shields.io/badge/%233b9eff-%233b9eff?style=for-the-badge) |
+| **primary-light** | ![#8b6fc2](https://img.shields.io/badge/%238b6fc2-%238b6fc2?style=for-the-badge) | ![#5eb0ff](https://img.shields.io/badge/%235eb0ff-%235eb0ff?style=for-the-badge) |
+| **primary-dark** | ![#4b2f82](https://img.shields.io/badge/%234b2f82-%234b2f82?style=for-the-badge) | ![#2080e0](https://img.shields.io/badge/%232080e0-%232080e0?style=for-the-badge) |
 
 ```css
 /* 現在 */
