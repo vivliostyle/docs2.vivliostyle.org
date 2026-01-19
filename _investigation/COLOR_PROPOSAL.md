@@ -2,7 +2,7 @@
 
 ## 現状の課題
 
-**現在のアクセントカラー:** <span style="background-color: #6b4fa2; color: white; padding: 4px 12px; border-radius: 4px; font-weight: bold;">#6b4fa2</span>（紫系）
+**現在のアクセントカラー:** ![#6b4fa2](https://via.placeholder.com/80x30/6b4fa2/ffffff?text=%236b4fa2) `#6b4fa2`（紫系）
 
 **問題点:**
 - ダークモードでの視認性が低い
@@ -13,11 +13,10 @@
 
 ### 候補1: ブライトブルー系（推奨）
 
-<div style="display: flex; gap: 12px; margin: 16px 0;">
-  <span style="background-color: #3b9eff; color: white; padding: 8px 16px; border-radius: 4px; font-weight: bold;">#3b9eff</span>
-  <span style="background-color: #5eb0ff; color: white; padding: 8px 16px; border-radius: 4px; font-weight: bold;">#5eb0ff</span>
-  <span style="background-color: #2080e0; color: white; padding: 8px 16px; border-radius: 4px; font-weight: bold;">#2080e0</span>
-</div>
+| メイン | ライト | ダーク |
+|:------:|:------:|:------:|
+| ![#3b9eff](https://via.placeholder.com/120x40/3b9eff/ffffff?text=%233b9eff) | ![#5eb0ff](https://via.placeholder.com/120x40/5eb0ff/ffffff?text=%235eb0ff) | ![#2080e0](https://via.placeholder.com/120x40/2080e0/ffffff?text=%232080e0) |
+| `#3b9eff` | `#5eb0ff` | `#2080e0` |
 
 ```css
 --color-primary: #3b9eff;        /* メインカラー */
@@ -45,11 +44,10 @@
 
 ### 候補2: サイアン・ティール系
 
-<div style="display: flex; gap: 12px; margin: 16px 0;">
-  <span style="background-color: #22d3ee; color: white; padding: 8px 16px; border-radius: 4px; font-weight: bold;">#22d3ee</span>
-  <span style="background-color: #5eead4; color: #1a1a1a; padding: 8px 16px; border-radius: 4px; font-weight: bold;">#5eead4</span>
-  <span style="background-color: #14b8a6; color: white; padding: 8px 16px; border-radius: 4px; font-weight: bold;">#14b8a6</span>
-</div>
+| メイン | ライト | ダーク |
+|:------:|:------:|:------:|
+| ![#22d3ee](https://via.placeholder.com/120x40/22d3ee/ffffff?text=%2322d3ee) | ![#5eead4](https://via.placeholder.com/120x40/5eead4/000000?text=%235eead4) | ![#14b8a6](https://via.placeholder.com/120x40/14b8a6/ffffff?text=%2314b8a6) |
+| `#22d3ee` | `#5eead4` | `#14b8a6` |
 
 ```css
 --color-primary: #22d3ee;        /* メインカラー */
@@ -77,11 +75,10 @@
 
 ### 候補3: コーラル・オレンジ系
 
-<div style="display: flex; gap: 12px; margin: 16px 0;">
-  <span style="background-color: #ff7849; color: white; padding: 8px 16px; border-radius: 4px; font-weight: bold;">#ff7849</span>
-  <span style="background-color: #ff9770; color: white; padding: 8px 16px; border-radius: 4px; font-weight: bold;">#ff9770</span>
-  <span style="background-color: #f05a2c; color: white; padding: 8px 16px; border-radius: 4px; font-weight: bold;">#f05a2c</span>
-</div>
+| メイン | ライト | ダーク |
+|:------:|:------:|:------:|
+| ![#ff7849](https://via.placeholder.com/120x40/ff7849/ffffff?text=%23ff7849) | ![#ff9770](https://via.placeholder.com/120x40/ff9770/ffffff?text=%23ff9770) | ![#f05a2c](https://via.placeholder.com/120x40/f05a2c/ffffff?text=%23f05a2c) |
+| `#ff7849` | `#ff9770` | `#f05a2c` |
 
 ```css
 --color-primary: #ff7849;        /* メインカラー */
@@ -131,28 +128,11 @@
 
 ### global.cssの変更箇所
 
-<table>
-<tr>
-<td><strong>現在</strong></td>
-<td><strong>変更後（候補1の場合）</strong></td>
-</tr>
-<tr>
-<td>
-<div style="display: flex; flex-direction: column; gap: 8px;">
-  <span style="background-color: #6b4fa2; color: white; padding: 6px 12px; border-radius: 3px; font-family: monospace;">#6b4fa2</span>
-  <span style="background-color: #8b6fc2; color: white; padding: 6px 12px; border-radius: 3px; font-family: monospace;">#8b6fc2</span>
-  <span style="background-color: #4b2f82; color: white; padding: 6px 12px; border-radius: 3px; font-family: monospace;">#4b2f82</span>
-</div>
-</td>
-<td>
-<div style="display: flex; flex-direction: column; gap: 8px;">
-  <span style="background-color: #3b9eff; color: white; padding: 6px 12px; border-radius: 3px; font-family: monospace;">#3b9eff</span>
-  <span style="background-color: #5eb0ff; color: white; padding: 6px 12px; border-radius: 3px; font-family: monospace;">#5eb0ff</span>
-  <span style="background-color: #2080e0; color: white; padding: 6px 12px; border-radius: 3px; font-family: monospace;">#2080e0</span>
-</div>
-</td>
-</tr>
-</table>
+| 項目 | 現在 | 変更後（候補1） |
+|:-----|:----:|:---------------:|
+| **primary** | ![#6b4fa2](https://via.placeholder.com/100x30/6b4fa2/ffffff?text=%236b4fa2) | ![#3b9eff](https://via.placeholder.com/100x30/3b9eff/ffffff?text=%233b9eff) |
+| **primary-light** | ![#8b6fc2](https://via.placeholder.com/100x30/8b6fc2/ffffff?text=%238b6fc2) | ![#5eb0ff](https://via.placeholder.com/100x30/5eb0ff/ffffff?text=%235eb0ff) |
+| **primary-dark** | ![#4b2f82](https://via.placeholder.com/100x30/4b2f82/ffffff?text=%234b2f82) | ![#2080e0](https://via.placeholder.com/100x30/2080e0/ffffff?text=%232080e0) |
 
 ```css
 /* 現在 */
