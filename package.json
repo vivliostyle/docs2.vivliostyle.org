@@ -21,6 +21,7 @@
     "build:all": "npm run build && npm run build:pdf"
   },
   "dependencies": {
+    "@astrojs/sitemap": "^3.7.0",
     "@vivliostyle/vfm": "^2.5.0",
     "astro": "^5.16.6",
     "gray-matter": "^4.0.3"
