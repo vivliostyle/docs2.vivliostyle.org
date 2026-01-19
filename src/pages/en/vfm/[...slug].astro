@@ -160,7 +160,17 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
   }
   nav li.active a {
     font-weight: bold;
-    color: var(--color-primary, #0066cc);
+    color: var(--color-primary, #3b9eff);
+  }
+
+  /* Sidebar top-level links */
+  nav > ul > li > a {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  nav > ul > li > a:hover {
+    color: var(--color-primary);
   }
 </style>
 

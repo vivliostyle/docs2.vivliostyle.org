@@ -469,6 +469,47 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
   .accordion-content a:hover {
     color: var(--color-primary);
   }
+
+  /* サイドバー内の全てのリンク */
+  :global(#sidebar-nav a) {
+    color: var(--color-text) !important;
+    text-decoration: none;
+  }
+
+  :global(#sidebar-nav a:visited) {
+    color: var(--color-text) !important;
+  }
+
+  :global(#sidebar-nav a:hover) {
+    color: var(--color-primary) !important;
+  }
+
+  /* サイドバーのトップレベルリンク（ホームに戻るなど） */
+  :global(#sidebar-nav > ul > li > a) {
+    color: var(--color-text) !important;
+    text-decoration: none;
+  }
+
+  :global(#sidebar-nav > ul > li > a:visited) {
+    color: var(--color-text) !important;
+  }
+
+  :global(#sidebar-nav > ul > li > a:hover) {
+    color: var(--color-primary) !important;
+  }
+
+  /* サイドバーのH3タイトルリンク */
+  :global(#sidebar-nav h3 a) {
+    color: var(--color-text) !important;
+  }
+
+  :global(#sidebar-nav h3 a:visited) {
+    color: var(--color-text) !important;
+  }
+
+  :global(#sidebar-nav h3 a:hover) {
+    color: var(--color-primary) !important;
+  }
 </style>
 
 <script>
