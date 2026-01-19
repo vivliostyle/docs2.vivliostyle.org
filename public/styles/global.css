@@ -30,9 +30,9 @@
 
 :root {
   /* カラーパレット */
-  --color-primary: #6b4fa2;
-  --color-primary-light: #8b6fc2;
-  --color-primary-dark: #4b2f82;
+  --color-primary: #3b9eff;
+  --color-primary-light: #5eb0ff;
+  --color-primary-dark: #2080e0;
   
   --color-text: #333333;
   --color-text-muted: #666666;
