@@ -471,24 +471,21 @@ h1, h2, h3, h4, h5, h6 {
    ========================================================================== */
 
 @media screen {
-  /* サイドバー内の全てのリンクのスタイル */
+  /* サイドバーナビゲーションリンクのスタイル */
   #sidebar-nav a,
-  .sidebar nav a,
-  .sidebar a {
-    color: var(--color-text) !important;
+  .sidebar nav a {
+    color: var(--color-text);
     text-decoration: none;
   }
 
   #sidebar-nav a:visited,
-  .sidebar nav a:visited,
-  .sidebar a:visited {
-    color: var(--color-text) !important;
+  .sidebar nav a:visited {
+    color: var(--color-text);
   }
 
   #sidebar-nav a:hover,
-  .sidebar nav a:hover,
-  .sidebar a:hover {
-    color: var(--color-primary) !important;
+  .sidebar nav a:hover {
+    color: var(--color-primary);
   }
 
   .page-toc {
