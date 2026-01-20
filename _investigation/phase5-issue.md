@@ -5,7 +5,7 @@
 Phase 5では、Vivliostyleの最大の特徴である「Single Source Multi Output (SSMO)」を実践します。
 現在Webサイトとして公開されているMarkdownドキュメントから、PDF版およびEPUB版を自動生成し、ユーザーに提供します。
 
-これにより、docs2.vivliostyle.orgは「1つのソースからWeb/PDF/EPUBを出力できる」というVivliostyleの価値を実証するショーケースとなります。
+これにより、docs.vivliostyle.orgは「1つのソースからWeb/PDF/EPUBを出力できる」というVivliostyleの価値を実証するショーケースとなります。
 
 ## 主要タスク
 
@@ -86,7 +86,7 @@ Phase 5では、Vivliostyleの最大の特徴である「Single Source Multi Out
 
 - [Vivliostyle CLI Documentation](https://github.com/vivliostyle/vivliostyle-cli)
 - [vivliostyle.config.js Reference](https://github.com/vivliostyle/vivliostyle-cli#configuration-file)
-- [DEVELOPMENT_PLAN-2.md - Phase 5](https://github.com/vivliostyle/docs2.vivliostyle.org/blob/main/_investigation/DEVELOPMENT_PLAN-2.md#phase-5-pdfepub生成公開)
+- [DEVELOPMENT_PLAN-2.md - Phase 5](https://github.com/vivliostyle/docs.vivliostyle.org/blob/main/_investigation/DEVELOPMENT_PLAN-2.md#phase-5-pdfepub生成機能)
 
 ## 見積もり工数
 
