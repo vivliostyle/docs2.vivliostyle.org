@@ -394,10 +394,6 @@ h1, h2, h3, h4, h5, h6 {
     width: 100% !important;
   }
   
-  .prose {
-    max-width: none;
-  }
-  
   .prose h1 {
     font-size: 24pt;
     page-break-after: avoid;

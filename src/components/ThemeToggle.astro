@@ -159,15 +159,24 @@
   function updateAriaLabel(theme: Theme) {
     const buttons = document.querySelectorAll('.theme-toggle') as NodeListOf<HTMLButtonElement>;
     
+    const currentLang = document.documentElement.lang || 'ja';
     const labels = {
-      light: 'ダークモードに切り替え',
-      dark: 'システム設定に従う',
-      auto: 'ライトモードに切り替え',
+      ja: {
+        light: 'ダークモードに切り替え',
+        dark: 'システム設定に従う',
+        auto: 'ライトモードに切り替え',
+      },
+      en: {
+        light: 'Switch to dark mode',
+        dark: 'Follow system settings',
+        auto: 'Switch to light mode',
+      },
     };
+    const themeLabels = labels[currentLang] || labels.en;
     
     buttons.forEach(button => {
-      button.setAttribute('aria-label', labels[theme]);
-      button.setAttribute('title', labels[theme]);
+      button.setAttribute('aria-label', themeLabels[theme]);
+      button.setAttribute('title', themeLabels[theme]);
     });
   }
   
