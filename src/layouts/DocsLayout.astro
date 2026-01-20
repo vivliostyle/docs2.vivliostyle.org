@@ -73,6 +73,12 @@ const currentPath = Astro.url.pathname;
             </svg>
           </button>
         </div>
+        <div class="sidebar-mobile-controls">
+          <ThemeToggle />
+          <div class="lang-switcher-mobile">
+            <slot name="header" />
+          </div>
+        </div>
         <slot name="sidebar" />
       </aside>
       
@@ -241,6 +247,40 @@ const currentPath = Astro.url.pathname;
     color: var(--color-text);
   }
   
+  /* サイドバー内のモバイルコントロール（デフォルトは非表示） */
+  .sidebar-mobile-controls {
+    display: none;
+    padding: 1rem;
+    border-bottom: 1px solid var(--color-border);
+    margin-bottom: 1rem;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .lang-switcher-mobile {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+  }
+  
+  .lang-switcher-mobile .separator {
+    color: var(--color-text-muted);
+  }
+  
+  .lang-switcher-mobile a {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    text-decoration: none;
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+  }
+  
+  .lang-switcher-mobile a.active {
+    font-weight: bold;
+    color: var(--color-text);
+  }
+  
   .main-container {
     display: flex;
     flex: 1;
@@ -301,8 +341,32 @@ const currentPath = Astro.url.pathname;
       display: none;
     }
     
+    .header-content {
+      gap: 0.5rem;
+    }
+    
     .header-actions {
       gap: 0.5rem;
+      flex: 1;
+      min-width: 0;
+    }
+    
+    /* 検索ボックスを柔軟な幅に */
+    .header-actions :global(.search-container) {
+      flex: 1;
+      max-width: none;
+      min-width: 0;
+    }
+    
+    /* ヘッダーのダークモードトグルと言語スイッチを非表示 */
+    .header-actions > :global(.theme-toggle),
+    .header-actions .lang-switcher {
+      display: none;
+    }
+    
+    /* サイドバー内のモバイルコントロールを表示 */
+    .sidebar-mobile-controls {
+      display: flex;
     }
     
     .sidebar {

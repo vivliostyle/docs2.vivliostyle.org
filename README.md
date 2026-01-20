@@ -41,7 +41,7 @@
 
 GitHub Actions により `astro-Install`/`main` ブランチへの push で自動デプロイされます。
 
-公開URL: https://vivliostyle.github.io/docs2.vivliostyle.org/
+公開URL: https://docs.vivliostyle.org/
 
 
 ## コントリビュート・参考

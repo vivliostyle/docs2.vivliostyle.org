@@ -83,6 +83,7 @@ const normalizedBasePath = basePath.endsWith('/') ? basePath.slice(0, -1) : base
   .nav-link:not(.nav-disabled):hover {
     border-color: var(--color-primary, #0066cc);
     background-color: var(--color-bg-hover, #f9fafb);
+    color: var(--color-text-light, #808080);
   }
   
   .nav-link.nav-disabled {
@@ -106,7 +107,6 @@ const normalizedBasePath = basePath.endsWith('/') ? basePath.slice(0, -1) : base
   
   .nav-title {
     font-weight: 500;
-    color: var(--color-text, #1f2937);
   }
   
   @media (max-width: 640px) {

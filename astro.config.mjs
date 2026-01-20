@@ -1,10 +1,12 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
+import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://docs2.vivliostyle.org',
+  site: 'https://docs.vivliostyle.org',
   output: 'static',
+  integrations: [sitemap()],
   build: {
     format: 'directory',
   },

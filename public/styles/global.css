@@ -30,9 +30,9 @@
 
 :root {
   /* カラーパレット */
-  --color-primary: #6b4fa2;
-  --color-primary-light: #8b6fc2;
-  --color-primary-dark: #4b2f82;
+  --color-primary: #3b9eff;
+  --color-primary-light: #5eb0ff;
+  --color-primary-dark: #2080e0;
   
   --color-text: #333333;
   --color-text-muted: #666666;
@@ -361,8 +361,37 @@ h1, h2, h3, h4, h5, h6 {
     line-height: 1.6;
   }
   
+  /* レイアウト構造を無効化してコンテンツのみ表示 */
+  .layout {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+  
+  .main-container {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+  }
+  
+  .content {
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+  
   .prose {
-    max-width: none;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  .docs-content {
+    display: block !important;
+    width: 100% !important;
   }
   
   .prose h1 {
@@ -373,10 +402,17 @@ h1, h2, h3, h4, h5, h6 {
   .prose h2 {
     font-size: 18pt;
     page-break-after: avoid;
+    margin-top: 2em;
   }
   
   .prose h3 {
     font-size: 14pt;
+    page-break-after: avoid;
+    margin-top: 1.5em;
+  }
+  
+  .prose h4 {
+    font-size: 12pt;
     page-break-after: avoid;
   }
   
@@ -405,6 +441,29 @@ h1, h2, h3, h4, h5, h6 {
   @page :first {
     margin-top: 50mm;
   }
+  
+  /* Web専用要素を非表示 */
+  .page-navigation,
+  nav[aria-label="Page Navigation"],
+  .breadcrumb,
+  .theme-toggle,
+  .search-container,
+  .lang-switcher,
+  .lang-switcher-mobile,
+  .language-switcher-container,
+  .back-to-home,
+  .sidebar-mobile-controls,
+  .toc-headings,
+  .page-toc,
+  header,
+  .header,
+  .sidebar,
+  .sidebar-overlay,
+  .mobile-menu-toggle,
+  script,
+  style {
+    display: none !important;
+  }
 }
 
 /* ==========================================================================
@@ -412,6 +471,23 @@ h1, h2, h3, h4, h5, h6 {
    ========================================================================== */
 
 @media screen {
+  /* サイドバーナビゲーションリンクのスタイル */
+  #sidebar-nav a,
+  .sidebar nav a {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  #sidebar-nav a:visited,
+  .sidebar nav a:visited {
+    color: var(--color-text);
+  }
+
+  #sidebar-nav a:hover,
+  .sidebar nav a:hover {
+    color: var(--color-primary);
+  }
+
   .page-toc {
     margin-top: 0.75rem;
     margin-left: 0.5rem;

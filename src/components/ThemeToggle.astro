@@ -149,24 +149,35 @@
   
   // ボタンのアイコン表示を更新
   function updateButtonIcon(theme: Theme) {
-    const button = document.querySelector('.theme-toggle') as HTMLButtonElement;
-    if (!button) return;
-    button.setAttribute('data-theme-mode', theme);
+    const buttons = document.querySelectorAll('.theme-toggle') as NodeListOf<HTMLButtonElement>;
+    buttons.forEach(button => {
+      button.setAttribute('data-theme-mode', theme);
+    });
   }
   
   // ボタンのaria-labelを更新
   function updateAriaLabel(theme: Theme) {
-    const button = document.querySelector('.theme-toggle') as HTMLButtonElement;
-    if (!button) return;
+    const buttons = document.querySelectorAll('.theme-toggle') as NodeListOf<HTMLButtonElement>;
     
+    const currentLang = document.documentElement.lang || 'ja';
     const labels = {
-      light: 'ダークモードに切り替え',
-      dark: 'システム設定に従う',
-      auto: 'ライトモードに切り替え',
+      ja: {
+        light: 'ダークモードに切り替え',
+        dark: 'システム設定に従う',
+        auto: 'ライトモードに切り替え',
+      },
+      en: {
+        light: 'Switch to dark mode',
+        dark: 'Follow system settings',
+        auto: 'Switch to light mode',
+      },
     };
+    const themeLabels = labels[currentLang] || labels.en;
     
-    button.setAttribute('aria-label', labels[theme]);
-    button.setAttribute('title', labels[theme]);
+    buttons.forEach(button => {
+      button.setAttribute('aria-label', themeLabels[theme]);
+      button.setAttribute('title', themeLabels[theme]);
+    });
   }
   
   // 初期化
@@ -193,10 +204,10 @@
   
   // ボタンのクリックイベント
   function setupToggle() {
-    const button = document.querySelector('.theme-toggle');
-    if (button) {
+    const buttons = document.querySelectorAll('.theme-toggle');
+    buttons.forEach(button => {
       button.addEventListener('click', cycleTheme);
-    }
+    });
   }
   
   // ページロード前にテーマを適用（ちらつき防止）
