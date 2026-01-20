@@ -75,7 +75,7 @@ const isDev = import.meta.env.DEV;
     border-color: #4b5563;
   }
 
-  /* Pagefind UIのカスタマイズ */
+  /* Pagefind UIのカスタマイズ - ライトモード */
   :global(.pagefind-ui) {
     --pagefind-ui-scale: 0.9;
     --pagefind-ui-primary: #2563eb;
@@ -86,6 +86,13 @@ const isDev = import.meta.env.DEV;
     --pagefind-ui-border-width: 1px;
     --pagefind-ui-border-radius: 8px;
     --pagefind-ui-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  /* ライトモード明示設定 */
+  :root[data-theme="light"] :global(.pagefind-ui) {
+    --pagefind-ui-background: #ffffff;
+    --pagefind-ui-text: #374151;
+    --pagefind-ui-border: #e5e7eb;
   }
 
   /* ダークモード対応 */
