@@ -125,6 +125,112 @@
 }
 
 /* ==========================================================================
+   グローバルヘッダー固定 - すべてのページで適用
+   ========================================================================== */
+
+.header {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 1000 !important;
+  width: 100% !important;
+  background: var(--color-bg-header) !important;
+  border-bottom: 1px solid var(--color-border) !important;
+}
+
+/* ==========================================================================
+   Pagefind 検索結果のオーバーレイ表示 - 重要な修正
+   ========================================================================== */
+
+/* 検索コンテナを相対配置の基準に */
+.search-container {
+  position: relative !important;
+}
+
+/* Pagefind UIコンテナ */
+.pagefind-ui {
+  position: relative !important;
+}
+
+/* 検索結果を固定オーバーレイとして表示（ドキュメントフローから外す） */
+.pagefind-ui__drawer {
+  position: fixed !important;
+  top: 60px !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: var(--color-bg, #fff) !important;
+  z-index: 900 !important;
+  overflow-y: auto !important;
+  padding: 1rem 2rem !important;
+  max-height: calc(100vh - 60px) !important;
+}
+
+/* ダークモード対応 */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .pagefind-ui__drawer {
+    background: var(--color-bg, #1a1a1a) !important;
+  }
+}
+
+:root[data-theme="dark"] .pagefind-ui__drawer {
+  background: var(--color-bg, #1a1a1a) !important;
+}
+
+/* 検索フォームは通常の配置 */
+.pagefind-ui__form {
+  position: relative !important;
+  z-index: 1001 !important;
+}
+
+/* 検索結果エリア */
+.pagefind-ui__results-area {
+  max-width: 900px !important;
+  margin: 0 auto !important;
+}
+
+/* 結果リスト */
+.pagefind-ui__results {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* 検索アクティブ時のbodyスタイル */
+body.search-active {
+  overflow: hidden !important;
+}
+
+/* 検索アクティブ時、メインコンテンツを非表示にしてスクロールを防ぐ */
+body.search-active .main-container,
+body.search-active .sidebar-overlay {
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   サイドバー（モバイルメニュー）のz-index修正
+   ========================================================================== */
+
+/* サイドバーは検索より上に表示 */
+.sidebar {
+  z-index: 950 !important;
+}
+
+.sidebar.active {
+  z-index: 1100 !important;
+}
+
+/* サイドバーオーバーレイ */
+.sidebar-overlay {
+  z-index: 940 !important;
+}
+
+.sidebar-overlay.active {
+  z-index: 1090 !important;
+}
+
+/* ==========================================================================
    Base Styles - リセットと基本スタイル
    ========================================================================== */
 

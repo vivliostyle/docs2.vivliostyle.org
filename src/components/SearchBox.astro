@@ -27,8 +27,87 @@ const isDev = import.meta.env.DEV;
   </div>
 )}
 
-<!-- Pagefind UI CSS (本番環境のみ) -->
+<!-- Pagefind UI CSS (本番環境のみ) - カスタムスタイルより先に読み込む -->
 {!isDev && <link href="/_pagefind/pagefind-ui.css" rel="stylesheet">}
+
+<style is:inline>
+  /* Pagefind UI CSSの後に読み込まれるカスタムスタイル */
+  
+  /* デフォルト（ライトモード）: 明るい色を設定 */
+  :root:not([data-theme="dark"]) {
+    --pagefind-ui-primary: #2563eb !important;
+    --pagefind-ui-text: #1f2937 !important;
+    --pagefind-ui-background: #ffffff !important;
+    --pagefind-ui-border: #e5e7eb !important;
+    --pagefind-ui-tag: #f3f4f6 !important;
+  }
+
+  /* ダークモード（システム設定） */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --pagefind-ui-primary: #60a5fa !important;
+      --pagefind-ui-text: #e5e7eb !important;
+      --pagefind-ui-background: #1f2937 !important;
+      --pagefind-ui-border: #374151 !important;
+      --pagefind-ui-tag: #6b7280 !important;
+    }
+  }
+
+  /* ダークモード（手動設定） */
+  :root[data-theme="dark"] {
+    --pagefind-ui-primary: #60a5fa !important;
+    --pagefind-ui-text: #e5e7eb !important;
+    --pagefind-ui-background: #1f2937 !important;
+    --pagefind-ui-border: #374151 !important;
+    --pagefind-ui-tag: #6b7280 !important;
+  }
+  
+  /* ライトモード（手動設定） */
+  :root[data-theme="light"] {
+    --pagefind-ui-primary: #2563eb !important;
+    --pagefind-ui-text: #1f2937 !important;
+    --pagefind-ui-background: #ffffff !important;
+    --pagefind-ui-border: #e5e7eb !important;
+    --pagefind-ui-tag: #f3f4f6 !important;
+  }
+
+  /* ホバー時の黒いオブジェクト(擬似要素)を完全に削除 */
+  .pagefind-ui__result:hover::before,
+  .pagefind-ui__result:hover::after,
+  .pagefind-ui__result::before,
+  .pagefind-ui__result::after {
+    display: none !important;
+    content: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+  }
+
+  /* マークされたテキストはクリック不可 */
+  .pagefind-ui__result mark {
+    pointer-events: none !important;
+  }
+
+  /* 検索結果のz-indexをヘッダより低く */
+  .pagefind-ui__results {
+    z-index: 500 !important;
+  }
+
+  /* 検索結果が空でない時のみドロワーを表示 */
+  .pagefind-ui__drawer:empty {
+    display: none !important;
+  }
+
+  /* 検索結果のリンクをクリック可能に */
+  .pagefind-ui__result-link {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+  }
+  
+  /* 検索結果アイテム全体をクリック可能に */
+  .pagefind-ui__result {
+    cursor: pointer !important;
+  }
+</style>
 
 <style>
   .search-container {
@@ -73,175 +152,6 @@ const isDev = import.meta.env.DEV;
     color: #9ca3af;
     background-color: #374151;
     border-color: #4b5563;
-  }
-
-  /* Pagefind UIのカスタマイズ - ライトモード */
-  :global(.pagefind-ui) {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #2563eb;
-    --pagefind-ui-text: #374151;
-    --pagefind-ui-background: #ffffff;
-    --pagefind-ui-border: #e5e7eb;
-    --pagefind-ui-tag: #f3f4f6;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 8px;
-    --pagefind-ui-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  }
-
-  /* ライトモード明示設定 */
-  :root[data-theme="light"] :global(.pagefind-ui) {
-    --pagefind-ui-background: #ffffff;
-    --pagefind-ui-text: #374151;
-    --pagefind-ui-border: #e5e7eb;
-  }
-
-  /* ダークモード対応 */
-  @media (prefers-color-scheme: dark) {
-    :global(.pagefind-ui) {
-      --pagefind-ui-primary: #60a5fa;
-      --pagefind-ui-text: #e5e7eb;
-      --pagefind-ui-background: #1f2937;
-      --pagefind-ui-border: #374151;
-      --pagefind-ui-tag: #374151;
-    }
-  }
-
-  :root[data-theme="dark"] :global(.pagefind-ui) {
-    --pagefind-ui-primary: #60a5fa;
-    --pagefind-ui-text: #e5e7eb;
-    --pagefind-ui-background: #1f2937;
-    --pagefind-ui-border: #374151;
-    --pagefind-ui-tag: #374151;
-  }
-
-  /* 検索ボックスのスタイル調整 */
-  :global(.pagefind-ui__search-input) {
-    width: 100%;
-    padding: 0.5rem 1rem;
-    font-size: 0.95rem;
-    border: 1px solid var(--pagefind-ui-border);
-    border-radius: var(--pagefind-ui-border-radius);
-    background: var(--pagefind-ui-background);
-    color: var(--pagefind-ui-text);
-    transition: border-color 0.2s;
-  }
-
-  :global(.pagefind-ui__search-input:focus) {
-    outline: none;
-    border-color: var(--pagefind-ui-primary);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-  }
-
-  /* 検索結果のスタイル */
-  :global(.pagefind-ui__results) {
-    position: absolute;
-    top: calc(100% + 0.5rem);
-    left: 0;
-    right: 0;
-    max-height: 400px;
-    overflow-y: auto;
-    background: var(--pagefind-ui-background);
-    border: 1px solid var(--pagefind-ui-border);
-    border-radius: var(--pagefind-ui-border-radius);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    z-index: 9999;
-  }
-
-  :global(.pagefind-ui__result) {
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid var(--pagefind-ui-border);
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-
-  :global(.pagefind-ui__result:hover) {
-    background-color: var(--pagefind-ui-tag);
-  }
-
-  :global(.pagefind-ui__result:last-child) {
-    border-bottom: none;
-  }
-
-  :global(.pagefind-ui__result-title) {
-    font-weight: 600;
-    color: var(--pagefind-ui-primary);
-    margin-bottom: 0.25rem;
-  }
-
-  :global(.pagefind-ui__result-excerpt) {
-    font-size: 0.875rem;
-    color: var(--pagefind-ui-text);
-    line-height: 1.5;
-  }
-
-  /* 検索結果のクリック可能性を確保 */
-  :global(.pagefind-ui__results) {
-    position: relative;
-    z-index: 1;
-  }
-
-  :global(.pagefind-ui__result) {
-    position: relative;
-    z-index: 1;
-  }
-
-  :global(.pagefind-ui__result) * {
-    pointer-events: none !important;
-  }
-
-  :global(.pagefind-ui__result-link),
-  :global(.pagefind-ui__result-title),
-  :global(.pagefind-ui__result a) {
-    pointer-events: auto !important;
-    position: relative;
-    z-index: 2;
-  }
-
-  /* ホバー時のすべての疑似要素とスタイルを無効化 */
-  :global(.pagefind-ui) *::before,
-  :global(.pagefind-ui) *::after {
-    display: none !important;
-    content: none !important;
-  }
-
-  :global(.pagefind-ui__result:hover),
-  :global(.pagefind-ui__result:hover) * {
-    background: transparent !important;
-  }
-
-  :global(.pagefind-ui__result-excerpt) {
-    position: relative !important;
-  }
-
-  :global(.pagefind-ui__result-excerpt)::before,
-  :global(.pagefind-ui__result-excerpt)::after {
-    display: none !important;
-  }
-
-  /* ハイライト（mark要素）のスタイル */
-  :global(.pagefind-ui__result mark) {
-    background-color: rgba(255, 237, 0, 0.4) !important;
-    color: inherit !important;
-    padding: 0 !important;
-    font-weight: 600 !important;
-    pointer-events: none !important;
-    position: relative;
-    z-index: -1;
-  }
-
-  :global(.pagefind-ui__result mark)::before,
-  :global(.pagefind-ui__result mark)::after {
-    display: none !important;
-  }
-
-  :root[data-theme="dark"] :global(.pagefind-ui__result mark) {
-    background-color: rgba(250, 204, 21, 0.3) !important;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :global(.pagefind-ui__result mark) {
-      background-color: rgba(250, 204, 21, 0.3) !important;
-    }
   }
 
   /* モバイル対応 */
@@ -362,17 +272,71 @@ const isDev = import.meta.env.DEV;
       // Escape キーで検索ボックスからフォーカスを外す
       if (e.key === 'Escape' && document.activeElement === searchInput) {
         searchInput?.blur();
+        // 検索をクリア
+        const clearButton = document.querySelector('.pagefind-ui__search-clear') as HTMLButtonElement;
+        clearButton?.click();
       }
     });
+  };
+
+  // 検索結果の表示状態を監視してbodyのスクロールを制御
+  const initSearchStateObserver = () => {
+    // MutationObserverで検索結果の変化を監視
+    const observer = new MutationObserver(() => {
+      const drawer = document.querySelector('.pagefind-ui__drawer');
+      const results = document.querySelector('.pagefind-ui__results');
+      const hasResults = results && results.children.length > 0;
+      
+      if (drawer && hasResults) {
+        // 検索結果がある場合: bodyのスクロールを無効化
+        document.body.classList.add('search-active');
+        document.body.style.overflow = 'hidden';
+      } else {
+        // 検索結果がない場合: bodyのスクロールを有効化
+        document.body.classList.remove('search-active');
+        document.body.style.overflow = '';
+      }
+    });
+
+    // #search要素を監視
+    const searchContainer = document.querySelector('#search');
+    if (searchContainer) {
+      observer.observe(searchContainer, {
+        childList: true,
+        subtree: true,
+        characterData: true
+      });
+    }
+
+    // 検索入力の変化も監視
+    const searchInput = document.querySelector('.pagefind-ui__search-input') as HTMLInputElement;
+    if (searchInput) {
+      searchInput.addEventListener('input', () => {
+        if (!searchInput.value) {
+          document.body.classList.remove('search-active');
+          document.body.style.overflow = '';
+        }
+      });
+    }
+  };
+
+  // DOM準備完了後に検索状態監視を開始
+  const startObserver = () => {
+    // Pagefind UIが初期化されるまで少し待つ
+    setTimeout(initSearchStateObserver, 500);
   };
 
   initKeyboardShortcuts();
 
   // ページロード時に初期化
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initPagefind);
+    document.addEventListener('DOMContentLoaded', () => {
+      initPagefind();
+      startObserver();
+    });
   } else {
     initPagefind();
+    startObserver();
   }
 </script>
 )}
