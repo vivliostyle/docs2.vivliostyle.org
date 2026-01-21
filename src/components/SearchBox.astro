@@ -175,22 +175,73 @@ const isDev = import.meta.env.DEV;
     line-height: 1.5;
   }
 
-  /* ハイライト（mark要素）のスタイル - クリックイベントを親要素に渡す */
+  /* 検索結果のクリック可能性を確保 */
+  :global(.pagefind-ui__results) {
+    position: relative;
+    z-index: 1;
+  }
+
+  :global(.pagefind-ui__result) {
+    position: relative;
+    z-index: 1;
+  }
+
+  :global(.pagefind-ui__result) * {
+    pointer-events: none !important;
+  }
+
+  :global(.pagefind-ui__result-link),
+  :global(.pagefind-ui__result-title),
+  :global(.pagefind-ui__result a) {
+    pointer-events: auto !important;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ホバー時のすべての疑似要素とスタイルを無効化 */
+  :global(.pagefind-ui) *::before,
+  :global(.pagefind-ui) *::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  :global(.pagefind-ui__result:hover),
+  :global(.pagefind-ui__result:hover) * {
+    background: transparent !important;
+  }
+
+  :global(.pagefind-ui__result-excerpt) {
+    position: relative !important;
+  }
+
+  :global(.pagefind-ui__result-excerpt)::before,
+  :global(.pagefind-ui__result-excerpt)::after {
+    display: none !important;
+  }
+
+  /* ハイライト（mark要素）のスタイル */
   :global(.pagefind-ui__result mark) {
-    background-color: rgba(255, 237, 0, 0.4);
-    color: inherit;
-    padding: 0;
-    font-weight: 600;
-    pointer-events: none;
+    background-color: rgba(255, 237, 0, 0.4) !important;
+    color: inherit !important;
+    padding: 0 !important;
+    font-weight: 600 !important;
+    pointer-events: none !important;
+    position: relative;
+    z-index: -1;
+  }
+
+  :global(.pagefind-ui__result mark)::before,
+  :global(.pagefind-ui__result mark)::after {
+    display: none !important;
   }
 
   :root[data-theme="dark"] :global(.pagefind-ui__result mark) {
-    background-color: rgba(250, 204, 21, 0.3);
+    background-color: rgba(250, 204, 21, 0.3) !important;
   }
 
   @media (prefers-color-scheme: dark) {
     :global(.pagefind-ui__result mark) {
-      background-color: rgba(250, 204, 21, 0.3);
+      background-color: rgba(250, 204, 21, 0.3) !important;
     }
   }
 
