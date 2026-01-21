@@ -175,6 +175,25 @@ const isDev = import.meta.env.DEV;
     line-height: 1.5;
   }
 
+  /* ハイライト（mark要素）のスタイル - クリックイベントを親要素に渡す */
+  :global(.pagefind-ui__result mark) {
+    background-color: rgba(255, 237, 0, 0.4);
+    color: inherit;
+    padding: 0;
+    font-weight: 600;
+    pointer-events: none;
+  }
+
+  :root[data-theme="dark"] :global(.pagefind-ui__result mark) {
+    background-color: rgba(250, 204, 21, 0.3);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :global(.pagefind-ui__result mark) {
+      background-color: rgba(250, 204, 21, 0.3);
+    }
+  }
+
   /* モバイル対応 */
   @media (max-width: 768px) {
     .search-container {
