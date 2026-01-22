@@ -97,15 +97,47 @@ const isDev = import.meta.env.DEV;
     display: none !important;
   }
 
-  /* 検索結果のリンクをクリック可能に */
-  .pagefind-ui__result-link {
+  /* 検索結果のリンクをクリック可能に（親項目・子項目両方） */
+  .pagefind-ui__result-link,
+  .pagefind-ui__result-nested .pagefind-ui__result-link,
+  .pagefind-ui__result-title a,
+  .pagefind-ui__result a {
     pointer-events: auto !important;
     cursor: pointer !important;
+    color: var(--pagefind-ui-text) !important;
+    text-decoration: none !important;
+  }
+
+  /* リンクのホバー効果 */
+  .pagefind-ui__result-link:hover,
+  .pagefind-ui__result-nested .pagefind-ui__result-link:hover,
+  .pagefind-ui__result-title a:hover,
+  .pagefind-ui__result a:hover {
+    text-decoration: underline !important;
+    color: var(--pagefind-ui-primary) !important;
   }
   
   /* 検索結果アイテム全体をクリック可能に */
   .pagefind-ui__result {
     cursor: pointer !important;
+    pointer-events: auto !important;
+  }
+
+  /* 検索結果アイテムのホバー効果 */
+  .pagefind-ui__result:hover {
+    background-color: var(--pagefind-ui-border) !important;
+    border-radius: 4px !important;
+  }
+
+  /* 子項目（ネストされた結果）のスタイル */
+  .pagefind-ui__result-nested {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+  }
+
+  .pagefind-ui__result-nested:hover {
+    background-color: var(--pagefind-ui-border) !important;
+    border-radius: 4px !important;
   }
 </style>
 

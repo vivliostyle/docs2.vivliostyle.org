@@ -350,6 +350,37 @@ const currentPath = Astro.url.pathname;
     .main-container {
       padding-right: 0;
     }
+    
+    /* 中間サイズでヘッダナビのgapとフォントを縮小 */
+    .header-nav {
+      gap: 1rem;
+      font-size: 0.9rem;
+    }
+    
+    .header-content {
+      gap: 1rem;
+    }
+    
+    .header-actions {
+      gap: 0.5rem;
+    }
+  }
+  
+  /* タブレットサイズ: ナビをさらに縮小 */
+  @media (max-width: 900px) {
+    .header-nav {
+      gap: 0.75rem;
+      font-size: 0.85rem;
+    }
+    
+    .logo-text {
+      font-size: 1.1rem;
+    }
+    
+    .header-content {
+      gap: 0.75rem;
+      padding: 0.75rem 1rem;
+    }
   }
   
   @media (max-width: 768px) {
@@ -462,7 +493,10 @@ const currentPath = Astro.url.pathname;
     const sidebarClose = document.querySelector('.sidebar-close') as HTMLButtonElement;
     const overlay = document.querySelector('.sidebar-overlay') as HTMLElement;
     
-    if (!menuToggle || !sidebar || !overlay) return;
+    if (!menuToggle || !sidebar || !overlay) {
+      console.warn('Mobile menu elements not found');
+      return;
+    }
     
     const openMenu = () => {
       sidebar.classList.add('active');
@@ -478,9 +512,18 @@ const currentPath = Astro.url.pathname;
       document.body.style.overflow = '';
     };
     
-    menuToggle.addEventListener('click', openMenu);
-    sidebarClose?.addEventListener('click', closeMenu);
-    overlay.addEventListener('click', closeMenu);
+    // イベントリスナーを追加（重複防止のため一度削除してから追加）
+    menuToggle.onclick = openMenu;
+    overlay.onclick = closeMenu;
+    
+    // 閉じるボタン
+    if (sidebarClose) {
+      sidebarClose.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        closeMenu();
+      };
+    }
     
     // サイドバー内のリンククリックで閉じる
     sidebar.querySelectorAll('a').forEach(link => {
