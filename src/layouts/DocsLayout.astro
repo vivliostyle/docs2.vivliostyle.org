@@ -306,7 +306,7 @@ const currentPath = Astro.url.pathname;
     max-width: var(--content-max-width);
     margin: 0 auto;
     width: 100%;
-    padding-top: 4rem;
+    padding-top: var(--header-height);
   }
   
   .sidebar {
@@ -517,7 +517,6 @@ const currentPath = Astro.url.pathname;
     const overlay = document.querySelector('.sidebar-overlay') as HTMLElement;
     
     if (!menuToggle || !sidebar || !overlay) {
-      console.warn('Mobile menu elements not found');
       return;
     }
     
@@ -535,7 +534,7 @@ const currentPath = Astro.url.pathname;
       document.body.style.overflow = '';
     };
     
-    // イベントリスナーを追加（重複防止のため一度削除してから追加）
+    // イベントリスナーを追加（onclick代入で直接上書き）
     menuToggle.onclick = openMenu;
     overlay.onclick = closeMenu;
     

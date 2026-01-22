@@ -83,11 +83,6 @@ const isDev = import.meta.env.DEV;
     pointer-events: none !important;
   }
 
-  /* 検索結果のz-index（ヘッダより低く） */
-  .pagefind-ui__results {
-    z-index: 500 !important;
-  }
-
   /* 検索結果が空でない時のみドロワーを表示 */
   .pagefind-ui__drawer:empty {
     display: none !important;
@@ -307,10 +302,21 @@ const isDev = import.meta.env.DEV;
     });
   };
 
+  // Pagefind UI の初期化を待つためのディレイ（ミリ秒）
+  // Pagefind が検索UIを DOM に構築する前に監視を開始すると、要素が見つからない場合があるため。
+  const PAGEFIND_INIT_DELAY_MS = 500;
+  
+  let searchStateObserver: MutationObserver | null = null;
+  
   // 検索結果の表示状態を監視してbodyのスクロールを制御
   const initSearchStateObserver = () => {
+    // 既存のobserverをクリーンアップ
+    if (searchStateObserver) {
+      searchStateObserver.disconnect();
+    }
+    
     // MutationObserverで検索結果の変化を監視
-    const observer = new MutationObserver(() => {
+    searchStateObserver = new MutationObserver(() => {
       const drawer = document.querySelector('.pagefind-ui__drawer');
       const results = document.querySelector('.pagefind-ui__results');
       const hasResults = results && results.children.length > 0;
@@ -329,7 +335,7 @@ const isDev = import.meta.env.DEV;
     // #search要素を監視
     const searchContainer = document.querySelector('#search');
     if (searchContainer) {
-      observer.observe(searchContainer, {
+      searchStateObserver!.observe(searchContainer, {
         childList: true,
         subtree: true,
         characterData: true
@@ -351,7 +357,7 @@ const isDev = import.meta.env.DEV;
   // DOM準備完了後に検索状態監視を開始
   const startObserver = () => {
     // Pagefind UIが初期化されるまで少し待つ
-    setTimeout(initSearchStateObserver, 500);
+    setTimeout(initSearchStateObserver, PAGEFIND_INIT_DELAY_MS);
   };
 
   initKeyboardShortcuts();
