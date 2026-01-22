@@ -359,9 +359,12 @@ const isDev = import.meta.env.DEV;
   };
   
   // popstateイベント（戻る/進むボタン）のリスナー
-  window.addEventListener('popstate', (event) => {
-    restoreSearchState();
-  });
+  if (!(window as any).__pagefindPopstateInitialized) {
+    window.addEventListener('popstate', () => {
+      restoreSearchState();
+    });
+    (window as any).__pagefindPopstateInitialized = true;
+  }
   
   // 検索結果の表示状態を監視してbodyのスクロールを制御
   const initSearchStateObserver = () => {
@@ -401,7 +404,7 @@ const isDev = import.meta.env.DEV;
 
     // 検索入力の変化も監視
     const searchInput = document.querySelector('.pagefind-ui__search-input') as HTMLInputElement;
-    if (searchInput) {
+    if (searchInput && !searchInput.dataset.listenerAdded) {
       let searchTimeout: number;
       
       searchInput.addEventListener('input', () => {
@@ -418,12 +421,15 @@ const isDev = import.meta.env.DEV;
         }
       });
       
+      searchInput.dataset.listenerAdded = 'true';
+      
       // 検索がクリアされたときも履歴をクリア
       const clearButton = document.querySelector('.pagefind-ui__search-clear') as HTMLButtonElement;
-      if (clearButton) {
+      if (clearButton && !clearButton.dataset.listenerAdded) {
         clearButton.addEventListener('click', () => {
           clearSearchState();
         });
+        clearButton.dataset.listenerAdded = 'true';
       }
     }
   };

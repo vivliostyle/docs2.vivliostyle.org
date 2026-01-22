@@ -32,6 +32,15 @@ const currentPath = Astro.url.pathname;
 </head>
 <body>
   <script>
+    // TypeScript型定義を追加
+    declare global {
+      interface Window {
+        __bodyOverflowLockCount: number;
+        lockBodyOverflow: () => void;
+        unlockBodyOverflow: () => void;
+      }
+    }
+    
     // bodyのoverflowを複数のコンポーネントで安全に管理するためのグローバル機能
     window.__bodyOverflowLockCount = 0;
     window.lockBodyOverflow = function() {
@@ -582,14 +591,17 @@ const currentPath = Astro.url.pathname;
       };
     }
     
-    // サイドバー内のリンククリックで閉じる
+    // サイドバー内のリンククリックで閉じる（重複防止）
     sidebar.querySelectorAll('a').forEach(link => {
-      link.addEventListener('click', () => {
-        // モバイル表示の時のみ閉じる
-        if (window.innerWidth <= 768) {
-          closeMenu();
-        }
-      });
+      if (!link.dataset.clickListenerAdded) {
+        link.addEventListener('click', () => {
+          // モバイル表示の時のみ閉じる
+          if (window.innerWidth <= 768) {
+            closeMenu();
+          }
+        });
+        link.dataset.clickListenerAdded = 'true';
+      }
     });
     
     // Escapeキーで閉じる
