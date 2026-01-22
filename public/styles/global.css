@@ -212,22 +212,22 @@ body.search-active .sidebar-overlay {
    サイドバー（モバイルメニュー）のz-index修正
    ========================================================================== */
 
-/* サイドバーは検索より上に表示 */
+/* サイドバーのz-index（モバイル時にヘッダーより上） */
 .sidebar {
-  z-index: 950 !important;
+  z-index: 950;
 }
 
 .sidebar.active {
-  z-index: 1100 !important;
+  z-index: 1100;
 }
 
 /* サイドバーオーバーレイ */
 .sidebar-overlay {
-  z-index: 940 !important;
+  z-index: 940;
 }
 
 .sidebar-overlay.active {
-  z-index: 1090 !important;
+  z-index: 1090;
 }
 
 /* サイドバー内のボタンとインタラクティブ要素のリセット防止 */
@@ -236,69 +236,69 @@ body.search-active .sidebar-overlay {
 .sidebar .sidebar-close,
 .sidebar-header button {
   all: revert !important;
-  cursor: pointer !important;
-  pointer-events: auto !important;
+  cursor: pointer;
+  pointer-events: auto;
 }
 
 .sidebar-close {
   display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  background: none !important;
-  border: none !important;
-  padding: 0.5rem !important;
-  cursor: pointer !important;
-  color: var(--color-text) !important;
-  border-radius: 4px !important;
-  transition: background-color 0.2s !important;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  color: var(--color-text);
+  border-radius: 4px;
+  transition: background-color 0.2s;
 }
 
 .sidebar-close:hover {
-  background-color: var(--color-bg-secondary) !important;
+  background-color: var(--color-bg-secondary);
 }
 
 .sidebar-close svg {
-  display: block !important;
-  width: 24px !important;
-  height: 24px !important;
+  display: block;
+  width: 24px;
+  height: 24px;
 }
 
 /* サイドバー内のテーマトグルと言語スイッチャー */
 .sidebar-mobile-controls .theme-toggle,
 .sidebar-mobile-controls .lang-switcher a,
 .sidebar-mobile-controls .language-switcher a {
-  cursor: pointer !important;
-  pointer-events: auto !important;
+  cursor: pointer;
+  pointer-events: auto;
 }
 
 .sidebar-mobile-controls .theme-toggle {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  background: none !important;
-  border: none !important;
-  padding: 0.5rem !important;
-  cursor: pointer !important;
-  color: var(--color-text) !important;
-  border-radius: 4px !important;
-  transition: background-color 0.2s !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  color: var(--color-text);
+  border-radius: 4px;
+  transition: background-color 0.2s;
 }
 
 .sidebar-mobile-controls .theme-toggle:hover {
-  background-color: var(--color-bg-secondary) !important;
+  background-color: var(--color-bg-secondary);
 }
 
 /* 言語リンク */
 .sidebar-mobile-controls a,
 .lang-switcher-mobile a {
-  cursor: pointer !important;
-  pointer-events: auto !important;
-  text-decoration: none !important;
+  cursor: pointer;
+  pointer-events: auto;
+  text-decoration: none;
 }
 
 .sidebar-mobile-controls a:hover,
 .lang-switcher-mobile a:hover {
-  text-decoration: underline !important;
+  text-decoration: underline;
 }
 
 /* ==========================================================================

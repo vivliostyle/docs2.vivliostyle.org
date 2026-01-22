@@ -71,23 +71,19 @@ const isDev = import.meta.env.DEV;
     --pagefind-ui-tag: #f3f4f6 !important;
   }
 
-  /* ホバー時の黒いオブジェクト(擬似要素)を完全に削除 */
+  /* ホバー時の黒いオブジェクト(擬似要素)を削除（結果項目のホバー時のみに限定） */
   .pagefind-ui__result:hover::before,
-  .pagefind-ui__result:hover::after,
-  .pagefind-ui__result::before,
-  .pagefind-ui__result::after {
+  .pagefind-ui__result:hover::after {
     display: none !important;
     content: none !important;
-    opacity: 0 !important;
-    visibility: hidden !important;
   }
 
-  /* マークされたテキストはクリック不可 */
+  /* マークされたハイライトテキストのみクリック不可に（クリックをリンクに通過させる） */
   .pagefind-ui__result mark {
     pointer-events: none !important;
   }
 
-  /* 検索結果のz-indexをヘッダより低く */
+  /* 検索結果のz-index（ヘッダより低く） */
   .pagefind-ui__results {
     z-index: 500 !important;
   }
@@ -123,7 +119,7 @@ const isDev = import.meta.env.DEV;
     pointer-events: auto !important;
   }
 
-  /* 検索結果アイテムのホバー効果 */
+  /* 検索結果アイテムのホバー効果（ユーザビリティのため背景色を保持） */
   .pagefind-ui__result:hover {
     background-color: var(--pagefind-ui-border) !important;
     border-radius: 4px !important;
