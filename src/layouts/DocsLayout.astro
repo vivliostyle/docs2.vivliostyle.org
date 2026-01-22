@@ -31,6 +31,22 @@ const currentPath = Astro.url.pathname;
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" media="(prefers-color-scheme: dark)">
 </head>
 <body>
+  <script>
+    // bodyのoverflowを複数のコンポーネントで安全に管理するためのグローバル機能
+    window.__bodyOverflowLockCount = 0;
+    window.lockBodyOverflow = function() {
+      window.__bodyOverflowLockCount++;
+      if (window.__bodyOverflowLockCount === 1) {
+        document.body.style.overflow = 'hidden';
+      }
+    };
+    window.unlockBodyOverflow = function() {
+      window.__bodyOverflowLockCount = Math.max(0, window.__bodyOverflowLockCount - 1);
+      if (window.__bodyOverflowLockCount === 0) {
+        document.body.style.overflow = '';
+      }
+    };
+  </script>
   <div class="layout">
     <header class="header">
       <div class="header-content">
@@ -524,14 +540,14 @@ const currentPath = Astro.url.pathname;
       sidebar.classList.add('active');
       overlay.classList.add('active');
       menuToggle.setAttribute('aria-expanded', 'true');
-      document.body.style.overflow = 'hidden';
+      window.lockBodyOverflow();
     };
     
     const closeMenu = () => {
       sidebar.classList.remove('active');
       overlay.classList.remove('active');
       menuToggle.setAttribute('aria-expanded', 'false');
-      document.body.style.overflow = '';
+      window.unlockBodyOverflow();
     };
     
     // イベントリスナーを追加（onclick代入で直接上書き）

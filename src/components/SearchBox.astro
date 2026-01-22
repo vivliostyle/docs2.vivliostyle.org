@@ -323,12 +323,16 @@ const isDev = import.meta.env.DEV;
       
       if (drawer && hasResults) {
         // 検索結果がある場合: bodyのスクロールを無効化
-        document.body.classList.add('search-active');
-        document.body.style.overflow = 'hidden';
+        if (!document.body.classList.contains('search-active')) {
+          document.body.classList.add('search-active');
+          window.lockBodyOverflow();
+        }
       } else {
         // 検索結果がない場合: bodyのスクロールを有効化
-        document.body.classList.remove('search-active');
-        document.body.style.overflow = '';
+        if (document.body.classList.contains('search-active')) {
+          document.body.classList.remove('search-active');
+          window.unlockBodyOverflow();
+        }
       }
     });
 
