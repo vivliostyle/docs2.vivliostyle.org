@@ -72,6 +72,7 @@
   --content-max-width: 1200px;
   --sidebar-width: 280px;
   --prose-max-width: 65ch;
+  --header-height: 80px;
 }
 
 /* ダークモード - システム設定 */
@@ -122,9 +123,6 @@
   
   --color-border: #e5e5e5;
   --color-border-dark: #cccccc;
-  
-  /* レイアウト変数 */
-  --header-height: 70px;
 }
 
 /* ==========================================================================
@@ -163,11 +161,15 @@
   left: 0 !important;
   right: 0 !important;
   bottom: 0 !important;
+  width: 100% !important;
   background: var(--color-bg, #fff) !important;
   z-index: 900 !important;
-  overflow-y: auto !important;
-  padding: 1rem 2rem !important;
-  max-height: calc(100vh - var(--header-height)) !important;
+  overflow: visible !important;
+  padding: 0 !important;
+  height: calc(100vh - var(--header-height)) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
 }
 
 /* ダークモード対応 */
@@ -185,30 +187,36 @@
 .pagefind-ui__form {
   position: relative !important;
   z-index: 999 !important;
+  flex-shrink: 0 !important;
+  padding: 1rem 2rem !important;
 }
 
-/* 検索結果エリア */
+/* 検索結果エリア - スクロール可能 */
 .pagefind-ui__results-area {
+  max-width: 100% !important;
+  margin: 0 !important;
+  width: 100% !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior: contain !important;
+  padding: 0 2rem 2rem 2rem !important;
+  box-sizing: border-box !important;
+}
+
+/* 検索結果の内容を中央配置 */
+.pagefind-ui__results {
   max-width: 900px !important;
   margin: 0 auto !important;
-}
-
-/* 結果リスト */
-.pagefind-ui__results {
   list-style: none !important;
   padding: 0 !important;
-  margin: 0 !important;
 }
 
-/* 検索アクティブ時のbodyスタイル */
+/* 検索アクティブ時のbodyスタイル - 背景スクロールを防ぐ */
 body.search-active {
   overflow: hidden !important;
-}
-
-/* 検索アクティブ時、メインコンテンツを非表示にしてスクロールを防ぐ */
-body.search-active .main-container,
-body.search-active .sidebar-overlay {
-  pointer-events: none;
 }
 
 /* ==========================================================================
@@ -233,12 +241,10 @@ body.search-active .sidebar-overlay {
   z-index: 1090;
 }
 
-/* サイドバー内のボタンとインタラクティブ要素のリセット防止 */
-.sidebar button,
+/* サイドバー内のボタンとインタラクティブ要素のリセット防止（アコーディオンボタンは除く） */
 .sidebar .theme-toggle,
 .sidebar .sidebar-close,
-.sidebar-header button {
-  all: revert !important;
+.sidebar-header button:not(.toc-toggle) {
   cursor: pointer !important;
   pointer-events: auto !important;
 }
@@ -330,7 +336,7 @@ body {
 
 /* アンカーリンクでのスクロール時、ヘッダー分のオフセットを確保 */
 h1, h2, h3, h4, h5, h6 {
-  scroll-margin-top: 5rem;
+  scroll-margin-top: 7rem;
 }
 
 /* ==========================================================================
@@ -352,7 +358,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   line-height: var(--line-height-tight);
   color: var(--color-text);
-  scroll-margin-top: 5rem; /* ヘッダー分のオフセット */
+  scroll-margin-top: 7rem; /* ヘッダー分のオフセット */
 }
 
 .prose h1 {

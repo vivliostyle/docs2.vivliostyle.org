@@ -308,6 +308,61 @@ const isDev = import.meta.env.DEV;
   
   let searchStateObserver: MutationObserver | null = null;
   
+  // 検索状態の履歴管理
+  let isSearchOpen = false;
+  let currentSearchQuery = '';
+  
+  // 検索状態をURLパラメータに保存
+  const saveSearchState = (query: string) => {
+    if (query && query !== currentSearchQuery) {
+      currentSearchQuery = query;
+      const url = new URL(window.location.href);
+      url.searchParams.set('q', query);
+      window.history.pushState({ search: true, query }, '', url);
+      isSearchOpen = true;
+    }
+  };
+  
+  // 検索状態をクリア
+  const clearSearchState = () => {
+    if (isSearchOpen) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('q');
+      window.history.pushState({ search: false }, '', url);
+      isSearchOpen = false;
+      currentSearchQuery = '';
+    }
+  };
+  
+  // ブラウザの戻る/進むボタンで検索状態を復元
+  const restoreSearchState = () => {
+    const url = new URL(window.location.href);
+    const query = url.searchParams.get('q');
+    const searchInput = document.querySelector('.pagefind-ui__search-input') as HTMLInputElement;
+    
+    if (query && searchInput) {
+      // 検索クエリを復元
+      searchInput.value = query;
+      searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+      searchInput.focus();
+      isSearchOpen = true;
+      currentSearchQuery = query;
+    } else if (searchInput && !query) {
+      // 検索をクリア
+      searchInput.value = '';
+      searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+      const clearButton = document.querySelector('.pagefind-ui__search-clear') as HTMLButtonElement;
+      clearButton?.click();
+      isSearchOpen = false;
+      currentSearchQuery = '';
+    }
+  };
+  
+  // popstateイベント（戻る/進むボタン）のリスナー
+  window.addEventListener('popstate', (event) => {
+    restoreSearchState();
+  });
+  
   // 検索結果の表示状態を監視してbodyのスクロールを制御
   const initSearchStateObserver = () => {
     // 既存のobserverをクリーンアップ
@@ -322,16 +377,14 @@ const isDev = import.meta.env.DEV;
       const hasResults = results && results.children.length > 0;
       
       if (drawer && hasResults) {
-        // 検索結果がある場合: bodyのスクロールを無効化
+        // 検索結果がある場合: CSSクラスでスクロールを制御
         if (!document.body.classList.contains('search-active')) {
           document.body.classList.add('search-active');
-          window.lockBodyOverflow();
         }
       } else {
-        // 検索結果がない場合: bodyのスクロールを有効化
+        // 検索結果がない場合: CSSクラスを削除
         if (document.body.classList.contains('search-active')) {
           document.body.classList.remove('search-active');
-          window.unlockBodyOverflow();
         }
       }
     });
@@ -349,19 +402,40 @@ const isDev = import.meta.env.DEV;
     // 検索入力の変化も監視
     const searchInput = document.querySelector('.pagefind-ui__search-input') as HTMLInputElement;
     if (searchInput) {
+      let searchTimeout: number;
+      
       searchInput.addEventListener('input', () => {
-        if (!searchInput.value) {
-          document.body.classList.remove('search-active');
-          document.body.style.overflow = '';
+        const query = searchInput.value.trim();
+        
+        if (!query) {
+          clearSearchState();
+        } else {
+          // 入力が落ち着いてから履歴に保存（300ms待機）
+          clearTimeout(searchTimeout);
+          searchTimeout = window.setTimeout(() => {
+            saveSearchState(query);
+          }, 300);
         }
       });
+      
+      // 検索がクリアされたときも履歴をクリア
+      const clearButton = document.querySelector('.pagefind-ui__search-clear') as HTMLButtonElement;
+      if (clearButton) {
+        clearButton.addEventListener('click', () => {
+          clearSearchState();
+        });
+      }
     }
   };
 
   // DOM準備完了後に検索状態監視を開始
   const startObserver = () => {
     // Pagefind UIが初期化されるまで少し待つ
-    setTimeout(initSearchStateObserver, PAGEFIND_INIT_DELAY_MS);
+    setTimeout(() => {
+      initSearchStateObserver();
+      // URLパラメータから検索状態を復元
+      restoreSearchState();
+    }, PAGEFIND_INIT_DELAY_MS);
   };
 
   initKeyboardShortcuts();
