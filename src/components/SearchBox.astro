@@ -130,6 +130,28 @@ const isDev = import.meta.env.DEV;
     background-color: var(--pagefind-ui-border) !important;
     border-radius: 4px !important;
   }
+
+  /* 検索ボックスの修正 */
+  .pagefind-ui__search-input {
+    padding-left: 2.5rem !important;
+  }
+
+  .pagefind-ui__search-clear {
+    right: 0.5rem !important;
+  }
+
+  /* 検索アイコンを検索ボックス内に配置 */
+  .pagefind-ui__form::before {
+    content: "🔍" !important;
+    position: absolute !important;
+    left: 0.75rem !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    pointer-events: none !important;
+    z-index: 1 !important;
+    font-size: 1rem !important;
+    opacity: 0.6 !important;
+  }
 </style>
 
 <style>
@@ -441,6 +463,12 @@ const isDev = import.meta.env.DEV;
       initSearchStateObserver();
       // URLパラメータから検索状態を復元
       restoreSearchState();
+      
+      // プレースホルダーテキストをカスタマイズ
+      const searchInput = document.querySelector('.pagefind-ui__search-input') as HTMLInputElement;
+      if (searchInput) {
+        searchInput.placeholder = '${lang === 'ja' ? 'ドキュメントを検索' : 'Search documents'}';
+      }
     }, PAGEFIND_INIT_DELAY_MS);
   };
 
