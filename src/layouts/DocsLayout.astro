@@ -220,6 +220,12 @@ const currentPath = Astro.url.pathname;
     flex-shrink: 0;
   }
   
+  /* ThemeToggleが確実に表示されるように */
+  .header-actions :global(.theme-toggle) {
+    flex-shrink: 0;
+    min-width: 36px;
+  }
+  
   .mobile-menu-toggle {
     display: none;
     background: none;
