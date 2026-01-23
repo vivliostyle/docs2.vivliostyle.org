@@ -223,13 +223,35 @@ const currentPath = Astro.url.pathname;
   }
   
   /* ThemeToggleが確実に表示されるように（Firefox互換性） */
-  .header-actions :global(.theme-toggle) {
+  .header-actions > :global(.theme-toggle) {
     flex-shrink: 0 !important;
     min-width: 36px !important;
     min-height: 36px !important;
     display: inline-flex !important;
     position: relative !important;
     z-index: 1 !important;
+    order: 2;
+  }
+  
+  /* 検索ボックスの順序を調整 */
+  .header-actions > :global(.search-container) {
+    order: 1;
+  }
+  
+  /* 言語スイッチャーの順序を調整 */
+  .header-actions > .lang-switcher {
+    order: 3;
+    order: 2;
+  }
+  
+  /* 検索ボックスの順序を調整 */
+  .header-actions > :global(.search-container) {
+    order: 1;
+  }
+  
+  /* 言語スイッチャーの順序を調整 */
+  .header-actions > .lang-switcher {
+    order: 3;
   }
   
   .mobile-menu-toggle {
@@ -489,7 +511,10 @@ const currentPath = Astro.url.pathname;
     }
     
     /* モバイルビューではヘッダーのダークモードトグルと言語スイッチを非表示 */
-    .header-actions > :global(.theme-toggle),
+    .header-actions > :global(.theme-toggle) {
+      display: none !important;
+    }
+    
     .header-actions .lang-switcher {
       display: none;
     }
