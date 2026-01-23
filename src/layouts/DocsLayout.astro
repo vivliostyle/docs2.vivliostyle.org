@@ -218,12 +218,18 @@ const currentPath = Astro.url.pathname;
     align-items: center;
     gap: 1rem;
     flex-shrink: 0;
+    position: relative;
+    z-index: 10;
   }
   
-  /* ThemeToggleが確実に表示されるように */
+  /* ThemeToggleが確実に表示されるように（Firefox互換性） */
   .header-actions :global(.theme-toggle) {
-    flex-shrink: 0;
-    min-width: 36px;
+    flex-shrink: 0 !important;
+    min-width: 36px !important;
+    min-height: 36px !important;
+    display: inline-flex !important;
+    position: relative !important;
+    z-index: 1 !important;
   }
   
   .mobile-menu-toggle {
