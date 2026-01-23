@@ -131,26 +131,40 @@ const isDev = import.meta.env.DEV;
     border-radius: 4px !important;
   }
 
-  /* 検索ボックスの修正 */
+  /* 検索ボックスの修正 - padding-leftを小さくしてプレースホルダーが切れないようにする */
   .pagefind-ui__search-input {
-    padding-left: 2.5rem !important;
+    padding-left: 0.75rem !important;
+    padding-right: 2rem !important;
   }
 
   .pagefind-ui__search-clear {
     right: 0.5rem !important;
   }
 
-  /* 検索アイコンを検索ボックス内に配置 */
-  .pagefind-ui__form::before {
-    content: "🔍" !important;
+  /* 検索フォームの位置調整 - アイコンと検索窓を中央揃え */
+  .pagefind-ui__form {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  /* Pagefind UIの検索コンテナ全体を中央揃え */
+  .pagefind-ui__search,
+  .pagefind-ui {
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  /* 検索アイコン（虫眼鏡）を垂直中央揃え */
+  .pagefind-ui__form::before,
+  .pagefind-ui__form svg {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     position: absolute !important;
-    left: 0.75rem !important;
+    left: 0.5rem !important;
     top: 50% !important;
     transform: translateY(-50%) !important;
-    pointer-events: none !important;
-    z-index: 1 !important;
-    font-size: 1rem !important;
-    opacity: 0.6 !important;
   }
 </style>
 
@@ -165,6 +179,19 @@ const isDev = import.meta.env.DEV;
 
   #search-wrapper {
     width: 100%;
+  }
+
+  /* レスポンシブ対応: モバイルでの検索ボックス幅調整 */
+  @media (max-width: 768px) {
+    .search-container {
+      max-width: 240px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .search-container {
+      max-width: 200px;
+    }
   }
 
   /* 開発環境の通知スタイル */
@@ -249,7 +276,7 @@ const isDev = import.meta.env.DEV;
           showSubResults: true,
           excerptLength: 15,
           translations: lang === 'ja' ? {
-            placeholder: 'ドキュメントを検索...',
+            placeholder: '検索...',
             clear_search: '✕',
             load_more: 'さらに読み込む',
             search_label: '検索',
@@ -261,6 +288,7 @@ const isDev = import.meta.env.DEV;
             search_suggestion: '[SEARCH_TERM] の検索結果はありません。以下のいずれかを試してください:',
             searching: '検索中...',
           } : {
+            placeholder: 'Search...',
             clear_search: '✕',
           },
         });
@@ -464,11 +492,7 @@ const isDev = import.meta.env.DEV;
       // URLパラメータから検索状態を復元
       restoreSearchState();
       
-      // プレースホルダーテキストをカスタマイズ
-      const searchInput = document.querySelector('.pagefind-ui__search-input') as HTMLInputElement;
-      if (searchInput) {
-        searchInput.placeholder = '${lang === 'ja' ? 'ドキュメントを検索' : 'Search documents'}';
-      }
+      // プレースホルダーは初期化時のtranslationsで設定済み
     }, PAGEFIND_INIT_DELAY_MS);
   };
 
