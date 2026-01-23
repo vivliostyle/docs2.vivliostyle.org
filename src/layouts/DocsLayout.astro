@@ -477,8 +477,8 @@ const currentPath = Astro.url.pathname;
     
     .header-actions {
       gap: 0.5rem;
-      flex: 1;
-      min-width: 0;
+      flex: 0 1 auto;
+      min-width: auto;
     }
     
     /* 検索ボックスを柔軟な幅に */
@@ -488,7 +488,7 @@ const currentPath = Astro.url.pathname;
       min-width: 0;
     }
     
-    /* ヘッダーのダークモードトグルと言語スイッチを非表示 */
+    /* モバイルビューではヘッダーのダークモードトグルと言語スイッチを非表示 */
     .header-actions > :global(.theme-toggle),
     .header-actions .lang-switcher {
       display: none;
