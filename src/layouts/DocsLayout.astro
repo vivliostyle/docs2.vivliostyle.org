@@ -107,9 +107,21 @@ const currentPath = Astro.url.pathname;
           </button>
         </div>
         <div class="sidebar-mobile-controls">
-          <ThemeToggle />
-          <div class="lang-switcher-mobile">
-            <slot name="header" />
+          <div class="mobile-controls-row">
+            <ThemeToggle />
+            <div class="lang-switcher-mobile">
+              <slot name="header" />
+            </div>
+          </div>
+          <div class="mobile-controls-row">
+            <a href="https://github.com/vivliostyle" class="sidebar-github-link" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 16 16" width="24" height="24" fill="currentColor">
+                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+              </svg>
+            </a>
+            <a href={lang === 'ja' ? 'https://vivliostyle.org/ja/' : 'https://vivliostyle.org/'} class="sidebar-vivliostyle-link" aria-label="Vivliostyle" target="_blank" rel="noopener noreferrer">
+              <img src="/vivliostyle-logo72.png" alt="Vivliostyle" class="vivliostyle-icon" />
+            </a>
           </div>
         </div>
         <slot name="sidebar" />
@@ -330,18 +342,27 @@ const currentPath = Astro.url.pathname;
   /* サイドバー内のモバイルコントロール（デフォルトは非表示） */
   .sidebar-mobile-controls {
     display: none;
+    flex-direction: column;
     padding: 1rem;
     border-bottom: 1px solid var(--color-border);
     margin-bottom: 1rem;
-    gap: 1rem;
+    gap: 0.75rem;
     align-items: center;
-    justify-content: center;
+  }
+  
+  .mobile-controls-row {
+     display: flex;
+     gap: 1.5rem;
+     align-items: center;
+     justify-content: center;
+     width: 100%;
   }
   
   .lang-switcher-mobile {
     display: flex;
     gap: 0.5rem;
     align-items: center;
+    white-space: nowrap; /* 改行を防ぐ */
   }
   
   .lang-switcher-mobile .separator {
@@ -359,6 +380,40 @@ const currentPath = Astro.url.pathname;
   .lang-switcher-mobile a.active {
     font-weight: bold;
     color: var(--color-text);
+  }
+
+  .sidebar-github-link {
+    display: flex;
+    align-items: center;
+    color: var(--color-text);
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    flex-shrink: 0;
+  }
+  
+  .sidebar-github-link:hover {
+    background-color: var(--color-bg-secondary);
+  }
+
+  .sidebar-vivliostyle-link {
+    display: flex;
+    align-items: center;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    line-height: 0;
+    flex-shrink: 0;
+  }
+  
+  .sidebar-vivliostyle-link:hover {
+    background-color: var(--color-bg-secondary);
+  }
+  
+  .sidebar-vivliostyle-link img {
+     height: 24px;
+     width: auto;
+     display: block;
   }
   
   .main-container {
@@ -412,13 +467,9 @@ const currentPath = Astro.url.pathname;
       padding-right: 0;
     }
     
-    /* 中間サイズ: 検索ボックスを縮小、GitHubリンクを非表示 */
-    .header-nav .github-link {
-      display: none;
-    }
-    
+    /* 中間サイズ: 検索ボックス調整 */
     .search-container {
-      max-width: 200px;
+      max-width: 240px;
     }
     
     .header-nav {
@@ -439,7 +490,7 @@ const currentPath = Astro.url.pathname;
     }
   }
   
-  /* タブレットサイズ: ナビを非表示にしてハンバーガーメニュー表示 */
+  /* タブレット・モバイルサイズ: ナビ非表示、ハンバーガー表示、サイドバーオーバーレイ化 */
   @media (max-width: 900px) {
     .mobile-menu-toggle {
       display: block;
@@ -449,47 +500,30 @@ const currentPath = Astro.url.pathname;
       display: none;
     }
 
-    /* 検索ボックスを縮小 */
-    .header-actions > :global(.search-container) {
-      max-width: 150px !important;
-      width: 150px;
-    }
-
-    .logo-image {
-      height: 26px;
-    }
-
     .header-content {
       gap: 0.5rem;
       padding: 0.5rem 0.75rem;
     }
-
-    .header-actions {
-      gap: 0.5rem;
-    }
-  }
-
-  /* モバイルサイズ: ThemeToggleと言語スイッチをハンバーガーメニュー内へ */
-  @media (max-width: 768px) {
-    .header-content {
-      gap: 0.5rem;
+    
+    .logo-image {
+      height: 26px;
     }
 
     .header-actions {
       gap: 0.5rem;
       flex: 1;
-      min-width: 0;
+      justify-content: flex-end;
     }
 
-    /* 検索ボックスを柔軟な幅に */
+    /* 検索ボックスを柔軟に */
     .header-actions > :global(.search-container) {
       flex: 1;
       max-width: none !important;
-      width: auto;
-      min-width: 0;
+      width: auto !important;
+      min-width: 100px;
     }
 
-    /* モバイルビューではヘッダーのダークモードトグルと言語スイッチを非表示 */
+    /* ヘッダーのダークモードトグルと言語スイッチを非表示 -> サイドバーへ */
     .header-actions > :global(.theme-toggle) {
       display: none !important;
     }
@@ -497,7 +531,7 @@ const currentPath = Astro.url.pathname;
     .header-actions .lang-switcher {
       display: none;
     }
-
+    
     /* サイドバー内のモバイルコントロールを表示 */
     .sidebar-mobile-controls {
       display: flex;
@@ -612,7 +646,7 @@ const currentPath = Astro.url.pathname;
       if (!link.dataset.clickListenerAdded) {
         link.addEventListener('click', () => {
           // モバイル表示の時のみ閉じる
-          if (window.innerWidth <= 768) {
+          if (window.innerWidth <= 900) {
             closeMenu();
           }
         });
@@ -632,7 +666,7 @@ const currentPath = Astro.url.pathname;
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimer);
       resizeTimer = window.setTimeout(() => {
-        if (window.innerWidth > 768 && sidebar.classList.contains('active')) {
+        if (window.innerWidth > 900 && sidebar.classList.contains('active')) {
           closeMenu();
         }
       }, 250);

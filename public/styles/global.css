@@ -188,7 +188,22 @@
   position: relative !important;
   z-index: 999 !important;
   flex-shrink: 0 !important;
-  padding: 1rem 2rem !important;
+  padding: 0 !important; /* パディングを削除して検索ボックスの幅を確保 */
+}
+
+/* 検索ボックスの入力フィールド調整 */
+.pagefind-ui__search-input {
+  padding-left: 3.2rem !important; /* アイコン分のスペースを確保 (虫眼鏡との重なりを防止) */
+  height: 40px !important; /* 高さを明示的に指定して安定させる */
+}
+
+/* フォームの擬似要素（虫眼鏡アイコン）の位置調整 */
+.pagefind-ui__form::before {
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  left: 12px !important;
+  z-index: 1001 !important;
+  opacity: 0.5 !important;
 }
 
 /* 検索結果エリア - スクロール可能 */

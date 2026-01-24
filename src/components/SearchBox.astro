@@ -155,6 +155,16 @@ const isDev = import.meta.env.DEV;
     align-items: center !important;
   }
 
+  /* Pagefind UIの幅が親要素を超えないように制限 */
+  .pagefind-ui__search,
+  .pagefind-ui__form,
+  .pagefind-ui__search-input {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
   /* 検索アイコン（虫眼鏡）を垂直中央揃え */
   .pagefind-ui__form::before,
   .pagefind-ui__form svg {
@@ -175,6 +185,7 @@ const isDev = import.meta.env.DEV;
     align-items: center;
     width: 100%;
     max-width: 280px;
+    overflow: visible;
   }
 
   #search-wrapper {
