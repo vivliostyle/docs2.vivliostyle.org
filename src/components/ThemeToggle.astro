@@ -28,7 +28,7 @@
 
 <style>
   .theme-toggle {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     background: none;
@@ -38,6 +38,11 @@
     color: var(--color-text);
     border-radius: 4px;
     transition: background-color 0.2s;
+    flex-shrink: 0;
+    min-width: 36px;
+    min-height: 36px;
+    position: relative;
+    z-index: 1;
   }
   
   .theme-toggle:hover {
@@ -50,6 +55,7 @@
   
   .theme-icon {
     display: none;
+    pointer-events: none; /* SVGがクリックをブロックしないようにする */
   }
   
   /* ライトモード時は太陽アイコンを表示 */

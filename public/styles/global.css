@@ -72,6 +72,7 @@
   --content-max-width: 1200px;
   --sidebar-width: 280px;
   --prose-max-width: 65ch;
+  --header-height: 80px;
 }
 
 /* ダークモード - システム設定 */
@@ -125,6 +126,207 @@
 }
 
 /* ==========================================================================
+   グローバルヘッダー固定 - すべてのページで適用
+   ========================================================================== */
+
+.header {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 1000 !important;
+  width: 100% !important;
+  background: var(--color-bg-header) !important;
+  border-bottom: 1px solid var(--color-border) !important;
+}
+
+/* ==========================================================================
+   Pagefind 検索結果のオーバーレイ表示 - 重要な修正
+   ========================================================================== */
+
+/* 検索コンテナを相対配置の基準に */
+.search-container {
+  position: relative !important;
+}
+
+/* Pagefind UIコンテナ */
+.pagefind-ui {
+  position: relative !important;
+}
+
+/* 検索結果を固定オーバーレイとして表示（ドキュメントフローから外す） */
+.pagefind-ui__drawer {
+  position: fixed !important;
+  top: var(--header-height) !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  background: var(--color-bg, #fff) !important;
+  /* Header (z-index: 1000) より背面に配置するため 900 に設定 */
+  z-index: 900 !important;
+  overflow: visible !important;
+  padding: 0 !important;
+  height: calc(100vh - var(--header-height)) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  box-sizing: border-box !important;
+}
+
+/* ダークモード対応 */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .pagefind-ui__drawer {
+    background: var(--color-bg, #1a1a1a) !important;
+  }
+}
+
+:root[data-theme="dark"] .pagefind-ui__drawer {
+  background: var(--color-bg, #1a1a1a) !important;
+}
+
+/* 検索フォームは通常の配置（ヘッダーより下） */
+.pagefind-ui__form {
+  position: relative !important;
+  z-index: 999 !important;
+  flex-shrink: 0 !important;
+  padding: 0 !important; /* パディングを削除して検索ボックスの幅を確保 */
+}
+
+/* 検索ボックスの入力フィールド調整 */
+.pagefind-ui__search-input {
+  padding-left: 3.2rem !important; /* アイコン分のスペースを確保 (虫眼鏡との重なりを防止) */
+  height: 40px !important; /* 高さを明示的に指定して安定させる */
+}
+
+/* フォームの擬似要素（虫眼鏡アイコン）の位置調整 */
+.pagefind-ui__form::before {
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  left: 12px !important;
+  z-index: 1001 !important;
+  opacity: 0.5 !important;
+}
+
+/* 検索結果エリア - スクロール可能 */
+.pagefind-ui__results-area {
+  max-width: 100% !important;
+  margin: 0 !important;
+  width: 100% !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  -webkit-overflow-scrolling: touch !important;
+  overscroll-behavior: contain !important;
+  padding: 0 2rem 2rem 2rem !important;
+  box-sizing: border-box !important;
+}
+
+/* 検索結果の内容を中央配置 */
+.pagefind-ui__results {
+  max-width: 900px !important;
+  margin: 0 auto !important;
+  list-style: none !important;
+  padding: 0 !important;
+}
+
+/* 検索アクティブ時のbodyスタイル - 背景スクロールを防ぐ */
+body.search-active {
+  overflow: hidden !important;
+}
+
+/* ==========================================================================
+   サイドバー（モバイルメニュー）のz-index修正
+   ========================================================================== */
+
+/* サイドバーのz-index（モバイル時にヘッダーより上） */
+.sidebar {
+  z-index: 950;
+}
+
+.sidebar.active {
+  z-index: 1100;
+}
+
+/* サイドバーオーバーレイ */
+.sidebar-overlay {
+  z-index: 940;
+}
+
+.sidebar-overlay.active {
+  z-index: 1090;
+}
+
+/* サイドバー内のボタンとインタラクティブ要素のリセット防止（アコーディオンボタンは除く） */
+.sidebar .theme-toggle,
+.sidebar .sidebar-close,
+.sidebar-header button:not(.toc-toggle) {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+
+.sidebar-close {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: none !important;
+  border: none !important;
+  padding: 0.5rem !important;
+  cursor: pointer !important;
+  color: var(--color-text) !important;
+  border-radius: 4px !important;
+  transition: background-color 0.2s !important;
+}
+
+.sidebar-close:hover {
+  background-color: var(--color-bg-secondary) !important;
+}
+
+.sidebar-close svg {
+  display: block !important;
+  width: 24px !important;
+  height: 24px !important;
+}
+
+/* サイドバー内のテーマトグルと言語スイッチャー */
+.sidebar-mobile-controls .theme-toggle,
+.sidebar-mobile-controls .lang-switcher a,
+.sidebar-mobile-controls .language-switcher a {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+
+.sidebar-mobile-controls .theme-toggle {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: none !important;
+  border: none !important;
+  padding: 0.5rem !important;
+  cursor: pointer !important;
+  color: var(--color-text) !important;
+  border-radius: 4px !important;
+  transition: background-color 0.2s !important;
+}
+
+.sidebar-mobile-controls .theme-toggle:hover {
+  background-color: var(--color-bg-secondary) !important;
+}
+
+/* 言語リンク */
+.sidebar-mobile-controls a,
+.lang-switcher-mobile a {
+  cursor: pointer !important;
+  pointer-events: auto !important;
+  text-decoration: none !important;
+}
+
+.sidebar-mobile-controls a:hover,
+.lang-switcher-mobile a:hover {
+  text-decoration: underline !important;
+}
+
+/* ==========================================================================
    Base Styles - リセットと基本スタイル
    ========================================================================== */
 
@@ -150,7 +352,7 @@ body {
 
 /* アンカーリンクでのスクロール時、ヘッダー分のオフセットを確保 */
 h1, h2, h3, h4, h5, h6 {
-  scroll-margin-top: 5rem;
+  scroll-margin-top: 7rem;
 }
 
 /* ==========================================================================
@@ -172,7 +374,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   line-height: var(--line-height-tight);
   color: var(--color-text);
-  scroll-margin-top: 5rem; /* ヘッダー分のオフセット */
+  scroll-margin-top: 7rem; /* ヘッダー分のオフセット */
 }
 
 .prose h1 {

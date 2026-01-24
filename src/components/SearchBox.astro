@@ -27,8 +27,170 @@ const isDev = import.meta.env.DEV;
   </div>
 )}
 
-<!-- Pagefind UI CSS (本番環境のみ) -->
+<!-- Pagefind UI CSS (本番環境のみ) - カスタムスタイルより先に読み込む -->
 {!isDev && <link href="/_pagefind/pagefind-ui.css" rel="stylesheet">}
+
+<style is:inline>
+  /* Pagefind UI CSSの後に読み込まれるカスタムスタイル */
+  
+  /* デフォルト（ライトモード）: 明るい色を設定 */
+  :root:not([data-theme="dark"]) {
+    --pagefind-ui-primary: #2563eb !important;
+    --pagefind-ui-text: #1f2937 !important;
+    --pagefind-ui-background: #ffffff !important;
+    --pagefind-ui-border: #e5e7eb !important;
+    --pagefind-ui-tag: #f3f4f6 !important;
+  }
+
+  /* ダークモード（システム設定） */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --pagefind-ui-primary: #60a5fa !important;
+      --pagefind-ui-text: #e5e7eb !important;
+      --pagefind-ui-background: #1f2937 !important;
+      --pagefind-ui-border: #374151 !important;
+      --pagefind-ui-tag: #6b7280 !important;
+    }
+  }
+
+  /* ダークモード（手動設定） */
+  :root[data-theme="dark"] {
+    --pagefind-ui-primary: #60a5fa !important;
+    --pagefind-ui-text: #e5e7eb !important;
+    --pagefind-ui-background: #1f2937 !important;
+    --pagefind-ui-border: #374151 !important;
+    --pagefind-ui-tag: #6b7280 !important;
+  }
+  
+  /* ライトモード（手動設定） */
+  :root[data-theme="light"] {
+    --pagefind-ui-primary: #2563eb !important;
+    --pagefind-ui-text: #1f2937 !important;
+    --pagefind-ui-background: #ffffff !important;
+    --pagefind-ui-border: #e5e7eb !important;
+    --pagefind-ui-tag: #f3f4f6 !important;
+  }
+
+  /* ホバー時の黒いオブジェクト(擬似要素)を削除（結果項目のホバー時のみに限定） */
+  .pagefind-ui__result:hover::before,
+  .pagefind-ui__result:hover::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  /* マークされたハイライトテキストのみクリック不可に（クリックをリンクに通過させる） */
+  .pagefind-ui__result mark {
+    pointer-events: none !important;
+  }
+
+  /* 検索結果が空でない時のみドロワーを表示 */
+  .pagefind-ui__drawer:empty {
+    display: none !important;
+  }
+
+  /* 検索結果のリンクをクリック可能に（親項目・子項目両方） */
+  .pagefind-ui__result-link,
+  .pagefind-ui__result-nested .pagefind-ui__result-link,
+  .pagefind-ui__result-title a,
+  .pagefind-ui__result a {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    color: var(--pagefind-ui-text) !important;
+    text-decoration: none !important;
+  }
+
+  /* リンクのホバー効果 */
+  .pagefind-ui__result-link:hover,
+  .pagefind-ui__result-nested .pagefind-ui__result-link:hover,
+  .pagefind-ui__result-title a:hover,
+  .pagefind-ui__result a:hover {
+    text-decoration: underline !important;
+    color: var(--pagefind-ui-primary) !important;
+  }
+  
+  /* 検索結果アイテム全体をクリック可能に */
+  .pagefind-ui__result {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+  }
+
+  /* 検索ボックスの表示崩れ修正: プレースホルダーとアイコンの重なり防止 */
+  /* 詳細度を高めて確実に適用 */
+  :root .pagefind-ui__search-input {
+    padding-left: 3.5rem !important; /* アイコンスペースを確保 */
+    box-sizing: border-box !important;
+  }
+
+  :root .pagefind-ui__form::before {
+    left: 14px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    z-index: 5 !important;
+  }
+
+
+  /* 検索結果アイテムのホバー効果（ユーザビリティのため背景色を保持） */
+  .pagefind-ui__result:hover {
+    background-color: var(--pagefind-ui-border) !important;
+    border-radius: 4px !important;
+  }
+
+  /* 子項目（ネストされた結果）のスタイル */
+  .pagefind-ui__result-nested {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+  }
+
+  .pagefind-ui__result-nested:hover {
+    background-color: var(--pagefind-ui-border) !important;
+    border-radius: 4px !important;
+  }
+
+  /* 検索ボックスの修正 - プレースホルダーが切れないように右側のみ調整 */
+  .pagefind-ui__search-input {
+    padding-right: 2rem !important;
+  }
+
+  .pagefind-ui__search-clear {
+    right: 0.5rem !important;
+  }
+
+  /* 検索フォームの位置調整 - アイコンと検索窓を中央揃え */
+  .pagefind-ui__form {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  /* Pagefind UIの検索コンテナ全体を中央揃え */
+  .pagefind-ui__search,
+  .pagefind-ui {
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  /* Pagefind UIの幅が親要素を超えないように制限 */
+  .pagefind-ui__search,
+  .pagefind-ui__form,
+  .pagefind-ui__search-input {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 検索アイコン（虫眼鏡）を垂直中央揃え */
+  .pagefind-ui__form::before,
+  .pagefind-ui__form svg {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: absolute !important;
+    left: 0.5rem !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+  }
+</style>
 
 <style>
   .search-container {
@@ -37,10 +199,24 @@ const isDev = import.meta.env.DEV;
     align-items: center;
     width: 100%;
     max-width: 280px;
+    overflow: visible;
   }
 
   #search-wrapper {
     width: 100%;
+  }
+
+  /* レスポンシブ対応: モバイルでの検索ボックス幅調整 */
+  @media (max-width: 768px) {
+    .search-container {
+      max-width: 240px;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .search-container {
+      max-width: 200px;
+    }
   }
 
   /* 開発環境の通知スタイル */
@@ -73,106 +249,6 @@ const isDev = import.meta.env.DEV;
     color: #9ca3af;
     background-color: #374151;
     border-color: #4b5563;
-  }
-
-  /* Pagefind UIのカスタマイズ - ライトモード */
-  :global(.pagefind-ui) {
-    --pagefind-ui-scale: 0.9;
-    --pagefind-ui-primary: #2563eb;
-    --pagefind-ui-text: #374151;
-    --pagefind-ui-background: #ffffff;
-    --pagefind-ui-border: #e5e7eb;
-    --pagefind-ui-tag: #f3f4f6;
-    --pagefind-ui-border-width: 1px;
-    --pagefind-ui-border-radius: 8px;
-    --pagefind-ui-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  }
-
-  /* ライトモード明示設定 */
-  :root[data-theme="light"] :global(.pagefind-ui) {
-    --pagefind-ui-background: #ffffff;
-    --pagefind-ui-text: #374151;
-    --pagefind-ui-border: #e5e7eb;
-  }
-
-  /* ダークモード対応 */
-  @media (prefers-color-scheme: dark) {
-    :global(.pagefind-ui) {
-      --pagefind-ui-primary: #60a5fa;
-      --pagefind-ui-text: #e5e7eb;
-      --pagefind-ui-background: #1f2937;
-      --pagefind-ui-border: #374151;
-      --pagefind-ui-tag: #374151;
-    }
-  }
-
-  :root[data-theme="dark"] :global(.pagefind-ui) {
-    --pagefind-ui-primary: #60a5fa;
-    --pagefind-ui-text: #e5e7eb;
-    --pagefind-ui-background: #1f2937;
-    --pagefind-ui-border: #374151;
-    --pagefind-ui-tag: #374151;
-  }
-
-  /* 検索ボックスのスタイル調整 */
-  :global(.pagefind-ui__search-input) {
-    width: 100%;
-    padding: 0.5rem 1rem;
-    font-size: 0.95rem;
-    border: 1px solid var(--pagefind-ui-border);
-    border-radius: var(--pagefind-ui-border-radius);
-    background: var(--pagefind-ui-background);
-    color: var(--pagefind-ui-text);
-    transition: border-color 0.2s;
-  }
-
-  :global(.pagefind-ui__search-input:focus) {
-    outline: none;
-    border-color: var(--pagefind-ui-primary);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-  }
-
-  /* 検索結果のスタイル */
-  :global(.pagefind-ui__results) {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    margin-top: 0.5rem;
-    max-height: 400px;
-    overflow-y: auto;
-    background: var(--pagefind-ui-background);
-    border: 1px solid var(--pagefind-ui-border);
-    border-radius: var(--pagefind-ui-border-radius);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-  }
-
-  :global(.pagefind-ui__result) {
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid var(--pagefind-ui-border);
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-
-  :global(.pagefind-ui__result:hover) {
-    background-color: var(--pagefind-ui-tag);
-  }
-
-  :global(.pagefind-ui__result:last-child) {
-    border-bottom: none;
-  }
-
-  :global(.pagefind-ui__result-title) {
-    font-weight: 600;
-    color: var(--pagefind-ui-primary);
-    margin-bottom: 0.25rem;
-  }
-
-  :global(.pagefind-ui__result-excerpt) {
-    font-size: 0.875rem;
-    color: var(--pagefind-ui-text);
-    line-height: 1.5;
   }
 
   /* モバイル対応 */
@@ -225,7 +301,7 @@ const isDev = import.meta.env.DEV;
           showSubResults: true,
           excerptLength: 15,
           translations: lang === 'ja' ? {
-            placeholder: 'ドキュメントを検索...',
+            placeholder: '検索...',
             clear_search: '✕',
             load_more: 'さらに読み込む',
             search_label: '検索',
@@ -237,6 +313,7 @@ const isDev = import.meta.env.DEV;
             search_suggestion: '[SEARCH_TERM] の検索結果はありません。以下のいずれかを試してください:',
             searching: '検索中...',
           } : {
+            placeholder: 'Search...',
             clear_search: '✕',
           },
         });
@@ -293,17 +370,172 @@ const isDev = import.meta.env.DEV;
       // Escape キーで検索ボックスからフォーカスを外す
       if (e.key === 'Escape' && document.activeElement === searchInput) {
         searchInput?.blur();
+        // 検索をクリア
+        const clearButton = document.querySelector('.pagefind-ui__search-clear') as HTMLButtonElement;
+        clearButton?.click();
       }
     });
+  };
+
+  // Pagefind UI の初期化を待つためのディレイ（ミリ秒）
+  // Pagefind が検索UIを DOM に構築する前に監視を開始すると、要素が見つからない場合があるため。
+  const PAGEFIND_INIT_DELAY_MS = 500;
+  
+  let searchStateObserver: MutationObserver | null = null;
+  
+  // 検索状態の履歴管理
+  let isSearchOpen = false;
+  let currentSearchQuery = '';
+  
+  // 検索状態をURLパラメータに保存
+  const saveSearchState = (query: string) => {
+    if (query && query !== currentSearchQuery) {
+      currentSearchQuery = query;
+      const url = new URL(window.location.href);
+      url.searchParams.set('q', query);
+      if (isSearchOpen) {
+        window.history.replaceState({ search: true, query }, '', url);
+      } else {
+        window.history.pushState({ search: true, query }, '', url);
+      }
+      isSearchOpen = true;
+    }
+  };
+  
+  // 検索状態をクリア
+  const clearSearchState = () => {
+    if (isSearchOpen) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete('q');
+      window.history.pushState({ search: false }, '', url);
+      isSearchOpen = false;
+      currentSearchQuery = '';
+    }
+  };
+  
+  // ブラウザの戻る/進むボタンで検索状態を復元
+  const restoreSearchState = () => {
+    const url = new URL(window.location.href);
+    const query = url.searchParams.get('q');
+    const searchInput = document.querySelector('.pagefind-ui__search-input') as HTMLInputElement;
+    
+    if (query && searchInput) {
+      // 検索クエリを復元
+      searchInput.value = query;
+      searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+      searchInput.focus();
+      isSearchOpen = true;
+      currentSearchQuery = query;
+    } else if (searchInput && !query) {
+      // 検索をクリア
+      searchInput.value = '';
+      searchInput.dispatchEvent(new Event('input', { bubbles: true }));
+      const clearButton = document.querySelector('.pagefind-ui__search-clear') as HTMLButtonElement;
+      clearButton?.click();
+      isSearchOpen = false;
+      currentSearchQuery = '';
+    }
+  };
+  
+  // popstateイベント（戻る/進むボタン）のリスナー
+  if (!(window as any).__pagefindPopstateInitialized) {
+    window.addEventListener('popstate', () => {
+      restoreSearchState();
+    });
+    (window as any).__pagefindPopstateInitialized = true;
+  }
+  
+  // 検索結果の表示状態を監視してbodyのスクロールを制御
+  const initSearchStateObserver = () => {
+    // 既存のobserverをクリーンアップ
+    if (searchStateObserver) {
+      searchStateObserver.disconnect();
+    }
+    
+    // MutationObserverで検索結果の変化を監視
+    searchStateObserver = new MutationObserver(() => {
+      const drawer = document.querySelector('.pagefind-ui__drawer');
+      const results = document.querySelector('.pagefind-ui__results');
+      const hasResults = results && results.children.length > 0;
+      
+      if (drawer && hasResults) {
+        // 検索結果がある場合: CSSクラスでスクロールを制御
+        if (!document.body.classList.contains('search-active')) {
+          document.body.classList.add('search-active');
+        }
+      } else {
+        // 検索結果がない場合: CSSクラスを削除
+        if (document.body.classList.contains('search-active')) {
+          document.body.classList.remove('search-active');
+        }
+      }
+    });
+
+    // #search要素を監視
+    const searchContainer = document.querySelector('#search');
+    if (searchContainer) {
+      searchStateObserver!.observe(searchContainer, {
+        childList: true,
+        subtree: true,
+        characterData: true
+      });
+    }
+
+    // 検索入力の変化も監視
+    const searchInput = document.querySelector('.pagefind-ui__search-input') as HTMLInputElement;
+    if (searchInput && !searchInput.dataset.listenerAdded) {
+      let searchTimeout: number;
+      
+      searchInput.addEventListener('input', () => {
+        const query = searchInput.value.trim();
+        
+        if (!query) {
+          clearSearchState();
+        } else {
+          // 入力が落ち着いてから履歴に保存（300ms待機）
+          clearTimeout(searchTimeout);
+          searchTimeout = window.setTimeout(() => {
+            saveSearchState(query);
+          }, 300);
+        }
+      });
+      
+      searchInput.dataset.listenerAdded = 'true';
+      
+      // 検索がクリアされたときも履歴をクリア
+      const clearButton = document.querySelector('.pagefind-ui__search-clear') as HTMLButtonElement;
+      if (clearButton && !clearButton.dataset.listenerAdded) {
+        clearButton.addEventListener('click', () => {
+          clearSearchState();
+        });
+        clearButton.dataset.listenerAdded = 'true';
+      }
+    }
+  };
+
+  // DOM準備完了後に検索状態監視を開始
+  const startObserver = () => {
+    // Pagefind UIが初期化されるまで少し待つ
+    setTimeout(() => {
+      initSearchStateObserver();
+      // URLパラメータから検索状態を復元
+      restoreSearchState();
+      
+      // プレースホルダーは初期化時のtranslationsで設定済み
+    }, PAGEFIND_INIT_DELAY_MS);
   };
 
   initKeyboardShortcuts();
 
   // ページロード時に初期化
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initPagefind);
+    document.addEventListener('DOMContentLoaded', () => {
+      initPagefind();
+      startObserver();
+    });
   } else {
     initPagefind();
+    startObserver();
   }
 </script>
 )}
