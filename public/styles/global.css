@@ -163,6 +163,7 @@
   bottom: 0 !important;
   width: 100% !important;
   background: var(--color-bg, #fff) !important;
+  /* Header (z-index: 1000) より背面に配置するため 900 に設定 */
   z-index: 900 !important;
   overflow: visible !important;
   padding: 0 !important;

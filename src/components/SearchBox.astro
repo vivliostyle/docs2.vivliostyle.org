@@ -146,9 +146,8 @@ const isDev = import.meta.env.DEV;
     border-radius: 4px !important;
   }
 
-  /* 検索ボックスの修正 - padding-leftを小さくしてプレースホルダーが切れないようにする */
+  /* 検索ボックスの修正 - プレースホルダーが切れないように右側のみ調整 */
   .pagefind-ui__search-input {
-    padding-left: 0.75rem !important;
     padding-right: 2rem !important;
   }
 
@@ -394,7 +393,11 @@ const isDev = import.meta.env.DEV;
       currentSearchQuery = query;
       const url = new URL(window.location.href);
       url.searchParams.set('q', query);
-      window.history.pushState({ search: true, query }, '', url);
+      if (isSearchOpen) {
+        window.history.replaceState({ search: true, query }, '', url);
+      } else {
+        window.history.pushState({ search: true, query }, '', url);
+      }
       isSearchOpen = true;
     }
   };
