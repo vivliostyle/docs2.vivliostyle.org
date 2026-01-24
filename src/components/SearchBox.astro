@@ -114,6 +114,21 @@ const isDev = import.meta.env.DEV;
     pointer-events: auto !important;
   }
 
+  /* 検索ボックスの表示崩れ修正: プレースホルダーとアイコンの重なり防止 */
+  /* 詳細度を高めて確実に適用 */
+  :root .pagefind-ui__search-input {
+    padding-left: 3.5rem !important; /* アイコンスペースを確保 */
+    box-sizing: border-box !important;
+  }
+
+  :root .pagefind-ui__form::before {
+    left: 14px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    z-index: 5 !important;
+  }
+
+
   /* 検索結果アイテムのホバー効果（ユーザビリティのため背景色を保持） */
   .pagefind-ui__result:hover {
     background-color: var(--pagefind-ui-border) !important;
