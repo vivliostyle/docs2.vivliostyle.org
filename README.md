@@ -60,6 +60,6 @@ Published URL: https://docs.vivliostyle.org/
 
 ## Contributing / References
 
-- [Vivliostyle公式サイト](https://vivliostyle.org/)
+- [Vivliostyle Official Website](https://vivliostyle.org/)
 - [Astro Documentation](https://docs.astro.build)
 - [VFM (Vivliostyle Flavored Markdown)](https://github.com/vivliostyle/vfm)
