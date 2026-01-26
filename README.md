@@ -1,51 +1,65 @@
 
 # Vivliostyle Documentation Site
 
-このリポジトリは [Vivliostyle](https://vivliostyle.org/) の公式ドキュメントサイト（次世代版）のソースです。
+This repository contains the source for the next-generation official documentation site for [Vivliostyle](https://vivliostyle.org/).
 
-## 概要
+## Overview
 
-- Astro + VFM (Vivliostyle Flavored Markdown) による静的サイト生成
-- SSMO (Single Source Multi Output) 対応CSS
-- 多言語対応（日本語・英語）
-- GitHub Actionsによる自動デプロイ（GitHub Pages）
+- Static site generation with Astro + VFM (Vivliostyle Flavored Markdown)
+- CSS supporting SSMO (Single Source Multi Output)
+- Multilingual content (Japanese and English)
+- Automated deployment with GitHub Actions (GitHub Pages)
 
-## 主な技術
+## Main Technologies
 
 - [Astro](https://astro.build/) v5
-- [@vivliostyle/vfm](https://github.com/vivliostyle/vfm)（Markdown→HTML変換）
-- [gray-matter](https://github.com/jonschlinkert/gray-matter)（frontmatter抽出）
+- [@vivliostyle/vfm](https://github.com/vivliostyle/vfm) (Markdown → HTML conversion)
+- [gray-matter](https://github.com/jonschlinkert/gray-matter) (frontmatter parsing)
 
-## ディレクトリ構成
+## Directory Structure
 
 ```
 /
-├── public/           # 静的ファイル（CSS等）
-├── src/              # Astroコンポーネント・ページ
-│   ├── loaders/      # VFMローダー
-│   ├── layouts/      # レイアウト
-│   └── pages/        # ページ
-├── content/          # ドキュメント本文（Markdown）
-├── .github/workflows # CI/CDワークフロー
+├── content/           # Documentation content (Markdown)
+│   ├── en/
+│   └── ja/
+├── public/            # Static assets served as-is
+│   ├── styles/
+│   ├── themes/
+│   ├── vfm/
+│   └── viewer/
+├── src/               # Astro source (components, pages, styles, etc.)
+│   ├── components/
+│   ├── layouts/
+│   ├── loaders/
+│   ├── pages/
+│   └── styles/
+├── _investigation/    # Investigation notes and planning docs
+├── packages/          # Local packages
+├── submodules/        # Git submodules
+├── .github/workflows/ # CI/CD workflows
+├── astro.config.mjs
+├── tsconfig.json
+├── vivliostyle.config-*.js
 └── package.json
 ```
 
-## 開発・ビルド・デプロイ
+## Development, Build, and Deploy
 
-| コマンド              | 説明                                   |
-|----------------------|----------------------------------------|
-| `npm install`        | 依存パッケージのインストール           |
-| `npm run dev`        | 開発サーバー起動（http://localhost:4321）|
-| `npm run build`      | 静的サイトを `./dist/` にビルド         |
-| `npm run preview`    | ビルド成果物のローカルプレビュー       |
+| Command               | Description                                      |
+|-----------------------|--------------------------------------------------|
+| `npm install`         | Install dependencies                              |
+| `npm run dev`         | Start the dev server (http://localhost:4321)      |
+| `npm run build`       | Build the static site into `./dist/`              |
+| `npm run preview`     | Preview the build output locally                  |
 
-GitHub Actions により `astro-Install`/`main` ブランチへの push で自動デプロイされます。
+Deployment is triggered automatically via GitHub Actions when you push to the `astro-Install`/`main` branch.
 
-公開URL: https://docs.vivliostyle.org/
+Published URL: https://docs.vivliostyle.org/
 
 
-## コントリビュート・参考
+## Contributing / References
 
 - [Vivliostyle公式サイト](https://vivliostyle.org/)
-- [Astro公式ドキュメント](https://docs.astro.build)
+- [Astro Documentation](https://docs.astro.build)
 - [VFM (Vivliostyle Flavored Markdown)](https://github.com/vivliostyle/vfm)
