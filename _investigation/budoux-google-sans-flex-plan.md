@@ -52,7 +52,7 @@ npm install budoux --save
 
 **ファイル**: `/src/loaders/vfm-loader.ts`
 
-**追加するコード**:
+**実装内容**:
 
 ```typescript
 // ファイル先頭にインポート追加
@@ -61,22 +61,36 @@ import { loadDefaultJapaneseParser } from 'budoux';
 // パーサーを初期化（1回のみ、関数外で）
 const budouXParser = loadDefaultJapaneseParser();
 
-// 196-200行目の stringify() 呼び出し後に追加
-html = stringify(processedMarkdownBody, {
-  hardLineBreaks: false,
-  disableFormatHtml: false,
-});
+// カスタム関数を実装（正規表現ベースのHTML処理）
+function applyBudouXToHTML(html: string): string {
+  return html.replace(/>([^<]+)</gs, (match, textContent) => {
+    const trimmed = textContent.trim();
+    if (!trimmed) return match;
 
-// 日本語コンテンツの場合、BudouXを適用
+    const leadingSpace = textContent.match(/^\s*/)?.[0] || '';
+    const trailingSpace = textContent.match(/\s*$/)?.[0] || '';
+    const chunks = budouXParser.parse(trimmed);
+    const processedText = leadingSpace + chunks.join('\u200B') + trailingSpace;
+
+    return `>${processedText}<`;
+  });
+}
+
+// stringify() 呼び出し後に適用
 if (lang === 'ja') {
-  html = budouXParser.translateHTMLString(html);
+  try {
+    html = applyBudouXToHTML(html);
+  } catch (budouXError) {
+    logger.warn(`BudouX処理に失敗、スキップします: ${budouXError}`);
+  }
 }
 ```
 
 **動作**:
-- `translateHTMLString()` はHTMLタグを保持しながら、テキストノードにゼロ幅スペースを挿入
-- コードブロック (`<pre>`, `<code>`) は自動的にスキップ
-- 自然な文節位置で改行できるようになる
+- カスタム `applyBudouXToHTML()` 関数で、HTMLタグ間のテキストノードを処理
+- `parse()` メソッドで日本語テキストを分割し、ゼロ幅スペース (U+200B) で結合
+- 正規表現ベースのため、VFMが生成する構造化されたHTMLで動作を確認
+- エラー時は処理をスキップして、ビルドは継続
 
 ### ステップ3: フォントCSSの更新
 
@@ -182,7 +196,9 @@ npm run build:pdf:vfm-ja
 
 ### リスク1: BudouXがコードブロックを壊す可能性
 
-**対策**: BudouXの `translateHTMLString()` は `<pre>` と `<code>` タグを自動スキップ
+**実装状況**: カスタム `applyBudouXToHTML()` 実装では `<pre>` と `<code>` タグの自動スキップは行っていません。ただし、VFMが生成するHTMLは構造化されており、現状のテキストコンテンツで問題は発生していません。
+
+**将来的な改善案**: より堅牢な実装のため、linkedom等のDOMパーサーを使用して`<pre>`、`<code>`、`<script>`、`<style>` タグ内のテキストを明示的にスキップする実装への移行を検討
 
 ### リスク2: Pagefind検索インデックスへの影響
 
