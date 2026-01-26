@@ -18,6 +18,11 @@ const budouXParser = loadDefaultJapaneseParser();
 /**
  * HTMLテキストノードにBudouXを適用する関数
  * タグ内のテキストを分割し、ゼロ幅スペースを挿入
+ *
+ * 注意: この実装は正規表現ベースで、<pre>/<code>タグの自動スキップは行いません。
+ * VFMが生成するHTMLは構造化されているため、現状のテキストコンテンツで問題は
+ * 発生していませんが、将来的にはlinkedom等のDOMパーサーを使用した実装への
+ * 移行を検討することを推奨します。
  */
 function applyBudouXToHTML(html: string): string {
   // HTMLタグの外側のテキストを見つけて、BudouXで処理
@@ -232,14 +237,24 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
               });
 
               // VFMが完全なHTML文書を生成する場合、body部分だけを抽出
-              const bodyMatch = html.match(/<body[^>]*>([\s\S]*)<\/body>/);
+              // 非貪欲・大文字小文字非依存のマッチで、最初のbodyタグのみ抽出
+              const bodyMatch = html.match(/<body\b[^>]*>([\s\S]*?)<\/body>/i);
               if (bodyMatch) {
                 html = bodyMatch[1];
               }
 
               // 日本語コンテンツの場合、BudouXを適用して自然な改行位置を追加
               if (lang === 'ja') {
-                html = applyBudouXToHTML(html);
+                try {
+                  html = applyBudouXToHTML(html);
+                } catch (budouXError) {
+                  logger.warn(
+                    `VFM Loader [${lang}]: Failed to apply BudouX for ${filePath}, continuing without line-breaking enhancements: ${
+                      budouXError instanceof Error ? budouXError.message : String(budouXError)
+                    }`,
+                  );
+                  // エラー時はBudouX処理なしでHTMLを使用
+                }
               }
 
               logger.debug(`VFM Loader [${lang}]: Successfully converted markdown to HTML for file: ${filePath}`);

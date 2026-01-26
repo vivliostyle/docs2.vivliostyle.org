@@ -378,7 +378,19 @@ h1, h2, h3, h4, h5, h6 {
   line-height: var(--line-height-tight);
   color: var(--color-text);
   scroll-margin-top: 7rem; /* ヘッダー分のオフセット */
-  /* 日本語の自然な改行を促す設定 */
+}
+
+/* BudouXによる自然な改行を促す設定（見出し、段落、リスト、テーブル） */
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6,
+.prose p,
+.prose li,
+.prose td,
+.prose th {
   word-break: keep-all;
   overflow-wrap: anywhere;
 }
