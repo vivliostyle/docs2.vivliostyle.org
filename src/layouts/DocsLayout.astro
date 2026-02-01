@@ -12,7 +12,7 @@ interface Props {
   description?: string;
   lang?: string;
   showBreadcrumb?: boolean;
-  availableLanguages: ('en' | 'ja')[];
+  availableLanguages?: ('en' | 'ja')[];
 }
 
 const { title, description = '', lang = 'en', showBreadcrumb = true, availableLanguages = [] } = Astro.props;

@@ -72,7 +72,7 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
   title={title}
   description={description}
   lang="ja"
-  availableLanguages={hasEnTranslation ? ['en', 'ja']: []}
+  availableLanguages={hasEnTranslation ? ['en', 'ja'] : []}
 >
   <div slot="header" class="language-switcher-container">
     <LanguageSwitcher currentLang="ja" pagePath={pagePath} hasTranslation={hasEnTranslation} />
