@@ -24,6 +24,9 @@ const {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vivliostyle Documentation</title>
+  <meta name="robots" content="noindex">
+  <link rel="canonical" href={`${Astro.url.origin}/${defaultLanguage}${targetPath}`}>
+  <link rel="stylesheet" href="/styles/global.css">
   <script data-target-path={targetPath} data-supported-languages={availableLanguages.join(',')} data-default-language={defaultLanguage}>
     // 言語検出とリダイレクト
     (function() {
@@ -50,6 +53,6 @@ const {
   <noscript>
     <meta http-equiv="refresh" content={`0; url=/${defaultLanguage}${targetPath}`}>
   </noscript>
-  <p>Welcome to the documentation. Please navigate to <a href={`/${defaultLanguage}${targetPath}`}>English documentation</a>.</p>
+  <p style="font-size: 0">Welcome to the documentation. Please navigate to <a href={`/${defaultLanguage}${targetPath}`}>English documentation</a>.</p>
 </body>
 </html>

@@ -12,9 +12,10 @@ interface Props {
   description?: string;
   lang?: string;
   showBreadcrumb?: boolean;
+  availableLanguages: ('en' | 'ja')[];
 }
 
-const { title, description = '', lang = 'en', showBreadcrumb = true } = Astro.props;
+const { title, description = '', lang = 'en', showBreadcrumb = true, availableLanguages = [] } = Astro.props;
 const currentPath = Astro.url.pathname;
 ---
 <!DOCTYPE html>
@@ -25,6 +26,15 @@ const currentPath = Astro.url.pathname;
   <meta name="description" content={description}>
   <title>{title} | Vivliostyle Documentation</title>
   <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="canonical" href={`${Astro.url.origin}${currentPath}`}>
+  {availableLanguages.map((language) => (
+    <link
+      rel="alternate"
+      hreflang={language}
+      href={`${Astro.url.origin}/${language}${currentPath.replace(/^\/[^/]+/, '')}`}
+    />
+  ))}
+  <link rel="sitemap" href="/sitemap-index.xml">
   <link rel="stylesheet" href="/styles/global.css">
   <!-- Prism.js syntax highlighting -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" media="(prefers-color-scheme: light)">

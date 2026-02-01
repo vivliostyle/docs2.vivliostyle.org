@@ -20,10 +20,11 @@ const description = indexDoc?.data?.description || 'Reference documentation for 
 ---
 
 <DocsLayout 
-  title={title} 
+  title={title}
   description={description}
   lang="en"
   section="reference"
+  availableLanguages={hasJaTranslation ? ['en', 'ja'] : []}
 >
   <!-- Language switcher in header -->
   {hasJaTranslation && (

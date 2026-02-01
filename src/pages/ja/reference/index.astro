@@ -19,11 +19,12 @@ const title = indexDoc?.data?.title || 'リファレンス';
 const description = indexDoc?.data?.description || 'Vivliostyle関連ドキュメントのリファレンス集';
 ---
 
-<DocsLayout 
-  title={title} 
+<DocsLayout
+  title={title}
   description={description}
   lang="ja"
   section="reference"
+  availableLanguages={hasEnTranslation ? ['en', 'ja'] : []}
 >
   <!-- ヘッダーに言語切り替え -->
   {hasEnTranslation && (

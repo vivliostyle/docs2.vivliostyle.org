@@ -2,11 +2,22 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
+const languages = ['en', 'ja'];
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://docs.vivliostyle.org',
   output: 'static',
-  integrations: [sitemap()],
+  integrations: [sitemap({
+    filter: (page) => {
+      const url = new URL(page);
+      return languages.includes(url.pathname.split('/')[1]);
+    },
+    i18n: {
+      defaultLocale: 'en',
+      locales: Object.fromEntries(languages.map((lang) => [lang, lang])),
+    },
+  })],
   build: {
     format: 'directory',
   },

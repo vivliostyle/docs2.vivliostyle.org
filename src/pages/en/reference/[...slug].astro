@@ -164,11 +164,12 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
 }
 ---
 
-<DocsLayout 
-  title={title} 
+<DocsLayout
+  title={title}
   description={description}
   lang="en"
   section="reference"
+  availableLanguages={hasJaTranslation ? ['en', 'ja'] : []}
 >
   <!-- Language switcher in header -->
   {hasJaTranslation && (

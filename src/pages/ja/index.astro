@@ -25,7 +25,12 @@ const title = indexDoc?.data?.title || 'Vivliostyle ドキュメントへよう�
 const description = indexDoc?.data?.description || 'Vivliostyle公式ドキュメント';
 ---
 
-<DocsLayout title={title} description={description} lang="ja">
+<DocsLayout
+  title={title}
+  description={description}
+  lang="ja"
+  availableLanguages={['en', 'ja']}
+>
   <LanguageSwitcher slot="header" currentLang="ja" pagePath="/" hasTranslation={true} />
   <nav slot="sidebar">
     <h3>ドキュメント</h3>
