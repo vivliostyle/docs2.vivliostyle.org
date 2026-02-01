@@ -1,10 +1,22 @@
 ---
 /**
- * ルートページ - 言語検出とリダイレクト
- * 
+ * 言語切り替えレイアウト - 言語検出とリダイレクト
+ *
  * Accept-Languageヘッダーを確認し、適切な言語ページにリダイレクト。
  * SSRが必要な場合はクライアントサイドで処理。
  */
+
+interface Props {
+  targetPath: string;
+  availableLanguages?: ('en' | 'ja')[];
+  defaultLanguage?: 'en' | 'ja';
+}
+
+const {
+  targetPath,
+  availableLanguages = ['en', 'ja'],
+  defaultLanguage = 'en',
+} = Astro.props;
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -12,31 +24,32 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vivliostyle Documentation</title>
-  <script>
+  <script data-target-path={targetPath} data-supported-languages={availableLanguages.join(',')} data-default-language={defaultLanguage}>
     // 言語検出とリダイレクト
     (function() {
-      const supportedLangs = ['en', 'ja'];
-      const defaultLang = 'en';
-      
+      const supportedLangs = document.currentScript.getAttribute('data-supported-languages').split(',');
+      const defaultLang = document.currentScript.getAttribute('data-default-language');
+
       // ブラウザの言語設定を取得
       const browserLang = navigator.language || '';
       const langCode = browserLang.split('-')[0].toLowerCase();
-      
+
       // サポートされている言語かチェック
       const targetLang = supportedLangs.includes(langCode) ? langCode : defaultLang;
-      
+
       // リダイレクト
-      window.location.replace('/' + targetLang + '/');
+      const targetPath = document.currentScript.getAttribute('data-target-path');
+      window.location.replace(`/${targetLang}${targetPath}`);
     })();
   </script>
   <noscript>
-    <meta http-equiv="refresh" content="0; url=/en/">
+    <meta http-equiv="refresh" content={`0; url=/${defaultLanguage}${targetPath}`}>
   </noscript>
 </head>
 <body>
   <noscript>
-    <meta http-equiv="refresh" content="0; url=/en/">
+    <meta http-equiv="refresh" content={`0; url=/${defaultLanguage}${targetPath}`}>
   </noscript>
-  <p>Welcome to the documentation. Please navigate to <a href="/en/">English documentation</a>.</p>
+  <p>Welcome to the documentation. Please navigate to <a href={`/${defaultLanguage}${targetPath}`}>English documentation</a>.</p>
 </body>
 </html>
