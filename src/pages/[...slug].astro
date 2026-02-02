@@ -1,0 +1,69 @@
+---
+import LanguageSwitchLayout from '../layouts/LanguageSwitchLayout.astro';
+
+export async function getStaticPaths() {
+  const languages = ['en', 'ja'] as const;
+  const pageComponents = Object.entries(
+    import.meta.glob<{
+      getStaticPaths?: () => Promise<
+        { params: { slug: string | undefined } }[]
+      >;
+    }>('./**/*.astro', { eager: true })
+  ).flatMap((it) => {
+    const [key, value] = it;
+    const { getStaticPaths } = value;
+    const matched = /^\.\/(\w+)\/(.+\/)[^/]+\.astro$/.exec(key);
+    if (!getStaticPaths || !matched) {
+      return [];
+    }
+    const [, language, path] = matched;
+    if (!languages.includes(language as (typeof languages)[number])) {
+      return [];
+    }
+    return [
+      {
+        getStaticPaths,
+        language: language as (typeof languages)[number],
+        path,
+      } as const,
+    ];
+  });
+
+  const pages = (
+    await Promise.all(
+      pageComponents.map(async ({ getStaticPaths, ...rest }) => ({
+        ...rest,
+        staticPaths: await getStaticPaths(),
+      }))
+    )
+  ).flatMap(({ staticPaths, path, language }) =>
+    staticPaths.map(({ params }) => ({
+      language,
+      slug: `${path}${params.slug ?? ''}`,
+    }))
+  );
+  const allSlugs = new Set(pages.map(({ slug }) => slug));
+  return Array.from(allSlugs).map((slug) => {
+    const availableLanguages = pages.flatMap((page) =>
+      page.slug === slug ? [page.language] : []
+    );
+    return {
+      params: { slug },
+      props: {
+        availableLanguages,
+        defaultLanguage: availableLanguages.includes('en')
+          ? 'en'
+          : availableLanguages[0],
+      },
+    };
+  });
+}
+
+const { availableLanguages, defaultLanguage } = Astro.props;
+---
+
+<LanguageSwitchLayout
+  targetPath={`/${Astro.params.slug}/`}
+  availableLanguages={availableLanguages}
+  defaultLanguage={defaultLanguage}
+/>

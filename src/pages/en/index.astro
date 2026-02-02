@@ -36,7 +36,12 @@ const title = indexDoc?.data?.title || 'Welcome to Vivliostyle Documentation';
 const description = indexDoc?.data?.description || 'Official documentation for Vivliostyle';
 ---
 
-<DocsLayout title={title} description={description} lang="en">
+<DocsLayout
+  title={title}
+  description={description}
+  lang="en"
+  availableLanguages={['en', 'ja']}
+>
   <LanguageSwitcher slot="header" currentLang="en" pagePath="/" hasTranslation={true} />
   <nav slot="sidebar">
     <h3>Documentation</h3>

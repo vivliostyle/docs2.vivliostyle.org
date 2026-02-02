@@ -66,7 +66,12 @@ const prevPage = currentIndex > 0 ? sortedDocs[currentIndex - 1] : null;
 const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex + 1] : null;
 ---
 
-<DocsLayout title={title} description={description} lang="ja">
+<DocsLayout
+  title={title}
+  description={description}
+  lang="ja"
+  availableLanguages={hasEnTranslation ? ['en', 'ja'] : []}
+>
   <div slot="header" class="language-switcher-container">
     <LanguageSwitcher currentLang="ja" pagePath={pagePath} hasTranslation={hasEnTranslation} />
   </div>

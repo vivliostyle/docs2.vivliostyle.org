@@ -68,11 +68,12 @@ const prevPage = currentIndex > 0 ? sortedDocs[currentIndex - 1] : null;
 const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex + 1] : null;
 ---
 
-<DocsLayout 
-  title={title} 
+<DocsLayout
+  title={title}
   description={description}
   lang="ja"
   section="viewer"
+  availableLanguages={hasEnTranslation ? ['en', 'ja'] : []}
 >
   <!-- ヘッダーに言語切り替え -->
   {hasEnTranslation && (
