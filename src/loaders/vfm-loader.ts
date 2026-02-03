@@ -10,6 +10,44 @@ import { stringify } from '@vivliostyle/vfm';
 import matter from 'gray-matter';
 import { readFile, readdir, stat } from 'fs/promises';
 import { join, relative, basename, dirname } from 'path';
+import { loadDefaultJapaneseParser } from 'budoux';
+
+// BudouXパーサーを初期化（1回のみ、全ドキュメントで再利用）
+const budouXParser = loadDefaultJapaneseParser();
+
+/**
+ * HTMLテキストノードにBudouXを適用する関数
+ * タグ内のテキストを分割し、ゼロ幅スペースを挿入
+ *
+ * 注意: この実装は正規表現ベースで、<pre>/<code>タグの自動スキップは行いません。
+ * VFMが生成するHTMLは構造化されているため、現状のテキストコンテンツで問題は
+ * 発生していませんが、将来的にはlinkedom等のDOMパーサーを使用した実装への
+ * 移行を検討することを推奨します。
+ */
+function applyBudouXToHTML(html: string): string {
+  // HTMLタグの外側のテキストを見つけて、BudouXで処理
+  // タグは保持し、テキストノードのみを処理
+  // グローバルフラグとsフラグ（dotが改行にもマッチ）を使用
+  return html.replace(/>([^<]+)</gs, (match, textContent) => {
+    // 改行や空白のみの場合はスキップ
+    const trimmed = textContent.trim();
+    if (!trimmed) {
+      return match;
+    }
+
+    // 前後の空白を保持
+    const leadingSpace = textContent.match(/^\s*/)?.[0] || '';
+    const trailingSpace = textContent.match(/\s*$/)?.[0] || '';
+
+    // BudouXで分割（トリムされたテキストのみ）
+    const chunks = budouXParser.parse(trimmed);
+
+    // ゼロ幅スペースで結合
+    const processedText = leadingSpace + chunks.join('\u200B') + trailingSpace;
+
+    return `>${processedText}<`;
+  });
+}
 
 export interface VFMLoaderOptions {
   /** ベースディレクトリのパス（絶対パスまたはプロジェクトルートからの相対パス） */
@@ -197,6 +235,28 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
                 hardLineBreaks: false,
                 disableFormatHtml: false,
               });
+
+              // VFMが完全なHTML文書を生成する場合、body部分だけを抽出
+              // 非貪欲・大文字小文字非依存のマッチで、最初のbodyタグのみ抽出
+              const bodyMatch = html.match(/<body\b[^>]*>([\s\S]*?)<\/body>/i);
+              if (bodyMatch) {
+                html = bodyMatch[1];
+              }
+
+              // 日本語コンテンツの場合、BudouXを適用して自然な改行位置を追加
+              if (lang === 'ja') {
+                try {
+                  html = applyBudouXToHTML(html);
+                } catch (budouXError) {
+                  logger.warn(
+                    `VFM Loader [${lang}]: Failed to apply BudouX for ${filePath}, continuing without line-breaking enhancements: ${
+                      budouXError instanceof Error ? budouXError.message : String(budouXError)
+                    }`,
+                  );
+                  // エラー時はBudouX処理なしでHTMLを使用
+                }
+              }
+
               logger.debug(`VFM Loader [${lang}]: Successfully converted markdown to HTML for file: ${filePath}`);
             } catch (stringifyError) {
               logger.error(
