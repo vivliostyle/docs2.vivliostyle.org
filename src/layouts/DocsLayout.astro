@@ -149,13 +149,13 @@ const navLinks = {
             <summary>{navLabels.reference}</summary>
             <div class="nav-panel">
               <div class="nav-group">
-                <span class="nav-group-title">{navLabels.docs}</span>
+                <h3 class="nav-group-title">{navLabels.docs}</h3>
                 {navLinks.reference.docs.map((item) => (
                   <a href={item.href}>{item.label}</a>
                 ))}
               </div>
               <div class="nav-group">
-                <span class="nav-group-title">{navLabels.contribution}</span>
+                <h3 class="nav-group-title">{navLabels.contribution}</h3>
                 {navLinks.reference.contribution.map((item) => (
                   <a href={item.href}>{item.label}</a>
                 ))}
@@ -284,8 +284,7 @@ const navLinks = {
     min-width: 0;
   }
 
-  .header-nav a,
-  .header-nav summary {
+  .header-nav a {
     color: var(--color-text);
     text-decoration: none;
     font-weight: 500;
@@ -358,6 +357,7 @@ const navLinks = {
     font-weight: 600;
     color: var(--color-text-muted);
     letter-spacing: 0.02em;
+    margin: 0;
   }
 
   .nav-panel a {
@@ -655,7 +655,6 @@ const navLinks = {
     
     .header-nav {
       gap: 0.5rem;
-      font-size: 0.85rem;
     }
 
     .header-nav a {
@@ -865,11 +864,60 @@ const navLinks = {
       }, 250);
     });
   };
+
+  // ヘッダーナビのアコーディオン制御
+  const initNavAccordions = () => {
+    const accordions = Array.from(document.querySelectorAll('.nav-accordion')) as HTMLDetailsElement[];
+    if (!accordions.length) {
+      return;
+    }
+
+    const closeAll = () => {
+      accordions.forEach((accordion) => {
+        if (accordion.open) {
+          accordion.removeAttribute('open');
+        }
+      });
+    };
+
+    accordions.forEach((accordion) => {
+      accordion.addEventListener('toggle', () => {
+        if (!accordion.open) {
+          return;
+        }
+        accordions.forEach((other) => {
+          if (other !== accordion) {
+            other.removeAttribute('open');
+          }
+        });
+      });
+    });
+
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+      if (!(target instanceof Node)) {
+        return;
+      }
+      if (!target.closest('.nav-accordion')) {
+        closeAll();
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        closeAll();
+      }
+    });
+  };
   
   // DOMContentLoaded時に初期化
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initMobileMenu);
+    document.addEventListener('DOMContentLoaded', () => {
+      initMobileMenu();
+      initNavAccordions();
+    });
   } else {
     initMobileMenu();
+    initNavAccordions();
   }
 </script>
