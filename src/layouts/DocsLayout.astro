@@ -17,6 +17,56 @@ interface Props {
 
 const { title, description = '', lang = 'en', showBreadcrumb = true, availableLanguages = [] } = Astro.props;
 const currentPath = Astro.url.pathname;
+
+const isJa = lang === 'ja';
+const navLabels = isJa
+  ? {
+      product: 'プロダクト',
+      tutorial: 'チュートリアル',
+      reference: 'リファレンス',
+      faq: 'FAQ',
+      docs: 'ドキュメント',
+      contribution: 'コントリビューションガイド',
+    }
+  : {
+      product: 'Product',
+      tutorial: 'Tutorials',
+      reference: 'Reference',
+      faq: 'FAQ',
+      docs: 'Documentation',
+      contribution: 'Contribution Guides',
+    };
+
+const navLinks = {
+  products: [
+    { label: 'Vivliostyle Viewer', href: `/${lang}/viewer/` },
+    { label: 'Vivliostyle CLI', href: `/${lang}/cli/` },
+    { label: 'VFM', href: `/${lang}/vfm/` },
+    { label: 'Vivliostyle Themes', href: `/${lang}/themes/` },
+  ],
+  tutorial: {
+    label: navLabels.tutorial,
+    href: isJa ? 'https://vivliostyle.org/ja/tutorials/' : 'https://vivliostyle.org/en/tutorials/',
+    external: true,
+  },
+  reference: {
+    docs: [
+      { label: isJa ? 'サポートする CSS 機能' : 'Supported CSS Features', href: `/${lang}/reference/supported-css-features/` },
+      { label: isJa ? 'Core API リファレンス' : 'Core API Reference', href: `/${lang}/reference/api/` },
+    ],
+    contribution: [
+      { label: 'Vivliostyle.js', href: `/${lang}/reference/contribution-guide/` },
+      { label: 'Vivliostyle CLI', href: `/${lang}/reference/contributing-cli/` },
+      { label: 'VFM', href: `/${lang}/reference/contributing-vfm/` },
+      { label: 'Vivliostyle Themes', href: `/${lang}/reference/contributing-themes/` },
+    ],
+  },
+  faq: {
+    label: navLabels.faq,
+    href: isJa ? 'https://vivliostyle.org/ja/faq/' : 'https://vivliostyle.org/en/faq/',
+    external: true,
+  },
+};
 ---
 <!DOCTYPE html>
 <html lang={lang}>
@@ -79,20 +129,56 @@ const currentPath = Astro.url.pathname;
         <a href={`/${lang}/`} class="logo">
           <img src="/vivliostyle-docs.svg" alt="Vivliostyle Docs" class="logo-image" />
         </a>
-        <nav class="header-nav">
-          <a href={`/${lang}/viewer/`}>Viewer</a>
-          <a href={`/${lang}/cli/`}>CLI</a>
-          <a href={`/${lang}/vfm/`}>VFM</a>
-          <a href={`/${lang}/themes/`}>Themes</a>
-          <a href={`/${lang}/reference/`}>Reference</a>
-          <a href="https://github.com/vivliostyle" class="github-link" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
-            <svg viewBox="0 0 16 16" width="24" height="24" fill="currentColor">
-              <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
-            </svg>
+        <nav class="header-nav" aria-label={isJa ? 'グローバルナビゲーション' : 'Global navigation'}>
+          <details class="nav-accordion">
+            <summary>{navLabels.product}</summary>
+            <div class="nav-panel">
+              {navLinks.products.map((item) => (
+                <a href={item.href}>{item.label}</a>
+              ))}
+            </div>
+          </details>
+          <a
+            href={navLinks.tutorial.href}
+            target={navLinks.tutorial.external ? '_blank' : undefined}
+            rel={navLinks.tutorial.external ? 'noopener noreferrer' : undefined}
+          >
+            {navLinks.tutorial.label}
           </a>
-          <a href={lang === 'ja' ? 'https://vivliostyle.org/ja/' : 'https://vivliostyle.org/'} class="vivliostyle-link" aria-label="Vivliostyle" target="_blank" rel="noopener noreferrer">
-            <img src="/vivliostyle-logo72.png" alt="Vivliostyle" class="vivliostyle-icon" />
+          <details class="nav-accordion">
+            <summary>{navLabels.reference}</summary>
+            <div class="nav-panel">
+              <div class="nav-group">
+                <span class="nav-group-title">{navLabels.docs}</span>
+                {navLinks.reference.docs.map((item) => (
+                  <a href={item.href}>{item.label}</a>
+                ))}
+              </div>
+              <div class="nav-group">
+                <span class="nav-group-title">{navLabels.contribution}</span>
+                {navLinks.reference.contribution.map((item) => (
+                  <a href={item.href}>{item.label}</a>
+                ))}
+              </div>
+            </div>
+          </details>
+          <a
+            href={navLinks.faq.href}
+            target={navLinks.faq.external ? '_blank' : undefined}
+            rel={navLinks.faq.external ? 'noopener noreferrer' : undefined}
+          >
+            {navLinks.faq.label}
           </a>
+          <div class="nav-icon-links">
+            <a href="https://github.com/vivliostyle" class="github-link" aria-label="GitHub" target="_blank" rel="noopener noreferrer">
+              <svg viewBox="0 0 16 16" width="24" height="24" fill="currentColor">
+                <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path>
+              </svg>
+            </a>
+            <a href={lang === 'ja' ? 'https://vivliostyle.org/ja/' : 'https://vivliostyle.org/'} class="vivliostyle-link" aria-label="Vivliostyle" target="_blank" rel="noopener noreferrer">
+              <img src="/vivliostyle-logo72.png" alt="Vivliostyle" class="vivliostyle-icon" />
+            </a>
+          </div>
         </nav>
         <div class="header-actions">
           <SearchBox lang={lang as 'en' | 'ja'} />
@@ -192,19 +278,104 @@ const currentPath = Astro.url.pathname;
   
   .header-nav {
     display: flex;
-    gap: 1.5rem;
+    gap: 1rem;
     flex: 1;
     align-items: center;
+    min-width: 0;
   }
-  
-  .header-nav a {
+
+  .header-nav a,
+  .header-nav summary {
     color: var(--color-text);
     text-decoration: none;
     font-weight: 500;
+    font-size: 0.95rem;
   }
-  
-  .header-nav a:hover {
+
+  .header-nav summary {
+    list-style: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 1.1rem;
+  }
+
+  .header-nav summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .header-nav summary::after {
+    content: '';
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid currentColor;
+    opacity: 0.6;
+    transition: transform 0.2s ease;
+  }
+
+  .header-nav a:hover,
+  .header-nav summary:hover {
     color: var(--color-primary);
+  }
+
+  .nav-accordion {
+    position: relative;
+  }
+
+  .nav-accordion[open] summary::after {
+    transform: rotate(180deg);
+  }
+
+  .nav-panel {
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    left: 0;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    padding: 0.75rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    display: none;
+    min-width: 240px;
+    z-index: 1200;
+  }
+
+  .nav-accordion[open] .nav-panel {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .nav-group {
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .nav-group-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    letter-spacing: 0.02em;
+  }
+
+  .nav-panel a {
+    font-weight: 500;
+    font-size: 0.9rem;
+    color: var(--color-text);
+    padding-left: 1rem;
+  }
+
+  .nav-panel a:hover {
+    color: var(--color-primary);
+  }
+
+  .nav-icon-links {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
   
   .header-nav .github-link,
@@ -484,6 +655,18 @@ const currentPath = Astro.url.pathname;
     
     .header-nav {
       gap: 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    .header-nav a {
+      font-size: 0.9rem;
+    }
+
+    .header-nav summary {
+      font-size: 1rem;
+    }
+
+    .nav-panel a {
       font-size: 0.85rem;
     }
     
