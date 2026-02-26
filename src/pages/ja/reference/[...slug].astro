@@ -322,7 +322,12 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
   <article class="docs-content">
     <!-- 抽出したTOCが存在する場合は表示 -->
     {extractedToc && (
-      <div class="toc" set:html={extractedToc}></div>
+      <div class="toc">
+        {doc.id === 'awesome-vivliostyle' && (
+          <h2 class="toc-title">目次</h2>
+        )}
+        <div class="toc-body" set:html={extractedToc}></div>
+      </div>
     )}
     
     <div set:html={htmlContent}></div>
@@ -360,6 +365,12 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
     border-radius: 0.5rem;
     padding: 1.5rem;
     margin: 2rem 0;
+  }
+
+  .toc-title {
+    margin: 0 0 1rem;
+    font-size: 1.2rem;
+    font-weight: 600;
   }
 
   .toc :global(ul) {

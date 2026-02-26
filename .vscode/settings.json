@@ -1,0 +1,6 @@
+{
+    "editor.showEncoding": true,
+    "editor.fontFamily": "Noto Sans Mono CJK JP, Menlo, Monaco, monospace",
+    "terminal.integrated.fontFamily": "Noto Sans Mono CJK JP",
+    "terminal.integrated.fontSize": 16
+}

@@ -207,6 +207,7 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
               continue;
             }
 
+
             // doctoc TOCをHTMLに変換（存在する場合）
             let extractedTocHtml: string | undefined;
             if (extractedToc) {
@@ -215,6 +216,11 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
                   hardLineBreaks: false,
                   disableFormatHtml: false,
                 });
+                if (collectionName?.includes('awesome-vivliostyle')) {
+                  extractedTocHtml = extractedTocHtml
+                    .replace(/>PrintCSS sites</g, '>Print CSS sites<')
+                    .replace(/href="#printcss-sites"/g, 'href="#print-css-sites"');
+                }
               } catch (tocError) {
                 logger.warn(`VFM Loader [${lang}]: Failed to convert doctoc TOC to HTML: ${tocError}`);
               }
