@@ -150,6 +150,29 @@ const referenceDocsJa = defineCollection({
   schema: docsSchema,
 });
 
+// Awesome Vivliostyle（英語）
+const awesomeDocsEn = defineCollection({
+  loader: vfmLoader({
+    base: 'submodules/awesome-vivliostyle',
+    lang: 'en',
+    includePattern: /^README\.md$/,
+    collectionName: 'awesome-vivliostyle-en',
+  }),
+  schema: docsSchema,
+});
+
+// Awesome Vivliostyle（日本語）
+// 注: 現在は英語版のみのため、同一READMEを日本語ページとしても扱う
+const awesomeDocsJa = defineCollection({
+  loader: vfmLoader({
+    base: 'submodules/awesome-vivliostyle',
+    lang: 'ja',
+    includePattern: /^README\.md$/,
+    collectionName: 'awesome-vivliostyle-ja',
+  }),
+  schema: docsSchema,
+});
+
 // Reference Index ページ（英語）
 const referenceIndexEn = defineCollection({
   loader: vfmLoader({
@@ -216,6 +239,8 @@ export const collections = {
   'vivliostyle-viewer-ja': viewerDocsJa,
   'vivliostyle-reference-en': referenceDocsEn,
   'vivliostyle-reference-ja': referenceDocsJa,
+  'awesome-vivliostyle-en': awesomeDocsEn,
+  'awesome-vivliostyle-ja': awesomeDocsJa,
   'vivliostyle-reference-index-en': referenceIndexEn,
   'vivliostyle-reference-index-ja': referenceIndexJa,
   'vivliostyle-cli-contributing-en': cliContributingEn,

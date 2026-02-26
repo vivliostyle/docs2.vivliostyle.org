@@ -8,6 +8,7 @@ lang: en
 
 ### Documentation
 
+- [Awesome Vivliostyle](/en/reference/awesome-vivliostyle/)
 - [Supported CSS Features](/en/reference/supported-css-features/)
 - [Core API Reference](/en/reference/api/)
 

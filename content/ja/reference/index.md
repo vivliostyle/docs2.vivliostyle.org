@@ -8,6 +8,7 @@ lang: ja
 
 ### ドキュメント
 
+- [Awesome Vivliostyle](/ja/reference/awesome-vivliostyle/)
 - [サポートする CSS 機能](/ja/reference/supported-css-features/)
 - [Core API リファレンス](/ja/reference/api/)
 
