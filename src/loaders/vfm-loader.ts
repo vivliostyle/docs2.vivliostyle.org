@@ -262,6 +262,14 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
             // 4. 相対リンクの.md拡張子を削除し、末尾スラッシュを追加
             // 例: ./getting-started.md -> ./getting-started/
             html = html.replace(/href="\.\/([^"]+)\.md"/g, 'href="./$1/"');
+
+            // Awesome Vivliostyle: link CONTRIBUTING.md to GitHub
+            if (collectionName?.includes('awesome-vivliostyle')) {
+              html = html.replace(
+                /href="CONTRIBUTING\.md"/g,
+                'href="https://github.com/vivliostyle/awesome-vivliostyle/blob/master/CONTRIBUTING.md"',
+              );
+            }
             
             // 5. ../で始まるリンク（親ディレクトリ）の処理
             // docs/ja/index.md から docs/config.md への参照を適切に変換
