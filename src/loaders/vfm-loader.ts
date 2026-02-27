@@ -163,6 +163,9 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
               extractedToc = doctocMatch[1].trim();
               // TOC部分をMarkdownから削除
               processedMarkdownBody = markdownBody.replace(/<!-- START doctoc generated TOC[^\n]*-->\s*\n[\s\S]*?\n<!-- END doctoc generated TOC[^\n]*-->\s*\n?/, '');
+              if (collectionName?.includes('awesome-vivliostyle')) {
+                processedMarkdownBody = processedMarkdownBody.replace(/##\s+Table of Contents\s*\n/, '');
+              }
             } else {
               // doctocマーカーがない場合、「## 目次」または「## Table of Contents」セクションを探す
               // api.mdの場合は見出しだけ削除してリストは残す、それ以外は従来通り
