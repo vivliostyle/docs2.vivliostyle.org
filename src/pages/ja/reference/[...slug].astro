@@ -222,7 +222,7 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
     <h3><a href="/ja/reference/" style="color: inherit; text-decoration: none;">リファレンス</a></h3>
     
     <!-- 特定ページでのみ見出しリストを表示 -->
-    {(doc.id === 'supported-css-features' || doc.id === 'api' || doc.id === 'vivliostyle-viewer' || doc.id === 'contribution-guide') ? (
+    {(doc.id === 'awesome-vivliostyle' || doc.id === 'supported-css-features' || doc.id === 'api' || doc.id === 'vivliostyle-viewer' || doc.id === 'contribution-guide') ? (
       <>
         <ul style="list-style: none; padding-left: 0; margin-bottom: 1rem;">
           <li><a href="/ja/">← ホームに戻る</a></li>
@@ -321,7 +321,7 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
   <!-- メインコンテンツ -->
   <article class="docs-content">
     <!-- 抽出したTOCが存在する場合は表示 -->
-    {extractedToc && (
+    {extractedToc && doc.id !== 'awesome-vivliostyle' && (
       <div class="toc">
         {doc.id === 'awesome-vivliostyle' && (
           <h2 class="toc-title">目次</h2>

@@ -222,7 +222,7 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
     <h3><a href="/en/reference/" style="color: inherit; text-decoration: none;">Reference</a></h3>
     
     <!-- Show heading list only for specific pages -->
-    {(doc.id === 'supported-css-features' || doc.id === 'api' || doc.id === 'vivliostyle-viewer' || doc.id === 'contribution-guide') ? (
+    {(doc.id === 'awesome-vivliostyle' || doc.id === 'supported-css-features' || doc.id === 'api' || doc.id === 'vivliostyle-viewer' || doc.id === 'contribution-guide') ? (
       <>
         <ul style="list-style: none; padding-left: 0; margin-bottom: 1rem;">
           <li><a href="/en/">← Back to Home</a></li>
@@ -322,7 +322,7 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
   <article class="docs-content">
 
     <!-- Display extracted TOC if exists -->
-    {extractedToc && (
+    {extractedToc && doc.id !== 'awesome-vivliostyle' && (
       <div class="toc">
         {doc.id === 'awesome-vivliostyle' && (
           <h2 class="toc-title">Contents</h2>
