@@ -241,7 +241,9 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
               
               // HTMLタグを除去してプレーンテキストのみを取得
               const getPlainText = (html: string) => {
-                return html.replace(/<[^>]*>/g, '');
+                return html
+                  .replace(/<[^>]*>/g, '')
+                  .replace(/&amp;|&#x26;/g, '&');
               };
               
               return (
