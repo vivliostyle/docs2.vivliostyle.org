@@ -163,6 +163,9 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
               extractedToc = doctocMatch[1].trim();
               // TOC部分をMarkdownから削除
               processedMarkdownBody = markdownBody.replace(/<!-- START doctoc generated TOC[^\n]*-->\s*\n[\s\S]*?\n<!-- END doctoc generated TOC[^\n]*-->\s*\n?/, '');
+              if (collectionName?.includes('awesome-vivliostyle')) {
+                processedMarkdownBody = processedMarkdownBody.replace(/##\s+Table of Contents\s*\n/, '');
+              }
             } else {
               // doctocマーカーがない場合、「## 目次」または「## Table of Contents」セクションを探す
               // api.mdの場合は見出しだけ削除してリストは残す、それ以外は従来通り
@@ -215,6 +218,11 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
                   hardLineBreaks: false,
                   disableFormatHtml: false,
                 });
+                if (collectionName?.includes('awesome-vivliostyle')) {
+                  extractedTocHtml = extractedTocHtml
+                    .replace(/>PrintCSS sites</g, '>Print CSS sites</')
+                    .replace(/href="#printcss-sites"/g, 'href="#print-css-sites"');
+                }
               } catch (tocError) {
                 logger.warn(`VFM Loader [${lang}]: Failed to convert doctoc TOC to HTML: ${tocError}`);
               }
@@ -257,6 +265,14 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
             // 4. 相対リンクの.md拡張子を削除し、末尾スラッシュを追加
             // 例: ./getting-started.md -> ./getting-started/
             html = html.replace(/href="\.\/([^"]+)\.md"/g, 'href="./$1/"');
+
+            // Awesome Vivliostyle: link CONTRIBUTING.md to GitHub
+            if (collectionName?.includes('awesome-vivliostyle')) {
+              html = html.replace(
+                /href="CONTRIBUTING\.md"/g,
+                'href="https://github.com/vivliostyle/awesome-vivliostyle/blob/master/CONTRIBUTING.md"',
+              );
+            }
             
             // 5. ../で始まるリンク（親ディレクトリ）の処理
             // docs/ja/index.md から docs/config.md への参照を適切に変換

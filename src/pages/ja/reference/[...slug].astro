@@ -12,14 +12,36 @@ import { getCollection } from 'astro:content';
 export async function getStaticPaths() {
   const referenceDocs = await getCollection('vivliostyle-reference-ja');
   const referenceDocsEn = await getCollection('vivliostyle-reference-en');
+  const awesomeDocs = await getCollection('awesome-vivliostyle-ja');
+  const awesomeDocsEn = await getCollection('awesome-vivliostyle-en');
   
   // CLI、Themes、VFMのContributingドキュメントも取得
   const cliContributing = await getCollection('vivliostyle-cli-contributing-en');
   const themesContributing = await getCollection('vivliostyle-themes-contributing-en');
   const vfmContributing = await getCollection('vivliostyle-vfm-contributing-en');
   
+  const awesomeDoc = awesomeDocs[0];
+  const awesomeDocEn = awesomeDocsEn[0];
+  const awesomeTitle = awesomeDoc?.data?.title || 'Awesome Vivliostyle';
+  const awesomeReferenceDoc = awesomeDoc
+    ? {
+        ...awesomeDoc,
+        id: 'awesome-vivliostyle',
+        data: {
+          ...awesomeDoc.data,
+          title: awesomeTitle,
+        },
+      }
+    : null;
+  const referenceDocsAll = awesomeReferenceDoc
+    ? [...referenceDocs, awesomeReferenceDoc]
+    : referenceDocs;
+
   // 英語版に存在するIDのセットを作成
-  const enIds = new Set(referenceDocsEn.map(d => d.id));
+  const enIds = new Set([
+    ...referenceDocsEn.map(d => d.id),
+    ...(awesomeDocEn ? ['awesome-vivliostyle'] : []),
+  ]);
 
   const paths = [];
   
@@ -29,12 +51,24 @@ export async function getStaticPaths() {
       params: { slug: doc.id },
       props: { 
         doc, 
-        referenceDocs,
+        referenceDocs: referenceDocsAll,
         hasEnTranslation: enIds.has(doc.id),
         isContributing: false,
       },
     });
   });
+
+  if (awesomeReferenceDoc) {
+    paths.push({
+      params: { slug: 'awesome-vivliostyle' },
+      props: {
+        doc: awesomeReferenceDoc,
+        referenceDocs: referenceDocsAll,
+        hasEnTranslation: enIds.has('awesome-vivliostyle'),
+        isContributing: false,
+      },
+    });
+  }
   
   // CLI Contributing（CONTRIBUTING.mdをcontributing-cliとしてマップ）
   cliContributing.forEach(doc => {
@@ -49,7 +83,7 @@ export async function getStaticPaths() {
             title: doc.data?.title || 'Vivliostyle CLI コントリビューションガイド',
           },
         },
-        referenceDocs,
+        referenceDocs: referenceDocsAll,
         hasEnTranslation: true,
         isContributing: true,
       },
@@ -69,7 +103,7 @@ export async function getStaticPaths() {
             title: doc.data?.title || 'Vivliostyle Themes コントリビューションガイド',
           },
         },
-        referenceDocs,
+        referenceDocs: referenceDocsAll,
         hasEnTranslation: true,
         isContributing: true,
       },
@@ -89,7 +123,7 @@ export async function getStaticPaths() {
             title: doc.data?.title || 'VFM コントリビューションガイド',
           },
         },
-        referenceDocs,
+        referenceDocs: referenceDocsAll,
         hasEnTranslation: true,
         isContributing: true,
       },
@@ -110,6 +144,7 @@ const headings = doc.data?.headings || [];
 
 // ページの順序を定義（index.mdの順番に合わせる）
 const pageOrder = [
+  'awesome-vivliostyle',
   'supported-css-features',
   'api',
   'contribution-guide-heading',  // 見出し専用（サイドバー表示用）
@@ -122,7 +157,7 @@ const pageOrder = [
 
 // 全てのドキュメント（通常のリファレンス + contributingページ）を統合
 const allDocs = [
-  ...referenceDocs,  // contribution-guide含む
+  ...referenceDocs,  // awesome-vivliostyle, contribution-guide含む
   // サイドバー表示用の仮想ドキュメントを追加
   { id: 'contribution-guide-heading', data: { title: 'コントリビューションガイド' } },  // 見出し専用
   { id: 'contributing-viewer', data: { title: 'Vivliostyle Viewer' } },
@@ -187,7 +222,7 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
     <h3><a href="/ja/reference/" style="color: inherit; text-decoration: none;">リファレンス</a></h3>
     
     <!-- 特定ページでのみ見出しリストを表示 -->
-    {(doc.id === 'supported-css-features' || doc.id === 'api' || doc.id === 'vivliostyle-viewer' || doc.id === 'contribution-guide') ? (
+    {(doc.id === 'awesome-vivliostyle' || doc.id === 'supported-css-features' || doc.id === 'api' || doc.id === 'vivliostyle-viewer' || doc.id === 'contribution-guide') ? (
       <>
         <ul style="list-style: none; padding-left: 0; margin-bottom: 1rem;">
           <li><a href="/ja/">← ホームに戻る</a></li>
@@ -206,7 +241,9 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
               
               // HTMLタグを除去してプレーンテキストのみを取得
               const getPlainText = (html: string) => {
-                return html.replace(/<[^>]*>/g, '');
+                return html
+                  .replace(/<[^>]*>/g, '')
+                  .replace(/&amp;|&#x26;/g, '&');
               };
               
               return (
@@ -248,6 +285,9 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
               <span class="toggle-icon">▶</span>ドキュメント
             </button>
             <ul class="accordion-content" id="docs-group" style="display: block; list-style: none; padding-left: 1.5rem; margin: 0.25rem 0 0 0;">
+              <li class:list={[{ active: doc.id === 'awesome-vivliostyle' }]}>
+                <a href="/ja/reference/awesome-vivliostyle/" aria-current={doc.id === 'awesome-vivliostyle' ? 'page' : undefined}>Awesome Vivliostyle</a>
+              </li>
               <li class:list={[{ active: doc.id === 'supported-css-features' }]}>
                 <a href="/ja/reference/supported-css-features/" aria-current={doc.id === 'supported-css-features' ? 'page' : undefined}>サポートする CSS 機能</a>
               </li>
@@ -283,8 +323,13 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
   <!-- メインコンテンツ -->
   <article class="docs-content">
     <!-- 抽出したTOCが存在する場合は表示 -->
-    {extractedToc && (
-      <div class="toc" set:html={extractedToc}></div>
+    {extractedToc && doc.id !== 'awesome-vivliostyle' && (
+      <div class="toc">
+        {doc.id === 'awesome-vivliostyle' && (
+          <h2 class="toc-title">目次</h2>
+        )}
+        <div class="toc-body" set:html={extractedToc}></div>
+      </div>
     )}
     
     <div set:html={htmlContent}></div>
@@ -322,6 +367,12 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
     border-radius: 0.5rem;
     padding: 1.5rem;
     margin: 2rem 0;
+  }
+
+  .toc-title {
+    margin: 0 0 1rem;
+    font-size: 1.2rem;
+    font-weight: 600;
   }
 
   .toc :global(ul) {

@@ -10,3 +10,6 @@
 [submodule "submodules/vivliostyle.js"]
 	path = submodules/vivliostyle.js
 	url = https://github.com/vivliostyle/vivliostyle.js.git
+[submodule "submodules/awesome-vivliostyle"]
+	path = submodules/awesome-vivliostyle
+	url = https://github.com/vivliostyle/awesome-vivliostyle.git
