@@ -24,7 +24,7 @@ Vivliostyleの最大のメリットは**SSMO（Single Source Multi Output）**�
 
 1つのMarkdownソースから以下を生成できます：
 
-- **Web** - オンライン閲覧用HTMLページ
+- **[WebPub](https://docs.vivliostyle.org/ja/cli/special-output-settings/#web-%E5%87%BA%E7%89%88%E7%89%A9webpub%E3%81%AE%E5%87%BA%E5%8A%9B)** - オンライン閲覧用HTMLページ
 - **PDF** - 印刷可能なドキュメント
 - **EPUB** - 電子書籍フォーマット
 
