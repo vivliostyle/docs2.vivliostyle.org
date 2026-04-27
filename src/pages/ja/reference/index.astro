@@ -4,6 +4,7 @@
  */
 import DocsLayout from '../../../layouts/DocsLayout.astro';
 import LanguageSwitcher from '../../../components/LanguageSwitcher.astro';
+import DownloadLinks from '../../../components/DownloadLinks.astro';
 import { getCollection } from 'astro:content';
 
 // リファレンスindexドキュメントを取得
@@ -66,6 +67,7 @@ const description = indexDoc?.data?.description || 'Vivliostyle関連ドキュ�
         </ul>
       </div>
     </div>
+    <DownloadLinks product="reference" lang="ja" />
   </nav>
 
   <article class="docs-content">

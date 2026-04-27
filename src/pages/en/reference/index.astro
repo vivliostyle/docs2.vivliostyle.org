@@ -4,6 +4,7 @@
  */
 import DocsLayout from '../../../layouts/DocsLayout.astro';
 import LanguageSwitcher from '../../../components/LanguageSwitcher.astro';
+import DownloadLinks from '../../../components/DownloadLinks.astro';
 import { getCollection } from 'astro:content';
 
 // Get reference index document
@@ -66,6 +67,7 @@ const description = indexDoc?.data?.description || 'Reference documentation for 
         </ul>
       </div>
     </div>
+    <DownloadLinks product="reference" lang="en" />
   </nav>
 
   <article class="docs-content">
