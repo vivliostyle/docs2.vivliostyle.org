@@ -24,8 +24,8 @@ const pdfHref = `/downloads/${fileBase[product]}-${lang}.pdf`;
 const epubHref = `/downloads/${fileBase[product]}-${lang}.epub`;
 
 const labels = lang === 'ja'
-  ? { heading: 'ダウンロード', pdf: 'PDF版', epub: 'EPUB版' }
-  : { heading: 'Download', pdf: 'PDF', epub: 'EPUB' };
+  ? { heading: 'Vivliostyle CLI生成物のダウンロード', pdf: 'PDF版', epub: 'EPUB版' }
+  : { heading: 'Downloads (built by Vivliostyle CLI)', pdf: 'PDF', epub: 'EPUB' };
 ---
 
 <section class="downloads" aria-label={labels.heading}>
