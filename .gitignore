@@ -25,3 +25,7 @@ pnpm-debug.log*
 
 # Vivliostyle temporary files
 .vivliostyle/
+
+# Vivliostyle CLI が生成する webpub パッケージは公開成果物なので
+# dist/ や node_modules/ パターンに引っかかっても含める
+!public/publications/**

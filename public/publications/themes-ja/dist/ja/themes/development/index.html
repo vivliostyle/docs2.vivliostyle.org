@@ -1,0 +1,590 @@
+<!DOCTYPE html><html lang="ja" data-astro-cid-mw7aashj=""><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content=""><title>Themeの開発 | Vivliostyle Documentation</title><link rel="icon" type="image/png" href="/favicon.png"><link rel="canonical" href="https://docs.vivliostyle.org/ja/themes/development/"><link rel="alternate" hreflang="en" href="https://docs.vivliostyle.org/en/themes/development/"><link rel="alternate" hreflang="ja" href="https://docs.vivliostyle.org/ja/themes/development/"><link rel="sitemap" href="/sitemap-index.xml"><link rel="stylesheet" href="/styles/global.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&amp;display=swap"><!-- Prism.js syntax highlighting --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" media="(prefers-color-scheme: light)"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" media="(prefers-color-scheme: dark)"><link rel="stylesheet" href="/_astro/_slug_.we8Wo2PX.css">
+<style>.page-navigation[data-astro-cid-z7g34ql7]{margin-top:3rem;padding-top:2rem;border-top:1px solid var(--color-border, #e5e7eb)}.nav-links[data-astro-cid-z7g34ql7]{display:grid;grid-template-columns:1fr 1fr;gap:1rem}.nav-link[data-astro-cid-z7g34ql7]{display:flex;flex-direction:column;padding:1rem;border:1px solid var(--color-border, #e5e7eb);border-radius:8px;text-decoration:none;color:var(--color-text, #1f2937);transition:border-color .2s,background-color .2s}.nav-link[data-astro-cid-z7g34ql7]:not(.nav-disabled):hover{border-color:var(--color-primary, #0066cc);background-color:var(--color-bg-hover, #f9fafb);color:var(--color-text-light, #808080)}.nav-link[data-astro-cid-z7g34ql7].nav-disabled{border:none}.nav-prev[data-astro-cid-z7g34ql7]{text-align:left}.nav-next[data-astro-cid-z7g34ql7]{text-align:right}.nav-label[data-astro-cid-z7g34ql7]{font-size:.875rem;color:var(--color-primary, #0066cc);font-weight:600;margin-bottom:.25rem}.nav-title[data-astro-cid-z7g34ql7]{font-weight:500}@media(max-width:640px){.nav-links[data-astro-cid-z7g34ql7]{grid-template-columns:1fr}}
+</style>
+<link rel="stylesheet" href="/_astro/_slug_.DzeQMOhT.css">
+<style>.sidebar-accordion[data-astro-cid-4zjl2uzy]{margin-top:.5rem}.accordion-section[data-astro-cid-4zjl2uzy]{margin-bottom:.5rem}.accordion-toggle[data-astro-cid-4zjl2uzy]{display:flex;align-items:center;width:100%;background:none;border:none;padding:.25rem 0;text-align:left;cursor:pointer;font-size:1rem;font-weight:500;color:var(--color-text)}.accordion-toggle[data-astro-cid-4zjl2uzy]:hover{color:var(--color-primary)}.toggle-icon[data-astro-cid-4zjl2uzy]{display:inline-block;transition:transform .2s;margin-right:.5rem;font-size:.7rem}.accordion-toggle[data-astro-cid-4zjl2uzy][aria-expanded=true] .toggle-icon[data-astro-cid-4zjl2uzy]{transform:rotate(90deg)}.accordion-content[data-astro-cid-4zjl2uzy] li[data-astro-cid-4zjl2uzy]{margin:.25rem 0}.accordion-content[data-astro-cid-4zjl2uzy] a[data-astro-cid-4zjl2uzy]{color:var(--color-text);text-decoration:none;font-size:1rem}.accordion-content[data-astro-cid-4zjl2uzy] a[data-astro-cid-4zjl2uzy]:hover{color:var(--color-primary)}nav[data-astro-cid-4zjl2uzy] ul[data-astro-cid-4zjl2uzy]{list-style:none;padding:0}nav[data-astro-cid-4zjl2uzy] li[data-astro-cid-4zjl2uzy]{margin:.5rem 0}nav[data-astro-cid-4zjl2uzy] li[data-astro-cid-4zjl2uzy].active a[data-astro-cid-4zjl2uzy]{font-weight:700;color:var(--color-primary, #3b9eff)}nav[data-astro-cid-4zjl2uzy]>ul[data-astro-cid-4zjl2uzy]>li[data-astro-cid-4zjl2uzy]>a[data-astro-cid-4zjl2uzy]{color:var(--color-text);text-decoration:none}nav[data-astro-cid-4zjl2uzy]>ul[data-astro-cid-4zjl2uzy]>li[data-astro-cid-4zjl2uzy]>a[data-astro-cid-4zjl2uzy]:hover{color:var(--color-primary)}
+</style><link rel="stylesheet" type="text/css" href="../../../../themes/node_modules/@vivliostyle/theme-PDF/theme.css"></head> <body data-astro-cid-mw7aashj=""> <script type="module">const s=()=>{const n=document.querySelector(".mobile-menu-toggle"),o=document.querySelector(".sidebar"),e=document.querySelector(".sidebar-close"),t=document.querySelector(".sidebar-overlay");if(!n||!o||!t)return;const d=()=>{o.classList.add("active"),t.classList.add("active"),n.setAttribute("aria-expanded","true"),window.lockBodyOverflow()},c=()=>{o.classList.remove("active"),t.classList.remove("active"),n.setAttribute("aria-expanded","false"),window.unlockBodyOverflow()};n.onclick=d,t.onclick=c,e&&(e.onclick=i=>{i.preventDefault(),i.stopPropagation(),c()}),o.querySelectorAll("a").forEach(i=>{i.dataset.clickListenerAdded||(i.addEventListener("click",()=>{window.innerWidth<=1024&&c()}),i.dataset.clickListenerAdded="true")}),document.addEventListener("keydown",i=>{i.key==="Escape"&&o.classList.contains("active")&&c()});let r;window.addEventListener("resize",()=>{clearTimeout(r),r=window.setTimeout(()=>{window.innerWidth>1024&&o.classList.contains("active")&&c()},250)})},a=()=>{const n=Array.from(document.querySelectorAll(".nav-accordion"));if(!n.length)return;const o=()=>{n.forEach(e=>{e.open&&e.removeAttribute("open")})};n.forEach(e=>{e.addEventListener("toggle",()=>{e.open&&n.forEach(t=>{t!==e&&t.removeAttribute("open")})})}),document.addEventListener("click",e=>{const t=e.target;t instanceof Node&&(t.closest(".nav-accordion")||o())}),document.addEventListener("keydown",e=>{e.key==="Escape"&&o()})};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",()=>{s(),a()}):(s(),a());</script> <div class="layout" data-astro-cid-mw7aashj=""> <header class="header" data-astro-cid-mw7aashj=""> <div class="header-content" data-astro-cid-mw7aashj=""> <button class="mobile-menu-toggle" aria-label="メニューを開く" aria-expanded="false" data-astro-cid-mw7aashj=""> <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" data-astro-cid-mw7aashj=""> <line x1="3" y1="12" x2="21" y2="12" data-astro-cid-mw7aashj=""></line> <line x1="3" y1="6" x2="21" y2="6" data-astro-cid-mw7aashj=""></line> <line x1="3" y1="18" x2="21" y2="18" data-astro-cid-mw7aashj=""></line> </svg> </button> <a href="/ja/" class="logo" data-astro-cid-mw7aashj=""> <img src="/vivliostyle-docs.svg" alt="Vivliostyle Docs" class="logo-image" data-astro-cid-mw7aashj=""> </a> <nav class="header-nav" aria-label="グローバルナビゲーション" data-astro-cid-mw7aashj=""> <details class="nav-accordion" data-astro-cid-mw7aashj=""> <summary data-astro-cid-mw7aashj="">プロダクト</summary> <div class="nav-panel" data-astro-cid-mw7aashj=""> <a href="/ja/viewer/" data-astro-cid-mw7aashj="">Vivliostyle Viewer</a><a href="/ja/cli/" data-astro-cid-mw7aashj="">Vivliostyle CLI</a><a href="/ja/vfm/" data-astro-cid-mw7aashj="">VFM</a><a href="/ja/themes/" data-astro-cid-mw7aashj="">Vivliostyle Themes</a> </div> </details> <a href="https://vivliostyle.org/ja/tutorials/" target="_blank" rel="noopener noreferrer" data-astro-cid-mw7aashj=""> チュートリアル </a> <details class="nav-accordion" data-astro-cid-mw7aashj=""> <summary data-astro-cid-mw7aashj="">リファレンス</summary> <div class="nav-panel" data-astro-cid-mw7aashj=""> <div class="nav-group" data-astro-cid-mw7aashj=""> <h3 class="nav-group-title" data-astro-cid-mw7aashj="">ドキュメント</h3> <a href="/ja/reference/awesome-vivliostyle/" data-astro-cid-mw7aashj="">Awesome Vivliostyle</a><a href="/ja/reference/supported-css-features/" data-astro-cid-mw7aashj="">サポートする CSS 機能</a><a href="/ja/reference/api/" data-astro-cid-mw7aashj="">Core API リファレンス</a> </div> <div class="nav-group" data-astro-cid-mw7aashj=""> <h3 class="nav-group-title" data-astro-cid-mw7aashj="">コントリビューションガイド</h3> <a href="/ja/reference/contribution-guide/" data-astro-cid-mw7aashj="">Vivliostyle.js</a><a href="/ja/reference/contributing-cli/" data-astro-cid-mw7aashj="">Vivliostyle CLI</a><a href="/ja/reference/contributing-vfm/" data-astro-cid-mw7aashj="">VFM</a><a href="/ja/reference/contributing-themes/" data-astro-cid-mw7aashj="">Vivliostyle Themes</a> </div> </div> </details> <a href="https://vivliostyle.org/ja/faq/" target="_blank" rel="noopener noreferrer" data-astro-cid-mw7aashj=""> FAQ </a> <div class="nav-icon-links" data-astro-cid-mw7aashj=""> <a href="https://github.com/vivliostyle" class="github-link" aria-label="GitHub" target="_blank" rel="noopener noreferrer" data-astro-cid-mw7aashj=""> <svg viewBox="0 0 16 16" width="24" height="24" fill="currentColor" data-astro-cid-mw7aashj=""> <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" data-astro-cid-mw7aashj=""></path> </svg> </a> <a href="https://vivliostyle.org/ja/" class="vivliostyle-link" aria-label="Vivliostyle" target="_blank" rel="noopener noreferrer" data-astro-cid-mw7aashj=""> <img src="/vivliostyle-logo72.png" alt="Vivliostyle" class="vivliostyle-icon" data-astro-cid-mw7aashj=""> </a> </div> </nav> <div class="header-actions" data-astro-cid-mw7aashj=""> <div class="search-container" data-astro-cid-z3bpxo4i=""><div id="search-wrapper" data-astro-cid-z3bpxo4i=""><div id="search" data-astro-cid-z3bpxo4i=""></div></div></div><!-- Pagefind UI CSS (本番環境のみ) - カスタムスタイルより先に読み込む --><link href="/_pagefind/pagefind-ui.css" rel="stylesheet"><style>
+  /* Pagefind UI CSSの後に読み込まれるカスタムスタイル */
+  
+  /* デフォルト（ライトモード）: 明るい色を設定 */
+  :root:not([data-theme="dark"]) {
+    --pagefind-ui-primary: #2563eb !important;
+    --pagefind-ui-text: #1f2937 !important;
+    --pagefind-ui-background: #ffffff !important;
+    --pagefind-ui-border: #e5e7eb !important;
+    --pagefind-ui-tag: #f3f4f6 !important;
+  }
+
+  /* ダークモード（システム設定） */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --pagefind-ui-primary: #60a5fa !important;
+      --pagefind-ui-text: #e5e7eb !important;
+      --pagefind-ui-background: #1f2937 !important;
+      --pagefind-ui-border: #374151 !important;
+      --pagefind-ui-tag: #6b7280 !important;
+    }
+  }
+
+  /* ダークモード（手動設定） */
+  :root[data-theme="dark"] {
+    --pagefind-ui-primary: #60a5fa !important;
+    --pagefind-ui-text: #e5e7eb !important;
+    --pagefind-ui-background: #1f2937 !important;
+    --pagefind-ui-border: #374151 !important;
+    --pagefind-ui-tag: #6b7280 !important;
+  }
+  
+  /* ライトモード（手動設定） */
+  :root[data-theme="light"] {
+    --pagefind-ui-primary: #2563eb !important;
+    --pagefind-ui-text: #1f2937 !important;
+    --pagefind-ui-background: #ffffff !important;
+    --pagefind-ui-border: #e5e7eb !important;
+    --pagefind-ui-tag: #f3f4f6 !important;
+  }
+
+  /* ホバー時の黒いオブジェクト(擬似要素)を削除（結果項目のホバー時のみに限定） */
+  .pagefind-ui__result:hover::before,
+  .pagefind-ui__result:hover::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  /* マークされたハイライトテキストのみクリック不可に（クリックをリンクに通過させる） */
+  .pagefind-ui__result mark {
+    pointer-events: none !important;
+  }
+
+  /* 検索結果が空でない時のみドロワーを表示 */
+  .pagefind-ui__drawer:empty {
+    display: none !important;
+  }
+
+  /* 検索結果のリンクをクリック可能に（親項目・子項目両方） */
+  .pagefind-ui__result-link,
+  .pagefind-ui__result-nested .pagefind-ui__result-link,
+  .pagefind-ui__result-title a,
+  .pagefind-ui__result a {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    color: var(--pagefind-ui-text) !important;
+    text-decoration: none !important;
+  }
+
+  /* リンクのホバー効果 */
+  .pagefind-ui__result-link:hover,
+  .pagefind-ui__result-nested .pagefind-ui__result-link:hover,
+  .pagefind-ui__result-title a:hover,
+  .pagefind-ui__result a:hover {
+    text-decoration: underline !important;
+    color: var(--pagefind-ui-primary) !important;
+  }
+  
+  /* 検索結果アイテム全体をクリック可能に */
+  .pagefind-ui__result {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+  }
+
+  /* 検索ボックスの表示崩れ修正: プレースホルダーとアイコンの重なり防止 */
+  /* 詳細度を高めて確実に適用 */
+  :root .pagefind-ui__search-input {
+    padding-left: 3.5rem !important; /* アイコンスペースを確保 */
+    box-sizing: border-box !important;
+  }
+
+  :root .pagefind-ui__form::before {
+    left: 14px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    z-index: 5 !important;
+  }
+
+
+  /* 検索結果アイテムのホバー効果（ユーザビリティのため背景色を保持） */
+  .pagefind-ui__result:hover {
+    background-color: var(--pagefind-ui-border) !important;
+    border-radius: 4px !important;
+  }
+
+  /* 子項目（ネストされた結果）のスタイル */
+  .pagefind-ui__result-nested {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+  }
+
+  .pagefind-ui__result-nested:hover {
+    background-color: var(--pagefind-ui-border) !important;
+    border-radius: 4px !important;
+  }
+
+  /* 検索ボックスの修正 - プレースホルダーが切れないように右側のみ調整 */
+  .pagefind-ui__search-input {
+    padding-right: 2rem !important;
+  }
+
+  .pagefind-ui__search-clear {
+    right: 0.5rem !important;
+  }
+
+  /* 検索フォームの位置調整 - アイコンと検索窓を中央揃え */
+  .pagefind-ui__form {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  /* Pagefind UIの検索コンテナ全体を中央揃え */
+  .pagefind-ui__search,
+  .pagefind-ui {
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  /* Pagefind UIの幅が親要素を超えないように制限 */
+  .pagefind-ui__search,
+  .pagefind-ui__form,
+  .pagefind-ui__search-input {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 検索アイコン（虫眼鏡）を垂直中央揃え */
+  .pagefind-ui__form::before,
+  .pagefind-ui__form svg {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: absolute !important;
+    left: 0.5rem !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+  }
+</style><script type="module" src="/_astro/SearchBox.astro_astro_type_script_index_0_lang.DcWGF7zs.js"></script> <button class="theme-toggle" data-theme-mode="auto" aria-label="テーマ切り替え" title="テーマ切り替え" data-astro-cid-x3pjskd3=""> <svg class="theme-icon sun" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" data-astro-cid-x3pjskd3=""> <circle cx="12" cy="12" r="5" data-astro-cid-x3pjskd3=""></circle> <line x1="12" y1="1" x2="12" y2="3" data-astro-cid-x3pjskd3=""></line> <line x1="12" y1="21" x2="12" y2="23" data-astro-cid-x3pjskd3=""></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" data-astro-cid-x3pjskd3=""></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" data-astro-cid-x3pjskd3=""></line> <line x1="1" y1="12" x2="3" y2="12" data-astro-cid-x3pjskd3=""></line> <line x1="21" y1="12" x2="23" y2="12" data-astro-cid-x3pjskd3=""></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" data-astro-cid-x3pjskd3=""></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" data-astro-cid-x3pjskd3=""></line> </svg> <svg class="theme-icon moon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" data-astro-cid-x3pjskd3=""> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" data-astro-cid-x3pjskd3=""></path> </svg> <svg class="theme-icon auto" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" data-astro-cid-x3pjskd3=""> <path d="M0 0h24v24H0z" fill="none" data-astro-cid-x3pjskd3=""></path> <path d="M10.85 12.65h2.3L12 11l-1.15 1.65zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69zM14.3 16l-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9h-1.9z" data-astro-cid-x3pjskd3=""></path> </svg> </button>  <script type="module">const i="theme-preference";function n(){const t=localStorage.getItem(i);return t==="light"||t==="dark"||t==="auto"?t:"auto"}function f(){return window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}function d(t){return t==="auto"?f():t}function s(t){const e=document.documentElement;t==="dark"?e.setAttribute("data-theme","dark"):e.setAttribute("data-theme","light")}function a(){document.documentElement.removeAttribute("data-theme")}function g(){const t=n();let e;t==="light"?e="dark":t==="dark"?e="auto":e="light",localStorage.setItem(i,e),e==="auto"?a():s(d(e)),h(e),m(e)}function m(t){document.querySelectorAll(".theme-toggle").forEach(o=>{o.setAttribute("data-theme-mode",t)})}function h(t){const e=document.querySelectorAll(".theme-toggle"),o=document.documentElement.lang||"ja",r={ja:{light:"ダークモードに切り替え",dark:"システム設定に従う",auto:"ライトモードに切り替え"},en:{light:"Switch to dark mode",dark:"Follow system settings",auto:"Switch to light mode"}},c=r[o]||r.en;e.forEach(u=>{u.setAttribute("aria-label",c[t]),u.setAttribute("title",c[t])})}function b(){const t=n();h(t),m(t),t==="auto"?a():s(d(t)),window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",e=>{n()==="auto"&&a()})}function l(){document.querySelectorAll(".theme-toggle").forEach(e=>{e.addEventListener("click",g)})}b();document.readyState==="loading"?document.addEventListener("DOMContentLoaded",l):l();</script> <div class="lang-switcher" data-astro-cid-mw7aashj=""> <div class="language-switcher-container" data-astro-cid-4zjl2uzy=""> <div class="language-switcher" data-astro-cid-a2mxz4y6=""> <span class="current-lang" aria-current="true" data-astro-cid-a2mxz4y6=""> 日本語 </span>  <span class="separator" data-astro-cid-a2mxz4y6="">|</span> <a href="/en/themes/development/" hreflang="en" class="lang-link" data-astro-cid-a2mxz4y6=""> English </a>  </div>  </div> </div> </div> </div> </header> <div class="sidebar-overlay" data-astro-cid-mw7aashj=""></div> <div class="main-container" data-astro-cid-mw7aashj=""> <aside class="sidebar" data-astro-cid-mw7aashj=""> <div class="sidebar-header" data-astro-cid-mw7aashj=""> <button class="sidebar-close" aria-label="メニューを閉じる" data-astro-cid-mw7aashj=""> <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" data-astro-cid-mw7aashj=""> <line x1="18" y1="6" x2="6" y2="18" data-astro-cid-mw7aashj=""></line> <line x1="6" y1="6" x2="18" y2="18" data-astro-cid-mw7aashj=""></line> </svg> </button> </div> <div class="sidebar-mobile-controls" data-astro-cid-mw7aashj=""> <div class="mobile-controls-row" data-astro-cid-mw7aashj=""> <button class="theme-toggle" data-theme-mode="auto" aria-label="テーマ切り替え" title="テーマ切り替え" data-astro-cid-x3pjskd3=""> <svg class="theme-icon sun" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" data-astro-cid-x3pjskd3=""> <circle cx="12" cy="12" r="5" data-astro-cid-x3pjskd3=""></circle> <line x1="12" y1="1" x2="12" y2="3" data-astro-cid-x3pjskd3=""></line> <line x1="12" y1="21" x2="12" y2="23" data-astro-cid-x3pjskd3=""></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" data-astro-cid-x3pjskd3=""></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" data-astro-cid-x3pjskd3=""></line> <line x1="1" y1="12" x2="3" y2="12" data-astro-cid-x3pjskd3=""></line> <line x1="21" y1="12" x2="23" y2="12" data-astro-cid-x3pjskd3=""></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" data-astro-cid-x3pjskd3=""></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" data-astro-cid-x3pjskd3=""></line> </svg> <svg class="theme-icon moon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" data-astro-cid-x3pjskd3=""> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" data-astro-cid-x3pjskd3=""></path> </svg> <svg class="theme-icon auto" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" data-astro-cid-x3pjskd3=""> <path d="M0 0h24v24H0z" fill="none" data-astro-cid-x3pjskd3=""></path> <path d="M10.85 12.65h2.3L12 11l-1.15 1.65zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69zM14.3 16l-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9h-1.9z" data-astro-cid-x3pjskd3=""></path> </svg> </button>   <div class="lang-switcher-mobile" data-astro-cid-mw7aashj=""> <div class="language-switcher-container" data-astro-cid-4zjl2uzy=""> <div class="language-switcher" data-astro-cid-a2mxz4y6=""> <span class="current-lang" aria-current="true" data-astro-cid-a2mxz4y6=""> 日本語 </span>  <span class="separator" data-astro-cid-a2mxz4y6="">|</span> <a href="/en/themes/development/" hreflang="en" class="lang-link" data-astro-cid-a2mxz4y6=""> English </a>  </div>  </div> </div> </div> <div class="mobile-controls-row" data-astro-cid-mw7aashj=""> <a href="https://github.com/vivliostyle" class="sidebar-github-link" aria-label="GitHub" target="_blank" rel="noopener noreferrer" data-astro-cid-mw7aashj=""> <svg viewBox="0 0 16 16" width="24" height="24" fill="currentColor" data-astro-cid-mw7aashj=""> <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" data-astro-cid-mw7aashj=""></path> </svg> </a> <a href="https://vivliostyle.org/ja/" class="sidebar-vivliostyle-link" aria-label="Vivliostyle" target="_blank" rel="noopener noreferrer" data-astro-cid-mw7aashj=""> <img src="/vivliostyle-logo72.png" alt="Vivliostyle" class="vivliostyle-icon" data-astro-cid-mw7aashj=""> </a> </div> </div> <nav data-astro-cid-4zjl2uzy=""> <h3 data-astro-cid-4zjl2uzy="">Themes ドキュメント</h3> <ul style="list-style: none; padding-left: 0;" data-astro-cid-4zjl2uzy=""> <li data-astro-cid-4zjl2uzy=""><a href="/ja/" data-astro-cid-4zjl2uzy="">← ホームに戻る</a></li> <li data-astro-cid-4zjl2uzy=""> <a href="/ja/themes/" data-astro-cid-4zjl2uzy="">Vivliostyle Themes</a> </li><li data-astro-cid-4zjl2uzy=""> <a href="/ja/themes/spec/" data-astro-cid-4zjl2uzy="">Vivliostyle Themeの仕様</a> </li><li data-astro-cid-4zjl2uzy=""> <a href="/ja/themes/gallery/" data-astro-cid-4zjl2uzy="">Vivliostyle Themesギャラリー</a> </li><li data-astro-cid-4zjl2uzy=""> <a href="/ja/themes/official/" data-astro-cid-4zjl2uzy="">公式 Theme の採用</a> </li><li class="active" data-astro-cid-4zjl2uzy=""> <a href="/ja/themes/development/" data-astro-cid-4zjl2uzy="">Themeの開発</a> </li><li data-astro-cid-4zjl2uzy=""> <a href="/ja/themes/usage/" data-astro-cid-4zjl2uzy="">テーマの使い方</a> </li> </ul> <section class="downloads" aria-label="ダウンロード" data-astro-cid-imnz6jfw=""> <h3 class="downloads-heading" data-astro-cid-imnz6jfw="">ダウンロード</h3> <ul class="downloads-list" data-astro-cid-imnz6jfw=""> <li data-astro-cid-imnz6jfw=""> <a href="/downloads/vivliostyle-themes-ja.pdf" download="" class="download-link" data-astro-cid-imnz6jfw=""> <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" aria-hidden="true" data-astro-cid-imnz6jfw=""> <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" data-astro-cid-imnz6jfw=""></path> <polyline points="7 10 12 15 17 10" data-astro-cid-imnz6jfw=""></polyline> <line x1="12" y1="15" x2="12" y2="3" data-astro-cid-imnz6jfw=""></line> </svg> <span data-astro-cid-imnz6jfw="">PDF版</span> </a> </li> <li data-astro-cid-imnz6jfw=""> <a href="/downloads/vivliostyle-themes-ja.epub" download="" class="download-link" data-astro-cid-imnz6jfw=""> <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" aria-hidden="true" data-astro-cid-imnz6jfw=""> <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" data-astro-cid-imnz6jfw=""></path> <polyline points="7 10 12 15 17 10" data-astro-cid-imnz6jfw=""></polyline> <line x1="12" y1="15" x2="12" y2="3" data-astro-cid-imnz6jfw=""></line> </svg> <span data-astro-cid-imnz6jfw="">EPUB版</span> </a> </li> </ul> <button type="button" id="liveview-open-themes-ja" class="liveview-trigger" data-product="themes" data-lang="ja" aria-haspopup="dialog" aria-controls="liveview-modal-themes-ja" data-astro-cid-ubvjlnpp=""> <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" aria-hidden="true" data-astro-cid-ubvjlnpp=""> <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" data-astro-cid-ubvjlnpp=""></path> <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" data-astro-cid-ubvjlnpp=""></path> </svg> <span data-astro-cid-ubvjlnpp="">Vivliostyle.js でライブ組版</span> </button> <div id="liveview-modal-themes-ja" class="liveview-modal" role="dialog" aria-modal="true" aria-labelledby="liveview-modal-themes-ja-title" hidden="" data-astro-cid-ubvjlnpp=""> <div class="liveview-backdrop" data-close="" data-astro-cid-ubvjlnpp=""></div> <div class="liveview-dialog" data-astro-cid-ubvjlnpp=""> <header class="liveview-header" data-astro-cid-ubvjlnpp=""> <h2 id="liveview-modal-themes-ja-title" class="liveview-title" data-astro-cid-ubvjlnpp="">Vivliostyle.js によるライブ組版</h2> <button type="button" class="liveview-close" data-close="" aria-label="閉じる" data-astro-cid-ubvjlnpp=""> <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" data-astro-cid-ubvjlnpp=""> <line x1="18" y1="6" x2="6" y2="18" data-astro-cid-ubvjlnpp=""></line> <line x1="6" y1="6" x2="18" y2="18" data-astro-cid-ubvjlnpp=""></line> </svg> </button> </header> <p class="liveview-explanation" data-astro-cid-ubvjlnpp="">いま Web で読んでいるこのドキュメントを、Vivliostyle.js がブラウザ内で paginated レンダリングしています。Web / PDF / EPUB が同じ Markdown ソースから派生していることを示す、Single Source, Multi Output のライブデモです。</p> <div class="liveview-frame-wrapper" data-astro-cid-ubvjlnpp=""> <div class="liveview-loading" data-loading="" data-astro-cid-ubvjlnpp=""> <div class="liveview-spinner" aria-hidden="true" data-astro-cid-ubvjlnpp=""></div> <span data-astro-cid-ubvjlnpp="">Loading Vivliostyle Viewer…</span> </div> <iframe class="liveview-frame" title="Vivliostyle Viewer" data-iframe="" loading="lazy" allow="fullscreen" data-astro-cid-ubvjlnpp=""></iframe> <div class="liveview-preview-warning" data-preview-warning="" hidden="" data-astro-cid-ubvjlnpp=""> プレビュー環境では Vivliostyle Viewer が外部から本サイトのドキュメントへアクセスできないため、ライブ表示は本番デプロイ後に有効になります。 </div> </div> <footer class="liveview-footer" data-astro-cid-ubvjlnpp=""> <p class="liveview-pdf-hint" data-astro-cid-ubvjlnpp="">PDF として保存するには、Viewer ツールバーの「印刷」ボタンを押し、ブラウザのダイアログで「PDFとして保存」を選んでください。</p> <a href="https://vivliostyle.org/" target="_blank" rel="noopener noreferrer" class="liveview-powered-by" data-astro-cid-ubvjlnpp=""> Powered by Vivliostyle.js </a> </footer> </div> </div>  <script>(function(){const buttonId = "liveview-open-themes-ja";
+const modalId = "liveview-modal-themes-ja";
+const product = "themes";
+const lang = "ja";
+
+  const button = document.getElementById(buttonId);
+  const modal = document.getElementById(modalId);
+  if (button && modal) {
+    const iframe = modal.querySelector('[data-iframe]');
+    const previewWarning = modal.querySelector('[data-preview-warning]');
+    let lastFocus = null;
+
+    const open = () => {
+      lastFocus = document.activeElement;
+
+      // 本番URL固定でマニフェストを参照する。
+      // localhost / preview からは Vivliostyle Viewer が manifest を取りに行けないので、
+      // その場合は警告を表示する。
+      const isProductionHost = window.location.hostname === 'docs2.vivliostyle.org' ||
+                               window.location.hostname === 'docs.vivliostyle.org';
+      const manifestUrl = `https://docs2.vivliostyle.org/publications/${product}-${lang}.json`;
+      const viewerUrl = `https://vivliostyle.org/viewer/?src=${encodeURIComponent(manifestUrl)}&bookMode=true`;
+
+      iframe.src = viewerUrl;
+      modal.hidden = false;
+      window.lockBodyOverflow?.();
+
+      if (!isProductionHost && previewWarning) {
+        previewWarning.hidden = false;
+      } else if (previewWarning) {
+        previewWarning.hidden = true;
+      }
+
+      modal.querySelector('.liveview-close')?.focus();
+    };
+
+    const close = () => {
+      modal.hidden = true;
+      iframe.src = 'about:blank';
+      window.unlockBodyOverflow?.();
+      lastFocus?.focus?.();
+    };
+
+    button.addEventListener('click', open);
+    modal.querySelectorAll('[data-close]').forEach((el) =>
+      el.addEventListener('click', close),
+    );
+    modal.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') close();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (!modal.hidden && e.key === 'Escape') close();
+    });
+  }
+})();</script> </section>  </nav> </aside> <main class="content" data-astro-cid-mw7aashj=""> <nav aria-label="Breadcrumb" class="breadcrumb" data-astro-cid-qaanghzh=""> <ol data-astro-cid-qaanghzh=""> <li data-astro-cid-qaanghzh=""> <a href="/ja/" data-astro-cid-qaanghzh="">ホーム</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <a href="/ja/themes/" data-astro-cid-qaanghzh="">Themes</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <span aria-current="page" data-astro-cid-qaanghzh="">Themeの開発</span>  </li> </ol> </nav> <!-- JSON-LD構造化データ --> <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ホーム","item":"https://docs.vivliostyle.org/ja/"},{"@type":"ListItem","position":2,"name":"Themes","item":"https://docs.vivliostyle.org/ja/themes/"},{"@type":"ListItem","position":3,"name":"Themeの開発","item":"https://docs.vivliostyle.org/ja/themes/development/"}]}</script>  <article class="prose" data-astro-cid-mw7aashj="">    <article data-astro-cid-4zjl2uzy="">
+
+  
+    <meta charset="utf-8">
+    <title>Themeの開発</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  
+    <section class="level1">
+      <h1 id="themeの開発">Themeの開発</h1>
+      <section class="level2">
+        <h2 id="themeを作成する">Themeを作成する</h2>
+        <section class="level3">
+          <h3 id="create-vivliostyle-themeによる雛形生成">create-vivliostyle-themeによる雛形生成</h3>
+          <p><code>create-vivliostyle-theme</code> CLIを使って、テーマプロジェクトの雛形を生成します。</p>
+          <pre class="language-bash"><code class="language-bash"><span class="token function">npm</span> create vivliostyle-theme <span class="token operator">&lt;</span>theme-name<span class="token operator">&gt;</span></code></pre>
+          <p>対話形式で以下の項目を入力します。</p>
+          <table>
+            <thead>
+              <tr>
+                <th>項目</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>description</code></td>
+                <td>テーマの説明</td>
+              </tr>
+              <tr>
+                <td><code>author</code></td>
+                <td>作者名</td>
+              </tr>
+              <tr>
+                <td><code>email</code></td>
+                <td>メールアドレス</td>
+              </tr>
+              <tr>
+                <td><code>license</code></td>
+                <td>ライセンス（MIT、Apache-2.0等）</td>
+              </tr>
+              <tr>
+                <td><code>category</code></td>
+                <td>テーマの分類（<code>novel</code> / <code>magazine</code> / <code>journal</code> / <code>report</code> / <code>misc</code>）</td>
+              </tr>
+            </tbody>
+          </table>
+          <p>実行後、<code>vivliostyle-theme-&lt;theme-name&gt;</code> ディレクトリが生成されます。</p>
+        </section>
+        <section class="level3">
+          <h3 id="生成されるファイル構成">生成されるファイル構成</h3>
+          <pre class="language-text"><code class="language-text">vivliostyle-theme-&lt;name&gt;/
+├── .gitignore
+├── package.json          # パッケージ定義（vivliostyle.theme 設定を含む）
+├── README.md             # テーマの説明・使い方
+├── theme.css             # テーマのメイン CSS
+├── vivliostyle.config.js # プレビュー用の設定ファイル
+└── example/
+    └── default.md        # サンプル原稿（VFM 形式）</code></pre>
+          <p>各ファイルの役割:</p>
+          <table>
+            <thead>
+              <tr>
+                <th>ファイル</th>
+                <th>役割</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>package.json</code></td>
+                <td>テーマのメタ情報。<code>vivliostyle.theme</code> プロパティでテーマ名・作者・メインCSS・カテゴリを定義</td>
+              </tr>
+              <tr>
+                <td><code>theme.css</code></td>
+                <td>テーマのスタイル定義本体。theme-baseの <code>@import</code> とCSS変数のカスタマイズが初期設定済み</td>
+              </tr>
+              <tr>
+                <td><code>vivliostyle.config.js</code></td>
+                <td><code>vivliostyle preview</code> でテーマの動作確認に使用。entryに <code>example/default.md</code> を指定</td>
+              </tr>
+              <tr>
+                <td><code>example/default.md</code></td>
+                <td>テーマ適用例を示すサンプルMarkdown。<a href="https://vivliostyle.github.io/vfm/#/vfm">VFM</a> 記法に対応</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </section>
+      <section class="level2">
+        <h2 id="雛形をカスタマイズする">雛形をカスタマイズする</h2>
+        <section class="level3">
+          <h3 id="themecssの編集">theme.cssの編集</h3>
+          <p>生成直後の <code>theme.css</code> にはtheme-baseの全モジュールインポートとCSS変数のカスタマイズ例が含まれています。</p>
+          <pre class="language-css"><code class="language-css"><span class="token comment">/* theme-base の全モジュールをインポート */</span>
+<span class="token atrule"><span class="token rule">@import</span> <span class="token url"><span class="token function">url</span><span class="token punctuation">(</span>../@vivliostyle/theme-base/theme-all.css<span class="token punctuation">)</span></span><span class="token punctuation">;</span></span>
+
+<span class="token comment">/* コードハイライト（Prism）を追加 */</span>
+<span class="token atrule"><span class="token rule">@import</span> <span class="token url"><span class="token function">url</span><span class="token punctuation">(</span>../@vivliostyle/theme-base/css/lib/prism/base.css<span class="token punctuation">)</span></span><span class="token punctuation">;</span></span>
+<span class="token atrule"><span class="token rule">@import</span> <span class="token url"><span class="token function">url</span><span class="token punctuation">(</span>../@vivliostyle/theme-base/css/lib/prism/theme-okaidia.css<span class="token punctuation">)</span></span><span class="token punctuation">;</span></span>
+
+<span class="token selector"><span class="token pseudo-class">:root</span></span> <span class="token punctuation">{</span>
+  <span class="token comment">/* 基本スタイル */</span>
+  <span class="token variable">--vs-font-family</span><span class="token punctuation">:</span> <span class="token string">'Times New Roman'</span><span class="token punctuation">,</span> serif<span class="token punctuation">;</span>
+  <span class="token variable">--vs-font-size</span><span class="token punctuation">:</span> <span class="token number">12</span><span class="token unit">px</span><span class="token punctuation">;</span>
+  <span class="token variable">--vs--heading-line-height</span><span class="token punctuation">:</span> <span class="token number">1.3</span><span class="token punctuation">;</span>
+  <span class="token variable">--vs--h1-font-size</span><span class="token punctuation">:</span> <span class="token number">2.5</span><span class="token unit">em</span><span class="token punctuation">;</span>
+
+  <span class="token comment">/* 脚注 */</span>
+  <span class="token variable">--vs-footnote--call-content</span><span class="token punctuation">:</span> <span class="token string">'['</span> <span class="token function">counter</span><span class="token punctuation">(</span>footnote<span class="token punctuation">)</span> <span class="token string">']'</span><span class="token punctuation">;</span>
+
+  <span class="token comment">/* ページレイアウト */</span>
+  <span class="token variable">--vs-page--mbox-content-bottom-center</span><span class="token punctuation">:</span> <span class="token function">counter</span><span class="token punctuation">(</span>page<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token variable">--vs-page--mbox-content-top-left</span><span class="token punctuation">:</span> <span class="token function">env</span><span class="token punctuation">(</span>doc-title<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token comment">/* 目次 */</span>
+  <span class="token variable">--vs-toc--marker-margin-inline</span><span class="token punctuation">:</span> <span class="token number">8</span><span class="token unit">rem</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+          <p>独自のスタイルを追加するには、このファイルの末尾にルールを記述します。ページサイズの設定例:</p>
+          <pre class="language-css"><code class="language-css"><span class="token atrule"><span class="token rule">@page</span></span> <span class="token punctuation">{</span>
+  <span class="token property">size</span><span class="token punctuation">:</span> A5<span class="token punctuation">;</span>
+  <span class="token property">margin</span><span class="token punctuation">:</span> <span class="token number">20</span><span class="token unit">mm</span> <span class="token number">15</span><span class="token unit">mm</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+        </section>
+        <section class="level3">
+          <h3 id="theme-baseのモジュール活用">theme-baseのモジュール活用</h3>
+          <p>theme-baseは機能ごとにモジュール分割されています。全モジュールが不要な場合は、<code>theme-all.css</code> の代わりに必要なモジュールのみをインポートできます。</p>
+          <pre class="language-css"><code class="language-css"><span class="token comment">/* 基本モジュールのみ */</span>
+<span class="token atrule"><span class="token rule">@import</span> <span class="token url"><span class="token function">url</span><span class="token punctuation">(</span>../@vivliostyle/theme-base/css/common/meta-properties.css<span class="token punctuation">)</span></span><span class="token punctuation">;</span></span>
+<span class="token atrule"><span class="token rule">@import</span> <span class="token url"><span class="token function">url</span><span class="token punctuation">(</span>../@vivliostyle/theme-base/css/common/reset.css<span class="token punctuation">)</span></span><span class="token punctuation">;</span></span>
+<span class="token atrule"><span class="token rule">@import</span> <span class="token url"><span class="token function">url</span><span class="token punctuation">(</span>../@vivliostyle/theme-base/css/common/basic.css<span class="token punctuation">)</span></span><span class="token punctuation">;</span></span>
+
+<span class="token comment">/* 必要な機能モジュールを追加 */</span>
+<span class="token atrule"><span class="token rule">@import</span> <span class="token url"><span class="token function">url</span><span class="token punctuation">(</span>../@vivliostyle/theme-base/css/partial/toc.css<span class="token punctuation">)</span></span><span class="token punctuation">;</span></span>
+<span class="token atrule"><span class="token rule">@import</span> <span class="token url"><span class="token function">url</span><span class="token punctuation">(</span>../@vivliostyle/theme-base/css/partial/footnote.css<span class="token punctuation">)</span></span><span class="token punctuation">;</span></span></code></pre>
+          <p>利用可能なモジュール一覧:</p>
+          <table>
+            <thead>
+              <tr>
+                <th>カテゴリ</th>
+                <th>モジュール</th>
+                <th>CSS変数プレフィックス</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>common</td>
+                <td><code>meta-properties.css</code> — ドキュメント全体のメタプロパティ</td>
+                <td><code>--vs-</code></td>
+              </tr>
+              <tr>
+                <td>common</td>
+                <td><code>reset.css</code> — CSSリセット</td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td>common</td>
+                <td><code>basic.css</code> — 基本HTMLタグのスタイル</td>
+                <td><code>--vs--</code></td>
+              </tr>
+              <tr>
+                <td>partial</td>
+                <td><code>crossref.css</code> — 図表・引用の相互参照</td>
+                <td><code>--vs-crossref--</code></td>
+              </tr>
+              <tr>
+                <td>partial</td>
+                <td><code>endnote.css</code> — 後注</td>
+                <td><code>--vs-endnote--</code></td>
+              </tr>
+              <tr>
+                <td>partial</td>
+                <td><code>footnote.css</code> — 脚注</td>
+                <td><code>--vs-footnote--</code></td>
+              </tr>
+              <tr>
+                <td>partial</td>
+                <td><code>footnote-external-link.css</code> — 外部リンクの脚注化</td>
+                <td><code>--vs-footnote--</code></td>
+              </tr>
+              <tr>
+                <td>partial</td>
+                <td><code>page.css</code> — ページメディア</td>
+                <td><code>--vs-page--</code></td>
+              </tr>
+              <tr>
+                <td>partial</td>
+                <td><code>section.css</code> — 見出し番号・節参照</td>
+                <td><code>--vs-section--</code></td>
+              </tr>
+              <tr>
+                <td>partial</td>
+                <td><code>toc.css</code> — 目次</td>
+                <td><code>--vs-toc--</code></td>
+              </tr>
+              <tr>
+                <td>partial</td>
+                <td><code>utility-classes.css</code> — ユーティリティクラス</td>
+                <td>—</td>
+              </tr>
+              <tr>
+                <td>lib</td>
+                <td><code>prism/base.css</code> — コードハイライト基盤</td>
+                <td><code>--vs-prism--</code></td>
+              </tr>
+              <tr>
+                <td>lib</td>
+                <td><code>prism/theme-prism.css</code> — Prismデフォルトテーマ</td>
+                <td><code>--vs-prism--</code></td>
+              </tr>
+              <tr>
+                <td>lib</td>
+                <td><code>prism/theme-okaidia.css</code> — Okaidiaテーマ</td>
+                <td><code>--vs-prism--</code></td>
+              </tr>
+            </tbody>
+          </table>
+          <p>詳細は <a href="https://github.com/vivliostyle/themes/tree/main/packages/@vivliostyle/theme-base#available-modules-and-css-variables">theme-baseのREADME</a> を参照してください。</p>
+        </section>
+        <section class="level3">
+          <h3 id="css変数のオーバーライド">CSS変数のオーバーライド</h3>
+          <p>theme-baseや各テーマが公開するCSS変数を <code>:root</code> で上書きすることで、テーマをカスタマイズできます。</p>
+          <pre class="language-css"><code class="language-css"><span class="token selector"><span class="token pseudo-class">:root</span></span> <span class="token punctuation">{</span>
+  <span class="token comment">/* フォント設定 */</span>
+  <span class="token variable">--vs-font-family</span><span class="token punctuation">:</span> <span class="token string">'Noto Serif JP'</span><span class="token punctuation">,</span> serif<span class="token punctuation">;</span>
+  <span class="token variable">--vs-font-size</span><span class="token punctuation">:</span> <span class="token number">10.5</span><span class="token unit">pt</span><span class="token punctuation">;</span>
+
+  <span class="token comment">/* 見出し */</span>
+  <span class="token variable">--vs--h1-font-size</span><span class="token punctuation">:</span> <span class="token number">2</span><span class="token unit">em</span><span class="token punctuation">;</span>
+  <span class="token variable">--vs--heading-line-height</span><span class="token punctuation">:</span> <span class="token number">1.4</span><span class="token punctuation">;</span>
+
+  <span class="token comment">/* 相互参照のカウンタスタイル */</span>
+  <span class="token variable">--vs-crossref--counter-style</span><span class="token punctuation">:</span> upper-roman<span class="token punctuation">;</span>
+
+  <span class="token comment">/* ページヘッダ・フッタ */</span>
+  <span class="token variable">--vs-page--mbox-content-top-left</span><span class="token punctuation">:</span> <span class="token function">env</span><span class="token punctuation">(</span>pub-title<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token variable">--vs-page--mbox-content-top-right</span><span class="token punctuation">:</span> <span class="token function">env</span><span class="token punctuation">(</span>doc-title<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token variable">--vs-page--mbox-content-bottom-center</span><span class="token punctuation">:</span> <span class="token function">counter</span><span class="token punctuation">(</span>page<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+          <p>実際のテーマでの活用例として、<a href="https://github.com/vivliostyle/themes/tree/main/packages/@vivliostyle/theme-techbook">theme-techbook</a> はテーマ固有のCSS変数（<code>--vs-theme--*</code>）を公開しています:</p>
+          <pre class="language-css"><code class="language-css"><span class="token selector"><span class="token pseudo-class">:root</span></span> <span class="token punctuation">{</span>
+  <span class="token variable">--vs-theme--anchor-color-body</span><span class="token punctuation">:</span> <span class="token hexcode color">#3498db</span><span class="token punctuation">;</span>
+  <span class="token variable">--vs-theme--blockquote-color-bg</span><span class="token punctuation">:</span> <span class="token hexcode color">#ecf0f1</span><span class="token punctuation">;</span>
+  <span class="token variable">--vs-theme--inline-code-color-bg</span><span class="token punctuation">:</span> <span class="token hexcode color">#ecf0f1</span><span class="token punctuation">;</span>
+  <span class="token variable">--vs-theme--image-resolution-for-figure-image</span><span class="token punctuation">:</span> <span class="token number">300</span><span class="token unit">dpi</span><span class="token punctuation">;</span>
+  <span class="token variable">--vs-theme--page-top-left-content</span><span class="token punctuation">:</span> <span class="token function">env</span><span class="token punctuation">(</span>pub-title<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token variable">--vs-theme--page-bottom-content</span><span class="token punctuation">:</span> <span class="token function">counter</span><span class="token punctuation">(</span>page<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+        </section>
+        <section class="level3">
+          <h3 id="example-ディレクトリの編集">example/ ディレクトリの編集</h3>
+          <p><code>example/</code> にはテーマの適用例を示すサンプルMarkdownを配置します。</p>
+          <ul>
+            <li>最低1つのMarkdownファイルが必要です</li>
+            <li><a href="https://vivliostyle.github.io/vfm/#/vfm">VFM (Vivliostyle Flavored Markdown)</a> 記法が利用できます</li>
+            <li>テーマが対応する主要なスタイル（見出し、コードブロック、脚注、画像、数式等）を網羅する内容を推奨します</li>
+          </ul>
+          <p>プレビューで動作確認:</p>
+          <pre class="language-bash"><code class="language-bash"><span class="token function">npm</span> run preview</code></pre>
+        </section>
+      </section>
+      <section class="level2">
+        <h2 id="themeを公開する">Themeを公開する</h2>
+        <section class="level3">
+          <h3 id="事前検証">事前検証</h3>
+          <p>公開前に <code>vivliostyle-theme-scripts validate</code> を実行して、パッケージの妥当性を検証します。</p>
+          <pre class="language-bash"><code class="language-bash"><span class="token function">npm</span> run validate</code></pre>
+          <p>検証項目:</p>
+          <table>
+            <thead>
+              <tr>
+                <th>チェック</th>
+                <th>種別</th>
+                <th>内容</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>スタイルロケータ</td>
+                <td>エラー</td>
+                <td><code>vivliostyle.theme.style</code>、<code>style</code>、<code>main</code> のいずれかが設定されていること</td>
+              </tr>
+              <tr>
+                <td>作者情報</td>
+                <td>警告</td>
+                <td><code>vivliostyle.theme.author</code> または <code>author</code> が設定されていること</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+        <section class="level3">
+          <h3 id="プレビュー確認">プレビュー確認</h3>
+          <pre class="language-bash"><code class="language-bash"><span class="token function">npm</span> run preview</code></pre>
+          <p><code>vivliostyle.config.js</code> の設定に基づき、<code>example/</code> のサンプル原稿にテーマを適用した状態でプレビューが表示されます。</p>
+        </section>
+        <section class="level3">
+          <h3 id="packagejsonの必須フィールド">package.jsonの必須フィールド</h3>
+          <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"vivliostyle-theme-&lt;name&gt;"</span><span class="token punctuation">,</span>
+  <span class="token property">"main"</span><span class="token operator">:</span> <span class="token string">"theme.css"</span><span class="token punctuation">,</span>
+  <span class="token property">"keywords"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"vivliostyle"</span><span class="token punctuation">,</span> <span class="token string">"vivliostyle-theme"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  <span class="token property">"vivliostyle"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"theme"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"Theme Display Name"</span><span class="token punctuation">,</span>
+      <span class="token property">"author"</span><span class="token operator">:</span> <span class="token string">"Author Name"</span><span class="token punctuation">,</span>
+      <span class="token property">"style"</span><span class="token operator">:</span> <span class="token string">"theme.css"</span><span class="token punctuation">,</span>
+      <span class="token property">"category"</span><span class="token operator">:</span> <span class="token string">"misc"</span><span class="token punctuation">,</span>
+      <span class="token property">"topics"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+          <table>
+            <thead>
+              <tr>
+                <th>フィールド</th>
+                <th>必須</th>
+                <th>説明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>vivliostyle.theme.style</code></td>
+                <td>✅</td>
+                <td>メインCSSファイルのパス</td>
+              </tr>
+              <tr>
+                <td><code>vivliostyle.theme.author</code></td>
+                <td>✅</td>
+                <td>テーマの作者名</td>
+              </tr>
+              <tr>
+                <td><code>vivliostyle.theme.name</code></td>
+                <td>—</td>
+                <td>テーマの表示名</td>
+              </tr>
+              <tr>
+                <td><code>vivliostyle.theme.category</code></td>
+                <td>—</td>
+                <td><code>novel</code> / <code>magazine</code> / <code>journal</code> / <code>report</code> / <code>misc</code></td>
+              </tr>
+              <tr>
+                <td><code>vivliostyle.theme.topics</code></td>
+                <td>—</td>
+                <td>テーマの用途を示すトピックの配列</td>
+              </tr>
+              <tr>
+                <td><code>keywords</code></td>
+                <td>—</td>
+                <td><code>"vivliostyle"</code> と <code>"vivliostyle-theme"</code> を含めることを推奨</td>
+              </tr>
+            </tbody>
+          </table>
+          <p>詳細な仕様は <a href="./spec/">Vivliostyle Themeの仕様</a> を参照してください。</p>
+        </section>
+        <section class="level3">
+          <h3 id="npmへの公開">npmへの公開</h3>
+          <pre class="language-bash"><code class="language-bash"><span class="token function">npm</span> publish</code></pre>
+          <p>公開後、テーマは以下から検索可能になります:</p>
+          <ul>
+            <li><a href="https://github.com/topics/vivliostyle-theme">GitHub Topics: vivliostyle-theme</a></li>
+            <li><a href="https://www.npmjs.com/search?q=keywords%3Avivliostyle-theme">npm: vivliostyle-theme</a></li>
+          </ul>
+        </section>
+        <section class="level3">
+          <h3 id="公式テーマとして提案する">公式テーマとして提案する</h3>
+          <p>自作したテーマは、ぜひVivliostyle公式テーマとして提案してください。詳細は <a href="./official/">公式Themeの採用</a> を参照してください。</p>
+        </section>
+      </section>
+    </section>
+  
+
+</article> <nav class="page-navigation" data-astro-cid-z7g34ql7=""> <div class="nav-links" data-astro-cid-z7g34ql7=""> <a href="/ja/themes/official/" class="nav-link nav-prev" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">← 前へ</span> <span class="nav-title" data-astro-cid-z7g34ql7="">公式 Theme の採用</span> </a> <a href="/ja/themes/usage/" class="nav-link nav-next" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">次へ →</span> <span class="nav-title" data-astro-cid-z7g34ql7="">テーマの使い方</span> </a> </div> </nav>   </article> </main> </div> <footer class="footer" data-astro-cid-mw7aashj=""> <p data-astro-cid-mw7aashj="">© 2026 Vivliostyle Foundation.</p> </footer> </div>  <script type="module">window.__bodyOverflowLockCount=0;window.lockBodyOverflow=function(){window.__bodyOverflowLockCount++,window.__bodyOverflowLockCount===1&&(document.body.style.overflow="hidden")};window.unlockBodyOverflow=function(){window.__bodyOverflowLockCount=Math.max(0,window.__bodyOverflowLockCount-1),window.__bodyOverflowLockCount===0&&(document.body.style.overflow="")};</script>  <script type="module">document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll(".accordion-toggle").forEach(t=>{t.addEventListener("click",d=>{d.preventDefault();const a=t.getAttribute("data-target"),e=document.getElementById(a),n=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",!n),e&&(e.style.display=n?"none":"block")})})});</script></body></html>
