@@ -178,12 +178,17 @@ const lang = "ja";
     const open = () => {
       lastFocus = document.activeElement;
 
-      // 本番URL固定でマニフェストを参照する。
-      // localhost / preview からは Vivliostyle Viewer が manifest を取りに行けないので、
-      // その場合は警告を表示する。
-      const isProductionHost = window.location.hostname === 'docs2.vivliostyle.org' ||
-                               window.location.hostname === 'docs.vivliostyle.org';
-      const manifestUrl = `https://docs2.vivliostyle.org/publications/${product}-${lang}/publication.json`;
+      // production host (docs.vivliostyle.org / docs2.vivliostyle.org) では
+      // 自身のホスト上のマニフェストを参照する。それ以外（localhost や
+      // プレビュー環境）からは Vivliostyle Viewer が外部からマニフェストを
+      // 取得できないため、フォールバックとして既定の本番ホストを指定し、
+      // 警告を表示する。
+      const productionHosts = ['docs.vivliostyle.org', 'docs2.vivliostyle.org'];
+      const isProductionHost = productionHosts.includes(window.location.hostname);
+      const manifestHost = isProductionHost
+        ? window.location.hostname
+        : 'docs2.vivliostyle.org';
+      const manifestUrl = `https://${manifestHost}/publications/${product}-${lang}/publication.json`;
       const viewerUrl = `https://vivliostyle.org/viewer/?src=${encodeURIComponent(manifestUrl)}&bookMode=true&lng=${lang}`;
 
       iframe.src = viewerUrl;
@@ -218,1654 +223,1645 @@ const lang = "ja";
     });
   }
 })();</script> </section>  </nav> </aside> <main class="content" data-astro-cid-mw7aashj=""> <nav aria-label="Breadcrumb" class="breadcrumb" data-astro-cid-qaanghzh=""> <ol data-astro-cid-qaanghzh=""> <li data-astro-cid-qaanghzh=""> <a href="/ja/" data-astro-cid-qaanghzh="">ホーム</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <a href="/ja/cli/" data-astro-cid-qaanghzh="">CLI</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <span aria-current="page" data-astro-cid-qaanghzh="">JavaScript API</span>  </li> </ol> </nav> <!-- JSON-LD構造化データ --> <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ホーム","item":"https://docs.vivliostyle.org/ja/"},{"@type":"ListItem","position":2,"name":"CLI","item":"https://docs.vivliostyle.org/ja/cli/"},{"@type":"ListItem","position":3,"name":"JavaScript API","item":"https://docs.vivliostyle.org/ja/cli/api-javascript/"}]}</script>  <article class="prose" data-astro-cid-mw7aashj="">    <article data-astro-cid-lxp5afuy="">
-
-  
-    <meta charset="utf-8">
-    <title>JavaScript API</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  
-    <section class="level1">
-      <h1 id="javascript-api">JavaScript API</h1><!-- START JavaScript API -->
-      <section class="level2">
-        <h2 id="exported-members">Exported members</h2>
-        <section class="level3">
-          <h3 id="functions">Functions</h3>
-          <ul>
-            <li><a href="#build"><code>build</code></a></li>
-            <li><a href="#create"><code>create</code></a></li>
-            <li><a href="#createviteplugin"><code>createVitePlugin</code></a></li>
-            <li><a href="#defineconfig"><code>defineConfig</code></a></li>
-            <li><a href="#preview"><code>preview</code></a></li>
-            <li><a href="#vfm"><code>VFM</code></a></li>
-          </ul>
-        </section>
-        <section class="level3">
-          <h3 id="interfaces">Interfaces</h3>
-          <ul>
-            <li><a href="#stringifymarkdownoptions"><code>StringifyMarkdownOptions</code></a></li>
-            <li><a href="#templatevariable"><code>TemplateVariable</code></a></li>
-          </ul>
-        </section>
-        <section class="level3">
-          <h3 id="type-aliases">Type Aliases</h3>
-          <ul>
-            <li><a href="#metadata"><code>Metadata</code></a></li>
-            <li><a href="#structureddocument"><code>StructuredDocument</code></a></li>
-            <li><a href="#structureddocumentsection"><code>StructuredDocumentSection</code></a></li>
-            <li><a href="#vivliostyleconfigschema"><code>VivliostyleConfigSchema</code></a></li>
-            <li><a href="#vivliostylepackagemetadata"><code>VivliostylePackageMetadata</code></a></li>
-            <li><a href="#vivliostylepackagemetadata"><code>VivliostylePackageMetadata</code></a></li>
-          </ul>
-        </section>
-        <section class="level3">
-          <h3 id="variables">Variables</h3>
-          <ul>
-            <li><a href="#readmetadata"><code>readMetadata</code></a></li>
-          </ul>
-        </section>
-      </section>
-      <section class="level2">
-        <h2 id="functions-1">Functions</h2>
-        <section class="level3">
-          <h3 id="build">build()</h3>
-          <blockquote>
-            <p><strong>build</strong>(<code>options</code>): <code>Promise</code>&lt;<code>void</code>&gt;</p>
-          </blockquote>
-          <p>Build publication file(s) from the given configuration.</p>
-          <pre class="language-ts"><code class="language-ts"><span class="token keyword module">import</span> <span class="token imports"><span class="token punctuation">{</span> build <span class="token punctuation">}</span></span> <span class="token keyword module">from</span> <span class="token string">'@vivliostyle/cli'</span><span class="token punctuation">;</span>
+<section class="level1">
+  <h1 id="javascript-api">JavaScript API</h1><!-- START JavaScript API -->
+  <section class="level2">
+    <h2 id="exported-members">Exported members</h2>
+    <section class="level3">
+      <h3 id="functions">Functions</h3>
+      <ul>
+        <li><a href="#build"><code>build</code></a></li>
+        <li><a href="#create"><code>create</code></a></li>
+        <li><a href="#createviteplugin"><code>createVitePlugin</code></a></li>
+        <li><a href="#defineconfig"><code>defineConfig</code></a></li>
+        <li><a href="#preview"><code>preview</code></a></li>
+        <li><a href="#vfm"><code>VFM</code></a></li>
+      </ul>
+    </section>
+    <section class="level3">
+      <h3 id="interfaces">Interfaces</h3>
+      <ul>
+        <li><a href="#stringifymarkdownoptions"><code>StringifyMarkdownOptions</code></a></li>
+        <li><a href="#templatevariable"><code>TemplateVariable</code></a></li>
+      </ul>
+    </section>
+    <section class="level3">
+      <h3 id="type-aliases">Type Aliases</h3>
+      <ul>
+        <li><a href="#metadata"><code>Metadata</code></a></li>
+        <li><a href="#structureddocument"><code>StructuredDocument</code></a></li>
+        <li><a href="#structureddocumentsection"><code>StructuredDocumentSection</code></a></li>
+        <li><a href="#vivliostyleconfigschema"><code>VivliostyleConfigSchema</code></a></li>
+        <li><a href="#vivliostylepackagemetadata"><code>VivliostylePackageMetadata</code></a></li>
+        <li><a href="#vivliostylepackagemetadata"><code>VivliostylePackageMetadata</code></a></li>
+      </ul>
+    </section>
+    <section class="level3">
+      <h3 id="variables">Variables</h3>
+      <ul>
+        <li><a href="#readmetadata"><code>readMetadata</code></a></li>
+      </ul>
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="functions-1">Functions</h2>
+    <section class="level3">
+      <h3 id="build">build()</h3>
+      <blockquote>
+        <p><strong>build</strong>(<code>options</code>): <code>Promise</code>&lt;<code>void</code>&gt;</p>
+      </blockquote>
+      <p>Build publication file(s) from the given configuration.</p>
+      <pre class="language-ts"><code class="language-ts"><span class="token keyword module">import</span> <span class="token imports"><span class="token punctuation">{</span> build <span class="token punctuation">}</span></span> <span class="token keyword module">from</span> <span class="token string">'@vivliostyle/cli'</span><span class="token punctuation">;</span>
 <span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
   configPath<span class="token operator">:</span> <span class="token string">'./vivliostyle.config.js'</span><span class="token punctuation">,</span>
   logLevel<span class="token operator">:</span> <span class="token string">'silent'</span><span class="token punctuation">,</span>
 <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
-          <section class="level4">
-            <h4 id="parameters">Parameters</h4>
-            <section class="level5">
-              <h5 id="options">options</h5>
-              <section class="level6">
-                <h6 id="author">author?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="bleed">bleed?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="browser">browser?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="cmyk">cmyk?</h6>
-                <p><code>boolean</code> | { <code>mapOutput?</code>: <code>string</code>; <code>overrideMap?</code>: [<code>string</code> | { <code>b</code>: <code>number</code>; <code>g</code>: <code>number</code>; <code>r</code>: <code>number</code>; }, { <code>c</code>: <code>number</code>; <code>k</code>: <code>number</code>; <code>m</code>: <code>number</code>; <code>y</code>: <code>number</code>; }][]; <code>reserveMap?</code>: [<code>string</code> | { <code>b</code>: <code>number</code>; <code>g</code>: <code>number</code>; <code>r</code>: <code>number</code>; }, { <code>c</code>: <code>number</code>; <code>k</code>: <code>number</code>; <code>m</code>: <code>number</code>; <code>y</code>: <code>number</code>; }][]; <code>warnUnmapped?</code>: <code>boolean</code>; } = <code>CmykSchema</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="config">config?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="configdata">configData?</h6>
-                <p><a href="#vivliostyleconfigschema"><code>VivliostyleConfigSchema</code></a> | <code>null</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="createconfigfileonly">createConfigFileOnly?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="cropmarks">cropMarks?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="cropoffset">cropOffset?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="css">css?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="cwd">cwd?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="disableserverstartup">disableServerStartup?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="enablestaticserve">enableStaticServe?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="enableviewerstartpage">enableViewerStartPage?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="executablebrowser">executableBrowser?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="host">host?</h6>
-                <p><code>string</code> | <code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="ignorehttpserrors">ignoreHttpsErrors?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="image">image?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="input">input?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="installdependencies">installDependencies?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="language">language?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="logger">logger?</h6>
-                <p><code>LoggerInterface</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="loglevel">logLevel?</h6>
-                <p><code>"info"</code> | <code>"silent"</code> | <code>"verbose"</code> | <code>"debug"</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="openviewer">openViewer?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="output">output?</h6>
-                <p><code>string</code> | <code>object</code> &amp; <code>object</code> | (<code>string</code> | <code>object</code> &amp; <code>object</code>)[] = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="port">port?</h6>
-                <p><code>number</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="preflight">preflight?</h6>
-                <p><code>"press-ready"</code> | <code>"press-ready-local"</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="preflightoption">preflightOption?</h6>
-                <p><code>string</code> | <code>string</code>[] = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="pressready">pressReady?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="projectpath">projectPath?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="proxybypass">proxyBypass?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="proxypass">proxyPass?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="proxyserver">proxyServer?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="proxyuser">proxyUser?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="quick">quick?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="readingprogression">readingProgression?</h6>
-                <p><code>"ltr"</code> | <code>"rtl"</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="rendermode">renderMode?</h6>
-                <p><code>"local"</code> | <code>"docker"</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="sandbox">sandbox?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="signal">signal?</h6>
-                <p><code>AbortSignal</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="singledoc">singleDoc?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="size">size?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="stderr">stderr?</h6>
-                <p><code>Writable</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="stdin">stdin?</h6>
-                <p><code>Readable</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="stdout">stdout?</h6>
-                <p><code>Writable</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="style">style?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="template">template?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="theme">theme?</h6>
-                <p><code>string</code> | <code>false</code> | <code>object</code> &amp; <code>object</code> | (<code>string</code> | <code>object</code> &amp; <code>object</code>)[] = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="timeout">timeout?</h6>
-                <p><code>number</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="title">title?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="userstyle">userStyle?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="viewer">viewer?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="viewerparam">viewerParam?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="vite">vite?</h6>
-                <p><code>UserConfig</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="viteconfigfile">viteConfigFile?</h6>
-                <p><code>string</code> | <code>boolean</code> = <code>...</code></p>
-              </section>
-            </section>
+      <section class="level4">
+        <h4 id="parameters">Parameters</h4>
+        <section class="level5">
+          <h5 id="options">options</h5>
+          <section class="level6">
+            <h6 id="author">author?</h6>
+            <p><code>string</code> = <code>...</code></p>
           </section>
-          <section class="level4">
-            <h4 id="returns">Returns</h4>
-            <p><code>Promise</code>&lt;<code>void</code>&gt;</p>
-            <hr>
+          <section class="level6">
+            <h6 id="bleed">bleed?</h6>
+            <p><code>string</code> = <code>...</code></p>
           </section>
-        </section>
-        <section class="level3">
-          <h3 id="create">create()</h3>
-          <blockquote>
-            <p><strong>create</strong>(<code>options</code>): <code>Promise</code>&lt;<code>void</code>&gt;</p>
-          </blockquote>
-          <p>Scaffold a new Vivliostyle project.</p>
-          <section class="level4">
-            <h4 id="parameters-1">Parameters</h4>
-            <section class="level5">
-              <h5 id="options-1">options</h5>
-              <section class="level6">
-                <h6 id="author-1">author?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="bleed-1">bleed?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="browser-1">browser?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="cmyk-1">cmyk?</h6>
-                <p><code>boolean</code> | { <code>mapOutput?</code>: <code>string</code>; <code>overrideMap?</code>: [<code>string</code> | { <code>b</code>: <code>number</code>; <code>g</code>: <code>number</code>; <code>r</code>: <code>number</code>; }, { <code>c</code>: <code>number</code>; <code>k</code>: <code>number</code>; <code>m</code>: <code>number</code>; <code>y</code>: <code>number</code>; }][]; <code>reserveMap?</code>: [<code>string</code> | { <code>b</code>: <code>number</code>; <code>g</code>: <code>number</code>; <code>r</code>: <code>number</code>; }, { <code>c</code>: <code>number</code>; <code>k</code>: <code>number</code>; <code>m</code>: <code>number</code>; <code>y</code>: <code>number</code>; }][]; <code>warnUnmapped?</code>: <code>boolean</code>; } = <code>CmykSchema</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="config-1">config?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="configdata-1">configData?</h6>
-                <p><a href="#vivliostyleconfigschema"><code>VivliostyleConfigSchema</code></a> | <code>null</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="createconfigfileonly-1">createConfigFileOnly?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="cropmarks-1">cropMarks?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="cropoffset-1">cropOffset?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="css-1">css?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="cwd-1">cwd?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="disableserverstartup-1">disableServerStartup?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="enablestaticserve-1">enableStaticServe?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="enableviewerstartpage-1">enableViewerStartPage?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="executablebrowser-1">executableBrowser?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="host-1">host?</h6>
-                <p><code>string</code> | <code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="ignorehttpserrors-1">ignoreHttpsErrors?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="image-1">image?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="input-1">input?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="installdependencies-1">installDependencies?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="language-1">language?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="logger-1">logger?</h6>
-                <p><code>LoggerInterface</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="loglevel-1">logLevel?</h6>
-                <p><code>"info"</code> | <code>"silent"</code> | <code>"verbose"</code> | <code>"debug"</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="openviewer-1">openViewer?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="output-1">output?</h6>
-                <p><code>string</code> | <code>object</code> &amp; <code>object</code> | (<code>string</code> | <code>object</code> &amp; <code>object</code>)[] = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="port-1">port?</h6>
-                <p><code>number</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="preflight-1">preflight?</h6>
-                <p><code>"press-ready"</code> | <code>"press-ready-local"</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="preflightoption-1">preflightOption?</h6>
-                <p><code>string</code> | <code>string</code>[] = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="pressready-1">pressReady?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="projectpath-1">projectPath?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="proxybypass-1">proxyBypass?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="proxypass-1">proxyPass?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="proxyserver-1">proxyServer?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="proxyuser-1">proxyUser?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="quick-1">quick?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="readingprogression-1">readingProgression?</h6>
-                <p><code>"ltr"</code> | <code>"rtl"</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="rendermode-1">renderMode?</h6>
-                <p><code>"local"</code> | <code>"docker"</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="sandbox-1">sandbox?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="signal-1">signal?</h6>
-                <p><code>AbortSignal</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="singledoc-1">singleDoc?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="size-1">size?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="stderr-1">stderr?</h6>
-                <p><code>Writable</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="stdin-1">stdin?</h6>
-                <p><code>Readable</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="stdout-1">stdout?</h6>
-                <p><code>Writable</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="style-1">style?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="template-1">template?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="theme-1">theme?</h6>
-                <p><code>string</code> | <code>false</code> | <code>object</code> &amp; <code>object</code> | (<code>string</code> | <code>object</code> &amp; <code>object</code>)[] = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="timeout-1">timeout?</h6>
-                <p><code>number</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="title-1">title?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="userstyle-1">userStyle?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="viewer-1">viewer?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="viewerparam-1">viewerParam?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="vite-1">vite?</h6>
-                <p><code>UserConfig</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="viteconfigfile-1">viteConfigFile?</h6>
-                <p><code>string</code> | <code>boolean</code> = <code>...</code></p>
-              </section>
-            </section>
+          <section class="level6">
+            <h6 id="browser">browser?</h6>
+            <p><code>string</code> = <code>...</code></p>
           </section>
-          <section class="level4">
-            <h4 id="returns-1">Returns</h4>
-            <p><code>Promise</code>&lt;<code>void</code>&gt;</p>
-            <hr>
+          <section class="level6">
+            <h6 id="cmyk">cmyk?</h6>
+            <p><code>boolean</code> | { <code>mapOutput?</code>: <code>string</code>; <code>overrideMap?</code>: [<code>string</code> | { <code>b</code>: <code>number</code>; <code>g</code>: <code>number</code>; <code>r</code>: <code>number</code>; }, { <code>c</code>: <code>number</code>; <code>k</code>: <code>number</code>; <code>m</code>: <code>number</code>; <code>y</code>: <code>number</code>; }][]; <code>reserveMap?</code>: [<code>string</code> | { <code>b</code>: <code>number</code>; <code>g</code>: <code>number</code>; <code>r</code>: <code>number</code>; }, { <code>c</code>: <code>number</code>; <code>k</code>: <code>number</code>; <code>m</code>: <code>number</code>; <code>y</code>: <code>number</code>; }][]; <code>warnUnmapped?</code>: <code>boolean</code>; } = <code>CmykSchema</code></p>
           </section>
-        </section>
-        <section class="level3">
-          <h3 id="createviteplugin">createVitePlugin()</h3>
-          <blockquote>
-            <p><strong>createVitePlugin</strong>(<code>inlineConfig</code>): <code>Promise</code>&lt;<code>Plugin</code>&lt;<code>any</code>&gt;[]&gt;</p>
-          </blockquote>
-          <section class="level4">
-            <h4 id="parameters-2">Parameters</h4>
-            <section class="level5">
-              <h5 id="inlineconfig">inlineConfig</h5>
-              <section class="level6">
-                <h6 id="author-2">author?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="bleed-2">bleed?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="browser-2">browser?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="cmyk-2">cmyk?</h6>
-                <p><code>boolean</code> | { <code>mapOutput?</code>: <code>string</code>; <code>overrideMap?</code>: [<code>string</code> | { <code>b</code>: <code>number</code>; <code>g</code>: <code>number</code>; <code>r</code>: <code>number</code>; }, { <code>c</code>: <code>number</code>; <code>k</code>: <code>number</code>; <code>m</code>: <code>number</code>; <code>y</code>: <code>number</code>; }][]; <code>reserveMap?</code>: [<code>string</code> | { <code>b</code>: <code>number</code>; <code>g</code>: <code>number</code>; <code>r</code>: <code>number</code>; }, { <code>c</code>: <code>number</code>; <code>k</code>: <code>number</code>; <code>m</code>: <code>number</code>; <code>y</code>: <code>number</code>; }][]; <code>warnUnmapped?</code>: <code>boolean</code>; } = <code>CmykSchema</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="config-2">config?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="configdata-2">configData?</h6>
-                <p><a href="#vivliostyleconfigschema"><code>VivliostyleConfigSchema</code></a> | <code>null</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="createconfigfileonly-2">createConfigFileOnly?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="cropmarks-2">cropMarks?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="cropoffset-2">cropOffset?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="css-2">css?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="cwd-2">cwd?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="disableserverstartup-2">disableServerStartup?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="enablestaticserve-2">enableStaticServe?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="enableviewerstartpage-2">enableViewerStartPage?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="executablebrowser-2">executableBrowser?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="host-2">host?</h6>
-                <p><code>string</code> | <code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="ignorehttpserrors-2">ignoreHttpsErrors?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="image-2">image?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="input-2">input?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="installdependencies-2">installDependencies?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="language-2">language?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="logger-2">logger?</h6>
-                <p><code>LoggerInterface</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="loglevel-2">logLevel?</h6>
-                <p><code>"info"</code> | <code>"silent"</code> | <code>"verbose"</code> | <code>"debug"</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="openviewer-2">openViewer?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="output-2">output?</h6>
-                <p><code>string</code> | <code>object</code> &amp; <code>object</code> | (<code>string</code> | <code>object</code> &amp; <code>object</code>)[] = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="port-2">port?</h6>
-                <p><code>number</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="preflight-2">preflight?</h6>
-                <p><code>"press-ready"</code> | <code>"press-ready-local"</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="preflightoption-2">preflightOption?</h6>
-                <p><code>string</code> | <code>string</code>[] = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="pressready-2">pressReady?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="projectpath-2">projectPath?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="proxybypass-2">proxyBypass?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="proxypass-2">proxyPass?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="proxyserver-2">proxyServer?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="proxyuser-2">proxyUser?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="quick-2">quick?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="readingprogression-2">readingProgression?</h6>
-                <p><code>"ltr"</code> | <code>"rtl"</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="rendermode-2">renderMode?</h6>
-                <p><code>"local"</code> | <code>"docker"</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="sandbox-2">sandbox?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="signal-2">signal?</h6>
-                <p><code>AbortSignal</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="singledoc-2">singleDoc?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="size-2">size?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="stderr-2">stderr?</h6>
-                <p><code>Writable</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="stdin-2">stdin?</h6>
-                <p><code>Readable</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="stdout-2">stdout?</h6>
-                <p><code>Writable</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="style-2">style?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="template-2">template?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="theme-2">theme?</h6>
-                <p><code>string</code> | <code>false</code> | <code>object</code> &amp; <code>object</code> | (<code>string</code> | <code>object</code> &amp; <code>object</code>)[] = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="timeout-2">timeout?</h6>
-                <p><code>number</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="title-2">title?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="userstyle-2">userStyle?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="viewer-2">viewer?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="viewerparam-2">viewerParam?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="vite-2">vite?</h6>
-                <p><code>UserConfig</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="viteconfigfile-2">viteConfigFile?</h6>
-                <p><code>string</code> | <code>boolean</code> = <code>...</code></p>
-              </section>
-            </section>
+          <section class="level6">
+            <h6 id="config">config?</h6>
+            <p><code>string</code> = <code>...</code></p>
           </section>
-          <section class="level4">
-            <h4 id="returns-2">Returns</h4>
-            <p><code>Promise</code>&lt;<code>Plugin</code>&lt;<code>any</code>&gt;[]&gt;</p>
-            <hr>
+          <section class="level6">
+            <h6 id="configdata">configData?</h6>
+            <p><a href="#vivliostyleconfigschema"><code>VivliostyleConfigSchema</code></a> | <code>null</code> = <code>...</code></p>
           </section>
-        </section>
-        <section class="level3">
-          <h3 id="defineconfig">defineConfig()</h3>
-          <blockquote>
-            <p><strong>defineConfig</strong>(<code>config</code>): <a href="#vivliostyleconfigschema"><code>VivliostyleConfigSchema</code></a></p>
-          </blockquote>
-          <p>Define the configuration for Vivliostyle CLI.</p>
-          <section class="level4">
-            <h4 id="parameters-3">Parameters</h4>
-            <section class="level5">
-              <h5 id="config-3">config</h5>
-              <p><a href="#vivliostyleconfigschema"><code>VivliostyleConfigSchema</code></a></p>
-            </section>
+          <section class="level6">
+            <h6 id="createconfigfileonly">createConfigFileOnly?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
           </section>
-          <section class="level4">
-            <h4 id="returns-3">Returns</h4>
-            <p><a href="#vivliostyleconfigschema"><code>VivliostyleConfigSchema</code></a></p>
-            <hr>
+          <section class="level6">
+            <h6 id="cropmarks">cropMarks?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
           </section>
-        </section>
-        <section class="level3">
-          <h3 id="preview">preview()</h3>
-          <blockquote>
-            <p><strong>preview</strong>(<code>options</code>): <code>Promise</code>&lt;<code>ViteDevServer</code>&gt;</p>
-          </blockquote>
-          <p>Open a browser for previewing the publication.</p>
-          <section class="level4">
-            <h4 id="parameters-4">Parameters</h4>
-            <section class="level5">
-              <h5 id="options-2">options</h5>
-              <section class="level6">
-                <h6 id="author-3">author?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="bleed-3">bleed?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="browser-3">browser?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="cmyk-3">cmyk?</h6>
-                <p><code>boolean</code> | { <code>mapOutput?</code>: <code>string</code>; <code>overrideMap?</code>: [<code>string</code> | { <code>b</code>: <code>number</code>; <code>g</code>: <code>number</code>; <code>r</code>: <code>number</code>; }, { <code>c</code>: <code>number</code>; <code>k</code>: <code>number</code>; <code>m</code>: <code>number</code>; <code>y</code>: <code>number</code>; }][]; <code>reserveMap?</code>: [<code>string</code> | { <code>b</code>: <code>number</code>; <code>g</code>: <code>number</code>; <code>r</code>: <code>number</code>; }, { <code>c</code>: <code>number</code>; <code>k</code>: <code>number</code>; <code>m</code>: <code>number</code>; <code>y</code>: <code>number</code>; }][]; <code>warnUnmapped?</code>: <code>boolean</code>; } = <code>CmykSchema</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="config-4">config?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="configdata-3">configData?</h6>
-                <p><a href="#vivliostyleconfigschema"><code>VivliostyleConfigSchema</code></a> | <code>null</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="createconfigfileonly-3">createConfigFileOnly?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="cropmarks-3">cropMarks?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="cropoffset-3">cropOffset?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="css-3">css?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="cwd-3">cwd?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="disableserverstartup-3">disableServerStartup?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="enablestaticserve-3">enableStaticServe?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="enableviewerstartpage-3">enableViewerStartPage?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="executablebrowser-3">executableBrowser?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="host-3">host?</h6>
-                <p><code>string</code> | <code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="ignorehttpserrors-3">ignoreHttpsErrors?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="image-3">image?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="input-3">input?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="installdependencies-3">installDependencies?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="language-3">language?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="logger-3">logger?</h6>
-                <p><code>LoggerInterface</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="loglevel-3">logLevel?</h6>
-                <p><code>"info"</code> | <code>"silent"</code> | <code>"verbose"</code> | <code>"debug"</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="openviewer-3">openViewer?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="output-3">output?</h6>
-                <p><code>string</code> | <code>object</code> &amp; <code>object</code> | (<code>string</code> | <code>object</code> &amp; <code>object</code>)[] = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="port-3">port?</h6>
-                <p><code>number</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="preflight-3">preflight?</h6>
-                <p><code>"press-ready"</code> | <code>"press-ready-local"</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="preflightoption-3">preflightOption?</h6>
-                <p><code>string</code> | <code>string</code>[] = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="pressready-3">pressReady?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="projectpath-3">projectPath?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="proxybypass-3">proxyBypass?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="proxypass-3">proxyPass?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="proxyserver-3">proxyServer?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="proxyuser-3">proxyUser?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="quick-3">quick?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="readingprogression-3">readingProgression?</h6>
-                <p><code>"ltr"</code> | <code>"rtl"</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="rendermode-3">renderMode?</h6>
-                <p><code>"local"</code> | <code>"docker"</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="sandbox-3">sandbox?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="signal-3">signal?</h6>
-                <p><code>AbortSignal</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="singledoc-3">singleDoc?</h6>
-                <p><code>boolean</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="size-3">size?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="stderr-3">stderr?</h6>
-                <p><code>Writable</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="stdin-3">stdin?</h6>
-                <p><code>Readable</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="stdout-3">stdout?</h6>
-                <p><code>Writable</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="style-3">style?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="template-3">template?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="theme-3">theme?</h6>
-                <p><code>string</code> | <code>false</code> | <code>object</code> &amp; <code>object</code> | (<code>string</code> | <code>object</code> &amp; <code>object</code>)[] = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="timeout-3">timeout?</h6>
-                <p><code>number</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="title-3">title?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="userstyle-3">userStyle?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="viewer-3">viewer?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="viewerparam-3">viewerParam?</h6>
-                <p><code>string</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="vite-3">vite?</h6>
-                <p><code>UserConfig</code> = <code>...</code></p>
-              </section>
-              <section class="level6">
-                <h6 id="viteconfigfile-3">viteConfigFile?</h6>
-                <p><code>string</code> | <code>boolean</code> = <code>...</code></p>
-              </section>
-            </section>
+          <section class="level6">
+            <h6 id="cropoffset">cropOffset?</h6>
+            <p><code>string</code> = <code>...</code></p>
           </section>
-          <section class="level4">
-            <h4 id="returns-4">Returns</h4>
-            <p><code>Promise</code>&lt;<code>ViteDevServer</code>&gt;</p>
-            <hr>
+          <section class="level6">
+            <h6 id="css">css?</h6>
+            <p><code>string</code> = <code>...</code></p>
           </section>
-        </section>
-        <section class="level3">
-          <h3 id="vfm">VFM()</h3>
-          <blockquote>
-            <p><strong>VFM</strong>(<code>options?</code>, <code>metadata?</code>): <code>Processor</code></p>
-          </blockquote>
-          <p>Create Unified processor for Markdown AST and Hypertext AST.</p>
-          <section class="level4">
-            <h4 id="parameters-5">Parameters</h4>
-            <section class="level5">
-              <h5 id="options-3">options?</h5>
-              <p><a href="#stringifymarkdownoptions"><code>StringifyMarkdownOptions</code></a></p>
-              <p>Options.</p>
-            </section>
-            <section class="level5">
-              <h5 id="metadata">metadata?</h5>
-              <p><a href="#metadata"><code>Metadata</code></a></p>
-            </section>
+          <section class="level6">
+            <h6 id="cwd">cwd?</h6>
+            <p><code>string</code> = <code>...</code></p>
           </section>
-          <section class="level4">
-            <h4 id="returns-5">Returns</h4>
-            <p><code>Processor</code></p>
-            <p>Unified processor.</p>
+          <section class="level6">
+            <h6 id="disableserverstartup">disableServerStartup?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="enablestaticserve">enableStaticServe?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="enableviewerstartpage">enableViewerStartPage?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="executablebrowser">executableBrowser?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="host">host?</h6>
+            <p><code>string</code> | <code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="ignorehttpserrors">ignoreHttpsErrors?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="image">image?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="input">input?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="installdependencies">installDependencies?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="language">language?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="logger">logger?</h6>
+            <p><code>LoggerInterface</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="loglevel">logLevel?</h6>
+            <p><code>"info"</code> | <code>"silent"</code> | <code>"verbose"</code> | <code>"debug"</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="openviewer">openViewer?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="output">output?</h6>
+            <p><code>string</code> | <code>object</code> &amp; <code>object</code> | (<code>string</code> | <code>object</code> &amp; <code>object</code>)[] = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="port">port?</h6>
+            <p><code>number</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="preflight">preflight?</h6>
+            <p><code>"press-ready"</code> | <code>"press-ready-local"</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="preflightoption">preflightOption?</h6>
+            <p><code>string</code> | <code>string</code>[] = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="pressready">pressReady?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="projectpath">projectPath?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="proxybypass">proxyBypass?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="proxypass">proxyPass?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="proxyserver">proxyServer?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="proxyuser">proxyUser?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="quick">quick?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="readingprogression">readingProgression?</h6>
+            <p><code>"ltr"</code> | <code>"rtl"</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="rendermode">renderMode?</h6>
+            <p><code>"local"</code> | <code>"docker"</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="sandbox">sandbox?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="signal">signal?</h6>
+            <p><code>AbortSignal</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="singledoc">singleDoc?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="size">size?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="stderr">stderr?</h6>
+            <p><code>Writable</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="stdin">stdin?</h6>
+            <p><code>Readable</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="stdout">stdout?</h6>
+            <p><code>Writable</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="style">style?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="template">template?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="theme">theme?</h6>
+            <p><code>string</code> | <code>false</code> | <code>object</code> &amp; <code>object</code> | (<code>string</code> | <code>object</code> &amp; <code>object</code>)[] = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="timeout">timeout?</h6>
+            <p><code>number</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="title">title?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="userstyle">userStyle?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="viewer">viewer?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="viewerparam">viewerParam?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="vite">vite?</h6>
+            <p><code>UserConfig</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="viteconfigfile">viteConfigFile?</h6>
+            <p><code>string</code> | <code>boolean</code> = <code>...</code></p>
           </section>
         </section>
       </section>
-      <section class="level2">
-        <h2 id="interfaces-1">Interfaces</h2>
-        <section class="level3">
-          <h3 id="stringifymarkdownoptions">StringifyMarkdownOptions</h3>
-          <p>Option for convert Markdown to a stringify (HTML).</p>
-          <section class="level4">
-            <h4 id="properties">Properties</h4>
-            <table>
-              <thead>
-                <tr>
-                  <th>Property</th>
-                  <th>Type</th>
-                  <th>Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><a id="assignidtofigcaption"></a><code>assignIdToFigcaption?</code></td>
-                  <td><code>boolean</code></td>
-                  <td>Assign ID to figcaption instead of img/code.</td>
-                </tr>
-                <tr>
-                  <td><a id="disableformathtml"></a><code>disableFormatHtml?</code></td>
-                  <td><code>boolean</code></td>
-                  <td>Disable automatic HTML format.</td>
-                </tr>
-                <tr>
-                  <td><a id="footnote"></a><code>footnote?</code></td>
-                  <td><code>FootnoteMode</code> | { <code>mode</code>: <code>"pandoc"</code>; } | { <code>body?</code>: <code>Properties</code> | <code>DpubBodyFactory</code>; <code>call?</code>: <code>Properties</code> | <code>DpubCallFactory</code>; <code>mode</code>: <code>"dpub"</code>; } | { <code>body?</code>: <code>Properties</code> | <code>GcpmBodyFactory</code>; <code>duplicatedCall?</code>: <code>Properties</code> | <code>GcpmDuplicatedCallFactory</code>; <code>mode</code>: <code>"gcpm"</code>; }</td>
-                  <td>Footnote output mode. Default is <code>'pandoc'</code> (endnote section).</td>
-                </tr>
-                <tr>
-                  <td><a id="hardlinebreaks"></a><code>hardLineBreaks?</code></td>
-                  <td><code>boolean</code></td>
-                  <td>Add <code>&lt;br&gt;</code> at the position of hard line breaks, without needing spaces.</td>
-                </tr>
-                <tr>
-                  <td><a id="imgfigcaptionorder"></a><code>imgFigcaptionOrder?</code></td>
-                  <td><code>"img-figcaption"</code> | <code>"figcaption-img"</code></td>
-                  <td>Order of img and figcaption elements in figure.</td>
-                </tr>
-                <tr>
-                  <td><a id="language"></a><code>language?</code></td>
-                  <td><code>string</code></td>
-                  <td>Document language (ignored in partial mode).</td>
-                </tr>
-                <tr>
-                  <td><a id="math"></a><code>math?</code></td>
-                  <td><code>boolean</code></td>
-                  <td>Enable math syntax.</td>
-                </tr>
-                <tr>
-                  <td><a id="partial"></a><code>partial?</code></td>
-                  <td><code>boolean</code></td>
-                  <td>Output markdown fragments.</td>
-                </tr>
-                <tr>
-                  <td><a id="replace"></a><code>replace?</code></td>
-                  <td><code>ReplaceRule</code>[]</td>
-                  <td>Replacement handler for HTML string.</td>
-                </tr>
-                <tr>
-                  <td><a id="style"></a><code>style?</code></td>
-                  <td><code>string</code> | <code>string</code>[]</td>
-                  <td>Custom stylesheet path/URL.</td>
-                </tr>
-                <tr>
-                  <td><a id="title"></a><code>title?</code></td>
-                  <td><code>string</code></td>
-                  <td>Document title (ignored in partial mode).</td>
-                </tr>
-              </tbody>
-            </table>
-            <hr>
+      <section class="level4">
+        <h4 id="returns">Returns</h4>
+        <p><code>Promise</code>&lt;<code>void</code>&gt;</p>
+        <hr>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="create">create()</h3>
+      <blockquote>
+        <p><strong>create</strong>(<code>options</code>): <code>Promise</code>&lt;<code>void</code>&gt;</p>
+      </blockquote>
+      <p>Scaffold a new Vivliostyle project.</p>
+      <section class="level4">
+        <h4 id="parameters-1">Parameters</h4>
+        <section class="level5">
+          <h5 id="options-1">options</h5>
+          <section class="level6">
+            <h6 id="author-1">author?</h6>
+            <p><code>string</code> = <code>...</code></p>
           </section>
-        </section>
-        <section class="level3">
-          <h3 id="templatevariable">TemplateVariable</h3>
-          <section class="level4">
-            <h4 id="extends">Extends</h4>
-            <ul>
-              <li><code>Omit</code>&lt;<code>ParsedVivliostyleInlineConfig</code>, <code>"theme"</code>&gt;</li>
-            </ul>
+          <section class="level6">
+            <h6 id="bleed-1">bleed?</h6>
+            <p><code>string</code> = <code>...</code></p>
           </section>
-          <section class="level4">
-            <h4 id="properties-1">Properties</h4>
-            <table>
-              <thead>
-                <tr>
-                  <th>Property</th>
-                  <th>Type</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><a id="author"></a><code>author</code></td>
-                  <td><code>string</code></td>
-                </tr>
-                <tr>
-                  <td><a id="bleed"></a><code>bleed?</code></td>
-                  <td><code>string</code></td>
-                </tr>
-                <tr>
-                  <td><a id="browser"></a><code>browser?</code></td>
-                  <td><code>object</code></td>
-                </tr>
-                <tr>
-                  <td><code>browser.tag?</code></td>
-                  <td><code>string</code></td>
-                </tr>
-                <tr>
-                  <td><code>browser.type</code></td>
-                  <td><code>"chrome"</code> | <code>"chromium"</code> | <code>"firefox"</code></td>
-                </tr>
-                <tr>
-                  <td><a id="cliversion"></a><code>cliVersion</code></td>
-                  <td><code>string</code></td>
-                </tr>
-                <tr>
-                  <td><a id="cmyk"></a><code>cmyk?</code></td>
-                  <td><code>boolean</code> | { <code>mapOutput?</code>: <code>string</code>; <code>overrideMap?</code>: [<code>string</code> | { <code>b</code>: <code>number</code>; <code>g</code>: <code>number</code>; <code>r</code>: <code>number</code>; }, { <code>c</code>: <code>number</code>; <code>k</code>: <code>number</code>; <code>m</code>: <code>number</code>; <code>y</code>: <code>number</code>; }][]; <code>reserveMap?</code>: [<code>string</code> | { <code>b</code>: <code>number</code>; <code>g</code>: <code>number</code>; <code>r</code>: <code>number</code>; }, { <code>c</code>: <code>number</code>; <code>k</code>: <code>number</code>; <code>m</code>: <code>number</code>; <code>y</code>: <code>number</code>; }][]; <code>warnUnmapped?</code>: <code>boolean</code>; }</td>
-                </tr>
-                <tr>
-                  <td><a id="config"></a><code>config?</code></td>
-                  <td><code>string</code></td>
-                </tr>
-                <tr>
-                  <td><a id="configdata"></a><code>configData?</code></td>
-                  <td><a href="#vivliostyleconfigschema"><code>VivliostyleConfigSchema</code></a> | <code>null</code></td>
-                </tr>
-                <tr>
-                  <td><a id="coreversion"></a><code>coreVersion</code></td>
-                  <td><code>string</code></td>
-                </tr>
-                <tr>
-                  <td><a id="createconfigfileonly"></a><code>createConfigFileOnly?</code></td>
-                  <td><code>boolean</code></td>
-                </tr>
-                <tr>
-                  <td><a id="cropmarks"></a><code>cropMarks?</code></td>
-                  <td><code>boolean</code></td>
-                </tr>
-                <tr>
-                  <td><a id="cropoffset"></a><code>cropOffset?</code></td>
-                  <td><code>string</code></td>
-                </tr>
-                <tr>
-                  <td><a id="css"></a><code>css?</code></td>
-                  <td><code>string</code></td>
-                </tr>
-                <tr>
-                  <td><a id="cwd"></a><code>cwd?</code></td>
-                  <td><code>string</code></td>
-                </tr>
-                <tr>
-                  <td><a id="disableserverstartup"></a><code>disableServerStartup?</code></td>
-                  <td><code>boolean</code></td>
-                </tr>
-                <tr>
-                  <td><a id="enablestaticserve"></a><code>enableStaticServe?</code></td>
-                  <td><code>boolean</code></td>
-                </tr>
-                <tr>
-                  <td><a id="enableviewerstartpage"></a><code>enableViewerStartPage?</code></td>
-                  <td><code>boolean</code></td>
-                </tr>
-                <tr>
-                  <td><a id="executablebrowser"></a><code>executableBrowser?</code></td>
-                  <td><code>string</code></td>
-                </tr>
-                <tr>
-                  <td><a id="host"></a><code>host?</code></td>
-                  <td><code>string</code> | <code>boolean</code></td>
-                </tr>
-                <tr>
-                  <td><a id="ignorehttpserrors"></a><code>ignoreHttpsErrors?</code></td>
-                  <td><code>boolean</code></td>
-                </tr>
-                <tr>
-                  <td><a id="image"></a><code>image?</code></td>
-                  <td><code>string</code></td>
-                </tr>
-                <tr>
-                  <td><a id="input"></a><code>input?</code></td>
-                  <td><code>object</code></td>
-                </tr>
-                <tr>
-                  <td><code>input.entry</code></td>
-                  <td><code>string</code></td>
-                </tr>
-                <tr>
-                  <td><code>input.format</code></td>
-                  <td><code>InputFormat</code></td>
-                </tr>
-                <tr>
-                  <td><a id="installdependencies"></a><code>installDependencies?</code></td>
-                  <td><code>boolean</code></td>
-                </tr>
-                <tr>
-                  <td><a id="language-1"></a><code>language</code></td>
-                  <td><code>string</code></td>
-                </tr>
-                <tr>
-                  <td><a id="logger"></a><code>logger?</code></td>
-                  <td><code>LoggerInterface</code></td>
-                </tr>
-                <tr>
-                  <td><a id="loglevel"></a><code>logLevel?</code></td>
-                  <td><code>"info"</code> | <code>"silent"</code> | <code>"verbose"</code> | <code>"debug"</code></td>
-                </tr>
-                <tr>
-                  <td><a id="openviewer"></a><code>openViewer?</code></td>
-                  <td><code>boolean</code></td>
-                </tr>
-                <tr>
-                  <td><a id="output"></a><code>output?</code></td>
-                  <td><code>object</code> &amp; <code>object</code> &amp; <code>object</code>[]</td>
-                </tr>
-                <tr>
-                  <td><a id="port"></a><code>port?</code></td>
-                  <td><code>number</code></td>
-                </tr>
-                <tr>
-                  <td><a id="preflight"></a><code>preflight?</code></td>
-                  <td><code>"press-ready"</code> | <code>"press-ready-local"</code></td>
-                </tr>
-                <tr>
-                  <td><a id="preflightoption"></a><code>preflightOption?</code></td>
-                  <td><code>string</code>[]</td>
-                </tr>
-                <tr>
-                  <td><a id="pressready"></a><code>pressReady?</code></td>
-                  <td><code>boolean</code></td>
-                </tr>
-                <tr>
-                  <td><a id="projectpath"></a><code>projectPath</code></td>
-                  <td><code>string</code></td>
-                </tr>
-                <tr>
-                  <td><a id="proxybypass"></a><code>proxyBypass?</code></td>
-                  <td><code>string</code></td>
-                </tr>
-                <tr>
-                  <td><a id="proxypass"></a><code>proxyPass?</code></td>
-                  <td><code>string</code></td>
-                </tr>
-                <tr>
-                  <td><a id="proxyserver"></a><code>proxyServer?</code></td>
-                  <td><code>string</code></td>
-                </tr>
-                <tr>
-                  <td><a id="proxyuser"></a><code>proxyUser?</code></td>
-                  <td><code>string</code></td>
-                </tr>
-                <tr>
-                  <td><a id="quick"></a><code>quick?</code></td>
-                  <td><code>boolean</code></td>
-                </tr>
-                <tr>
-                  <td><a id="readingprogression"></a><code>readingProgression?</code></td>
-                  <td><code>"ltr"</code> | <code>"rtl"</code></td>
-                </tr>
-                <tr>
-                  <td><a id="rendermode"></a><code>renderMode?</code></td>
-                  <td><code>"local"</code> | <code>"docker"</code></td>
-                </tr>
-                <tr>
-                  <td><a id="sandbox"></a><code>sandbox?</code></td>
-                  <td><code>boolean</code></td>
-                </tr>
-                <tr>
-                  <td><a id="signal"></a><code>signal?</code></td>
-                  <td><code>AbortSignal</code></td>
-                </tr>
-                <tr>
-                  <td><a id="singledoc"></a><code>singleDoc?</code></td>
-                  <td><code>boolean</code></td>
-                </tr>
-                <tr>
-                  <td><a id="size"></a><code>size?</code></td>
-                  <td><code>string</code></td>
-                </tr>
-                <tr>
-                  <td><a id="stderr"></a><code>stderr?</code></td>
-                  <td><code>Writable</code></td>
-                </tr>
-                <tr>
-                  <td><a id="stdin"></a><code>stdin?</code></td>
-                  <td><code>Readable</code></td>
-                </tr>
-                <tr>
-                  <td><a id="stdout"></a><code>stdout?</code></td>
-                  <td><code>Writable</code></td>
-                </tr>
-                <tr>
-                  <td><a id="style-1"></a><code>style?</code></td>
-                  <td><code>string</code></td>
-                </tr>
-                <tr>
-                  <td><a id="template"></a><code>template?</code></td>
-                  <td><code>string</code></td>
-                </tr>
-                <tr>
-                  <td><a id="theme"></a><code>theme?</code></td>
-                  <td><code>string</code> | <code>object</code> &amp; <code>object</code> | (<code>string</code> | <code>object</code> &amp; <code>object</code>)[]</td>
-                </tr>
-                <tr>
-                  <td><a id="themepackage"></a><code>themePackage?</code></td>
-                  <td><code>VivliostylePackageJson</code></td>
-                </tr>
-                <tr>
-                  <td><a id="timeout"></a><code>timeout?</code></td>
-                  <td><code>number</code></td>
-                </tr>
-                <tr>
-                  <td><a id="title-1"></a><code>title</code></td>
-                  <td><code>string</code></td>
-                </tr>
-                <tr>
-                  <td><a id="userstyle"></a><code>userStyle?</code></td>
-                  <td><code>string</code></td>
-                </tr>
-                <tr>
-                  <td><a id="viewer"></a><code>viewer?</code></td>
-                  <td><code>string</code></td>
-                </tr>
-                <tr>
-                  <td><a id="viewerparam"></a><code>viewerParam?</code></td>
-                  <td><code>string</code></td>
-                </tr>
-                <tr>
-                  <td><a id="vite"></a><code>vite?</code></td>
-                  <td><code>UserConfig</code></td>
-                </tr>
-                <tr>
-                  <td><a id="viteconfigfile"></a><code>viteConfigFile?</code></td>
-                  <td><code>string</code> | <code>boolean</code></td>
-                </tr>
-              </tbody>
-            </table>
+          <section class="level6">
+            <h6 id="browser-1">browser?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="cmyk-1">cmyk?</h6>
+            <p><code>boolean</code> | { <code>mapOutput?</code>: <code>string</code>; <code>overrideMap?</code>: [<code>string</code> | { <code>b</code>: <code>number</code>; <code>g</code>: <code>number</code>; <code>r</code>: <code>number</code>; }, { <code>c</code>: <code>number</code>; <code>k</code>: <code>number</code>; <code>m</code>: <code>number</code>; <code>y</code>: <code>number</code>; }][]; <code>reserveMap?</code>: [<code>string</code> | { <code>b</code>: <code>number</code>; <code>g</code>: <code>number</code>; <code>r</code>: <code>number</code>; }, { <code>c</code>: <code>number</code>; <code>k</code>: <code>number</code>; <code>m</code>: <code>number</code>; <code>y</code>: <code>number</code>; }][]; <code>warnUnmapped?</code>: <code>boolean</code>; } = <code>CmykSchema</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="config-1">config?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="configdata-1">configData?</h6>
+            <p><a href="#vivliostyleconfigschema"><code>VivliostyleConfigSchema</code></a> | <code>null</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="createconfigfileonly-1">createConfigFileOnly?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="cropmarks-1">cropMarks?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="cropoffset-1">cropOffset?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="css-1">css?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="cwd-1">cwd?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="disableserverstartup-1">disableServerStartup?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="enablestaticserve-1">enableStaticServe?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="enableviewerstartpage-1">enableViewerStartPage?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="executablebrowser-1">executableBrowser?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="host-1">host?</h6>
+            <p><code>string</code> | <code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="ignorehttpserrors-1">ignoreHttpsErrors?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="image-1">image?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="input-1">input?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="installdependencies-1">installDependencies?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="language-1">language?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="logger-1">logger?</h6>
+            <p><code>LoggerInterface</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="loglevel-1">logLevel?</h6>
+            <p><code>"info"</code> | <code>"silent"</code> | <code>"verbose"</code> | <code>"debug"</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="openviewer-1">openViewer?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="output-1">output?</h6>
+            <p><code>string</code> | <code>object</code> &amp; <code>object</code> | (<code>string</code> | <code>object</code> &amp; <code>object</code>)[] = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="port-1">port?</h6>
+            <p><code>number</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="preflight-1">preflight?</h6>
+            <p><code>"press-ready"</code> | <code>"press-ready-local"</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="preflightoption-1">preflightOption?</h6>
+            <p><code>string</code> | <code>string</code>[] = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="pressready-1">pressReady?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="projectpath-1">projectPath?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="proxybypass-1">proxyBypass?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="proxypass-1">proxyPass?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="proxyserver-1">proxyServer?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="proxyuser-1">proxyUser?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="quick-1">quick?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="readingprogression-1">readingProgression?</h6>
+            <p><code>"ltr"</code> | <code>"rtl"</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="rendermode-1">renderMode?</h6>
+            <p><code>"local"</code> | <code>"docker"</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="sandbox-1">sandbox?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="signal-1">signal?</h6>
+            <p><code>AbortSignal</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="singledoc-1">singleDoc?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="size-1">size?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="stderr-1">stderr?</h6>
+            <p><code>Writable</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="stdin-1">stdin?</h6>
+            <p><code>Readable</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="stdout-1">stdout?</h6>
+            <p><code>Writable</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="style-1">style?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="template-1">template?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="theme-1">theme?</h6>
+            <p><code>string</code> | <code>false</code> | <code>object</code> &amp; <code>object</code> | (<code>string</code> | <code>object</code> &amp; <code>object</code>)[] = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="timeout-1">timeout?</h6>
+            <p><code>number</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="title-1">title?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="userstyle-1">userStyle?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="viewer-1">viewer?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="viewerparam-1">viewerParam?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="vite-1">vite?</h6>
+            <p><code>UserConfig</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="viteconfigfile-1">viteConfigFile?</h6>
+            <p><code>string</code> | <code>boolean</code> = <code>...</code></p>
           </section>
         </section>
       </section>
-      <section class="level2">
-        <h2 id="type-aliases-1">Type Aliases</h2>
-        <section class="level3">
-          <h3 id="metadata-1">Metadata</h3>
-          <blockquote>
-            <p><strong>Metadata</strong> = <code>object</code></p>
-          </blockquote>
-          <p>Metadata from Frontmatter.</p>
-          <section class="level4">
-            <h4 id="properties-2">Properties</h4>
-            <section class="level5">
-              <h5 id="base">base?</h5>
-              <blockquote>
-                <p><code>optional</code> <strong>base</strong>: <code>Attribute</code>[]</p>
-              </blockquote>
-              <p>Attributes of <code>&lt;base&gt;</code>.</p>
-            </section>
-            <section class="level5">
-              <h5 id="body">body?</h5>
-              <blockquote>
-                <p><code>optional</code> <strong>body</strong>: <code>Attribute</code>[]</p>
-              </blockquote>
-              <p>Attributes of <code>&lt;body&gt;</code>.</p>
-            </section>
-            <section class="level5">
-              <h5 id="class">class?</h5>
-              <blockquote>
-                <p><code>optional</code> <strong>class</strong>: <code>string</code></p>
-              </blockquote>
-              <p>Value of <code>&lt;html class="..."&gt;</code>.</p>
-            </section>
-            <section class="level5">
-              <h5 id="custom">custom?</h5>
-              <blockquote>
-                <p><code>optional</code> <strong>custom</strong>: <code>object</code></p>
-              </blockquote>
-              <p>
-                A set of key-value pairs that are specified in <code>readMetadata</code> not to be processed as <code>&lt;meta&gt;</code>.
-                The data types converted from Frontmatter's YAML are retained.
-                Use this if want to add custom metadata with a third party tool.
-              </p>
-              <section class="level6">
-                <h6 id="index-signature">Index Signature</h6>
-                <p>[<code>key</code>: <code>string</code>]: <code>any</code></p>
-              </section>
-            </section>
-            <section class="level5">
-              <h5 id="dir">dir?</h5>
-              <blockquote>
-                <p><code>optional</code> <strong>dir</strong>: <code>string</code></p>
-              </blockquote>
-              <p>Value of <code>&lt;html dir="..."&gt;</code>. e.g. <code>ltr</code>, <code>rtl</code>, <code>auto</code>.</p>
-            </section>
-            <section class="level5">
-              <h5 id="head">head?</h5>
-              <blockquote>
-                <p><code>optional</code> <strong>head</strong>: <code>string</code></p>
-              </blockquote>
-              <p><code>&lt;head&gt;...&lt;/head&gt;</code>, reserved for future use.</p>
-            </section>
-            <section class="level5">
-              <h5 id="html">html?</h5>
-              <blockquote>
-                <p><code>optional</code> <strong>html</strong>: <code>Attribute</code>[]</p>
-              </blockquote>
-              <p>
-                Attributes of <code>&lt;html&gt;</code>.
-                The <code>id</code>,<code> lang</code>, <code>dir</code>, and<code> class</code> specified in the root take precedence over the value of this property.
-              </p>
-            </section>
-            <section class="level5">
-              <h5 id="id">id?</h5>
-              <blockquote>
-                <p><code>optional</code> <strong>id</strong>: <code>string</code></p>
-              </blockquote>
-              <p>Value of <code>&lt;html id="..."&gt;</code>.</p>
-            </section>
-            <section class="level5">
-              <h5 id="lang">lang?</h5>
-              <blockquote>
-                <p><code>optional</code> <strong>lang</strong>: <code>string</code></p>
-              </blockquote>
-              <p>Value of <code>&lt;html lang="..."&gt;</code>.</p>
-            </section>
-            <section class="level5">
-              <h5 id="link">link?</h5>
-              <blockquote>
-                <p><code>optional</code> <strong>link</strong>: <code>Attribute</code>[][]</p>
-              </blockquote>
-              <p>Attribute collection of <code>&lt;link&gt;</code>.</p>
-            </section>
-            <section class="level5">
-              <h5 id="meta">meta?</h5>
-              <blockquote>
-                <p><code>optional</code> <strong>meta</strong>: <code>Attribute</code>[][]</p>
-              </blockquote>
-              <p>Attribute collection of <code>&lt;meta&gt;</code>.</p>
-            </section>
-            <section class="level5">
-              <h5 id="script">script?</h5>
-              <blockquote>
-                <p><code>optional</code> <strong>script</strong>: <code>Attribute</code>[][]</p>
-              </blockquote>
-              <p>Attribute collection of <code>&lt;script&gt;</code>.</p>
-            </section>
-            <section class="level5">
-              <h5 id="style-4">style?</h5>
-              <blockquote>
-                <p><code>optional</code> <strong>style</strong>: <code>string</code></p>
-              </blockquote>
-              <p><code>&lt;style&gt;...&lt;/style&gt;</code>, reserved for future use.</p>
-            </section>
-            <section class="level5">
-              <h5 id="title-4">title?</h5>
-              <blockquote>
-                <p><code>optional</code> <strong>title</strong>: <code>string</code></p>
-              </blockquote>
-              <p>Value of <code>&lt;title&gt;...&lt;/title&gt;</code>.</p>
-            </section>
-            <section class="level5">
-              <h5 id="vfm-1">vfm?</h5>
-              <blockquote>
-                <p><code>optional</code> <strong>vfm</strong>: <code>VFMSettings</code></p>
-              </blockquote>
-              <p>VFM settings.</p>
-              <hr>
-            </section>
+      <section class="level4">
+        <h4 id="returns-1">Returns</h4>
+        <p><code>Promise</code>&lt;<code>void</code>&gt;</p>
+        <hr>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="createviteplugin">createVitePlugin()</h3>
+      <blockquote>
+        <p><strong>createVitePlugin</strong>(<code>inlineConfig</code>): <code>Promise</code>&lt;<code>Plugin</code>&lt;<code>any</code>&gt;[]&gt;</p>
+      </blockquote>
+      <section class="level4">
+        <h4 id="parameters-2">Parameters</h4>
+        <section class="level5">
+          <h5 id="inlineconfig">inlineConfig</h5>
+          <section class="level6">
+            <h6 id="author-2">author?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="bleed-2">bleed?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="browser-2">browser?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="cmyk-2">cmyk?</h6>
+            <p><code>boolean</code> | { <code>mapOutput?</code>: <code>string</code>; <code>overrideMap?</code>: [<code>string</code> | { <code>b</code>: <code>number</code>; <code>g</code>: <code>number</code>; <code>r</code>: <code>number</code>; }, { <code>c</code>: <code>number</code>; <code>k</code>: <code>number</code>; <code>m</code>: <code>number</code>; <code>y</code>: <code>number</code>; }][]; <code>reserveMap?</code>: [<code>string</code> | { <code>b</code>: <code>number</code>; <code>g</code>: <code>number</code>; <code>r</code>: <code>number</code>; }, { <code>c</code>: <code>number</code>; <code>k</code>: <code>number</code>; <code>m</code>: <code>number</code>; <code>y</code>: <code>number</code>; }][]; <code>warnUnmapped?</code>: <code>boolean</code>; } = <code>CmykSchema</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="config-2">config?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="configdata-2">configData?</h6>
+            <p><a href="#vivliostyleconfigschema"><code>VivliostyleConfigSchema</code></a> | <code>null</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="createconfigfileonly-2">createConfigFileOnly?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="cropmarks-2">cropMarks?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="cropoffset-2">cropOffset?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="css-2">css?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="cwd-2">cwd?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="disableserverstartup-2">disableServerStartup?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="enablestaticserve-2">enableStaticServe?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="enableviewerstartpage-2">enableViewerStartPage?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="executablebrowser-2">executableBrowser?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="host-2">host?</h6>
+            <p><code>string</code> | <code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="ignorehttpserrors-2">ignoreHttpsErrors?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="image-2">image?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="input-2">input?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="installdependencies-2">installDependencies?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="language-2">language?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="logger-2">logger?</h6>
+            <p><code>LoggerInterface</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="loglevel-2">logLevel?</h6>
+            <p><code>"info"</code> | <code>"silent"</code> | <code>"verbose"</code> | <code>"debug"</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="openviewer-2">openViewer?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="output-2">output?</h6>
+            <p><code>string</code> | <code>object</code> &amp; <code>object</code> | (<code>string</code> | <code>object</code> &amp; <code>object</code>)[] = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="port-2">port?</h6>
+            <p><code>number</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="preflight-2">preflight?</h6>
+            <p><code>"press-ready"</code> | <code>"press-ready-local"</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="preflightoption-2">preflightOption?</h6>
+            <p><code>string</code> | <code>string</code>[] = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="pressready-2">pressReady?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="projectpath-2">projectPath?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="proxybypass-2">proxyBypass?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="proxypass-2">proxyPass?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="proxyserver-2">proxyServer?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="proxyuser-2">proxyUser?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="quick-2">quick?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="readingprogression-2">readingProgression?</h6>
+            <p><code>"ltr"</code> | <code>"rtl"</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="rendermode-2">renderMode?</h6>
+            <p><code>"local"</code> | <code>"docker"</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="sandbox-2">sandbox?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="signal-2">signal?</h6>
+            <p><code>AbortSignal</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="singledoc-2">singleDoc?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="size-2">size?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="stderr-2">stderr?</h6>
+            <p><code>Writable</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="stdin-2">stdin?</h6>
+            <p><code>Readable</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="stdout-2">stdout?</h6>
+            <p><code>Writable</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="style-2">style?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="template-2">template?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="theme-2">theme?</h6>
+            <p><code>string</code> | <code>false</code> | <code>object</code> &amp; <code>object</code> | (<code>string</code> | <code>object</code> &amp; <code>object</code>)[] = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="timeout-2">timeout?</h6>
+            <p><code>number</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="title-2">title?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="userstyle-2">userStyle?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="viewer-2">viewer?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="viewerparam-2">viewerParam?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="vite-2">vite?</h6>
+            <p><code>UserConfig</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="viteconfigfile-2">viteConfigFile?</h6>
+            <p><code>string</code> | <code>boolean</code> = <code>...</code></p>
           </section>
         </section>
-        <section class="level3">
-          <h3 id="structureddocument">StructuredDocument</h3>
-          <blockquote>
-            <p><strong>StructuredDocument</strong> = <code>object</code></p>
-          </blockquote>
-          <section class="level4">
-            <h4 id="see">See</h4>
-            <p><a href="https://github.com/vivliostyle/vivliostyle-cli/blob/main/docs/config.md">https://github.com/vivliostyle/vivliostyle-cli/blob/main/docs/config.md</a></p>
+      </section>
+      <section class="level4">
+        <h4 id="returns-2">Returns</h4>
+        <p><code>Promise</code>&lt;<code>Plugin</code>&lt;<code>any</code>&gt;[]&gt;</p>
+        <hr>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="defineconfig">defineConfig()</h3>
+      <blockquote>
+        <p><strong>defineConfig</strong>(<code>config</code>): <a href="#vivliostyleconfigschema"><code>VivliostyleConfigSchema</code></a></p>
+      </blockquote>
+      <p>Define the configuration for Vivliostyle CLI.</p>
+      <section class="level4">
+        <h4 id="parameters-3">Parameters</h4>
+        <section class="level5">
+          <h5 id="config-3">config</h5>
+          <p><a href="#vivliostyleconfigschema"><code>VivliostyleConfigSchema</code></a></p>
+        </section>
+      </section>
+      <section class="level4">
+        <h4 id="returns-3">Returns</h4>
+        <p><a href="#vivliostyleconfigschema"><code>VivliostyleConfigSchema</code></a></p>
+        <hr>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="preview">preview()</h3>
+      <blockquote>
+        <p><strong>preview</strong>(<code>options</code>): <code>Promise</code>&lt;<code>ViteDevServer</code>&gt;</p>
+      </blockquote>
+      <p>Open a browser for previewing the publication.</p>
+      <section class="level4">
+        <h4 id="parameters-4">Parameters</h4>
+        <section class="level5">
+          <h5 id="options-2">options</h5>
+          <section class="level6">
+            <h6 id="author-3">author?</h6>
+            <p><code>string</code> = <code>...</code></p>
           </section>
-          <section class="level4">
-            <h4 id="properties-3">Properties</h4>
-            <section class="level5">
-              <h5 id="children">children</h5>
-              <blockquote>
-                <p><strong>children</strong>: <a href="#structureddocument"><code>StructuredDocument</code></a>[]</p>
-              </blockquote>
-            </section>
-            <section class="level5">
-              <h5 id="href">href</h5>
-              <blockquote>
-                <p><strong>href</strong>: <code>string</code></p>
-              </blockquote>
-            </section>
-            <section class="level5">
-              <h5 id="sections">sections?</h5>
-              <blockquote>
-                <p><code>optional</code> <strong>sections</strong>: <a href="#structureddocumentsection"><code>StructuredDocumentSection</code></a>[]</p>
-              </blockquote>
-            </section>
-            <section class="level5">
-              <h5 id="title-5">title</h5>
-              <blockquote>
-                <p><strong>title</strong>: <code>string</code></p>
-              </blockquote>
-              <hr>
-            </section>
+          <section class="level6">
+            <h6 id="bleed-3">bleed?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="browser-3">browser?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="cmyk-3">cmyk?</h6>
+            <p><code>boolean</code> | { <code>mapOutput?</code>: <code>string</code>; <code>overrideMap?</code>: [<code>string</code> | { <code>b</code>: <code>number</code>; <code>g</code>: <code>number</code>; <code>r</code>: <code>number</code>; }, { <code>c</code>: <code>number</code>; <code>k</code>: <code>number</code>; <code>m</code>: <code>number</code>; <code>y</code>: <code>number</code>; }][]; <code>reserveMap?</code>: [<code>string</code> | { <code>b</code>: <code>number</code>; <code>g</code>: <code>number</code>; <code>r</code>: <code>number</code>; }, { <code>c</code>: <code>number</code>; <code>k</code>: <code>number</code>; <code>m</code>: <code>number</code>; <code>y</code>: <code>number</code>; }][]; <code>warnUnmapped?</code>: <code>boolean</code>; } = <code>CmykSchema</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="config-4">config?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="configdata-3">configData?</h6>
+            <p><a href="#vivliostyleconfigschema"><code>VivliostyleConfigSchema</code></a> | <code>null</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="createconfigfileonly-3">createConfigFileOnly?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="cropmarks-3">cropMarks?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="cropoffset-3">cropOffset?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="css-3">css?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="cwd-3">cwd?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="disableserverstartup-3">disableServerStartup?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="enablestaticserve-3">enableStaticServe?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="enableviewerstartpage-3">enableViewerStartPage?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="executablebrowser-3">executableBrowser?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="host-3">host?</h6>
+            <p><code>string</code> | <code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="ignorehttpserrors-3">ignoreHttpsErrors?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="image-3">image?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="input-3">input?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="installdependencies-3">installDependencies?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="language-3">language?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="logger-3">logger?</h6>
+            <p><code>LoggerInterface</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="loglevel-3">logLevel?</h6>
+            <p><code>"info"</code> | <code>"silent"</code> | <code>"verbose"</code> | <code>"debug"</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="openviewer-3">openViewer?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="output-3">output?</h6>
+            <p><code>string</code> | <code>object</code> &amp; <code>object</code> | (<code>string</code> | <code>object</code> &amp; <code>object</code>)[] = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="port-3">port?</h6>
+            <p><code>number</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="preflight-3">preflight?</h6>
+            <p><code>"press-ready"</code> | <code>"press-ready-local"</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="preflightoption-3">preflightOption?</h6>
+            <p><code>string</code> | <code>string</code>[] = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="pressready-3">pressReady?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="projectpath-3">projectPath?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="proxybypass-3">proxyBypass?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="proxypass-3">proxyPass?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="proxyserver-3">proxyServer?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="proxyuser-3">proxyUser?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="quick-3">quick?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="readingprogression-3">readingProgression?</h6>
+            <p><code>"ltr"</code> | <code>"rtl"</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="rendermode-3">renderMode?</h6>
+            <p><code>"local"</code> | <code>"docker"</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="sandbox-3">sandbox?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="signal-3">signal?</h6>
+            <p><code>AbortSignal</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="singledoc-3">singleDoc?</h6>
+            <p><code>boolean</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="size-3">size?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="stderr-3">stderr?</h6>
+            <p><code>Writable</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="stdin-3">stdin?</h6>
+            <p><code>Readable</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="stdout-3">stdout?</h6>
+            <p><code>Writable</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="style-3">style?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="template-3">template?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="theme-3">theme?</h6>
+            <p><code>string</code> | <code>false</code> | <code>object</code> &amp; <code>object</code> | (<code>string</code> | <code>object</code> &amp; <code>object</code>)[] = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="timeout-3">timeout?</h6>
+            <p><code>number</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="title-3">title?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="userstyle-3">userStyle?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="viewer-3">viewer?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="viewerparam-3">viewerParam?</h6>
+            <p><code>string</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="vite-3">vite?</h6>
+            <p><code>UserConfig</code> = <code>...</code></p>
+          </section>
+          <section class="level6">
+            <h6 id="viteconfigfile-3">viteConfigFile?</h6>
+            <p><code>string</code> | <code>boolean</code> = <code>...</code></p>
           </section>
         </section>
-        <section class="level3">
-          <h3 id="structureddocumentsection">StructuredDocumentSection</h3>
+      </section>
+      <section class="level4">
+        <h4 id="returns-4">Returns</h4>
+        <p><code>Promise</code>&lt;<code>ViteDevServer</code>&gt;</p>
+        <hr>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="vfm">VFM()</h3>
+      <blockquote>
+        <p><strong>VFM</strong>(<code>options?</code>, <code>metadata?</code>): <code>Processor</code></p>
+      </blockquote>
+      <p>Create Unified processor for Markdown AST and Hypertext AST.</p>
+      <section class="level4">
+        <h4 id="parameters-5">Parameters</h4>
+        <section class="level5">
+          <h5 id="options-3">options?</h5>
+          <p><a href="#stringifymarkdownoptions"><code>StringifyMarkdownOptions</code></a></p>
+          <p>Options.</p>
+        </section>
+        <section class="level5">
+          <h5 id="metadata">metadata?</h5>
+          <p><a href="#metadata"><code>Metadata</code></a></p>
+        </section>
+      </section>
+      <section class="level4">
+        <h4 id="returns-5">Returns</h4>
+        <p><code>Processor</code></p>
+        <p>Unified processor.</p>
+      </section>
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="interfaces-1">Interfaces</h2>
+    <section class="level3">
+      <h3 id="stringifymarkdownoptions">StringifyMarkdownOptions</h3>
+      <p>Option for convert Markdown to a stringify (HTML).</p>
+      <section class="level4">
+        <h4 id="properties">Properties</h4>
+        <table>
+          <thead>
+            <tr>
+              <th>Property</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a id="assignidtofigcaption"></a><code>assignIdToFigcaption?</code></td>
+              <td><code>boolean</code></td>
+              <td>Assign ID to figcaption instead of img/code.</td>
+            </tr>
+            <tr>
+              <td><a id="disableformathtml"></a><code>disableFormatHtml?</code></td>
+              <td><code>boolean</code></td>
+              <td>Disable automatic HTML format.</td>
+            </tr>
+            <tr>
+              <td><a id="footnote"></a><code>footnote?</code></td>
+              <td><code>FootnoteMode</code> | { <code>mode</code>: <code>"pandoc"</code>; } | { <code>body?</code>: <code>Properties</code> | <code>DpubBodyFactory</code>; <code>call?</code>: <code>Properties</code> | <code>DpubCallFactory</code>; <code>mode</code>: <code>"dpub"</code>; } | { <code>body?</code>: <code>Properties</code> | <code>GcpmBodyFactory</code>; <code>duplicatedCall?</code>: <code>Properties</code> | <code>GcpmDuplicatedCallFactory</code>; <code>mode</code>: <code>"gcpm"</code>; }</td>
+              <td>Footnote output mode. Default is <code>'pandoc'</code> (endnote section).</td>
+            </tr>
+            <tr>
+              <td><a id="hardlinebreaks"></a><code>hardLineBreaks?</code></td>
+              <td><code>boolean</code></td>
+              <td>Add <code>&lt;br&gt;</code> at the position of hard line breaks, without needing spaces.</td>
+            </tr>
+            <tr>
+              <td><a id="imgfigcaptionorder"></a><code>imgFigcaptionOrder?</code></td>
+              <td><code>"img-figcaption"</code> | <code>"figcaption-img"</code></td>
+              <td>Order of img and figcaption elements in figure.</td>
+            </tr>
+            <tr>
+              <td><a id="language"></a><code>language?</code></td>
+              <td><code>string</code></td>
+              <td>Document language (ignored in partial mode).</td>
+            </tr>
+            <tr>
+              <td><a id="math"></a><code>math?</code></td>
+              <td><code>boolean</code></td>
+              <td>Enable math syntax.</td>
+            </tr>
+            <tr>
+              <td><a id="partial"></a><code>partial?</code></td>
+              <td><code>boolean</code></td>
+              <td>Output markdown fragments.</td>
+            </tr>
+            <tr>
+              <td><a id="replace"></a><code>replace?</code></td>
+              <td><code>ReplaceRule</code>[]</td>
+              <td>Replacement handler for HTML string.</td>
+            </tr>
+            <tr>
+              <td><a id="style"></a><code>style?</code></td>
+              <td><code>string</code> | <code>string</code>[]</td>
+              <td>Custom stylesheet path/URL.</td>
+            </tr>
+            <tr>
+              <td><a id="title"></a><code>title?</code></td>
+              <td><code>string</code></td>
+              <td>Document title (ignored in partial mode).</td>
+            </tr>
+          </tbody>
+        </table>
+        <hr>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="templatevariable">TemplateVariable</h3>
+      <section class="level4">
+        <h4 id="extends">Extends</h4>
+        <ul>
+          <li><code>Omit</code>&lt;<code>ParsedVivliostyleInlineConfig</code>, <code>"theme"</code>&gt;</li>
+        </ul>
+      </section>
+      <section class="level4">
+        <h4 id="properties-1">Properties</h4>
+        <table>
+          <thead>
+            <tr>
+              <th>Property</th>
+              <th>Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><a id="author"></a><code>author</code></td>
+              <td><code>string</code></td>
+            </tr>
+            <tr>
+              <td><a id="bleed"></a><code>bleed?</code></td>
+              <td><code>string</code></td>
+            </tr>
+            <tr>
+              <td><a id="browser"></a><code>browser?</code></td>
+              <td><code>object</code></td>
+            </tr>
+            <tr>
+              <td><code>browser.tag?</code></td>
+              <td><code>string</code></td>
+            </tr>
+            <tr>
+              <td><code>browser.type</code></td>
+              <td><code>"chrome"</code> | <code>"chromium"</code> | <code>"firefox"</code></td>
+            </tr>
+            <tr>
+              <td><a id="cliversion"></a><code>cliVersion</code></td>
+              <td><code>string</code></td>
+            </tr>
+            <tr>
+              <td><a id="cmyk"></a><code>cmyk?</code></td>
+              <td><code>boolean</code> | { <code>mapOutput?</code>: <code>string</code>; <code>overrideMap?</code>: [<code>string</code> | { <code>b</code>: <code>number</code>; <code>g</code>: <code>number</code>; <code>r</code>: <code>number</code>; }, { <code>c</code>: <code>number</code>; <code>k</code>: <code>number</code>; <code>m</code>: <code>number</code>; <code>y</code>: <code>number</code>; }][]; <code>reserveMap?</code>: [<code>string</code> | { <code>b</code>: <code>number</code>; <code>g</code>: <code>number</code>; <code>r</code>: <code>number</code>; }, { <code>c</code>: <code>number</code>; <code>k</code>: <code>number</code>; <code>m</code>: <code>number</code>; <code>y</code>: <code>number</code>; }][]; <code>warnUnmapped?</code>: <code>boolean</code>; }</td>
+            </tr>
+            <tr>
+              <td><a id="config"></a><code>config?</code></td>
+              <td><code>string</code></td>
+            </tr>
+            <tr>
+              <td><a id="configdata"></a><code>configData?</code></td>
+              <td><a href="#vivliostyleconfigschema"><code>VivliostyleConfigSchema</code></a> | <code>null</code></td>
+            </tr>
+            <tr>
+              <td><a id="coreversion"></a><code>coreVersion</code></td>
+              <td><code>string</code></td>
+            </tr>
+            <tr>
+              <td><a id="createconfigfileonly"></a><code>createConfigFileOnly?</code></td>
+              <td><code>boolean</code></td>
+            </tr>
+            <tr>
+              <td><a id="cropmarks"></a><code>cropMarks?</code></td>
+              <td><code>boolean</code></td>
+            </tr>
+            <tr>
+              <td><a id="cropoffset"></a><code>cropOffset?</code></td>
+              <td><code>string</code></td>
+            </tr>
+            <tr>
+              <td><a id="css"></a><code>css?</code></td>
+              <td><code>string</code></td>
+            </tr>
+            <tr>
+              <td><a id="cwd"></a><code>cwd?</code></td>
+              <td><code>string</code></td>
+            </tr>
+            <tr>
+              <td><a id="disableserverstartup"></a><code>disableServerStartup?</code></td>
+              <td><code>boolean</code></td>
+            </tr>
+            <tr>
+              <td><a id="enablestaticserve"></a><code>enableStaticServe?</code></td>
+              <td><code>boolean</code></td>
+            </tr>
+            <tr>
+              <td><a id="enableviewerstartpage"></a><code>enableViewerStartPage?</code></td>
+              <td><code>boolean</code></td>
+            </tr>
+            <tr>
+              <td><a id="executablebrowser"></a><code>executableBrowser?</code></td>
+              <td><code>string</code></td>
+            </tr>
+            <tr>
+              <td><a id="host"></a><code>host?</code></td>
+              <td><code>string</code> | <code>boolean</code></td>
+            </tr>
+            <tr>
+              <td><a id="ignorehttpserrors"></a><code>ignoreHttpsErrors?</code></td>
+              <td><code>boolean</code></td>
+            </tr>
+            <tr>
+              <td><a id="image"></a><code>image?</code></td>
+              <td><code>string</code></td>
+            </tr>
+            <tr>
+              <td><a id="input"></a><code>input?</code></td>
+              <td><code>object</code></td>
+            </tr>
+            <tr>
+              <td><code>input.entry</code></td>
+              <td><code>string</code></td>
+            </tr>
+            <tr>
+              <td><code>input.format</code></td>
+              <td><code>InputFormat</code></td>
+            </tr>
+            <tr>
+              <td><a id="installdependencies"></a><code>installDependencies?</code></td>
+              <td><code>boolean</code></td>
+            </tr>
+            <tr>
+              <td><a id="language-1"></a><code>language</code></td>
+              <td><code>string</code></td>
+            </tr>
+            <tr>
+              <td><a id="logger"></a><code>logger?</code></td>
+              <td><code>LoggerInterface</code></td>
+            </tr>
+            <tr>
+              <td><a id="loglevel"></a><code>logLevel?</code></td>
+              <td><code>"info"</code> | <code>"silent"</code> | <code>"verbose"</code> | <code>"debug"</code></td>
+            </tr>
+            <tr>
+              <td><a id="openviewer"></a><code>openViewer?</code></td>
+              <td><code>boolean</code></td>
+            </tr>
+            <tr>
+              <td><a id="output"></a><code>output?</code></td>
+              <td><code>object</code> &amp; <code>object</code> &amp; <code>object</code>[]</td>
+            </tr>
+            <tr>
+              <td><a id="port"></a><code>port?</code></td>
+              <td><code>number</code></td>
+            </tr>
+            <tr>
+              <td><a id="preflight"></a><code>preflight?</code></td>
+              <td><code>"press-ready"</code> | <code>"press-ready-local"</code></td>
+            </tr>
+            <tr>
+              <td><a id="preflightoption"></a><code>preflightOption?</code></td>
+              <td><code>string</code>[]</td>
+            </tr>
+            <tr>
+              <td><a id="pressready"></a><code>pressReady?</code></td>
+              <td><code>boolean</code></td>
+            </tr>
+            <tr>
+              <td><a id="projectpath"></a><code>projectPath</code></td>
+              <td><code>string</code></td>
+            </tr>
+            <tr>
+              <td><a id="proxybypass"></a><code>proxyBypass?</code></td>
+              <td><code>string</code></td>
+            </tr>
+            <tr>
+              <td><a id="proxypass"></a><code>proxyPass?</code></td>
+              <td><code>string</code></td>
+            </tr>
+            <tr>
+              <td><a id="proxyserver"></a><code>proxyServer?</code></td>
+              <td><code>string</code></td>
+            </tr>
+            <tr>
+              <td><a id="proxyuser"></a><code>proxyUser?</code></td>
+              <td><code>string</code></td>
+            </tr>
+            <tr>
+              <td><a id="quick"></a><code>quick?</code></td>
+              <td><code>boolean</code></td>
+            </tr>
+            <tr>
+              <td><a id="readingprogression"></a><code>readingProgression?</code></td>
+              <td><code>"ltr"</code> | <code>"rtl"</code></td>
+            </tr>
+            <tr>
+              <td><a id="rendermode"></a><code>renderMode?</code></td>
+              <td><code>"local"</code> | <code>"docker"</code></td>
+            </tr>
+            <tr>
+              <td><a id="sandbox"></a><code>sandbox?</code></td>
+              <td><code>boolean</code></td>
+            </tr>
+            <tr>
+              <td><a id="signal"></a><code>signal?</code></td>
+              <td><code>AbortSignal</code></td>
+            </tr>
+            <tr>
+              <td><a id="singledoc"></a><code>singleDoc?</code></td>
+              <td><code>boolean</code></td>
+            </tr>
+            <tr>
+              <td><a id="size"></a><code>size?</code></td>
+              <td><code>string</code></td>
+            </tr>
+            <tr>
+              <td><a id="stderr"></a><code>stderr?</code></td>
+              <td><code>Writable</code></td>
+            </tr>
+            <tr>
+              <td><a id="stdin"></a><code>stdin?</code></td>
+              <td><code>Readable</code></td>
+            </tr>
+            <tr>
+              <td><a id="stdout"></a><code>stdout?</code></td>
+              <td><code>Writable</code></td>
+            </tr>
+            <tr>
+              <td><a id="style-1"></a><code>style?</code></td>
+              <td><code>string</code></td>
+            </tr>
+            <tr>
+              <td><a id="template"></a><code>template?</code></td>
+              <td><code>string</code></td>
+            </tr>
+            <tr>
+              <td><a id="theme"></a><code>theme?</code></td>
+              <td><code>string</code> | <code>object</code> &amp; <code>object</code> | (<code>string</code> | <code>object</code> &amp; <code>object</code>)[]</td>
+            </tr>
+            <tr>
+              <td><a id="themepackage"></a><code>themePackage?</code></td>
+              <td><code>VivliostylePackageJson</code></td>
+            </tr>
+            <tr>
+              <td><a id="timeout"></a><code>timeout?</code></td>
+              <td><code>number</code></td>
+            </tr>
+            <tr>
+              <td><a id="title-1"></a><code>title</code></td>
+              <td><code>string</code></td>
+            </tr>
+            <tr>
+              <td><a id="userstyle"></a><code>userStyle?</code></td>
+              <td><code>string</code></td>
+            </tr>
+            <tr>
+              <td><a id="viewer"></a><code>viewer?</code></td>
+              <td><code>string</code></td>
+            </tr>
+            <tr>
+              <td><a id="viewerparam"></a><code>viewerParam?</code></td>
+              <td><code>string</code></td>
+            </tr>
+            <tr>
+              <td><a id="vite"></a><code>vite?</code></td>
+              <td><code>UserConfig</code></td>
+            </tr>
+            <tr>
+              <td><a id="viteconfigfile"></a><code>viteConfigFile?</code></td>
+              <td><code>string</code> | <code>boolean</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="type-aliases-1">Type Aliases</h2>
+    <section class="level3">
+      <h3 id="metadata-1">Metadata</h3>
+      <blockquote>
+        <p><strong>Metadata</strong> = <code>object</code></p>
+      </blockquote>
+      <p>Metadata from Frontmatter.</p>
+      <section class="level4">
+        <h4 id="properties-2">Properties</h4>
+        <section class="level5">
+          <h5 id="base">base?</h5>
           <blockquote>
-            <p><strong>StructuredDocumentSection</strong> = <code>object</code></p>
+            <p><code>optional</code> <strong>base</strong>: <code>Attribute</code>[]</p>
           </blockquote>
-          <section class="level4">
-            <h4 id="see-1">See</h4>
-            <p><a href="https://github.com/vivliostyle/vivliostyle-cli/blob/main/docs/config.md">https://github.com/vivliostyle/vivliostyle-cli/blob/main/docs/config.md</a></p>
-          </section>
-          <section class="level4">
-            <h4 id="properties-4">Properties</h4>
-            <section class="level5">
-              <h5 id="children-1">children</h5>
-              <blockquote>
-                <p><strong>children</strong>: <a href="#structureddocumentsection"><code>StructuredDocumentSection</code></a>[]</p>
-              </blockquote>
-            </section>
-            <section class="level5">
-              <h5 id="headinghtml">headingHtml</h5>
-              <blockquote>
-                <p><strong>headingHtml</strong>: <code>string</code></p>
-              </blockquote>
-            </section>
-            <section class="level5">
-              <h5 id="headingtext">headingText</h5>
-              <blockquote>
-                <p><strong>headingText</strong>: <code>string</code></p>
-              </blockquote>
-            </section>
-            <section class="level5">
-              <h5 id="href-1">href?</h5>
-              <blockquote>
-                <p><code>optional</code> <strong>href</strong>: <code>string</code></p>
-              </blockquote>
-            </section>
-            <section class="level5">
-              <h5 id="id-1">id?</h5>
-              <blockquote>
-                <p><code>optional</code> <strong>id</strong>: <code>string</code></p>
-              </blockquote>
-            </section>
-            <section class="level5">
-              <h5 id="level">level</h5>
-              <blockquote>
-                <p><strong>level</strong>: <code>number</code></p>
-              </blockquote>
-              <hr>
-            </section>
+          <p>Attributes of <code>&lt;base&gt;</code>.</p>
+        </section>
+        <section class="level5">
+          <h5 id="body">body?</h5>
+          <blockquote>
+            <p><code>optional</code> <strong>body</strong>: <code>Attribute</code>[]</p>
+          </blockquote>
+          <p>Attributes of <code>&lt;body&gt;</code>.</p>
+        </section>
+        <section class="level5">
+          <h5 id="class">class?</h5>
+          <blockquote>
+            <p><code>optional</code> <strong>class</strong>: <code>string</code></p>
+          </blockquote>
+          <p>Value of <code>&lt;html class="..."&gt;</code>.</p>
+        </section>
+        <section class="level5">
+          <h5 id="custom">custom?</h5>
+          <blockquote>
+            <p><code>optional</code> <strong>custom</strong>: <code>object</code></p>
+          </blockquote>
+          <p>
+            A set of key-value pairs that are specified in <code>readMetadata</code> not to be processed as <code>&lt;meta&gt;</code>.
+            The data types converted from Frontmatter's YAML are retained.
+            Use this if want to add custom metadata with a third party tool.
+          </p>
+          <section class="level6">
+            <h6 id="index-signature">Index Signature</h6>
+            <p>[<code>key</code>: <code>string</code>]: <code>any</code></p>
           </section>
         </section>
-        <section class="level3">
-          <h3 id="vivliostyleconfigschema">VivliostyleConfigSchema</h3>
+        <section class="level5">
+          <h5 id="dir">dir?</h5>
           <blockquote>
-            <p><strong>VivliostyleConfigSchema</strong> = <code>BuildTask</code>[] | <code>BuildTask</code></p>
+            <p><code>optional</code> <strong>dir</strong>: <code>string</code></p>
           </blockquote>
-          <section class="level4">
-            <h4 id="see-2">See</h4>
-            <p><a href="https://github.com/vivliostyle/vivliostyle-cli/blob/main/docs/config.md">https://github.com/vivliostyle/vivliostyle-cli/blob/main/docs/config.md</a></p>
-            <hr>
-          </section>
+          <p>Value of <code>&lt;html dir="..."&gt;</code>. e.g. <code>ltr</code>, <code>rtl</code>, <code>auto</code>.</p>
         </section>
-        <section class="level3">
-          <h3 id="vivliostylepackagemetadata">VivliostylePackageMetadata</h3>
+        <section class="level5">
+          <h5 id="head">head?</h5>
           <blockquote>
-            <p><strong>VivliostylePackageMetadata</strong> = <code>SchemaWithPipe</code>&lt;readonly [<code>Omit</code>&lt;<code>ObjectSchema</code>&lt;{ <code>template</code>: <code>SchemaWithPipe</code>&lt;readonly [<code>RecordSchema</code>&lt;<code>SchemaWithPipe</code>&lt;readonly [..., ..., ...]&gt;, <code>ObjectSchema</code>&lt;{ <code>description</code>: ...; <code>name</code>: ...; <code>prompt</code>: ...; <code>source</code>: ...; }, <code>undefined</code>&gt;, <code>undefined</code>&gt;, <code>TitleAction</code>&lt;{[<code>key</code>: <code>string</code>]: <code>object</code>; }, <code>"VivliostyleTemplateMetadata"</code>&gt;]&gt;; <code>theme</code>: <code>SchemaWithPipe</code>&lt;readonly [<code>ObjectSchema</code>&lt;{ <code>author</code>: <code>SchemaWithPipe</code>&lt;...&gt;; <code>category</code>: <code>SchemaWithPipe</code>&lt;...&gt;; <code>name</code>: <code>SchemaWithPipe</code>&lt;...&gt;; <code>style</code>: <code>SchemaWithPipe</code>&lt;...&gt;; <code>topics</code>: <code>SchemaWithPipe</code>&lt;...&gt;; }, <code>undefined</code>&gt;, <code>TitleAction</code>&lt;{ <code>author?</code>: ... | ...; <code>category?</code>: ... | ...; <code>name?</code>: ... | ...; <code>style?</code>: ... | ...; <code>topics?</code>: ... | ...; }, <code>"VivliostyleThemeMetadata"</code>&gt;]&gt;; }, <code>undefined</code>&gt;, <code>"entries"</code> | <code>"~types"</code> | <code>"~run"</code> | <code>"~standard"</code>&gt; &amp; <code>object</code>, <code>TitleAction</code>&lt;{ <code>template?</code>: {[<code>key</code>: <code>string</code>]: <code>object</code>; }; <code>theme?</code>: { <code>author?</code>: <code>string</code>; <code>category?</code>: <code>string</code>; <code>name?</code>: <code>string</code>; <code>style?</code>: <code>string</code>; <code>topics?</code>: <code>string</code>[]; }; }, <code>"VivliostylePackageMetadata"</code>&gt;]&gt;</p>
+            <p><code>optional</code> <strong>head</strong>: <code>string</code></p>
           </blockquote>
+          <p><code>&lt;head&gt;...&lt;/head&gt;</code>, reserved for future use.</p>
+        </section>
+        <section class="level5">
+          <h5 id="html">html?</h5>
+          <blockquote>
+            <p><code>optional</code> <strong>html</strong>: <code>Attribute</code>[]</p>
+          </blockquote>
+          <p>
+            Attributes of <code>&lt;html&gt;</code>.
+            The <code>id</code>,<code> lang</code>, <code>dir</code>, and<code> class</code> specified in the root take precedence over the value of this property.
+          </p>
+        </section>
+        <section class="level5">
+          <h5 id="id">id?</h5>
+          <blockquote>
+            <p><code>optional</code> <strong>id</strong>: <code>string</code></p>
+          </blockquote>
+          <p>Value of <code>&lt;html id="..."&gt;</code>.</p>
+        </section>
+        <section class="level5">
+          <h5 id="lang">lang?</h5>
+          <blockquote>
+            <p><code>optional</code> <strong>lang</strong>: <code>string</code></p>
+          </blockquote>
+          <p>Value of <code>&lt;html lang="..."&gt;</code>.</p>
+        </section>
+        <section class="level5">
+          <h5 id="link">link?</h5>
+          <blockquote>
+            <p><code>optional</code> <strong>link</strong>: <code>Attribute</code>[][]</p>
+          </blockquote>
+          <p>Attribute collection of <code>&lt;link&gt;</code>.</p>
+        </section>
+        <section class="level5">
+          <h5 id="meta">meta?</h5>
+          <blockquote>
+            <p><code>optional</code> <strong>meta</strong>: <code>Attribute</code>[][]</p>
+          </blockquote>
+          <p>Attribute collection of <code>&lt;meta&gt;</code>.</p>
+        </section>
+        <section class="level5">
+          <h5 id="script">script?</h5>
+          <blockquote>
+            <p><code>optional</code> <strong>script</strong>: <code>Attribute</code>[][]</p>
+          </blockquote>
+          <p>Attribute collection of <code>&lt;script&gt;</code>.</p>
+        </section>
+        <section class="level5">
+          <h5 id="style-4">style?</h5>
+          <blockquote>
+            <p><code>optional</code> <strong>style</strong>: <code>string</code></p>
+          </blockquote>
+          <p><code>&lt;style&gt;...&lt;/style&gt;</code>, reserved for future use.</p>
+        </section>
+        <section class="level5">
+          <h5 id="title-4">title?</h5>
+          <blockquote>
+            <p><code>optional</code> <strong>title</strong>: <code>string</code></p>
+          </blockquote>
+          <p>Value of <code>&lt;title&gt;...&lt;/title&gt;</code>.</p>
+        </section>
+        <section class="level5">
+          <h5 id="vfm-1">vfm?</h5>
+          <blockquote>
+            <p><code>optional</code> <strong>vfm</strong>: <code>VFMSettings</code></p>
+          </blockquote>
+          <p>VFM settings.</p>
           <hr>
-        </section>
-        <section class="level3">
-          <h3 id="vivliostylepackagemetadata-1">VivliostylePackageMetadata</h3>
-          <blockquote>
-            <p><strong>VivliostylePackageMetadata</strong> = <code>v.InferInput</code>&lt;<em>typeof</em> <a href="#vivliostylepackagemetadata"><code>VivliostylePackageMetadata</code></a>&gt;</p>
-          </blockquote>
-        </section>
-      </section>
-      <section class="level2">
-        <h2 id="variables-1">Variables</h2>
-        <section class="level3">
-          <h3 id="readmetadata">readMetadata()</h3>
-          <blockquote>
-            <p><code>const</code> <strong>readMetadata</strong>: (<code>md</code>, <code>customKeys?</code>) =&gt; <a href="#metadata"><code>Metadata</code></a></p>
-          </blockquote>
-          <p>Read metadata from Markdown frontmatter.</p>
-          <p>Keys that are not defined as VFM are treated as <code>meta</code>. If you specify a key name in <code>customKeys</code>, the key and its data type will be preserved and stored in <code>custom</code> instead of <code>meta</code>.</p>
-          <section class="level4">
-            <h4 id="parameters-6">Parameters</h4>
-            <section class="level5">
-              <h5 id="md">md</h5>
-              <p><code>string</code></p>
-              <p>Markdown.</p>
-            </section>
-            <section class="level5">
-              <h5 id="customkeys">customKeys?</h5>
-              <p><code>string</code>[]</p>
-              <p>A collection of key names to be ignored by meta processing.</p>
-            </section>
-          </section>
-          <section class="level4">
-            <h4 id="returns-6">Returns</h4>
-            <p><a href="#metadata"><code>Metadata</code></a></p>
-            <p>Metadata.</p><!-- END JavaScript API -->
-          </section>
         </section>
       </section>
     </section>
-  
-
+    <section class="level3">
+      <h3 id="structureddocument">StructuredDocument</h3>
+      <blockquote>
+        <p><strong>StructuredDocument</strong> = <code>object</code></p>
+      </blockquote>
+      <section class="level4">
+        <h4 id="see">See</h4>
+        <p><a href="https://github.com/vivliostyle/vivliostyle-cli/blob/main/docs/config.md">https://github.com/vivliostyle/vivliostyle-cli/blob/main/docs/config.md</a></p>
+      </section>
+      <section class="level4">
+        <h4 id="properties-3">Properties</h4>
+        <section class="level5">
+          <h5 id="children">children</h5>
+          <blockquote>
+            <p><strong>children</strong>: <a href="#structureddocument"><code>StructuredDocument</code></a>[]</p>
+          </blockquote>
+        </section>
+        <section class="level5">
+          <h5 id="href">href</h5>
+          <blockquote>
+            <p><strong>href</strong>: <code>string</code></p>
+          </blockquote>
+        </section>
+        <section class="level5">
+          <h5 id="sections">sections?</h5>
+          <blockquote>
+            <p><code>optional</code> <strong>sections</strong>: <a href="#structureddocumentsection"><code>StructuredDocumentSection</code></a>[]</p>
+          </blockquote>
+        </section>
+        <section class="level5">
+          <h5 id="title-5">title</h5>
+          <blockquote>
+            <p><strong>title</strong>: <code>string</code></p>
+          </blockquote>
+          <hr>
+        </section>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="structureddocumentsection">StructuredDocumentSection</h3>
+      <blockquote>
+        <p><strong>StructuredDocumentSection</strong> = <code>object</code></p>
+      </blockquote>
+      <section class="level4">
+        <h4 id="see-1">See</h4>
+        <p><a href="https://github.com/vivliostyle/vivliostyle-cli/blob/main/docs/config.md">https://github.com/vivliostyle/vivliostyle-cli/blob/main/docs/config.md</a></p>
+      </section>
+      <section class="level4">
+        <h4 id="properties-4">Properties</h4>
+        <section class="level5">
+          <h5 id="children-1">children</h5>
+          <blockquote>
+            <p><strong>children</strong>: <a href="#structureddocumentsection"><code>StructuredDocumentSection</code></a>[]</p>
+          </blockquote>
+        </section>
+        <section class="level5">
+          <h5 id="headinghtml">headingHtml</h5>
+          <blockquote>
+            <p><strong>headingHtml</strong>: <code>string</code></p>
+          </blockquote>
+        </section>
+        <section class="level5">
+          <h5 id="headingtext">headingText</h5>
+          <blockquote>
+            <p><strong>headingText</strong>: <code>string</code></p>
+          </blockquote>
+        </section>
+        <section class="level5">
+          <h5 id="href-1">href?</h5>
+          <blockquote>
+            <p><code>optional</code> <strong>href</strong>: <code>string</code></p>
+          </blockquote>
+        </section>
+        <section class="level5">
+          <h5 id="id-1">id?</h5>
+          <blockquote>
+            <p><code>optional</code> <strong>id</strong>: <code>string</code></p>
+          </blockquote>
+        </section>
+        <section class="level5">
+          <h5 id="level">level</h5>
+          <blockquote>
+            <p><strong>level</strong>: <code>number</code></p>
+          </blockquote>
+          <hr>
+        </section>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="vivliostyleconfigschema">VivliostyleConfigSchema</h3>
+      <blockquote>
+        <p><strong>VivliostyleConfigSchema</strong> = <code>BuildTask</code>[] | <code>BuildTask</code></p>
+      </blockquote>
+      <section class="level4">
+        <h4 id="see-2">See</h4>
+        <p><a href="https://github.com/vivliostyle/vivliostyle-cli/blob/main/docs/config.md">https://github.com/vivliostyle/vivliostyle-cli/blob/main/docs/config.md</a></p>
+        <hr>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="vivliostylepackagemetadata">VivliostylePackageMetadata</h3>
+      <blockquote>
+        <p><strong>VivliostylePackageMetadata</strong> = <code>SchemaWithPipe</code>&lt;readonly [<code>Omit</code>&lt;<code>ObjectSchema</code>&lt;{ <code>template</code>: <code>SchemaWithPipe</code>&lt;readonly [<code>RecordSchema</code>&lt;<code>SchemaWithPipe</code>&lt;readonly [..., ..., ...]&gt;, <code>ObjectSchema</code>&lt;{ <code>description</code>: ...; <code>name</code>: ...; <code>prompt</code>: ...; <code>source</code>: ...; }, <code>undefined</code>&gt;, <code>undefined</code>&gt;, <code>TitleAction</code>&lt;{[<code>key</code>: <code>string</code>]: <code>object</code>; }, <code>"VivliostyleTemplateMetadata"</code>&gt;]&gt;; <code>theme</code>: <code>SchemaWithPipe</code>&lt;readonly [<code>ObjectSchema</code>&lt;{ <code>author</code>: <code>SchemaWithPipe</code>&lt;...&gt;; <code>category</code>: <code>SchemaWithPipe</code>&lt;...&gt;; <code>name</code>: <code>SchemaWithPipe</code>&lt;...&gt;; <code>style</code>: <code>SchemaWithPipe</code>&lt;...&gt;; <code>topics</code>: <code>SchemaWithPipe</code>&lt;...&gt;; }, <code>undefined</code>&gt;, <code>TitleAction</code>&lt;{ <code>author?</code>: ... | ...; <code>category?</code>: ... | ...; <code>name?</code>: ... | ...; <code>style?</code>: ... | ...; <code>topics?</code>: ... | ...; }, <code>"VivliostyleThemeMetadata"</code>&gt;]&gt;; }, <code>undefined</code>&gt;, <code>"entries"</code> | <code>"~types"</code> | <code>"~run"</code> | <code>"~standard"</code>&gt; &amp; <code>object</code>, <code>TitleAction</code>&lt;{ <code>template?</code>: {[<code>key</code>: <code>string</code>]: <code>object</code>; }; <code>theme?</code>: { <code>author?</code>: <code>string</code>; <code>category?</code>: <code>string</code>; <code>name?</code>: <code>string</code>; <code>style?</code>: <code>string</code>; <code>topics?</code>: <code>string</code>[]; }; }, <code>"VivliostylePackageMetadata"</code>&gt;]&gt;</p>
+      </blockquote>
+      <hr>
+    </section>
+    <section class="level3">
+      <h3 id="vivliostylepackagemetadata-1">VivliostylePackageMetadata</h3>
+      <blockquote>
+        <p><strong>VivliostylePackageMetadata</strong> = <code>v.InferInput</code>&lt;<em>typeof</em> <a href="#vivliostylepackagemetadata"><code>VivliostylePackageMetadata</code></a>&gt;</p>
+      </blockquote>
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="variables-1">Variables</h2>
+    <section class="level3">
+      <h3 id="readmetadata">readMetadata()</h3>
+      <blockquote>
+        <p><code>const</code> <strong>readMetadata</strong>: (<code>md</code>, <code>customKeys?</code>) =&gt; <a href="#metadata"><code>Metadata</code></a></p>
+      </blockquote>
+      <p>Read metadata from Markdown frontmatter.</p>
+      <p>Keys that are not defined as VFM are treated as <code>meta</code>. If you specify a key name in <code>customKeys</code>, the key and its data type will be preserved and stored in <code>custom</code> instead of <code>meta</code>.</p>
+      <section class="level4">
+        <h4 id="parameters-6">Parameters</h4>
+        <section class="level5">
+          <h5 id="md">md</h5>
+          <p><code>string</code></p>
+          <p>Markdown.</p>
+        </section>
+        <section class="level5">
+          <h5 id="customkeys">customKeys?</h5>
+          <p><code>string</code>[]</p>
+          <p>A collection of key names to be ignored by meta processing.</p>
+        </section>
+      </section>
+      <section class="level4">
+        <h4 id="returns-6">Returns</h4>
+        <p><a href="#metadata"><code>Metadata</code></a></p>
+        <p>Metadata.</p><!-- END JavaScript API -->
+      </section>
+    </section>
+  </section>
+</section>
 </article> <nav class="page-navigation" data-astro-cid-z7g34ql7=""> <div class="nav-links" data-astro-cid-z7g34ql7=""> <a href="/ja/cli/config/" class="nav-link nav-prev" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">← 前へ</span> <span class="nav-title" data-astro-cid-z7g34ql7="">Config Reference</span> </a> <a href="/ja/cli/templates/" class="nav-link nav-next" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">次へ →</span> <span class="nav-title" data-astro-cid-z7g34ql7="">テンプレート</span> </a> </div> </nav>   </article> </main> </div> <footer class="footer" data-astro-cid-mw7aashj=""> <p data-astro-cid-mw7aashj="">© 2026 Vivliostyle Foundation.</p> </footer> </div>  <script type="module">window.__bodyOverflowLockCount=0;window.lockBodyOverflow=function(){window.__bodyOverflowLockCount++,window.__bodyOverflowLockCount===1&&(document.body.style.overflow="hidden")};window.unlockBodyOverflow=function(){window.__bodyOverflowLockCount=Math.max(0,window.__bodyOverflowLockCount-1),window.__bodyOverflowLockCount===0&&(document.body.style.overflow="")};</script>  <script type="module">document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll(".accordion-toggle").forEach(t=>{t.addEventListener("click",d=>{d.preventDefault();const a=t.getAttribute("data-target"),e=document.getElementById(a),n=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",!n),e&&(e.style.display=n?"none":"block")})})});</script></body></html>

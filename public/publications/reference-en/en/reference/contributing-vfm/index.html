@@ -180,12 +180,17 @@ const lang = "en";
     const open = () => {
       lastFocus = document.activeElement;
 
-      // 本番URL固定でマニフェストを参照する。
-      // localhost / preview からは Vivliostyle Viewer が manifest を取りに行けないので、
-      // その場合は警告を表示する。
-      const isProductionHost = window.location.hostname === 'docs2.vivliostyle.org' ||
-                               window.location.hostname === 'docs.vivliostyle.org';
-      const manifestUrl = `https://docs2.vivliostyle.org/publications/${product}-${lang}/publication.json`;
+      // production host (docs.vivliostyle.org / docs2.vivliostyle.org) では
+      // 自身のホスト上のマニフェストを参照する。それ以外（localhost や
+      // プレビュー環境）からは Vivliostyle Viewer が外部からマニフェストを
+      // 取得できないため、フォールバックとして既定の本番ホストを指定し、
+      // 警告を表示する。
+      const productionHosts = ['docs.vivliostyle.org', 'docs2.vivliostyle.org'];
+      const isProductionHost = productionHosts.includes(window.location.hostname);
+      const manifestHost = isProductionHost
+        ? window.location.hostname
+        : 'docs2.vivliostyle.org';
+      const manifestUrl = `https://${manifestHost}/publications/${product}-${lang}/publication.json`;
       const viewerUrl = `https://vivliostyle.org/viewer/?src=${encodeURIComponent(manifestUrl)}&bookMode=true&lng=${lang}`;
 
       iframe.src = viewerUrl;
@@ -220,51 +225,42 @@ const lang = "en";
     });
   }
 })();</script> </section>  </nav> </aside> <main class="content" data-astro-cid-mw7aashj=""> <nav aria-label="Breadcrumb" class="breadcrumb" data-astro-cid-qaanghzh=""> <ol data-astro-cid-qaanghzh=""> <li data-astro-cid-qaanghzh=""> <a href="/en/" data-astro-cid-qaanghzh="">Home</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <a href="/en/reference/" data-astro-cid-qaanghzh="">Reference</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <span aria-current="page" data-astro-cid-qaanghzh="">Contribution Guide</span>  </li> </ol> </nav> <!-- JSON-LD構造化データ --> <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://docs.vivliostyle.org/en/"},{"@type":"ListItem","position":2,"name":"Reference","item":"https://docs.vivliostyle.org/en/reference/"},{"@type":"ListItem","position":3,"name":"Contribution Guide","item":"https://docs.vivliostyle.org/en/reference/contributing-vfm/"}]}</script>  <article class="prose" data-astro-cid-mw7aashj="">      <article class="docs-content" data-astro-cid-xjylzsq4=""> <!-- Display extracted TOC if exists -->  <div data-astro-cid-xjylzsq4="">
-
-  
-    <meta charset="utf-8">
-    <title>Contribution Guide</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  
-    <section class="level1">
-      <h1 id="contribution-guide">Contribution Guide</h1>
-      <section class="level2">
-        <h2 id="development-guide">Development Guide</h2>
-        <pre class="language-bash"><code class="language-bash"><span class="token function">git</span> clone https://github.com/vivliostyle/vfm.git <span class="token operator">&amp;&amp;</span> <span class="token builtin class-name">cd</span> vfm
+<section class="level1">
+  <h1 id="contribution-guide">Contribution Guide</h1>
+  <section class="level2">
+    <h2 id="development-guide">Development Guide</h2>
+    <pre class="language-bash"><code class="language-bash"><span class="token function">git</span> clone https://github.com/vivliostyle/vfm.git <span class="token operator">&amp;&amp;</span> <span class="token builtin class-name">cd</span> vfm
 <span class="token function">npm</span> <span class="token function">install</span>
 <span class="token function">npm</span> run build
 <span class="token function">npm</span> <span class="token function">link</span>
 <span class="token assign-left variable">DEBUG</span><span class="token operator">=</span>vfm vfm</code></pre>
-        <p>After setup, run <code>npm run dev</code> to watch files.</p>
-      </section>
-      <section class="level2">
-        <h2 id="commit-guide">Commit Guide</h2>
-        <section class="level3">
-          <h3 id="comment">Comment</h3>
-          <p>Please refer to <a href="https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716">Semantic Commit Messages</a> for the commit comment.</p>
-        </section>
-      </section>
-      <section class="level2">
-        <h2 id="release-guide-maintainers-only">Release Guide (Maintainers only)</h2>
-        <section class="level3">
-          <h3 id="enter-pre-release">Enter pre-release</h3>
-          <pre class="language-bash"><code class="language-bash">release-it --preRelease<span class="token operator">=</span>beta --npm.tag<span class="token operator">=</span>next</code></pre>
-        </section>
-        <section class="level3">
-          <h3 id="bump-pre-release-version">Bump pre-release version</h3>
-          <pre class="language-bash"><code class="language-bash"><span class="token function">npm</span> run release:pre
+    <p>After setup, run <code>npm run dev</code> to watch files.</p>
+  </section>
+  <section class="level2">
+    <h2 id="commit-guide">Commit Guide</h2>
+    <section class="level3">
+      <h3 id="comment">Comment</h3>
+      <p>Please refer to <a href="https://gist.github.com/joshbuchea/6f47e86d2510bce28f8e7f42ae84c716">Semantic Commit Messages</a> for the commit comment.</p>
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="release-guide-maintainers-only">Release Guide (Maintainers only)</h2>
+    <section class="level3">
+      <h3 id="enter-pre-release">Enter pre-release</h3>
+      <pre class="language-bash"><code class="language-bash">release-it --preRelease<span class="token operator">=</span>beta --npm.tag<span class="token operator">=</span>next</code></pre>
+    </section>
+    <section class="level3">
+      <h3 id="bump-pre-release-version">Bump pre-release version</h3>
+      <pre class="language-bash"><code class="language-bash"><span class="token function">npm</span> run release:pre
 <span class="token comment"># or</span>
 release-it --preRelease --npm.tag<span class="token operator">=</span>next</code></pre>
-        </section>
-        <section class="level3">
-          <h3 id="graduate">Graduate</h3>
-          <pre class="language-bash"><code class="language-bash"><span class="token function">npm</span> run release
+    </section>
+    <section class="level3">
+      <h3 id="graduate">Graduate</h3>
+      <pre class="language-bash"><code class="language-bash"><span class="token function">npm</span> run release
 <span class="token comment"># or</span>
 release-it</code></pre>
-        </section>
-      </section>
     </section>
-  
-
+  </section>
+</section>
 </div> </article>  <nav class="page-navigation" data-astro-cid-z7g34ql7=""> <div class="nav-links" data-astro-cid-z7g34ql7=""> <a href="/en/reference/contributing-cli/" class="nav-link nav-prev" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">← Previous</span> <span class="nav-title" data-astro-cid-z7g34ql7="">Vivliostyle CLI</span> </a> <a href="/en/reference/contributing-themes/" class="nav-link nav-next" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">Next →</span> <span class="nav-title" data-astro-cid-z7g34ql7="">Vivliostyle Themes</span> </a> </div> </nav>   </article> </main> </div> <footer class="footer" data-astro-cid-mw7aashj=""> <p data-astro-cid-mw7aashj="">© 2026 Vivliostyle Foundation.</p> </footer> </div>  <script type="module">window.__bodyOverflowLockCount=0;window.lockBodyOverflow=function(){window.__bodyOverflowLockCount++,window.__bodyOverflowLockCount===1&&(document.body.style.overflow="hidden")};window.unlockBodyOverflow=function(){window.__bodyOverflowLockCount=Math.max(0,window.__bodyOverflowLockCount-1),window.__bodyOverflowLockCount===0&&(document.body.style.overflow="")};</script>  <script type="module">document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll(".accordion-toggle").forEach(t=>{t.addEventListener("click",a=>{a.preventDefault();const d=t.getAttribute("data-target"),e=document.getElementById(d),n=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",String(!n)),e&&(e.style.display=n?"none":"block")})}),document.querySelectorAll(".toc-toggle").forEach(t=>{t.addEventListener("click",a=>{if(a.target.tagName==="A")return;a.preventDefault();const d=t.getAttribute("data-target"),e=document.getElementById(d),n=t.getAttribute("aria-expanded")==="true";e&&(t.setAttribute("aria-expanded",String(!n)),e.style.display=n?"none":"block")})})});</script></body></html>

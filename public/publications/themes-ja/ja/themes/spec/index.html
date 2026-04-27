@@ -178,12 +178,17 @@ const lang = "ja";
     const open = () => {
       lastFocus = document.activeElement;
 
-      // 本番URL固定でマニフェストを参照する。
-      // localhost / preview からは Vivliostyle Viewer が manifest を取りに行けないので、
-      // その場合は警告を表示する。
-      const isProductionHost = window.location.hostname === 'docs2.vivliostyle.org' ||
-                               window.location.hostname === 'docs.vivliostyle.org';
-      const manifestUrl = `https://docs2.vivliostyle.org/publications/${product}-${lang}/publication.json`;
+      // production host (docs.vivliostyle.org / docs2.vivliostyle.org) では
+      // 自身のホスト上のマニフェストを参照する。それ以外（localhost や
+      // プレビュー環境）からは Vivliostyle Viewer が外部からマニフェストを
+      // 取得できないため、フォールバックとして既定の本番ホストを指定し、
+      // 警告を表示する。
+      const productionHosts = ['docs.vivliostyle.org', 'docs2.vivliostyle.org'];
+      const isProductionHost = productionHosts.includes(window.location.hostname);
+      const manifestHost = isProductionHost
+        ? window.location.hostname
+        : 'docs2.vivliostyle.org';
+      const manifestUrl = `https://${manifestHost}/publications/${product}-${lang}/publication.json`;
       const viewerUrl = `https://vivliostyle.org/viewer/?src=${encodeURIComponent(manifestUrl)}&bookMode=true&lng=${lang}`;
 
       iframe.src = viewerUrl;
@@ -218,48 +223,41 @@ const lang = "ja";
     });
   }
 })();</script> </section>  </nav> </aside> <main class="content" data-astro-cid-mw7aashj=""> <nav aria-label="Breadcrumb" class="breadcrumb" data-astro-cid-qaanghzh=""> <ol data-astro-cid-qaanghzh=""> <li data-astro-cid-qaanghzh=""> <a href="/ja/" data-astro-cid-qaanghzh="">ホーム</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <a href="/ja/themes/" data-astro-cid-qaanghzh="">Themes</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <span aria-current="page" data-astro-cid-qaanghzh="">Vivliostyle Themeの仕様</span>  </li> </ol> </nav> <!-- JSON-LD構造化データ --> <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ホーム","item":"https://docs.vivliostyle.org/ja/"},{"@type":"ListItem","position":2,"name":"Themes","item":"https://docs.vivliostyle.org/ja/themes/"},{"@type":"ListItem","position":3,"name":"Vivliostyle Themeの仕様","item":"https://docs.vivliostyle.org/ja/themes/spec/"}]}</script>  <article class="prose" data-astro-cid-mw7aashj="">    <article data-astro-cid-4zjl2uzy="">
-
-  
-    <meta charset="utf-8">
-    <title>Vivliostyle Themeの仕様</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  
-    <section class="level1">
-      <h1 id="vivliostyle-themeの仕様">Vivliostyle Themeの仕様</h1>
-      <p>Vivliostyle Themeをnpm packageとして公開する場合は以下の仕様に従ってください。<a href="https://github.com/vivliostyle/themes/tree/master/packages/create-vivliostyle-theme">create-vivliostyle-theme</a> を使うと、この仕様に従ったテーマを簡単に作成することができます。</p>
-      <section class="level2">
-        <h2 id="テーマ名">テーマ名</h2>
-        <p>テーマの名前は自由に決められます。ただし、以下の点を考慮することを推奨します。</p>
+<section class="level1">
+  <h1 id="vivliostyle-themeの仕様">Vivliostyle Themeの仕様</h1>
+  <p>Vivliostyle Themeをnpm packageとして公開する場合は以下の仕様に従ってください。<a href="https://github.com/vivliostyle/themes/tree/master/packages/create-vivliostyle-theme">create-vivliostyle-theme</a> を使うと、この仕様に従ったテーマを簡単に作成することができます。</p>
+  <section class="level2">
+    <h2 id="テーマ名">テーマ名</h2>
+    <p>テーマの名前は自由に決められます。ただし、以下の点を考慮することを推奨します。</p>
+    <ul>
+      <li>用途が明確な場合は、用途を表す端的な用語を含める</li>
+      <li>変更可能なスタイルに関する用語を避ける
         <ul>
-          <li>用途が明確な場合は、用途を表す端的な用語を含める</li>
-          <li>変更可能なスタイルに関する用語を避ける
-            <ul>
-              <li>出版物のサイズや組み方向などは、将来的にはVivliostyle Pubなどでユーザーが簡単に変更できるようになる予定です。したがって、これらの変更可能なスタイルに関する用語を使うことは避けてください。</li>
-              <li>避けるべき名前の例：vivliostyle-theme-a4book、vivliostyle-theme-tategakiなど</li>
-            </ul>
-          </li>
+          <li>出版物のサイズや組み方向などは、将来的にはVivliostyle Pubなどでユーザーが簡単に変更できるようになる予定です。したがって、これらの変更可能なスタイルに関する用語を使うことは避けてください。</li>
+          <li>避けるべき名前の例：vivliostyle-theme-a4book、vivliostyle-theme-tategakiなど</li>
         </ul>
-      </section>
-      <section class="level2">
-        <h2 id="テーマに含めるスタイル">テーマに含めるスタイル</h2>
-        <p>テーマは、出版物の特定の部分のみ（図表のみ、脚注のみなど）のスタイルを含んだものではなく、出版物全体のスタイルを含めるものとします。</p>
-        <p>以下に、テーマに含めることが望ましい代表的なスタイルを示します。<a href="https://github.com/vivliostyle/themes/tree/master/packages/create-vivliostyle-theme">create-vivliostyle-theme</a> で作成したテーマの雛形はこれらのスタイルを含んでいます。</p>
-        <ul>
-          <li>ページ（余白、柱など）</li>
-          <li>見出し</li>
-          <li>段落</li>
-          <li>数式</li>
-          <li>図とキャプション</li>
-          <li>表とキャプション</li>
-          <li>ソースコード</li>
-          <li>脚注</li>
-          <li>ルビ</li>
-        </ul>
-      </section>
-      <section class="level2">
-        <h2 id="ディレクトリ構造">ディレクトリ構造</h2>
-        <pre class="language-text"><code class="language-text">vivliostyle-theme-mybook/
+      </li>
+    </ul>
+  </section>
+  <section class="level2">
+    <h2 id="テーマに含めるスタイル">テーマに含めるスタイル</h2>
+    <p>テーマは、出版物の特定の部分のみ（図表のみ、脚注のみなど）のスタイルを含んだものではなく、出版物全体のスタイルを含めるものとします。</p>
+    <p>以下に、テーマに含めることが望ましい代表的なスタイルを示します。<a href="https://github.com/vivliostyle/themes/tree/master/packages/create-vivliostyle-theme">create-vivliostyle-theme</a> で作成したテーマの雛形はこれらのスタイルを含んでいます。</p>
+    <ul>
+      <li>ページ（余白、柱など）</li>
+      <li>見出し</li>
+      <li>段落</li>
+      <li>数式</li>
+      <li>図とキャプション</li>
+      <li>表とキャプション</li>
+      <li>ソースコード</li>
+      <li>脚注</li>
+      <li>ルビ</li>
+    </ul>
+  </section>
+  <section class="level2">
+    <h2 id="ディレクトリ構造">ディレクトリ構造</h2>
+    <pre class="language-text"><code class="language-text">vivliostyle-theme-mybook/
 ├── LICENSE
 ├── README.md
 ├── package.json
@@ -268,11 +266,11 @@ const lang = "ja";
 │&nbsp;&nbsp; └── default.md
 ├── theme.css
 └── vivliostyle.config.js</code></pre>
-        <p><a href="https://github.com/vivliostyle/themes/tree/master/packages/create-vivliostyle-theme">create-vivliostyle-theme</a> でテーマの雛形を作成すると、上のようなファイルが自動生成されます。次の節からは代表的なファイルの詳細を見ていきます。</p>
-      </section>
-      <section class="level2">
-        <h2 id="packagejson">package.json</h2>
-        <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+    <p><a href="https://github.com/vivliostyle/themes/tree/master/packages/create-vivliostyle-theme">create-vivliostyle-theme</a> でテーマの雛形を作成すると、上のようなファイルが自動生成されます。次の節からは代表的なファイルの詳細を見ていきます。</p>
+  </section>
+  <section class="level2">
+    <h2 id="packagejson">package.json</h2>
+    <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"vivliostyle-theme-mybook"</span><span class="token punctuation">,</span>
   <span class="token property">"author"</span><span class="token operator">:</span> <span class="token string">"John Doe &lt;john@example.com&gt;"</span><span class="token punctuation">,</span>
   <span class="token property">"main"</span><span class="token operator">:</span> <span class="token string">"theme.css"</span><span class="token punctuation">,</span>
@@ -292,69 +290,69 @@ const lang = "ja";
     <span class="token punctuation">}</span>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre>
-        <p><a href="https://github.com/vivliostyle/themes/tree/master/packages/vivliostyle-theme-scripts">vivliostyle-theme-scripts</a> を使うと、作成したテーマのpackage.jsonが仕様に従っているかをチェックできます。</p>
-        <pre class="language-bash"><code class="language-bash">$ vivliostyle-theme validate</code></pre>
-        <section class="level3">
-          <h3 id="keywords-プロパティ"><code>keywords</code> プロパティ</h3>
-          <p>任意。</p>
-          <p>このプロパティの値に <code>"vivliostyle-theme"</code> を含めておくと、<a href="https://github.com/vivliostyle/create-book">Create Book</a> を使って出版物を作る際、利用可能なテーマの一覧にあなたのテーマが表示されます。ただし、そのためにはテーマをnpm packageとして公開している必要があります。</p>
-          <p>テーマはVivliostyleに関連するnpm packageであるため、<code>"vivliostyle"</code> も含めておくとよいでしょう。</p>
-        </section>
-        <section class="level3">
-          <h3 id="vivliostyletheme-プロパティ"><code>vivliostyle.theme</code> プロパティ</h3>
-          <section class="level4">
-            <h4 id="style-プロパティ"><code>style</code> プロパティ</h4>
-            <p>必須。テーマで使うメインのCSSを指定します。</p>
-            <p>package.jsonのトップレベルに <code>style</code> や <code>main</code> を指定することもできます。<code>vivliostyle.theme.style</code> と同じ意味を持ちますが、優先順位は <code>vivliostyle.theme.style</code> &gt; <code>style</code> &gt; <code>main</code> です。</p>
-            <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+    <p><a href="https://github.com/vivliostyle/themes/tree/master/packages/vivliostyle-theme-scripts">vivliostyle-theme-scripts</a> を使うと、作成したテーマのpackage.jsonが仕様に従っているかをチェックできます。</p>
+    <pre class="language-bash"><code class="language-bash">$ vivliostyle-theme validate</code></pre>
+    <section class="level3">
+      <h3 id="keywords-プロパティ"><code>keywords</code> プロパティ</h3>
+      <p>任意。</p>
+      <p>このプロパティの値に <code>"vivliostyle-theme"</code> を含めておくと、<a href="https://github.com/vivliostyle/create-book">Create Book</a> を使って出版物を作る際、利用可能なテーマの一覧にあなたのテーマが表示されます。ただし、そのためにはテーマをnpm packageとして公開している必要があります。</p>
+      <p>テーマはVivliostyleに関連するnpm packageであるため、<code>"vivliostyle"</code> も含めておくとよいでしょう。</p>
+    </section>
+    <section class="level3">
+      <h3 id="vivliostyletheme-プロパティ"><code>vivliostyle.theme</code> プロパティ</h3>
+      <section class="level4">
+        <h4 id="style-プロパティ"><code>style</code> プロパティ</h4>
+        <p>必須。テーマで使うメインのCSSを指定します。</p>
+        <p>package.jsonのトップレベルに <code>style</code> や <code>main</code> を指定することもできます。<code>vivliostyle.theme.style</code> と同じ意味を持ちますが、優先順位は <code>vivliostyle.theme.style</code> &gt; <code>style</code> &gt; <code>main</code> です。</p>
+        <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"main"</span><span class="token operator">:</span> <span class="token string">"theme.css"</span><span class="token punctuation">,</span>
   <span class="token property">"style"</span><span class="token operator">:</span> <span class="token string">"theme.css"</span>
 <span class="token punctuation">}</span></code></pre>
-          </section>
-          <section class="level4">
-            <h4 id="author-プロパティ"><code>author</code> プロパティ</h4>
-            <p>必須。</p>
-          </section>
-          <section class="level4">
-            <h4 id="category-プロパティ"><code>category</code> プロパティ</h4>
-            <p>任意。このプロパティは、あなたのテーマを初めて使おうとするユーザーがテーマの主な用途を知るためのヒントになります。テーマにもっともあてはまるものを以下のリストから選んでください。</p>
-            <ul>
-              <li><code>"novel"</code></li>
-              <li><code>"magazine"</code></li>
-              <li><code>"journal"</code></li>
-              <li><code>"report"</code></li>
-              <li><code>"misc"</code></li>
-            </ul>
-            <p>なお、このリストは今後更新される場合があります。</p>
-          </section>
-          <section class="level4">
-            <h4 id="topics-プロパティ"><code>topics</code> プロパティ</h4>
-            <p>任意。テーマの用途を <code>category</code> プロパティよりも具体的に説明したい場合、ここにリストアップして記述しておくとよいでしょう。</p>
-          </section>
-        </section>
       </section>
-      <section class="level2">
-        <h2 id="example">example/</h2>
-        <p>exampleディレクトリには、テーマの端的なサンプルとなるようなMarkdownファイルを1つ以上含めてください。ファイル名は任意です。</p>
-        <p>Markdownファイルでは <a href="https://vivliostyle.github.io/vfm/#/vfm">VFM (Vivliostyle Flavored Markdown)</a>が利用できます。</p>
+      <section class="level4">
+        <h4 id="author-プロパティ"><code>author</code> プロパティ</h4>
+        <p>必須。</p>
       </section>
-      <section class="level2">
-        <h2 id="themecss">theme.css</h2>
-        <p>テーマのスタイルを定義したスタイルシートを含めてください。CSSカスタムプロパティ（CSS変数）を活用することで、ユーザーがテーマのスタイルを柔軟にカスタマイズできるようにすることを推奨します。</p>
-        <p>テーマには複数のスタイルシートを含めることができます。たとえば、デフォルトの <code>theme.css</code> 以外に以下に示す用途を想定した種類のスタイルシートを用意する使い方などがあります。</p>
+      <section class="level4">
+        <h4 id="category-プロパティ"><code>category</code> プロパティ</h4>
+        <p>任意。このプロパティは、あなたのテーマを初めて使おうとするユーザーがテーマの主な用途を知るためのヒントになります。テーマにもっともあてはまるものを以下のリストから選んでください。</p>
         <ul>
-          <li>theme_print.css: PDFとして出力する場合や、Vivliostyle Viewerで閲覧する場合のスタイルを定義</li>
-          <li>theme_screen.css: HTMLなどのwebpub形式で出力する場合のスタイルを定義</li>
+          <li><code>"novel"</code></li>
+          <li><code>"magazine"</code></li>
+          <li><code>"journal"</code></li>
+          <li><code>"report"</code></li>
+          <li><code>"misc"</code></li>
         </ul>
-        <p>Vivliostyle CLIでデフォルト以外のスタイルシートを指定する場合、以下のように <code>specifier</code> と <code>import</code> プロパティを設定します。</p>
-        <pre class="language-js"><code class="language-js"><span class="token literal-property property">theme</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <p>なお、このリストは今後更新される場合があります。</p>
+      </section>
+      <section class="level4">
+        <h4 id="topics-プロパティ"><code>topics</code> プロパティ</h4>
+        <p>任意。テーマの用途を <code>category</code> プロパティよりも具体的に説明したい場合、ここにリストアップして記述しておくとよいでしょう。</p>
+      </section>
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="example">example/</h2>
+    <p>exampleディレクトリには、テーマの端的なサンプルとなるようなMarkdownファイルを1つ以上含めてください。ファイル名は任意です。</p>
+    <p>Markdownファイルでは <a href="https://vivliostyle.github.io/vfm/#/vfm">VFM (Vivliostyle Flavored Markdown)</a>が利用できます。</p>
+  </section>
+  <section class="level2">
+    <h2 id="themecss">theme.css</h2>
+    <p>テーマのスタイルを定義したスタイルシートを含めてください。CSSカスタムプロパティ（CSS変数）を活用することで、ユーザーがテーマのスタイルを柔軟にカスタマイズできるようにすることを推奨します。</p>
+    <p>テーマには複数のスタイルシートを含めることができます。たとえば、デフォルトの <code>theme.css</code> 以外に以下に示す用途を想定した種類のスタイルシートを用意する使い方などがあります。</p>
+    <ul>
+      <li>theme_print.css: PDFとして出力する場合や、Vivliostyle Viewerで閲覧する場合のスタイルを定義</li>
+      <li>theme_screen.css: HTMLなどのwebpub形式で出力する場合のスタイルを定義</li>
+    </ul>
+    <p>Vivliostyle CLIでデフォルト以外のスタイルシートを指定する場合、以下のように <code>specifier</code> と <code>import</code> プロパティを設定します。</p>
+    <pre class="language-js"><code class="language-js"><span class="token literal-property property">theme</span><span class="token operator">:</span> <span class="token punctuation">{</span>
   <span class="token literal-property property">specifier</span><span class="token operator">:</span> <span class="token string">'vivliostyle-theme-mybook'</span><span class="token punctuation">,</span>
   <span class="token keyword module">import</span><span class="token operator">:</span> <span class="token string">'theme_print.css'</span><span class="token punctuation">,</span>
 <span class="token punctuation">}</span><span class="token punctuation">,</span></code></pre>
-      </section>
-      <section class="level2">
-        <h2 id="vivliostyleconfigjs">vivliostyle.config.js</h2>
-        <pre class="language-js"><code class="language-js"><span class="token doc-comment comment">/** <span class="token keyword">@type</span> <span class="token class-name"><span class="token punctuation">{</span><span class="token keyword module">import</span><span class="token punctuation">(</span><span class="token string">'@vivliostyle/cli'</span><span class="token punctuation">)</span><span class="token punctuation">.</span>VivliostyleConfigSchema<span class="token punctuation">}</span></span> */</span>
+  </section>
+  <section class="level2">
+    <h2 id="vivliostyleconfigjs">vivliostyle.config.js</h2>
+    <pre class="language-js"><code class="language-js"><span class="token doc-comment comment">/** <span class="token keyword">@type</span> <span class="token class-name"><span class="token punctuation">{</span><span class="token keyword module">import</span><span class="token punctuation">(</span><span class="token string">'@vivliostyle/cli'</span><span class="token punctuation">)</span><span class="token punctuation">.</span>VivliostyleConfigSchema<span class="token punctuation">}</span></span> */</span>
 module<span class="token punctuation">.</span><span class="token property-access">exports</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
   <span class="token literal-property property">language</span><span class="token operator">:</span> <span class="token string">'en'</span><span class="token punctuation">,</span>
   <span class="token literal-property property">theme</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'node_modules/@vivliostyle/theme-base'</span><span class="token punctuation">,</span> <span class="token string">'.'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
@@ -368,9 +366,7 @@ module<span class="token punctuation">.</span><span class="token property-access
     <span class="token punctuation">}</span><span class="token punctuation">,</span>
   <span class="token punctuation">]</span><span class="token punctuation">,</span>
 <span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
-        <p>example内のMarkdownファイルから出版物を生成するための設定ファイルです。開発者がテーマを開発する際に使うほか、テーマを使うユーザーがサンプル出版物を生成する際にも使います。</p>
-      </section>
-    </section>
-  
-
+    <p>example内のMarkdownファイルから出版物を生成するための設定ファイルです。開発者がテーマを開発する際に使うほか、テーマを使うユーザーがサンプル出版物を生成する際にも使います。</p>
+  </section>
+</section>
 </article> <nav class="page-navigation" data-astro-cid-z7g34ql7=""> <div class="nav-links" data-astro-cid-z7g34ql7=""> <a href="/ja/themes/" class="nav-link nav-prev" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">← 前へ</span> <span class="nav-title" data-astro-cid-z7g34ql7="">Vivliostyle Themes</span> </a> <a href="/ja/themes/gallery/" class="nav-link nav-next" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">次へ →</span> <span class="nav-title" data-astro-cid-z7g34ql7="">Vivliostyle Themesギャラリー</span> </a> </div> </nav>   </article> </main> </div> <footer class="footer" data-astro-cid-mw7aashj=""> <p data-astro-cid-mw7aashj="">© 2026 Vivliostyle Foundation.</p> </footer> </div>  <script type="module">window.__bodyOverflowLockCount=0;window.lockBodyOverflow=function(){window.__bodyOverflowLockCount++,window.__bodyOverflowLockCount===1&&(document.body.style.overflow="hidden")};window.unlockBodyOverflow=function(){window.__bodyOverflowLockCount=Math.max(0,window.__bodyOverflowLockCount-1),window.__bodyOverflowLockCount===0&&(document.body.style.overflow="")};</script>  <script type="module">document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll(".accordion-toggle").forEach(t=>{t.addEventListener("click",d=>{d.preventDefault();const a=t.getAttribute("data-target"),e=document.getElementById(a),n=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",!n),e&&(e.style.display=n?"none":"block")})})});</script></body></html>

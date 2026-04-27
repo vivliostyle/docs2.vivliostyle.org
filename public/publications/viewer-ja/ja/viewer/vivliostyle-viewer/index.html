@@ -178,12 +178,17 @@ const lang = "ja";
     const open = () => {
       lastFocus = document.activeElement;
 
-      // 本番URL固定でマニフェストを参照する。
-      // localhost / preview からは Vivliostyle Viewer が manifest を取りに行けないので、
-      // その場合は警告を表示する。
-      const isProductionHost = window.location.hostname === 'docs2.vivliostyle.org' ||
-                               window.location.hostname === 'docs.vivliostyle.org';
-      const manifestUrl = `https://docs2.vivliostyle.org/publications/${product}-${lang}/publication.json`;
+      // production host (docs.vivliostyle.org / docs2.vivliostyle.org) では
+      // 自身のホスト上のマニフェストを参照する。それ以外（localhost や
+      // プレビュー環境）からは Vivliostyle Viewer が外部からマニフェストを
+      // 取得できないため、フォールバックとして既定の本番ホストを指定し、
+      // 警告を表示する。
+      const productionHosts = ['docs.vivliostyle.org', 'docs2.vivliostyle.org'];
+      const isProductionHost = productionHosts.includes(window.location.hostname);
+      const manifestHost = isProductionHost
+        ? window.location.hostname
+        : 'docs2.vivliostyle.org';
+      const manifestUrl = `https://${manifestHost}/publications/${product}-${lang}/publication.json`;
       const viewerUrl = `https://vivliostyle.org/viewer/?src=${encodeURIComponent(manifestUrl)}&bookMode=true&lng=${lang}`;
 
       iframe.src = viewerUrl;
@@ -218,272 +223,265 @@ const lang = "ja";
     });
   }
 })();</script> </section>  </nav> </aside> <main class="content" data-astro-cid-mw7aashj=""> <nav aria-label="Breadcrumb" class="breadcrumb" data-astro-cid-qaanghzh=""> <ol data-astro-cid-qaanghzh=""> <li data-astro-cid-qaanghzh=""> <a href="/ja/" data-astro-cid-qaanghzh="">ホーム</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <a href="/ja/viewer/" data-astro-cid-qaanghzh="">Viewer</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <span aria-current="page" data-astro-cid-qaanghzh="">Vivliostyle Viewer</span>  </li> </ol> </nav> <!-- JSON-LD構造化データ --> <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ホーム","item":"https://docs.vivliostyle.org/ja/"},{"@type":"ListItem","position":2,"name":"Viewer","item":"https://docs.vivliostyle.org/ja/viewer/"},{"@type":"ListItem","position":3,"name":"Vivliostyle Viewer","item":"https://docs.vivliostyle.org/ja/viewer/vivliostyle-viewer/"}]}</script>  <article class="prose" data-astro-cid-mw7aashj="">      <article class="docs-content" data-astro-cid-t7bkqsgh=""> <!-- 抽出したTOCが存在する場合は表示 -->  <div data-astro-cid-t7bkqsgh="">
-
-  
-    <meta charset="utf-8">
-    <title>Vivliostyle Viewer</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  
-    <section class="level1">
-      <h1 id="vivliostyle-viewer">Vivliostyle Viewer</h1>
-      <p>Vivliostyle Viewer は、HTML+CSS文書を組版・表示するWebアプリケーションです。</p>
-      <section class="level2">
-        <h2 id="使い方">使い方</h2>
-        <section class="level3">
-          <h3 id="vivliostyle-viewer-をローカル環境で利用するには">Vivliostyle Viewer をローカル環境で利用するには</h3>
-          <p>Vivliostyle Viewer をローカル環境で利用するには、Vivliostyle CLI の preview コマンドを使うのが便利です。Vivliostyle CLI のインストール方法と使い方については、<a href="./vivliostyle-cli/">Vivliostyle CLI ユーザーガイド</a>、preview コマンドについては <a href="./vivliostyle-cli#%E7%B5%84%E7%89%88%E7%B5%90%E6%9E%9C%E3%81%AE%E3%83%97%E3%83%AC%E3%83%93%E3%83%A5%E3%83%BC">組版結果のプレビュー</a> をご覧ください。</p>
-          <p>それ以外の方法で Vivliostyle Viewer をローカル環境で利用する場合は、配布パッケージに同梱の <a href="https://github.com/vivliostyle/vivliostyle.js/blob/master/packages/viewer/README.ja.md">README</a> に記載の「使い方」の手順にしたがってWebサーバーを起動してください。</p>
-        </section>
-        <section class="level3">
-          <h3 id="オンライン公開-vivliostyle-viewer">オンライン公開 Vivliostyle Viewer</h3>
-          <p>オンラインで公開されている <a href="https://vivliostyle.org/viewer/">vivliostyle.org/viewer/</a> も利用でき、これは常に最新のリリース版に更新されています。いち早く最新のバージョンを試したい場合は、<a href="https://vivliostyle.vercel.app">vivliostyle.vercel.app</a>を利用してください。</p>
-        </section>
-        <section class="level3">
-          <h3 id="vivliostyle-viewer-を自分のサイトに配置">Vivliostyle Viewer を自分のサイトに配置</h3>
-          <p>Vivliostyle Viewer の配布パッケージ（<a href="https://vivliostyle.org/ja/download/">https://vivliostyle.org/ja/download/</a> からダウンロード）を解凍したものを自分のサイトに配置すれば、自分のサイトで Vivliostyle Viewer で閲覧する出版物を公開することができます。</p>
-          <p>Node.js のアプリケーションで利用するには、npmパッケージ版の <a href="https://www.npmjs.com/package/@vivliostyle/viewer">@vivliostyle/viewer</a> を使用してください。</p>
-        </section>
-        <section class="level3">
-          <h3 id="vivliostyle-viewer-のスタートページ">Vivliostyle Viewer のスタートページ</h3>
-          <p>パラメータを指定しないで <a href="https://vivliostyle.org/viewer/">Vivliostyle Viewer</a> を開くと、文書URLの入力欄 (“Input a document URL”)、 <strong>Book Mode</strong> と <strong>Render All Pages</strong> のチェックボックス、および使い方のヘルプが表示されます。</p>
-          <p>試してみる: <a href="https://vivliostyle.org/viewer/">https://vivliostyle.org/viewer/</a></p>
-        </section>
-      </section>
-      <section class="level2">
-        <h2 id="設定パネル">設定パネル</h2>
-        <p>Vivliostyle Viewer の画面右上の設定ボタン
-          <img alt="Settings (S)" src="/viewer/assets/vivliostyle-icon.png" style="width: 1.5em;"> をクリック（またはキーボードのSを押下）すると、設定パネルが表示されます。
-        </p>
-        <p>この設定パネルから各種パラメーターを設定し、“Apply” ボタンを押すことで、組版表示を変更することができます（通常は “Apply” の押下後パネルは閉じますが、設定ボタンを2度押しして開いた場合、押下後もパネルを開いたままにできます）。</p>
-        <p>設定パネルで設定した内容は、URLパラメータに反映されます。そうした設定付きURLを、ブックマークしたり公開することもできます。 例： <a href="https://vivliostyle.org/viewer/#src=https://www.w3.org/TR/2011/REC-CSS2-20110607&amp;style=data:,/*%3Cviewer%3E*/%0A@page%20%7B%20size:%20a5;%20margin:%2010%25;%20marks:%20crop%20cross;%20bleed:%203mm;%20%7D%0A:root%20%7B%20line-height:%201.8;%20%7D%0A/*%3C/viewer%3E*/%0A@page%20:first%20%7B%0A%20%20@top-left%20%7B%0A%20%20%20%20content:%20none;%0A%20%20%7D%0A%20%20@top-right%20%7B%0A%20%20%20%20content:%20none;%0A%20%20%7D%0A%20%20@bottom-center%20%7B%0A%20%20%20%20content:%20none;%0A%20%20%7D%0A%7D%0A%0A@page%20:left%20%7B%0A%20%20font-size:%200.8rem;%0A%20%20@top-left%20%7B%0A%20%20%20%20content:%20env(pub-title);%0A%20%20%7D%0A%20%20@bottom-center%20%7B%0A%20%20%20%20content:%20counter(page);%0A%20%20%7D%0A%7D%0A%0A@page%20:right%20%7B%0A%20%20font-size:%200.8rem;%0A%20%20@top-right%20%7B%0A%20%20%20%20content:%20env(doc-title);%0A%20%20%7D%0A%20%20@bottom-center%20%7B%0A%20%20%20%20content:%20counter(page);%0A%20%20%7D%0A%7D&amp;spread=true">『Cascading Style Sheets Level 2 Revision 1 (CSS 2.1 Rec) Specification』</a>（設定パネルから “Crop marks” にチェックを入れるなどした例。“Edit CSS” をクリックすると、設定内容の詳細が確認できます）。</p>
+<section class="level1">
+  <h1 id="vivliostyle-viewer">Vivliostyle Viewer</h1>
+  <p>Vivliostyle Viewer は、HTML+CSS文書を組版・表示するWebアプリケーションです。</p>
+  <section class="level2">
+    <h2 id="使い方">使い方</h2>
+    <section class="level3">
+      <h3 id="vivliostyle-viewer-をローカル環境で利用するには">Vivliostyle Viewer をローカル環境で利用するには</h3>
+      <p>Vivliostyle Viewer をローカル環境で利用するには、Vivliostyle CLI の preview コマンドを使うのが便利です。Vivliostyle CLI のインストール方法と使い方については、<a href="./vivliostyle-cli/">Vivliostyle CLI ユーザーガイド</a>、preview コマンドについては <a href="./vivliostyle-cli#%E7%B5%84%E7%89%88%E7%B5%90%E6%9E%9C%E3%81%AE%E3%83%97%E3%83%AC%E3%83%93%E3%83%A5%E3%83%BC">組版結果のプレビュー</a> をご覧ください。</p>
+      <p>それ以外の方法で Vivliostyle Viewer をローカル環境で利用する場合は、配布パッケージに同梱の <a href="https://github.com/vivliostyle/vivliostyle.js/blob/master/packages/viewer/README.ja.md">README</a> に記載の「使い方」の手順にしたがってWebサーバーを起動してください。</p>
+    </section>
+    <section class="level3">
+      <h3 id="オンライン公開-vivliostyle-viewer">オンライン公開 Vivliostyle Viewer</h3>
+      <p>オンラインで公開されている <a href="https://vivliostyle.org/viewer/">vivliostyle.org/viewer/</a> も利用でき、これは常に最新のリリース版に更新されています。いち早く最新のバージョンを試したい場合は、<a href="https://vivliostyle.vercel.app">vivliostyle.vercel.app</a>を利用してください。</p>
+    </section>
+    <section class="level3">
+      <h3 id="vivliostyle-viewer-を自分のサイトに配置">Vivliostyle Viewer を自分のサイトに配置</h3>
+      <p>Vivliostyle Viewer の配布パッケージ（<a href="https://vivliostyle.org/ja/download/">https://vivliostyle.org/ja/download/</a> からダウンロード）を解凍したものを自分のサイトに配置すれば、自分のサイトで Vivliostyle Viewer で閲覧する出版物を公開することができます。</p>
+      <p>Node.js のアプリケーションで利用するには、npmパッケージ版の <a href="https://www.npmjs.com/package/@vivliostyle/viewer">@vivliostyle/viewer</a> を使用してください。</p>
+    </section>
+    <section class="level3">
+      <h3 id="vivliostyle-viewer-のスタートページ">Vivliostyle Viewer のスタートページ</h3>
+      <p>パラメータを指定しないで <a href="https://vivliostyle.org/viewer/">Vivliostyle Viewer</a> を開くと、文書URLの入力欄 (“Input a document URL”)、 <strong>Book Mode</strong> と <strong>Render All Pages</strong> のチェックボックス、および使い方のヘルプが表示されます。</p>
+      <p>試してみる: <a href="https://vivliostyle.org/viewer/">https://vivliostyle.org/viewer/</a></p>
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="設定パネル">設定パネル</h2>
+    <p>Vivliostyle Viewer の画面右上の設定ボタン
+      <img alt="Settings (S)" src="/viewer/assets/vivliostyle-icon.png" style="width: 1.5em;"> をクリック（またはキーボードのSを押下）すると、設定パネルが表示されます。
+    </p>
+    <p>この設定パネルから各種パラメーターを設定し、“Apply” ボタンを押すことで、組版表示を変更することができます（通常は “Apply” の押下後パネルは閉じますが、設定ボタンを2度押しして開いた場合、押下後もパネルを開いたままにできます）。</p>
+    <p>設定パネルで設定した内容は、URLパラメータに反映されます。そうした設定付きURLを、ブックマークしたり公開することもできます。 例： <a href="https://vivliostyle.org/viewer/#src=https://www.w3.org/TR/2011/REC-CSS2-20110607&amp;style=data:,/*%3Cviewer%3E*/%0A@page%20%7B%20size:%20a5;%20margin:%2010%25;%20marks:%20crop%20cross;%20bleed:%203mm;%20%7D%0A:root%20%7B%20line-height:%201.8;%20%7D%0A/*%3C/viewer%3E*/%0A@page%20:first%20%7B%0A%20%20@top-left%20%7B%0A%20%20%20%20content:%20none;%0A%20%20%7D%0A%20%20@top-right%20%7B%0A%20%20%20%20content:%20none;%0A%20%20%7D%0A%20%20@bottom-center%20%7B%0A%20%20%20%20content:%20none;%0A%20%20%7D%0A%7D%0A%0A@page%20:left%20%7B%0A%20%20font-size:%200.8rem;%0A%20%20@top-left%20%7B%0A%20%20%20%20content:%20env(pub-title);%0A%20%20%7D%0A%20%20@bottom-center%20%7B%0A%20%20%20%20content:%20counter(page);%0A%20%20%7D%0A%7D%0A%0A@page%20:right%20%7B%0A%20%20font-size:%200.8rem;%0A%20%20@top-right%20%7B%0A%20%20%20%20content:%20env(doc-title);%0A%20%20%7D%0A%20%20@bottom-center%20%7B%0A%20%20%20%20content:%20counter(page);%0A%20%20%7D%0A%7D&amp;spread=true">『Cascading Style Sheets Level 2 Revision 1 (CSS 2.1 Rec) Specification』</a>（設定パネルから “Crop marks” にチェックを入れるなどした例。“Edit CSS” をクリックすると、設定内容の詳細が確認できます）。</p>
+    <ul>
+      <li>凡例：◉ラジオボタン、■チェックボックス、▶折りたたまれた設定項目</li>
+    </ul>
+    <img src="/viewer/assets/viewer-settings-panel.png" alt="設定パネル" style="float: right; margin-left: 3rem">
+    <ul>
+      <li><strong>▶Page View Mode</strong>
         <ul>
-          <li>凡例：◉ラジオボタン、■チェックボックス、▶折りたたまれた設定項目</li>
+          <li><strong>❶Page Spread View</strong>：ページ表示
+            <ul>
+              <li>◉Auto：ウインドウが見開きで表示可能な縦横比であれば、自動的に見開きにします</li>
+              <li>◉Single page：常に単一ページで表示します</li>
+              <li>◉Spread：常に見開きページで表示します</li>
+            </ul>
+          </li>
+          <li>■Book Mode：チェックを入れると<a href="#urlパラメータのオプション">ブックモード</a>になります</li>
+          <li>■Render All Pages：チェックを入れると、常に全ページをレンダリングします。正確なページ番号が表示される反面、表示まで時間がかかります。詳細は<a href="https://vivliostyle.github.io/vivliostyle_doc/ja/vivliostyle-user-group-vol1/shinyu/index.html#%E5%85%A8%E3%83%9A%E3%83%BC%E3%82%B8%E3%82%92%E3%83%AC%E3%83%B3%E3%83%80%E3%83%AA%E3%83%B3%E3%82%B0%EF%BC%88render-all-pages%EF%BC%89onoff%E8%A8%AD%E5%AE%9A">「全ページをレンダリング（Render All Pages）On/Off設定」</a>を参照</li>
         </ul>
-        <img src="/viewer/assets/viewer-settings-panel.png" alt="設定パネル" style="float: right; margin-left: 3rem">
+      </li>
+      <li><strong>▶Custom Style Settings</strong>
         <ul>
-          <li><strong>▶Page View Mode</strong>
+          <li><strong>❷Page Size</strong>（ページサイズ）
             <ul>
-              <li><strong>❶Page Spread View</strong>：ページ表示
+              <li>◉Default：文書でページサイズ指定されていればそのサイズが、指定されていない場合はその時開かれているウィンドウのサイズが適用されます</li>
+              <li>◉Auto：ページサイズ指定の有無にかかわらず、その時開かれているウィンドウのサイズが適用されます</li>
+              <li>◉Preset：次の値の中から選択できます。letter、legal、Ledger、A10〜A0、B10 (ISO)〜B0 (ISO)、JIS-B10〜JIS-B0、C10〜C0（なお、日本で使われるB判は「JIS-B」であることにご注意ください）
                 <ul>
-                  <li>◉Auto：ウインドウが見開きで表示可能な縦横比であれば、自動的に見開きにします</li>
-                  <li>◉Single page：常に単一ページで表示します</li>
-                  <li>◉Spread：常に見開きページで表示します</li>
+                  <li>■Landscape：Presetで選択したサイズの横置きにします</li>
                 </ul>
               </li>
-              <li>■Book Mode：チェックを入れると<a href="#urlパラメータのオプション">ブックモード</a>になります</li>
-              <li>■Render All Pages：チェックを入れると、常に全ページをレンダリングします。正確なページ番号が表示される反面、表示まで時間がかかります。詳細は<a href="https://vivliostyle.github.io/vivliostyle_doc/ja/vivliostyle-user-group-vol1/shinyu/index.html#%E5%85%A8%E3%83%9A%E3%83%BC%E3%82%B8%E3%82%92%E3%83%AC%E3%83%B3%E3%83%80%E3%83%AA%E3%83%B3%E3%82%B0%EF%BC%88render-all-pages%EF%BC%89onoff%E8%A8%AD%E5%AE%9A">「全ページをレンダリング（Render All Pages）On/Off設定」</a>を参照</li>
-            </ul>
-          </li>
-          <li><strong>▶Custom Style Settings</strong>
-            <ul>
-              <li><strong>❷Page Size</strong>（ページサイズ）
-                <ul>
-                  <li>◉Default：文書でページサイズ指定されていればそのサイズが、指定されていない場合はその時開かれているウィンドウのサイズが適用されます</li>
-                  <li>◉Auto：ページサイズ指定の有無にかかわらず、その時開かれているウィンドウのサイズが適用されます</li>
-                  <li>◉Preset：次の値の中から選択できます。letter、legal、Ledger、A10〜A0、B10 (ISO)〜B0 (ISO)、JIS-B10〜JIS-B0、C10〜C0（なお、日本で使われるB判は「JIS-B」であることにご注意ください）
-                    <ul>
-                      <li>■Landscape：Presetで選択したサイズの横置きにします</li>
-                    </ul>
-                  </li>
-                  <li>◉Custom size：任意の幅と高さを指定できます。単位は CSSの単位（mm, cm, in, pt, px など）が使えます</li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-          <li><strong>▶More...</strong>
-            <ul>
-              <li><strong>❸■Crop Marks</strong>：トンボを入れる場合はここにチェックを入れます。Bleedにも自動的にチェックが入ります。コーナートンボだけを入れたい場合は<code>crop</code>、センタートンボだけを入れたい場合は<code>cross</code>と記述します。デフォルトは<code>crop cross</code>、つまり両方入ります
-                <ul>
-                  <li>■Bleed:コーナートンボにおける裁ち切り線（外側の線）と仕上がり線（内側の線）の間隔を単位付きの数値で指定します（通常は<code>3mm</code>）</li>
-                  <li>■Crop offset:仕上がり線（内側の線）から用紙端までの余白サイズを指定したい場合は単位付きの数値で指定します。単位はCSSの単位（mm, cm, in, pt, px など）が使えます</li>
-                </ul>
-              </li>
-              <li><strong>❹Page Margins</strong>：ページ余白
-                <ul>
-                  <li>◉Default (=10% unless specified elsewhere)：文書でページ余白が指定されていればそれに従い、指定されていない場合は上下左右の余白をページサイズ（高さ／幅）の10%ずつにします</li>
-                  <li>◉Set page margin to 0：ページ余白を0にします。固定レイアウトのEPUBなど、画面いっぱいに表示するのに適したコンテンツを閲覧するのに向いています</li>
-                  <li>◉Custom margin：任意のページ余白を指定できます。上右左下の順でそれぞれを半角スペースで区切って記述します。また、<code>20mm 15mm 10mm</code>などと3つの値を記述すると、上の余白が<code>20mm</code>、右と左の余白が<strong>ともに</strong><code>15mm</code>、下の余白が<code>10mm</code>になります。</li>
-                  <li>■Set first page margin to 0：最初のページ余白を0にします。最初のページがカバー画像で余白は不要の場合は、ここにチェックを入れます</li>
-                  <li>■Force html/body margin to 0：html/bodyマージンを0にします。もともとHTML文書で指定されているスタイルシートで<code>body</code>要素にマージンが設定されている場合、Vivliostyleで設定されたページ余白が加わると余白が異常に大きくなってしまいます。そのような場合ここにチェックを入れると回避できます</li>
-                </ul>
-              </li>
-              <li><strong>❺Page Breaks</strong>：改ページ
-                <ul>
-                  <li>◉Default widows/orphans control：デフォルトとして、段落を分割する際にページの先頭／末尾に2行以上が残るように制御します</li>
-                  <li>◉Allow widows and orphans：ページの先頭／末尾に1行だけ孤立する状態を許容します</li>
-                  <li>◉Avoid page break inside paragraph：段落の途中で改ページしてほしくない場合に指定します。例えば音声読み上げでテキストを読む場合に、段落の途中でページが変わるとそこで読み上げが中断してしまう問題を解決します</li>
-                </ul>
-              </li>
-              <li><strong>❻Images</strong>：画像
-                <ul>
-                  <li>■Set image max-size to fit page：画像の最大サイズをページに収まるよう調整します</li>
-                  <li>■Keep aspect ratio：画像サイズを変更する場合、画像の縦横比が変わらないよう調整して変更します</li>
-                </ul>
-              </li>
-              <li><strong>❼Text</strong>：テキスト
-                <ul>
-                  <li>Font size：文字サイズをパーセント値で設定します。100%はブラウザのデフォルトと同様、16px=12ptです。この設定はツールバーにあるA- (Text: Smaller)、A+ (Text: Larger) ボタンで変更できる文字サイズと連動します 　
-                    <ul>
-                      <li>■Base font-size：ルート要素での<code>font-size</code>プロパティの値を設定します。実際に表示される文字サイズは <strong>Font size</strong> のパーセント値と掛け合わされたものになりま</li>
-                    </ul>
-                  </li>
-                  <li>■Base line-height：ルート要素での<code>line-height</code>プロパティの値を設定します。単位をつけない数値で文字サイズを基準にした行の高さを指定します。ここで指定しない場合、ブラウザと同じ<code>line-height: normal</code>が設定され、使われるフォントに依存します（おおむね1.2）</li>
-                  <li>■Base font-family：ルート要素における<code>font-family</code>プロパティの値を設定します</li>
-                </ul>
-              </li>
-              <li><strong>❽Custom Style Priority</strong>
-                <ul>
-                  <li>■Set as user stylesheet (lower priority unless !important)：設定パネルでの設定内容を、ユーザースタイルシートとして設定します。デフォルトは作成者スタイルシートです。これらの違いは<a href="https://developer.mozilla.org/ja/docs/Web/CSS/Cascade#%E3%82%AA%E3%83%AA%E3%82%B8%E3%83%B3%E3%81%AE%E7%A8%AE%E9%A1%9E">CSS カスケード入門</a>をご参照ください</li>
-                  <li>■Force override document style (!important)：設定パネルでの設定内容により、スタイルシートを強制的に上書きします（スタイルシートに<code>!important</code>が付く）</li>
-                </ul>
-              </li>
-            </ul>
-          </li>
-          <li><strong>❾▶Edit CSS</strong>：クリックすると入力フィールドがあらわれ、それまでの設定した内容がCSSコードで確認できます。また、ここからユーザーがCSSコードを直接書くことができます。その場合、自動生成されたコメント<code>/*&lt;viewer&gt;*/</code>と<code>/*&lt;/viewer&gt;*/</code>で囲まれた部分はそのままにして、その前か後にコードを追加するようにしてください</li>
-          <li><strong>❿▶Reset Custom Style</strong>
-            <ul>
-              <li>■Reset all to default：それまでの設定内容を初期化し、デフォルトに戻します</li>
+              <li>◉Custom size：任意の幅と高さを指定できます。単位は CSSの単位（mm, cm, in, pt, px など）が使えます</li>
             </ul>
           </li>
         </ul>
-      </section>
-      <section class="level2">
-        <h2 id="サポートされている文書の種類">サポートされている文書の種類</h2>
+      </li>
+      <li><strong>▶More...</strong>
         <ul>
-          <li>HTML文書＋ページメディア用のCSS</li>
-          <li>本のような出版物（目次付き） (<strong>Book Mode</strong>: オン)
+          <li><strong>❸■Crop Marks</strong>：トンボを入れる場合はここにチェックを入れます。Bleedにも自動的にチェックが入ります。コーナートンボだけを入れたい場合は<code>crop</code>、センタートンボだけを入れたい場合は<code>cross</code>と記述します。デフォルトは<code>crop cross</code>、つまり両方入ります
             <ul>
-              <li>Web出版物（複数のHTML文書からなるコレクション）: 最初のHTMLまたはマニフェストファイルのURLを指定します。</li>
-              <li>ZIP解凍済みのEPUB: OPFファイルのURLまたは解凍されたEPUBファイルのトップディレクトリを指定します。</li>
+              <li>■Bleed:コーナートンボにおける裁ち切り線（外側の線）と仕上がり線（内側の線）の間隔を単位付きの数値で指定します（通常は<code>3mm</code>）</li>
+              <li>■Crop offset:仕上がり線（内側の線）から用紙端までの余白サイズを指定したい場合は単位付きの数値で指定します。単位はCSSの単位（mm, cm, in, pt, px など）が使えます</li>
             </ul>
           </li>
-        </ul>
-        <section class="level3">
-          <h3 id="メモ">メモ</h3>
-          <ul>
-            <li>GitHubとGistのURLを直接指定することができます。そのようなURLが指定された場合、Vivliostyle は github/gist の raw コンテンツをロードします。</li>
-            <li>⚠️Mixedコンテンツ（“http:” のURLが “https:” の Vivliostyle Viewer に指定された場合）は通常ブラウザによってブロックされます。</li>
-            <li>⚠️Cross-Origin（異なるドメインへのリクエスト）は、サーバーが Cross-Origin Resource Sharing (CORS) を許可するように設定されていない限り、通常はブラウザによってブロックされます。</li>
-          </ul>
-        </section>
-      </section>
-      <section class="level2">
-        <h2 id="urlパラメータのオプション">URLパラメータのオプション</h2>
-        <ul>
-          <li>#<strong>src</strong>=&lt;document URL&gt;</li>
-          <li>&amp;<strong>bookMode</strong>=[<strong>true</strong>&nbsp;|&nbsp;<strong>false</strong>] (<strong>Book Mode</strong>)
+          <li><strong>❹Page Margins</strong>：ページ余白
             <ul>
-              <li><strong>true</strong>&nbsp;(デフォルト): 本のような出版物（目次付き）用
+              <li>◉Default (=10% unless specified elsewhere)：文書でページ余白が指定されていればそれに従い、指定されていない場合は上下左右の余白をページサイズ（高さ／幅）の10%ずつにします</li>
+              <li>◉Set page margin to 0：ページ余白を0にします。固定レイアウトのEPUBなど、画面いっぱいに表示するのに適したコンテンツを閲覧するのに向いています</li>
+              <li>◉Custom margin：任意のページ余白を指定できます。上右左下の順でそれぞれを半角スペースで区切って記述します。また、<code>20mm 15mm 10mm</code>などと3つの値を記述すると、上の余白が<code>20mm</code>、右と左の余白が<strong>ともに</strong><code>15mm</code>、下の余白が<code>10mm</code>になります。</li>
+              <li>■Set first page margin to 0：最初のページ余白を0にします。最初のページがカバー画像で余白は不要の場合は、ここにチェックを入れます</li>
+              <li>■Force html/body margin to 0：html/bodyマージンを0にします。もともとHTML文書で指定されているスタイルシートで<code>body</code>要素にマージンが設定されている場合、Vivliostyleで設定されたページ余白が加わると余白が異常に大きくなってしまいます。そのような場合ここにチェックを入れると回避できます</li>
+            </ul>
+          </li>
+          <li><strong>❺Page Breaks</strong>：改ページ
+            <ul>
+              <li>◉Default widows/orphans control：デフォルトとして、段落を分割する際にページの先頭／末尾に2行以上が残るように制御します</li>
+              <li>◉Allow widows and orphans：ページの先頭／末尾に1行だけ孤立する状態を許容します</li>
+              <li>◉Avoid page break inside paragraph：段落の途中で改ページしてほしくない場合に指定します。例えば音声読み上げでテキストを読む場合に、段落の途中でページが変わるとそこで読み上げが中断してしまう問題を解決します</li>
+            </ul>
+          </li>
+          <li><strong>❻Images</strong>：画像
+            <ul>
+              <li>■Set image max-size to fit page：画像の最大サイズをページに収まるよう調整します</li>
+              <li>■Keep aspect ratio：画像サイズを変更する場合、画像の縦横比が変わらないよう調整して変更します</li>
+            </ul>
+          </li>
+          <li><strong>❼Text</strong>：テキスト
+            <ul>
+              <li>Font size：文字サイズをパーセント値で設定します。100%はブラウザのデフォルトと同様、16px=12ptです。この設定はツールバーにあるA- (Text: Smaller)、A+ (Text: Larger) ボタンで変更できる文字サイズと連動します 　
                 <ul>
-                  <li>HTML文書のURLが指定された場合、その出版物マニフェストまたは目次（<code>&lt;nav role="doc-toc"&gt;</code> などでマークアップ）からリンクされた一連のHTML文書が自動的に読み込まれます。</li>
+                  <li>■Base font-size：ルート要素での<code>font-size</code>プロパティの値を設定します。実際に表示される文字サイズは <strong>Font size</strong> のパーセント値と掛け合わされたものになりま</li>
                 </ul>
               </li>
-              <li><strong>false</strong>: 単体のHTML文書用</li>
+              <li>■Base line-height：ルート要素での<code>line-height</code>プロパティの値を設定します。単位をつけない数値で文字サイズを基準にした行の高さを指定します。ここで指定しない場合、ブラウザと同じ<code>line-height: normal</code>が設定され、使われるフォントに依存します（おおむね1.2）</li>
+              <li>■Base font-family：ルート要素における<code>font-family</code>プロパティの値を設定します</li>
             </ul>
           </li>
-          <li>&amp;<strong>renderAllPages</strong>=[<strong>true</strong>&nbsp;|&nbsp;<strong>false</strong>] (<strong>Render All Pages</strong>)
+          <li><strong>❽Custom Style Priority</strong>
             <ul>
-              <li><strong>true</strong>&nbsp;(デフォルト): 印刷用（すべてのページが印刷可能で、ページ番号は期待されるとおりに機能します）</li>
-              <li><strong>false</strong>: 閲覧用（おおまかなページ番号を使って、クイックロード）</li>
+              <li>■Set as user stylesheet (lower priority unless !important)：設定パネルでの設定内容を、ユーザースタイルシートとして設定します。デフォルトは作成者スタイルシートです。これらの違いは<a href="https://developer.mozilla.org/ja/docs/Web/CSS/Cascade#%E3%82%AA%E3%83%AA%E3%82%B8%E3%83%B3%E3%81%AE%E7%A8%AE%E9%A1%9E">CSS カスケード入門</a>をご参照ください</li>
+              <li>■Force override document style (!important)：設定パネルでの設定内容により、スタイルシートを強制的に上書きします（スタイルシートに<code>!important</code>が付く）</li>
             </ul>
           </li>
-          <li>&amp;<strong>spread</strong>=[<strong>true</strong>&nbsp;|&nbsp;<strong>false</strong>&nbsp;|&nbsp;<strong>auto</strong>] (<strong>Page Spread View</strong>)
-            <ul>
-              <li><strong>true</strong>: 見開き表示</li>
-              <li><strong>false</strong>: 単一ページ表示</li>
-              <li><strong>auto</strong>&nbsp;(デフォルト): 自動見開き表示</li>
-            </ul>
-          </li>
-          <li>&amp;<strong>style</strong>=&lt;追加の（カスタム）スタイルシートのURL&gt;</li>
-          <li>&amp;<strong>userStyle</strong>=&lt;ユーザー・スタイルシートのURL&gt;</li>
         </ul>
-        <p>オプションは設定パネル（
-          <img src="/viewer/assets/vivliostyle-icon.png" width="16" height="16" alt="[Vivliostyle]"><strong>Settings</strong>）でも設定できます。
-        </p>
-        <p><strong>NOTE:</strong> Book Modeのデフォルトは以前はオフでしたが、Vivliostyle Viewer v2.18.0 からオンに変更されました。デフォルトで有効なのでパラメータ <code>&amp;bookMode=true</code> の指定は省略することができます。HTMLファイル内の目次のリンク先のHTML文書を連結しないで最初のHTMLファイルだけを表示するには、<code>&amp;bookMode=false</code> を指定してください。</p>
-      </section>
-      <section class="level2">
-        <h2 id="表示するhtml文書の指定">表示するHTML文書の指定</h2>
-        <p>HTMLファイルを Vivliostyle Viewer で表示するには、Webサーバーが読み込める場所（上記手順にしたがってWebサーバーを起動している場合は、配布パッケージを解凍してできたフォルダ内）にそのファイル（およびそのファイルから読み込まれるCSSや画像ファイル）を置いた上で、次のようにパラメータを付加したURLをブラウザで開きます:</p>
-        <pre class="language-text"><code class="language-text">⟨Vivliostyle ViewerのURL⟩#src=⟨表示するファイルのURL (Vivliostyle Viewerからの相対)⟩</code></pre>
-        <p>注: Vivliostyle Viewer 本体とは別ドメインの文書を読み込もうとする場合、文書があるWebサーバーの設定によって、文書が読み込めない場合があります。文書を読み込ませるためには、サーバー側で CORS (Cross-Origin Resource Sharing)の設定が必要です。</p>
-        <p>注: 数式の表示（MathMLおよびTeX形式に対応）にインターネット上のJavaScriptライブラリー(<a href="https://www.mathjax.org">MathJax</a>)を使用するため、文書に数式が含まれる場合はインターネット接続が必要です。</p>
-        <p>例: HTMLファイル <a href="https://vivliostyle.github.io/vivliostyle_doc/samples/gon/index.html">https://vivliostyle.github.io/vivliostyle_doc/samples/gon/index.html</a> を表示する場合:</p>
-        <p><a href="https://vivliostyle.org/viewer/#src=https://vivliostyle.github.io/vivliostyle_doc/samples/gon/index.html">https://vivliostyle.org/viewer/#src=https://vivliostyle.github.io/vivliostyle_doc/samples/gon/index.html</a></p>
-      </section>
-      <section class="level2">
-        <h2 id="epub">EPUB</h2>
-        <p>Vivliostyle ViewerではZIP解凍済みのEPUBファイルを表示することができます。この場合、次のようにパラメータを指定します:</p>
-        <pre class="language-text"><code class="language-text">#src=⟨表示する解凍済みEPUBフォルダのURL⟩&amp;bookMode=true</code></pre>
-        <p>GitHub上に公開されているZIP解凍済みのEPUBファイルを表示する例:</p>
+      </li>
+      <li><strong>❾▶Edit CSS</strong>：クリックすると入力フィールドがあらわれ、それまでの設定した内容がCSSコードで確認できます。また、ここからユーザーがCSSコードを直接書くことができます。その場合、自動生成されたコメント<code>/*&lt;viewer&gt;*/</code>と<code>/*&lt;/viewer&gt;*/</code>で囲まれた部分はそのままにして、その前か後にコードを追加するようにしてください</li>
+      <li><strong>❿▶Reset Custom Style</strong>
         <ul>
-          <li>
-            <p><a href="https://github.com/IDPF/epub3-samples/">IDPF/epub3-samples</a>の 『<a href="https://github.com/IDPF/epub3-samples/tree/master/30/accessible_epub_3/">Accessible EPUB 3</a>』</p>
-            <p><a href="https://vivliostyle.org/viewer/#src=https://github.com/IDPF/epub3-samples/tree/master/30/accessible_epub_3/&amp;bookMode=true">https://vivliostyle.org/viewer/#src=https://github.com/IDPF/epub3-samples/tree/master/30/accessible_epub_3/&amp;bookMode=true</a></p>
-          </li>
+          <li>■Reset all to default：それまでの設定内容を初期化し、デフォルトに戻します</li>
         </ul>
-      </section>
-      <section class="level2">
-        <h2 id="web出版物複数html文書">Web出版物（複数HTML文書）</h2>
-        <p>Vivliostyle ViewerではWeb出版物（複数のHTML文書からなるコレクション）を表示することができます。この場合、次のようにパラメータを指定します:</p>
-        <pre class="language-text"><code class="language-text">#src=⟨最初のHTML文書またはマニフェストファイルのURL⟩&amp;bookMode=true</code></pre>
-        <p>Web出版物のマニフェストの形式については、W3Cドラフトの <a href="https://www.w3.org/TR/pub-manifest/">Publication Manifest</a> および <a href="https://github.com/readium/webpub-manifest/">Readium Web Publication Manifest</a> をサポートしています。</p>
-        <section class="level3">
-          <h3 id="htmlの目次">HTMLの目次</h3>
-          <p>
-            Web出版物のマニフェストが存在しなくても、指定したHTML文書内の目次要素内に他のHTML文書へのリンクがある場合は、それらの文書が自動的にロードされます。Vivliostyle はHTML文書内の次のCSSセレクタにマッチする要素を目次要素として扱います:
-            <code>[role=doc-toc], [role=directory], nav li, .toc, #toc</code>
-          </p>
-          <p>Web上に公開されている複数のHTML文書からなる出版物を表示する例:</p>
-          <ul>
-            <li>
-              <p><a href="https://www.w3.org/TR/CSS2/">Cascading Style Sheets Level 2 Revision 1 (CSS 2.1) Specification</a></p>
-              <p><a href="https://vivliostyle.org/viewer/#src=https://www.w3.org/TR/CSS2/&amp;bookMode=true">https://vivliostyle.org/viewer/#src=https://www.w3.org/TR/CSS2/&amp;bookMode=true</a></p>
-            </li>
-          </ul>
-        </section>
-      </section>
-      <section class="level2">
-        <h2 id="目次パネル">目次パネル</h2>
-        <p><code>&amp;bookMode=true</code>（あるいは <strong>Book Mode</strong> チェックボックス On）を指定すると、単一のHTMLファイルでも<a href="#web出版物複数html文書">Web出版物</a>と同様に、HTML内に目次要素があれば目次パネル（画面左上の目次アイコン 
-          <img src="/viewer/assets/toc-icon.png" width="16" height="16" alt="[Table of Contents]"> をクリックして開く）が有効になります。
-        </p>
-      </section>
-      <section class="level2">
-        <h2 id="見開きビューモード">見開きビューモード</h2>
-        <p>Vivliostyle Viewer は、表示領域の横幅が大きいとき（高さの1.45倍以上）、自動的に見開きページ表示にします。これを変えるには次の指定をURLに追加します:</p>
-        <pre class="language-text"><code class="language-text">&amp;spread=true（常に見開きページ表示）</code></pre>
-        <pre class="language-text"><code class="language-text">&amp;spread=false（常に単ページ表示）</code></pre>
-        <pre class="language-text"><code class="language-text">&amp;spread=auto（自動切り替え＝デフォルト）</code></pre>
-        <p>Vivliostyle Viewer の設定パネル（画面右上のアイコン 
-          <img src="/viewer/assets/vivliostyle-icon.png" width="16" height="16" alt="[Settings]"> をクリックして開く）でも、ページ表示モードの変更ができます。
-        </p>
-      </section>
-      <section class="level2">
-        <h2 id="スタイルシートの追加カスタムスタイルシート">スタイルシートの追加（カスタム・スタイルシート）</h2>
-        <p>HTMLファイルに指定されているスタイルシートに加えて、追加のスタイルシート（CSSファイル）を指定することができます。これにより文書のスタイルをカスタマイズするためのカスタム・スタイルシートを指定することができます。追加のスタイルシート（カスタム・スタイルシート）を使うには、次の指定をURLに追加します:</p>
-        <pre class="language-text"><code class="language-text">&amp;style=⟨スタイルシートのURL (Vivliostyle Viewer からの相対)⟩</code></pre>
-        <p>この方法で指定したスタイルシートは、HTMLファイルで指定されているスタイルシートと同様（制作者スタイルシート）の扱いで、よりあとに指定されたことになるので、CSSのカスケーディング規則により、HTMLファイルからのスタイルの指定を上書きすることになります。</p>
-        <section class="level3">
-          <h3 id="ユーザースタイルシート">ユーザー・スタイルシート</h3>
-          <p>これに対して、次のようにしてユーザー・スタイルシート（スタイル指定に <code>!important</code> を付けないかぎり、制作者スタイルシートのスタイル指定を上書きしない）の指定もできます:</p>
-          <pre class="language-text"><code class="language-text">&amp;userStyle=⟨ユーザー・スタイルシートのURL (Vivliostyle Viewer からの相対)⟩</code></pre>
-          <p>複数個の <code>&amp;style=</code> あるいは <code>&amp;userStyle=</code> を使うことで、複数個のスタイルシートを指定できます。</p>
-          <p>データURLも利用できます。例えば:</p>
-          <pre class="language-text"><code class="language-text">&amp;style=data:,html{writing-mode:vertical-rl}</code></pre>
-        </section>
-        <section class="level3">
-          <h3 id="設定パネルでのカスタムスタイル設定">設定パネルでのカスタム・スタイル設定</h3>
-          <p>カスタム・スタイルの設定は、設定パネルの <strong>Custom Style Settings</strong> からも行うことができます。設定内容のCSSは設定パネルの <strong>Edit CSS</strong> で確認することができます（CSSコードをそこで追加することもできます）。</p>
-          <p>Web上に公開されている文書に、設定パネルからカスタム・スタイルの設定を加えた例:</p>
-          <ul>
-            <li>
-              <p><a href="https://www.w3.org/TR/CSS2/">Cascading Style Sheets Level 2 Revision 1 (CSS 2.1) Specification</a></p>
-              <p><a href="https://vivliostyle.org/viewer/#src=https://www.w3.org/TR/CSS2/&amp;bookMode=true&amp;style=data:,/*%3Cviewer%3E*/%0A@page%20%7B%20size:%20A4;%20%7D%0A/*%3C/viewer%3E*/%0A%0A@page%20:first%20%7B%0A%20%20@top-left%20%7B%0A%20%20%20%20content:%20none;%0A%20%20%7D%0A%20%20@top-right%20%7B%0A%20%20%20%20content:%20none;%0A%20%20%7D%0A%20%20@bottom-center%20%7B%0A%20%20%20%20content:%20none;%0A%20%20%7D%0A%7D%0A%0A@page%20:left%20%7B%0A%20%20font-size:%200.8rem;%0A%20%20@top-left%20%7B%0A%20%20%20%20content:%20env(pub-title);%0A%20%20%7D%0A%20%20@bottom-center%20%7B%0A%20%20%20%20content:%20counter(page);%0A%20%20%7D%0A%7D%0A%0A@page%20:right%20%7B%0A%20%20font-size:%200.8rem;%0A%20%20@top-right%20%7B%0A%20%20%20%20content:%20env(doc-title);%0A%20%20%7D%0A%20%20@bottom-center%20%7B%0A%20%20%20%20content:%20counter(page);%0A%20%20%7D%0A%7D">…#src=https://www.w3.org/TR/CSS2/&amp;bookMode=true&amp;style=data:,…</a></p>
-            </li>
-          </ul>
-          <pre class="language-css"><code class="language-css"><span class="token comment">/*&lt;viewer&gt;*/</span>
+      </li>
+    </ul>
+  </section>
+  <section class="level2">
+    <h2 id="サポートされている文書の種類">サポートされている文書の種類</h2>
+    <ul>
+      <li>HTML文書＋ページメディア用のCSS</li>
+      <li>本のような出版物（目次付き） (<strong>Book Mode</strong>: オン)
+        <ul>
+          <li>Web出版物（複数のHTML文書からなるコレクション）: 最初のHTMLまたはマニフェストファイルのURLを指定します。</li>
+          <li>ZIP解凍済みのEPUB: OPFファイルのURLまたは解凍されたEPUBファイルのトップディレクトリを指定します。</li>
+        </ul>
+      </li>
+    </ul>
+    <section class="level3">
+      <h3 id="メモ">メモ</h3>
+      <ul>
+        <li>GitHubとGistのURLを直接指定することができます。そのようなURLが指定された場合、Vivliostyle は github/gist の raw コンテンツをロードします。</li>
+        <li>⚠️Mixedコンテンツ（“http:” のURLが “https:” の Vivliostyle Viewer に指定された場合）は通常ブラウザによってブロックされます。</li>
+        <li>⚠️Cross-Origin（異なるドメインへのリクエスト）は、サーバーが Cross-Origin Resource Sharing (CORS) を許可するように設定されていない限り、通常はブラウザによってブロックされます。</li>
+      </ul>
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="urlパラメータのオプション">URLパラメータのオプション</h2>
+    <ul>
+      <li>#<strong>src</strong>=&lt;document URL&gt;</li>
+      <li>&amp;<strong>bookMode</strong>=[<strong>true</strong>&nbsp;|&nbsp;<strong>false</strong>] (<strong>Book Mode</strong>)
+        <ul>
+          <li><strong>true</strong>&nbsp;(デフォルト): 本のような出版物（目次付き）用
+            <ul>
+              <li>HTML文書のURLが指定された場合、その出版物マニフェストまたは目次（<code>&lt;nav role="doc-toc"&gt;</code> などでマークアップ）からリンクされた一連のHTML文書が自動的に読み込まれます。</li>
+            </ul>
+          </li>
+          <li><strong>false</strong>: 単体のHTML文書用</li>
+        </ul>
+      </li>
+      <li>&amp;<strong>renderAllPages</strong>=[<strong>true</strong>&nbsp;|&nbsp;<strong>false</strong>] (<strong>Render All Pages</strong>)
+        <ul>
+          <li><strong>true</strong>&nbsp;(デフォルト): 印刷用（すべてのページが印刷可能で、ページ番号は期待されるとおりに機能します）</li>
+          <li><strong>false</strong>: 閲覧用（おおまかなページ番号を使って、クイックロード）</li>
+        </ul>
+      </li>
+      <li>&amp;<strong>spread</strong>=[<strong>true</strong>&nbsp;|&nbsp;<strong>false</strong>&nbsp;|&nbsp;<strong>auto</strong>] (<strong>Page Spread View</strong>)
+        <ul>
+          <li><strong>true</strong>: 見開き表示</li>
+          <li><strong>false</strong>: 単一ページ表示</li>
+          <li><strong>auto</strong>&nbsp;(デフォルト): 自動見開き表示</li>
+        </ul>
+      </li>
+      <li>&amp;<strong>style</strong>=&lt;追加の（カスタム）スタイルシートのURL&gt;</li>
+      <li>&amp;<strong>userStyle</strong>=&lt;ユーザー・スタイルシートのURL&gt;</li>
+    </ul>
+    <p>オプションは設定パネル（
+      <img src="/viewer/assets/vivliostyle-icon.png" width="16" height="16" alt="[Vivliostyle]"><strong>Settings</strong>）でも設定できます。
+    </p>
+    <p><strong>NOTE:</strong> Book Modeのデフォルトは以前はオフでしたが、Vivliostyle Viewer v2.18.0 からオンに変更されました。デフォルトで有効なのでパラメータ <code>&amp;bookMode=true</code> の指定は省略することができます。HTMLファイル内の目次のリンク先のHTML文書を連結しないで最初のHTMLファイルだけを表示するには、<code>&amp;bookMode=false</code> を指定してください。</p>
+  </section>
+  <section class="level2">
+    <h2 id="表示するhtml文書の指定">表示するHTML文書の指定</h2>
+    <p>HTMLファイルを Vivliostyle Viewer で表示するには、Webサーバーが読み込める場所（上記手順にしたがってWebサーバーを起動している場合は、配布パッケージを解凍してできたフォルダ内）にそのファイル（およびそのファイルから読み込まれるCSSや画像ファイル）を置いた上で、次のようにパラメータを付加したURLをブラウザで開きます:</p>
+    <pre class="language-text"><code class="language-text">⟨Vivliostyle ViewerのURL⟩#src=⟨表示するファイルのURL (Vivliostyle Viewerからの相対)⟩</code></pre>
+    <p>注: Vivliostyle Viewer 本体とは別ドメインの文書を読み込もうとする場合、文書があるWebサーバーの設定によって、文書が読み込めない場合があります。文書を読み込ませるためには、サーバー側で CORS (Cross-Origin Resource Sharing)の設定が必要です。</p>
+    <p>注: 数式の表示（MathMLおよびTeX形式に対応）にインターネット上のJavaScriptライブラリー(<a href="https://www.mathjax.org">MathJax</a>)を使用するため、文書に数式が含まれる場合はインターネット接続が必要です。</p>
+    <p>例: HTMLファイル <a href="https://vivliostyle.github.io/vivliostyle_doc/samples/gon/index.html">https://vivliostyle.github.io/vivliostyle_doc/samples/gon/index.html</a> を表示する場合:</p>
+    <p><a href="https://vivliostyle.org/viewer/#src=https://vivliostyle.github.io/vivliostyle_doc/samples/gon/index.html">https://vivliostyle.org/viewer/#src=https://vivliostyle.github.io/vivliostyle_doc/samples/gon/index.html</a></p>
+  </section>
+  <section class="level2">
+    <h2 id="epub">EPUB</h2>
+    <p>Vivliostyle ViewerではZIP解凍済みのEPUBファイルを表示することができます。この場合、次のようにパラメータを指定します:</p>
+    <pre class="language-text"><code class="language-text">#src=⟨表示する解凍済みEPUBフォルダのURL⟩&amp;bookMode=true</code></pre>
+    <p>GitHub上に公開されているZIP解凍済みのEPUBファイルを表示する例:</p>
+    <ul>
+      <li>
+        <p><a href="https://github.com/IDPF/epub3-samples/">IDPF/epub3-samples</a>の 『<a href="https://github.com/IDPF/epub3-samples/tree/master/30/accessible_epub_3/">Accessible EPUB 3</a>』</p>
+        <p><a href="https://vivliostyle.org/viewer/#src=https://github.com/IDPF/epub3-samples/tree/master/30/accessible_epub_3/&amp;bookMode=true">https://vivliostyle.org/viewer/#src=https://github.com/IDPF/epub3-samples/tree/master/30/accessible_epub_3/&amp;bookMode=true</a></p>
+      </li>
+    </ul>
+  </section>
+  <section class="level2">
+    <h2 id="web出版物複数html文書">Web出版物（複数HTML文書）</h2>
+    <p>Vivliostyle ViewerではWeb出版物（複数のHTML文書からなるコレクション）を表示することができます。この場合、次のようにパラメータを指定します:</p>
+    <pre class="language-text"><code class="language-text">#src=⟨最初のHTML文書またはマニフェストファイルのURL⟩&amp;bookMode=true</code></pre>
+    <p>Web出版物のマニフェストの形式については、W3Cドラフトの <a href="https://www.w3.org/TR/pub-manifest/">Publication Manifest</a> および <a href="https://github.com/readium/webpub-manifest/">Readium Web Publication Manifest</a> をサポートしています。</p>
+    <section class="level3">
+      <h3 id="htmlの目次">HTMLの目次</h3>
+      <p>
+        Web出版物のマニフェストが存在しなくても、指定したHTML文書内の目次要素内に他のHTML文書へのリンクがある場合は、それらの文書が自動的にロードされます。Vivliostyle はHTML文書内の次のCSSセレクタにマッチする要素を目次要素として扱います:
+        <code>[role=doc-toc], [role=directory], nav li, .toc, #toc</code>
+      </p>
+      <p>Web上に公開されている複数のHTML文書からなる出版物を表示する例:</p>
+      <ul>
+        <li>
+          <p><a href="https://www.w3.org/TR/CSS2/">Cascading Style Sheets Level 2 Revision 1 (CSS 2.1) Specification</a></p>
+          <p><a href="https://vivliostyle.org/viewer/#src=https://www.w3.org/TR/CSS2/&amp;bookMode=true">https://vivliostyle.org/viewer/#src=https://www.w3.org/TR/CSS2/&amp;bookMode=true</a></p>
+        </li>
+      </ul>
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="目次パネル">目次パネル</h2>
+    <p><code>&amp;bookMode=true</code>（あるいは <strong>Book Mode</strong> チェックボックス On）を指定すると、単一のHTMLファイルでも<a href="#web出版物複数html文書">Web出版物</a>と同様に、HTML内に目次要素があれば目次パネル（画面左上の目次アイコン 
+      <img src="/viewer/assets/toc-icon.png" width="16" height="16" alt="[Table of Contents]"> をクリックして開く）が有効になります。
+    </p>
+  </section>
+  <section class="level2">
+    <h2 id="見開きビューモード">見開きビューモード</h2>
+    <p>Vivliostyle Viewer は、表示領域の横幅が大きいとき（高さの1.45倍以上）、自動的に見開きページ表示にします。これを変えるには次の指定をURLに追加します:</p>
+    <pre class="language-text"><code class="language-text">&amp;spread=true（常に見開きページ表示）</code></pre>
+    <pre class="language-text"><code class="language-text">&amp;spread=false（常に単ページ表示）</code></pre>
+    <pre class="language-text"><code class="language-text">&amp;spread=auto（自動切り替え＝デフォルト）</code></pre>
+    <p>Vivliostyle Viewer の設定パネル（画面右上のアイコン 
+      <img src="/viewer/assets/vivliostyle-icon.png" width="16" height="16" alt="[Settings]"> をクリックして開く）でも、ページ表示モードの変更ができます。
+    </p>
+  </section>
+  <section class="level2">
+    <h2 id="スタイルシートの追加カスタムスタイルシート">スタイルシートの追加（カスタム・スタイルシート）</h2>
+    <p>HTMLファイルに指定されているスタイルシートに加えて、追加のスタイルシート（CSSファイル）を指定することができます。これにより文書のスタイルをカスタマイズするためのカスタム・スタイルシートを指定することができます。追加のスタイルシート（カスタム・スタイルシート）を使うには、次の指定をURLに追加します:</p>
+    <pre class="language-text"><code class="language-text">&amp;style=⟨スタイルシートのURL (Vivliostyle Viewer からの相対)⟩</code></pre>
+    <p>この方法で指定したスタイルシートは、HTMLファイルで指定されているスタイルシートと同様（制作者スタイルシート）の扱いで、よりあとに指定されたことになるので、CSSのカスケーディング規則により、HTMLファイルからのスタイルの指定を上書きすることになります。</p>
+    <section class="level3">
+      <h3 id="ユーザースタイルシート">ユーザー・スタイルシート</h3>
+      <p>これに対して、次のようにしてユーザー・スタイルシート（スタイル指定に <code>!important</code> を付けないかぎり、制作者スタイルシートのスタイル指定を上書きしない）の指定もできます:</p>
+      <pre class="language-text"><code class="language-text">&amp;userStyle=⟨ユーザー・スタイルシートのURL (Vivliostyle Viewer からの相対)⟩</code></pre>
+      <p>複数個の <code>&amp;style=</code> あるいは <code>&amp;userStyle=</code> を使うことで、複数個のスタイルシートを指定できます。</p>
+      <p>データURLも利用できます。例えば:</p>
+      <pre class="language-text"><code class="language-text">&amp;style=data:,html{writing-mode:vertical-rl}</code></pre>
+    </section>
+    <section class="level3">
+      <h3 id="設定パネルでのカスタムスタイル設定">設定パネルでのカスタム・スタイル設定</h3>
+      <p>カスタム・スタイルの設定は、設定パネルの <strong>Custom Style Settings</strong> からも行うことができます。設定内容のCSSは設定パネルの <strong>Edit CSS</strong> で確認することができます（CSSコードをそこで追加することもできます）。</p>
+      <p>Web上に公開されている文書に、設定パネルからカスタム・スタイルの設定を加えた例:</p>
+      <ul>
+        <li>
+          <p><a href="https://www.w3.org/TR/CSS2/">Cascading Style Sheets Level 2 Revision 1 (CSS 2.1) Specification</a></p>
+          <p><a href="https://vivliostyle.org/viewer/#src=https://www.w3.org/TR/CSS2/&amp;bookMode=true&amp;style=data:,/*%3Cviewer%3E*/%0A@page%20%7B%20size:%20A4;%20%7D%0A/*%3C/viewer%3E*/%0A%0A@page%20:first%20%7B%0A%20%20@top-left%20%7B%0A%20%20%20%20content:%20none;%0A%20%20%7D%0A%20%20@top-right%20%7B%0A%20%20%20%20content:%20none;%0A%20%20%7D%0A%20%20@bottom-center%20%7B%0A%20%20%20%20content:%20none;%0A%20%20%7D%0A%7D%0A%0A@page%20:left%20%7B%0A%20%20font-size:%200.8rem;%0A%20%20@top-left%20%7B%0A%20%20%20%20content:%20env(pub-title);%0A%20%20%7D%0A%20%20@bottom-center%20%7B%0A%20%20%20%20content:%20counter(page);%0A%20%20%7D%0A%7D%0A%0A@page%20:right%20%7B%0A%20%20font-size:%200.8rem;%0A%20%20@top-right%20%7B%0A%20%20%20%20content:%20env(doc-title);%0A%20%20%7D%0A%20%20@bottom-center%20%7B%0A%20%20%20%20content:%20counter(page);%0A%20%20%7D%0A%7D">…#src=https://www.w3.org/TR/CSS2/&amp;bookMode=true&amp;style=data:,…</a></p>
+        </li>
+      </ul>
+      <pre class="language-css"><code class="language-css"><span class="token comment">/*&lt;viewer&gt;*/</span>
 <span class="token atrule"><span class="token rule">@page</span></span> <span class="token punctuation">{</span>
   <span class="token property">size</span><span class="token punctuation">:</span> A4<span class="token punctuation">;</span>
 <span class="token punctuation">}</span>
@@ -520,24 +518,22 @@ const lang = "ja";
     <span class="token property">content</span><span class="token punctuation">:</span> <span class="token function">counter</span><span class="token punctuation">(</span>page<span class="token punctuation">)</span><span class="token punctuation">;</span>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre>
-          <p>この例のように、設定パネルからスタイルの設定を行うと、カスタム・スタイルのCSS内のコメント <code>/*&lt;viewer&gt;*/</code> と <code>/*&lt;/viewer&gt;*/</code> で囲んだ部分に、設定パネルの項目から設定したスタイルのCSSコードが生成され、設定パネルの <strong>Edit CSS</strong> に表示されます。ユーザー独自のCSSコードをそれに追加することができます。この例ではページヘッダーとページフッターを追加しています。</p>
-        </section>
-      </section>
-      <section class="level2">
-        <h2 id="印刷pdfとして出力">印刷／PDFとして出力</h2>
-        <p>ブラウザの印刷・PDF保存機能を利用して、レンダリングされたドキュメントをPDFに変換できます。</p>
-        <p>例えば、Google Chrome で PDF に出力するには、メニューから「印刷」を開き、出力先として「PDFに保存」、背景のグラフィック ON と指定して「保存」します。</p>
-        <p>注: 文書の全ページを印刷する場合、設定パネルで <strong>Render All Pages</strong> が On になっていることを確認してください。これが Off の場合、すでに表示されたページしか印刷できず、またページ番号が正しく出力されません。</p>
-        <section class="level3">
-          <h3 id="vivliostyle-cli">Vivliostyle CLI</h3>
-          <p><a href="https://github.com/vivliostyle/vivliostyle-cli">Vivliostyle CLI</a> を使うとコマンドラインからPDFに出力できます。印刷に適したPDF/X-1a形式への変換も可能です。</p>
-        </section>
-      </section>
-      <section class="level2">
-        <h2 id="サポートされているcssの機能">サポートされているCSSの機能</h2>
-        <p>VivliostyleがサポートするCSSの機能については <a href="/ja/reference/supported-css-features/">サポートする CSS 機能</a> を参照してください。</p>
-      </section>
+      <p>この例のように、設定パネルからスタイルの設定を行うと、カスタム・スタイルのCSS内のコメント <code>/*&lt;viewer&gt;*/</code> と <code>/*&lt;/viewer&gt;*/</code> で囲んだ部分に、設定パネルの項目から設定したスタイルのCSSコードが生成され、設定パネルの <strong>Edit CSS</strong> に表示されます。ユーザー独自のCSSコードをそれに追加することができます。この例ではページヘッダーとページフッターを追加しています。</p>
     </section>
-  
-
+  </section>
+  <section class="level2">
+    <h2 id="印刷pdfとして出力">印刷／PDFとして出力</h2>
+    <p>ブラウザの印刷・PDF保存機能を利用して、レンダリングされたドキュメントをPDFに変換できます。</p>
+    <p>例えば、Google Chrome で PDF に出力するには、メニューから「印刷」を開き、出力先として「PDFに保存」、背景のグラフィック ON と指定して「保存」します。</p>
+    <p>注: 文書の全ページを印刷する場合、設定パネルで <strong>Render All Pages</strong> が On になっていることを確認してください。これが Off の場合、すでに表示されたページしか印刷できず、またページ番号が正しく出力されません。</p>
+    <section class="level3">
+      <h3 id="vivliostyle-cli">Vivliostyle CLI</h3>
+      <p><a href="https://github.com/vivliostyle/vivliostyle-cli">Vivliostyle CLI</a> を使うとコマンドラインからPDFに出力できます。印刷に適したPDF/X-1a形式への変換も可能です。</p>
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="サポートされているcssの機能">サポートされているCSSの機能</h2>
+    <p>VivliostyleがサポートするCSSの機能については <a href="/ja/reference/supported-css-features/">サポートする CSS 機能</a> を参照してください。</p>
+  </section>
+</section>
 </div> </article>  <nav class="page-navigation" data-astro-cid-z7g34ql7=""> <div class="nav-links" data-astro-cid-z7g34ql7=""> <div class="nav-link nav-prev nav-disabled" data-astro-cid-z7g34ql7=""></div> <div class="nav-link nav-next nav-disabled" data-astro-cid-z7g34ql7=""></div> </div> </nav>   </article> </main> </div> <footer class="footer" data-astro-cid-mw7aashj=""> <p data-astro-cid-mw7aashj="">© 2026 Vivliostyle Foundation.</p> </footer> </div>  <script type="module">window.__bodyOverflowLockCount=0;window.lockBodyOverflow=function(){window.__bodyOverflowLockCount++,window.__bodyOverflowLockCount===1&&(document.body.style.overflow="hidden")};window.unlockBodyOverflow=function(){window.__bodyOverflowLockCount=Math.max(0,window.__bodyOverflowLockCount-1),window.__bodyOverflowLockCount===0&&(document.body.style.overflow="")};</script>  <script type="module">document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll(".toc-toggle").forEach(t=>{t.addEventListener("click",e=>{if(e.target.tagName==="A")return;e.preventDefault();const d=t.getAttribute("data-target"),a=document.getElementById(d),n=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",!n),a&&(a.style.display=n?"none":"block")})})});</script></body></html>

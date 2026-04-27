@@ -9,7 +9,8 @@
     "astro": "astro",
     "optimize:images": "node scripts/optimize-images.mjs",
     "fix:epub-paths": "node scripts/fix-epub-paths.mjs",
-    "build:pdf": "npm run build:pdf:cli-ja && npm run build:pdf:cli-en && npm run build:pdf:vfm-ja && npm run build:pdf:vfm-en && npm run build:pdf:themes-ja && npm run build:pdf:themes-en && npm run build:pdf:viewer-ja && npm run build:pdf:viewer-en && npm run build:pdf:reference-ja && npm run build:pdf:reference-en && npm run fix:epub-paths",
+    "build:pdf": "npm run build:pdf:cli-ja && npm run build:pdf:cli-en && npm run build:pdf:vfm-ja && npm run build:pdf:vfm-en && npm run build:pdf:themes-ja && npm run build:pdf:themes-en && npm run build:pdf:viewer-ja && npm run build:pdf:viewer-en && npm run build:pdf:reference-ja && npm run build:pdf:reference-en",
+    "build:formats": "npm run build:pdf && npm run fix:epub-paths",
     "build:pdf:cli-ja": "vivliostyle build -c vivliostyle.config-cli-ja.js",
     "build:pdf:cli-en": "vivliostyle build -c vivliostyle.config-cli-en.js",
     "build:pdf:vfm-ja": "vivliostyle build -c vivliostyle.config-vfm-ja.js",
@@ -20,7 +21,7 @@
     "build:pdf:viewer-en": "vivliostyle build -c vivliostyle.config-viewer-en.js",
     "build:pdf:reference-ja": "vivliostyle build -c vivliostyle.config-reference-ja.js",
     "build:pdf:reference-en": "vivliostyle build -c vivliostyle.config-reference-en.js",
-    "build:all": "npm run build && npm run build:pdf"
+    "build:all": "npm run build && npm run build:formats"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.0",

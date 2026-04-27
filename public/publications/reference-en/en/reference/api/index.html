@@ -178,12 +178,17 @@ const lang = "en";
     const open = () => {
       lastFocus = document.activeElement;
 
-      // 本番URL固定でマニフェストを参照する。
-      // localhost / preview からは Vivliostyle Viewer が manifest を取りに行けないので、
-      // その場合は警告を表示する。
-      const isProductionHost = window.location.hostname === 'docs2.vivliostyle.org' ||
-                               window.location.hostname === 'docs.vivliostyle.org';
-      const manifestUrl = `https://docs2.vivliostyle.org/publications/${product}-${lang}/publication.json`;
+      // production host (docs.vivliostyle.org / docs2.vivliostyle.org) では
+      // 自身のホスト上のマニフェストを参照する。それ以外（localhost や
+      // プレビュー環境）からは Vivliostyle Viewer が外部からマニフェストを
+      // 取得できないため、フォールバックとして既定の本番ホストを指定し、
+      // 警告を表示する。
+      const productionHosts = ['docs.vivliostyle.org', 'docs2.vivliostyle.org'];
+      const isProductionHost = productionHosts.includes(window.location.hostname);
+      const manifestHost = isProductionHost
+        ? window.location.hostname
+        : 'docs2.vivliostyle.org';
+      const manifestUrl = `https://${manifestHost}/publications/${product}-${lang}/publication.json`;
       const viewerUrl = `https://vivliostyle.org/viewer/?src=${encodeURIComponent(manifestUrl)}&bookMode=true&lng=${lang}`;
 
       iframe.src = viewerUrl;
@@ -218,384 +223,377 @@ const lang = "en";
     });
   }
 })();</script> </section>  </nav> </aside> <main class="content" data-astro-cid-mw7aashj=""> <nav aria-label="Breadcrumb" class="breadcrumb" data-astro-cid-qaanghzh=""> <ol data-astro-cid-qaanghzh=""> <li data-astro-cid-qaanghzh=""> <a href="/en/" data-astro-cid-qaanghzh="">Home</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <a href="/en/reference/" data-astro-cid-qaanghzh="">Reference</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <span aria-current="page" data-astro-cid-qaanghzh="">Core API Reference</span>  </li> </ol> </nav> <!-- JSON-LD構造化データ --> <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://docs.vivliostyle.org/en/"},{"@type":"ListItem","position":2,"name":"Reference","item":"https://docs.vivliostyle.org/en/reference/"},{"@type":"ListItem","position":3,"name":"Core API Reference","item":"https://docs.vivliostyle.org/en/reference/api/"}]}</script>  <article class="prose" data-astro-cid-mw7aashj="">      <article class="docs-content" data-astro-cid-xjylzsq4=""> <!-- Display extracted TOC if exists -->  <div data-astro-cid-xjylzsq4="">
-
-  
-    <meta charset="utf-8">
-    <title>Core API Reference</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  
-    <section class="level1">
-      <h1 id="core-api-reference">Core API Reference</h1>
+<section class="level1">
+  <h1 id="core-api-reference">Core API Reference</h1>
+  <ul>
+    <li>
+      <p><a href="#api">API</a></p>
       <ul>
-        <li>
-          <p><a href="#api">API</a></p>
+        <li><a href="#constants">constants</a>
           <ul>
-            <li><a href="#constants">constants</a>
-              <ul>
-                <li><a href="#constantspageprogression"><code>PageProgression</code></a></li>
-                <li><a href="#constantspageside"><code>PageSide</code></a></li>
-                <li><a href="#constantsreadystate"><code>ReadyState</code></a></li>
-              </ul>
-            </li>
-            <li><a href="#plugin">plugin</a>
-              <ul>
-                <li><a href="#pluginregisterhookname-fn"><code>registerHook(name, fn)</code></a></li>
-                <li><a href="#pluginremovehookname-fn"><code>removeHook(name, fn)</code></a></li>
-              </ul>
-            </li>
-            <li><a href="#profile">profile</a>
-              <ul>
-                <li><a href="#profileprofilerregisterstarttimingname-timestamp"><code>profiler.registerStartTiming(name, timestamp)</code></a></li>
-                <li><a href="#profileprofilerregisterendtimingname-timestamp"><code>profiler.registerEndTiming(name, timestamp)</code></a></li>
-                <li><a href="#profileprofilerprinttimings"><code>profiler.printTimings()</code></a></li>
-                <li><a href="#profileprofilerdisable"><code>profiler.disable()</code></a></li>
-                <li><a href="#profileprofilerenable"><code>profiler.enable()</code></a></li>
-              </ul>
-            </li>
-            <li><a href="#core-viewer">core-viewer</a>
-              <ul>
-                <li><a href="#new-coreviewersettings-options"><code>new CoreViewer(settings, options)</code></a></li>
-                <li><a href="#pageviewmode"><code>PageViewMode</code></a></li>
-                <li><a href="#zoomtype"><code>ZoomType</code></a></li>
-              </ul>
-            </li>
+            <li><a href="#constantspageprogression"><code>PageProgression</code></a></li>
+            <li><a href="#constantspageside"><code>PageSide</code></a></li>
+            <li><a href="#constantsreadystate"><code>ReadyState</code></a></li>
           </ul>
         </li>
-        <li>
-          <p><a href="#classes">Classes</a></p>
+        <li><a href="#plugin">plugin</a>
           <ul>
-            <li><a href="#coreviewer"><code>CoreViewer</code></a>
-              <ul>
-                <li><a href="#corevieweraddlistenertype-listener"><code>addListener(type, listener)</code></a></li>
-                <li><a href="#coreviewergetcurrentpageprogression"><code>getCurrentPageProgression()</code></a></li>
-                <li><a href="#coreviewergetpagesizes"><code>getPageSizes()</code></a></li>
-                <li><a href="#corevieweristocvisible"><code>isTOCVisible()</code></a></li>
-                <li><a href="#coreviewerloaddocumentsingledocumentoptions-documentoptions-vieweroptions"><code>loadDocument(singleDocumentOptions, documentOptions, viewerOptions)</code></a></li>
-                <li><a href="#coreviewerloadpublicationpuburl-documentoptions-vieweroptions"><code>loadPublication(pubURL, documentOptions, viewerOptions)</code></a></li>
-                <li><a href="#coreviewernavigatetointernalurl"><code>navigateToInternalUrl()</code></a></li>
-                <li><a href="#coreviewernavigatetopage"><code>navigateToPage()</code></a></li>
-                <li><a href="#coreviewerqueryzoomfactortype"><code>queryZoomFactor(type)</code></a></li>
-                <li><a href="#coreviewerremovelistenertype-listener"><code>removeListener(type, listener)</code></a></li>
-                <li><a href="#coreviewersetoptionsoptions"><code>setOptions(options)</code></a></li>
-                <li><a href="#coreviewershowtocopt_show-opt_autohide"><code>showTOC(opt_show, opt_autohide)</code></a></li>
-              </ul>
-            </li>
+            <li><a href="#pluginregisterhookname-fn"><code>registerHook(name, fn)</code></a></li>
+            <li><a href="#pluginremovehookname-fn"><code>removeHook(name, fn)</code></a></li>
           </ul>
         </li>
-        <li>
-          <p><a href="#typedefs">TypeDefs</a></p>
+        <li><a href="#profile">profile</a>
           <ul>
-            <li><a href="#documentoptions"><code>DocumentOptions</code></a></li>
-            <li><a href="#singledocumentoptions"><code>SingleDocumentOptions</code></a></li>
-            <li><a href="#coreviewersettings"><code>CoreViewerSettings</code></a></li>
-            <li><a href="#corevieweroptions"><code>CoreViewerOptions</code></a></li>
+            <li><a href="#profileprofilerregisterstarttimingname-timestamp"><code>profiler.registerStartTiming(name, timestamp)</code></a></li>
+            <li><a href="#profileprofilerregisterendtimingname-timestamp"><code>profiler.registerEndTiming(name, timestamp)</code></a></li>
+            <li><a href="#profileprofilerprinttimings"><code>profiler.printTimings()</code></a></li>
+            <li><a href="#profileprofilerdisable"><code>profiler.disable()</code></a></li>
+            <li><a href="#profileprofilerenable"><code>profiler.enable()</code></a></li>
+          </ul>
+        </li>
+        <li><a href="#core-viewer">core-viewer</a>
+          <ul>
+            <li><a href="#new-coreviewersettings-options"><code>new CoreViewer(settings, options)</code></a></li>
+            <li><a href="#pageviewmode"><code>PageViewMode</code></a></li>
+            <li><a href="#zoomtype"><code>ZoomType</code></a></li>
           </ul>
         </li>
       </ul>
-      <section class="level2">
-        <h2 id="constants">constants</h2>
-        <section class="level3">
-          <h3 id="constantspageprogression"><code>constants.PageProgression</code></h3>
-          <p>
-            Enum <code>PageProgression</code> represents page progression direction.
-            <code>PageProgression</code> has members, <code>LTR</code> and <code>RTL</code>.
-          </p>
-        </section>
-        <section class="level3">
-          <h3 id="constantspageside"><code>constants.PageSide</code></h3>
-          <p>
-            Enum <code>PageSide</code> represents page side.
-            <code>PageSide</code> has members, <code>LEFT</code> and <code>RIGHT</code>.
-          </p>
-        </section>
-        <section class="level3">
-          <h3 id="constantsreadystate"><code>constants.ReadyState</code></h3>
-          <p>
-            Enum <code>ReadyState</code> represents viewer ready state.
-            <code>ReadyState</code> has members, <code>LOADING</code>, <code>INTERACTIVE</code> and <code>COMPLETE</code>.
-          </p>
-        </section>
-      </section>
-      <section class="level2">
-        <h2 id="plugin">plugin</h2>
-        <section class="level3">
-          <h3 id="pluginregisterhookname-fn"><code>plugin.registerHook(name, fn)</code></h3>
-          <p>
-            Register a function to a hook with the specified name.
-            The registered function is called at appropriate timings by the core code.
-            Arguments passed to the function depend on the hook.
-            When multiple functions are registered, they are called by the order in which they are registered.
-          </p>
-          <section class="level6">
-            <h6 id="parameters">Parameters</h6>
-            <ul>
-              <li><code>name</code> (string) — Name of the hook.</li>
-              <li><code>fn</code> (function) — Function to be registered to the hook.</li>
-            </ul>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="pluginremovehookname-fn"><code>plugin.removeHook(name, fn)</code></h3>
-          <p>
-            Remove a function already registered to the specified name.
-            Note that even if the same function are registered multiple times, this method removes only the first one.
-          </p>
-          <section class="level6">
-            <h6 id="parameters-1">Parameters</h6>
-            <ul>
-              <li><code>name</code> (string) — Name of the hook.</li>
-              <li><code>fn</code> (function) — Function to be removed from the hook.</li>
-            </ul>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="pluginhookspagination_progress"><code>plugin.HOOKS.PAGINATION_PROGRESS</code></h3>
-          <p>Called when pagination progresses during document load.</p>
-          <p>The hook receives a payload object:</p>
+    </li>
+    <li>
+      <p><a href="#classes">Classes</a></p>
+      <ul>
+        <li><a href="#coreviewer"><code>CoreViewer</code></a>
           <ul>
-            <li><code>fraction</code> (number) — Fraction of the HTML content already paginated (0-1).</li>
-            <li><code>pages</code> (number) — Number of pages created so far.</li>
+            <li><a href="#corevieweraddlistenertype-listener"><code>addListener(type, listener)</code></a></li>
+            <li><a href="#coreviewergetcurrentpageprogression"><code>getCurrentPageProgression()</code></a></li>
+            <li><a href="#coreviewergetpagesizes"><code>getPageSizes()</code></a></li>
+            <li><a href="#corevieweristocvisible"><code>isTOCVisible()</code></a></li>
+            <li><a href="#coreviewerloaddocumentsingledocumentoptions-documentoptions-vieweroptions"><code>loadDocument(singleDocumentOptions, documentOptions, viewerOptions)</code></a></li>
+            <li><a href="#coreviewerloadpublicationpuburl-documentoptions-vieweroptions"><code>loadPublication(pubURL, documentOptions, viewerOptions)</code></a></li>
+            <li><a href="#coreviewernavigatetointernalurl"><code>navigateToInternalUrl()</code></a></li>
+            <li><a href="#coreviewernavigatetopage"><code>navigateToPage()</code></a></li>
+            <li><a href="#coreviewerqueryzoomfactortype"><code>queryZoomFactor(type)</code></a></li>
+            <li><a href="#coreviewerremovelistenertype-listener"><code>removeListener(type, listener)</code></a></li>
+            <li><a href="#coreviewersetoptionsoptions"><code>setOptions(options)</code></a></li>
+            <li><a href="#coreviewershowtocopt_show-opt_autohide"><code>showTOC(opt_show, opt_autohide)</code></a></li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <p><a href="#typedefs">TypeDefs</a></p>
+      <ul>
+        <li><a href="#documentoptions"><code>DocumentOptions</code></a></li>
+        <li><a href="#singledocumentoptions"><code>SingleDocumentOptions</code></a></li>
+        <li><a href="#coreviewersettings"><code>CoreViewerSettings</code></a></li>
+        <li><a href="#corevieweroptions"><code>CoreViewerOptions</code></a></li>
+      </ul>
+    </li>
+  </ul>
+  <section class="level2">
+    <h2 id="constants">constants</h2>
+    <section class="level3">
+      <h3 id="constantspageprogression"><code>constants.PageProgression</code></h3>
+      <p>
+        Enum <code>PageProgression</code> represents page progression direction.
+        <code>PageProgression</code> has members, <code>LTR</code> and <code>RTL</code>.
+      </p>
+    </section>
+    <section class="level3">
+      <h3 id="constantspageside"><code>constants.PageSide</code></h3>
+      <p>
+        Enum <code>PageSide</code> represents page side.
+        <code>PageSide</code> has members, <code>LEFT</code> and <code>RIGHT</code>.
+      </p>
+    </section>
+    <section class="level3">
+      <h3 id="constantsreadystate"><code>constants.ReadyState</code></h3>
+      <p>
+        Enum <code>ReadyState</code> represents viewer ready state.
+        <code>ReadyState</code> has members, <code>LOADING</code>, <code>INTERACTIVE</code> and <code>COMPLETE</code>.
+      </p>
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="plugin">plugin</h2>
+    <section class="level3">
+      <h3 id="pluginregisterhookname-fn"><code>plugin.registerHook(name, fn)</code></h3>
+      <p>
+        Register a function to a hook with the specified name.
+        The registered function is called at appropriate timings by the core code.
+        Arguments passed to the function depend on the hook.
+        When multiple functions are registered, they are called by the order in which they are registered.
+      </p>
+      <section class="level6">
+        <h6 id="parameters">Parameters</h6>
+        <ul>
+          <li><code>name</code> (string) — Name of the hook.</li>
+          <li><code>fn</code> (function) — Function to be registered to the hook.</li>
+        </ul>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="pluginremovehookname-fn"><code>plugin.removeHook(name, fn)</code></h3>
+      <p>
+        Remove a function already registered to the specified name.
+        Note that even if the same function are registered multiple times, this method removes only the first one.
+      </p>
+      <section class="level6">
+        <h6 id="parameters-1">Parameters</h6>
+        <ul>
+          <li><code>name</code> (string) — Name of the hook.</li>
+          <li><code>fn</code> (function) — Function to be removed from the hook.</li>
+        </ul>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="pluginhookspagination_progress"><code>plugin.HOOKS.PAGINATION_PROGRESS</code></h3>
+      <p>Called when pagination progresses during document load.</p>
+      <p>The hook receives a payload object:</p>
+      <ul>
+        <li><code>fraction</code> (number) — Fraction of the HTML content already paginated (0-1).</li>
+        <li><code>pages</code> (number) — Number of pages created so far.</li>
+      </ul>
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="profile">profile</h2>
+    <section class="level3">
+      <h3 id="profileprofilerregisterstarttimingname-timestamp"><code>profile.profiler.registerStartTiming(name, timestamp)</code></h3>
+      <p>Registers start timing of some event.</p>
+      <section class="level6">
+        <h6 id="parameters-2">Parameters</h6>
+        <ul>
+          <li><code>name</code> (string) — Name of event.</li>
+          <li><code>timestamp</code> (number, optional) — Used as the actual timestamp of the event if specified, instead of "now".</li>
+        </ul>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="profileprofilerregisterendtimingname-timestamp"><code>profile.profiler.registerEndTiming(name, timestamp)</code></h3>
+      <p>Registers end timing of some event.</p>
+      <section class="level6">
+        <h6 id="parameters-3">Parameters</h6>
+        <ul>
+          <li><code>name</code> (string) — Name of event.</li>
+          <li><code>timestamp</code> (number, optional) — Used as the actual timestamp of the event if specified, instead of "now".</li>
+        </ul>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="profileprofilerprinttimings"><code>profile.profiler.printTimings()</code></h3>
+      <p>
+        Log registered timings (start/end/duration).
+        All values are printed in ms unit.
+      </p>
+    </section>
+    <section class="level3">
+      <h3 id="profileprofilerdisable"><code>profile.profiler.disable()</code></h3>
+      <p>Disable profiling.</p>
+    </section>
+    <section class="level3">
+      <h3 id="profileprofilerenable"><code>profile.profiler.enable()</code></h3>
+      <p>Enable profiling.</p>
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="core-viewer">core-viewer</h2>
+    <section class="level3">
+      <h3 id="new-coreviewersettings-options"><code>new CoreViewer(settings, options)</code></h3>
+      <p>Vivliostyle CoreViewer class. Creates <a href="#coreviewer"><code>CoreViewer</code></a>.</p>
+      <section class="level6">
+        <h6 id="parameters-4">Parameters</h6>
+        <ul>
+          <li><code>settings</code> (<a href="#coreviewersettings">CoreViewerSettings</a>)</li>
+          <li><code>options</code> (<a href="#corevieweroptions">CoreViewerOptions</a>, optional)</li>
+        </ul>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="pageviewmode"><code>PageViewMode</code></h3>
+      <p>
+        Enum <code>PageViewMode</code>.
+        <code>PageViewMode</code> has members, <code>SINGLE_PAGE</code>, <code>SPREAD</code> and <code>AUTO_SPREAD</code>.
+      </p>
+    </section>
+    <section class="level3">
+      <h3 id="zoomtype"><code>ZoomType</code></h3>
+      <p>
+        Enum <code>ZoomType</code>.
+        <code>ZoomType</code> has only one member, <code>FIT_INSIDE_VIEWPORT</code>.
+      </p>
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="classes">Classes</h2>
+    <section class="level3">
+      <h3 id="coreviewer"><code>CoreViewer</code></h3>
+      <section class="level4">
+        <h4 id="corevieweraddlistenertype-listener"><code>CoreViewer.addListener(type, listener)</code></h4>
+        <p>Add a listener function, which is invoked when the specified type of event is dispatched.</p>
+        <section class="level6">
+          <h6 id="parameters-5">Parameters</h6>
+          <ul>
+            <li><code>type</code> (string) — Event type.</li>
+            <li><code>listener</code> (function) — Listener function.</li>
           </ul>
         </section>
       </section>
-      <section class="level2">
-        <h2 id="profile">profile</h2>
-        <section class="level3">
-          <h3 id="profileprofilerregisterstarttimingname-timestamp"><code>profile.profiler.registerStartTiming(name, timestamp)</code></h3>
-          <p>Registers start timing of some event.</p>
-          <section class="level6">
-            <h6 id="parameters-2">Parameters</h6>
-            <ul>
-              <li><code>name</code> (string) — Name of event.</li>
-              <li><code>timestamp</code> (number, optional) — Used as the actual timestamp of the event if specified, instead of "now".</li>
-            </ul>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="profileprofilerregisterendtimingname-timestamp"><code>profile.profiler.registerEndTiming(name, timestamp)</code></h3>
-          <p>Registers end timing of some event.</p>
-          <section class="level6">
-            <h6 id="parameters-3">Parameters</h6>
-            <ul>
-              <li><code>name</code> (string) — Name of event.</li>
-              <li><code>timestamp</code> (number, optional) — Used as the actual timestamp of the event if specified, instead of "now".</li>
-            </ul>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="profileprofilerprinttimings"><code>profile.profiler.printTimings()</code></h3>
-          <p>
-            Log registered timings (start/end/duration).
-            All values are printed in ms unit.
-          </p>
-        </section>
-        <section class="level3">
-          <h3 id="profileprofilerdisable"><code>profile.profiler.disable()</code></h3>
-          <p>Disable profiling.</p>
-        </section>
-        <section class="level3">
-          <h3 id="profileprofilerenable"><code>profile.profiler.enable()</code></h3>
-          <p>Enable profiling.</p>
-        </section>
+    </section>
+    <section class="level3">
+      <h3 id="coreviewergetcurrentpageprogression"><code>CoreViewer.getCurrentPageProgression()</code></h3>
+      <p>Returns the current page progression of the viewer. If no document is loaded, returns null.</p>
+      <section class="level6">
+        <h6 id="returns">Returns</h6>
+        <p><a href="#constantspageprogression">PageProgression</a></p>
       </section>
-      <section class="level2">
-        <h2 id="core-viewer">core-viewer</h2>
-        <section class="level3">
-          <h3 id="new-coreviewersettings-options"><code>new CoreViewer(settings, options)</code></h3>
-          <p>Vivliostyle CoreViewer class. Creates <a href="#coreviewer"><code>CoreViewer</code></a>.</p>
-          <section class="level6">
-            <h6 id="parameters-4">Parameters</h6>
-            <ul>
-              <li><code>settings</code> (<a href="#coreviewersettings">CoreViewerSettings</a>)</li>
-              <li><code>options</code> (<a href="#corevieweroptions">CoreViewerOptions</a>, optional)</li>
-            </ul>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="pageviewmode"><code>PageViewMode</code></h3>
-          <p>
-            Enum <code>PageViewMode</code>.
-            <code>PageViewMode</code> has members, <code>SINGLE_PAGE</code>, <code>SPREAD</code> and <code>AUTO_SPREAD</code>.
-          </p>
-        </section>
-        <section class="level3">
-          <h3 id="zoomtype"><code>ZoomType</code></h3>
-          <p>
-            Enum <code>ZoomType</code>.
-            <code>ZoomType</code> has only one member, <code>FIT_INSIDE_VIEWPORT</code>.
-          </p>
-        </section>
+    </section>
+    <section class="level3">
+      <h3 id="coreviewergetpagesizes"><code>CoreViewer.getPageSizes()</code></h3>
+      <section class="level6">
+        <h6 id="returns-1">Returns</h6>
+        <p>Array&lt;{width: number, height: number}&gt;</p>
       </section>
-      <section class="level2">
-        <h2 id="classes">Classes</h2>
-        <section class="level3">
-          <h3 id="coreviewer"><code>CoreViewer</code></h3>
-          <section class="level4">
-            <h4 id="corevieweraddlistenertype-listener"><code>CoreViewer.addListener(type, listener)</code></h4>
-            <p>Add a listener function, which is invoked when the specified type of event is dispatched.</p>
-            <section class="level6">
-              <h6 id="parameters-5">Parameters</h6>
-              <ul>
-                <li><code>type</code> (string) — Event type.</li>
-                <li><code>listener</code> (function) — Listener function.</li>
-              </ul>
-            </section>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="coreviewergetcurrentpageprogression"><code>CoreViewer.getCurrentPageProgression()</code></h3>
-          <p>Returns the current page progression of the viewer. If no document is loaded, returns null.</p>
-          <section class="level6">
-            <h6 id="returns">Returns</h6>
-            <p><a href="#constantspageprogression">PageProgression</a></p>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="coreviewergetpagesizes"><code>CoreViewer.getPageSizes()</code></h3>
-          <section class="level6">
-            <h6 id="returns-1">Returns</h6>
-            <p>Array&lt;{width: number, height: number}&gt;</p>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="corevieweristocvisible"><code>CoreViewer.isTOCVisible()</code></h3>
-          <p>Returns true if TOC is visible, false if hidden, null if TOC is unavailable</p>
-        </section>
-        <section class="level3">
-          <h3 id="coreviewerloaddocumentsingledocumentoptions-documentoptions-vieweroptions"><code>CoreViewer.loadDocument(singleDocumentOptions, documentOptions, viewerOptions)</code></h3>
-          <p>Load an HTML or XML document(s).</p>
-          <section class="level6">
-            <h6 id="parameters-6">Parameters</h6>
-            <ul>
-              <li><code>singleDocumentOptions</code> (<a href="#singledocumentoptions">SingleDocumentOptions</a>|Array&lt;<a href="#singledocumentoptions">SingleDocumentOptions</a>&gt;)</li>
-              <li><code>documentOptions</code> (<a href="#documentoptions">DocumentOptions</a>, optional)</li>
-              <li><code>viewerOptions</code> (<a href="#corevieweroptions">CoreViewerOptions</a>, optional)</li>
-            </ul>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="coreviewerloadpublicationpuburl-documentoptions-vieweroptions"><code>CoreViewer.loadPublication(pubURL, documentOptions, viewerOptions)</code></h3>
-          <p>Load a EPUB/WebPub publication.</p>
-          <section class="level6">
-            <h6 id="parameters-7">Parameters</h6>
-            <ul>
-              <li><code>pubURL</code> (string)</li>
-              <li><code>documentOptions</code> (<a href="#documentoptions">DocumentOptions</a>, optional)</li>
-              <li><code>viewerOptions</code> (<a href="#corevieweroptions">CoreViewerOptions</a>, optional)</li>
-            </ul>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="coreviewernavigatetointernalurl"><code>CoreViewer.navigateToInternalUrl()</code></h3>
-          <p>Navigate to the specified internal URL.</p>
-        </section>
-        <section class="level3">
-          <h3 id="coreviewernavigatetopage"><code>CoreViewer.navigateToPage()</code></h3>
-          <p>Navigate to the specified page.</p>
-        </section>
-        <section class="level3">
-          <h3 id="coreviewerqueryzoomfactortype"><code>CoreViewer.queryZoomFactor(type)</code></h3>
-          <p>Returns zoom factor corresponding to the specified zoom type.</p>
-          <section class="level6">
-            <h6 id="parameters-8">Parameters</h6>
-            <ul>
-              <li><code>type</code> (<a href="#zoomtype">ZoomType</a>)</li>
-            </ul>
-          </section>
-          <section class="level6">
-            <h6 id="returns-2">Returns</h6>
-            <p>number</p>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="coreviewerremovelistenertype-listener"><code>CoreViewer.removeListener(type, listener)</code></h3>
-          <p>Remove an event listener.</p>
-          <section class="level6">
-            <h6 id="parameters-9">Parameters</h6>
-            <ul>
-              <li><code>type</code> (string) — Event type.</li>
-              <li><code>listener</code> (function) — Listener function.</li>
-            </ul>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="coreviewersetoptionsoptions"><code>CoreViewer.setOptions(options)</code></h3>
-          <p>Set CoreViewerOptions to the viewer.</p>
-          <section class="level6">
-            <h6 id="parameters-10">Parameters</h6>
-            <ul>
-              <li><code>options</code> (<a href="#corevieweroptions">CoreViewerOptions</a>)</li>
-            </ul>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="coreviewershowtocopt_show-opt_autohide"><code>CoreViewer.showTOC(opt_show, opt_autohide)</code></h3>
-          <p>Show or hide TOC box</p>
-          <section class="level6">
-            <h6 id="parameters-11">Parameters</h6>
-            <ul>
-              <li><code>opt_show</code> (boolean) - If true show TOC, false hide TOC. If null or undefined toggle TOC.</li>
-              <li><code>opt_autohide</code> (boolean) - If true, automatically hide when click TOC item</li>
-            </ul>
-          </section>
-        </section>
+    </section>
+    <section class="level3">
+      <h3 id="corevieweristocvisible"><code>CoreViewer.isTOCVisible()</code></h3>
+      <p>Returns true if TOC is visible, false if hidden, null if TOC is unavailable</p>
+    </section>
+    <section class="level3">
+      <h3 id="coreviewerloaddocumentsingledocumentoptions-documentoptions-vieweroptions"><code>CoreViewer.loadDocument(singleDocumentOptions, documentOptions, viewerOptions)</code></h3>
+      <p>Load an HTML or XML document(s).</p>
+      <section class="level6">
+        <h6 id="parameters-6">Parameters</h6>
+        <ul>
+          <li><code>singleDocumentOptions</code> (<a href="#singledocumentoptions">SingleDocumentOptions</a>|Array&lt;<a href="#singledocumentoptions">SingleDocumentOptions</a>&gt;)</li>
+          <li><code>documentOptions</code> (<a href="#documentoptions">DocumentOptions</a>, optional)</li>
+          <li><code>viewerOptions</code> (<a href="#corevieweroptions">CoreViewerOptions</a>, optional)</li>
+        </ul>
       </section>
-      <section class="level2">
-        <h2 id="typedefs">TypeDefs</h2>
-        <section class="level3">
-          <h3 id="documentoptions"><code>DocumentOptions</code></h3>
-          <p>Options for the displayed document.</p>
-          <ul>
-            <li><code>documentObject</code> (Document, optional) — Document object for the document. If provided, it is used directly without parsing the source again.</li>
-            <li><code>fragment</code> (string, optional) — Fragmentation identifier (EPUB CFI) of the location in the document which is to be displayed.</li>
-            <li><code>authorStyleSheet</code> (<code>Array&lt;string&gt;</code>, optional) — An array of author style sheets to be injected after all author style sheets referenced from the document. A single stylesheet may be a URL of the style sheet or a text content of the style sheet.</li>
-            <li><code>userStyleSheet</code> (<code>Array&lt;string&gt;</code>, optional) — An array of user style sheets to be injected. A single stylesheet may be a URL of the style sheet or a text content of the style sheet.</li>
-          </ul>
-        </section>
-        <section class="level3">
-          <h3 id="singledocumentoptions"><code>SingleDocumentOptions</code></h3>
-          <p>
-            Options for a single source document.
-            <code>SingleDocumentOptions</code> is the object that has members below, or otherwise string that represents <code>url</code>.
-          </p>
-          <ul>
-            <li><code>url</code> (string) — URL of the document.</li>
-            <li><code>startPage</code> (number, optional) — If specified, the <code>page</code> page-based counter is set to the specified value on the first page of the document. It is equivalent to specifying <code>counter-reset: page [specified value - 1]</code> on that page.</li>
-            <li><code>skipPagesBefore</code> (number, optional) — If specified, the <code>page</code> page-based counter is incremented by the specified value <em>before</em> updating page-based counters on the first page of the document. This option is ignored if <code>startPageNumber</code> option is also specified.</li>
-          </ul>
-        </section>
-        <section class="level3">
-          <h3 id="coreviewersettings"><code>CoreViewerSettings</code></h3>
-          <p>CoreViewer settings that must be passed to CoreViewer's constructor.</p>
-          <ul>
-            <li><code>viewportElement</code> (HTMLElement, <strong>required</strong>) — An element used as the viewport of the displayed contents.</li>
-            <li><code>userAgentRootURL</code> (string, optional) — URL of a directory from which viewer resource files (under resources/ directory in the source repository) are served.</li>
-            <li><code>window</code> (Window, optional) — Window object. If omitted, current <code>window</code> is used.</li>
-            <li><code>debug</code> (boolean, optional) — Debug flag.</li>
-          </ul>
-        </section>
-        <section class="level3">
-          <h3 id="corevieweroptions"><code>CoreViewerOptions</code></h3>
-          <p>Viewer options that can be set after the Viewer object is constructed.</p>
-          <ul>
-            <li><code>autoResize</code> (boolean, optional) — Run layout again when the window is resized. default: true</li>
-            <li><code>fontSize</code> (number, optional) — Default font size (px). default: 16</li>
-            <li><code>pageBorderWidth</code> (number, optional) — Width of a border between two pages in a single spread (px). Effective only in spread view mode. default: 1</li>
-            <li><code>renderAllPages</code> (boolean, optional) — Render all pages at the document load time. default: true</li>
-            <li><code>pageViewMode</code> (PageViewMode, optional) — Page view mode (singlePage / spread / autoSpread). default: singlePage</li>
-            <li><code>zoom</code> (number, optional) — Zoom factor with which pages are displayed. default: 1</li>
-            <li><code>fitToScreen</code> (boolean, optional) — Auto adjust zoom factor to fit the screen. default: false</li>
-            <li><code>defaultPaperSize</code> ({width: number, height: number}, optional) — Default paper size in px. Effective when @page size is set to auto. default: undefined (means the windows size is used as paper size).</li>
-          </ul>
-        </section>
+    </section>
+    <section class="level3">
+      <h3 id="coreviewerloadpublicationpuburl-documentoptions-vieweroptions"><code>CoreViewer.loadPublication(pubURL, documentOptions, viewerOptions)</code></h3>
+      <p>Load a EPUB/WebPub publication.</p>
+      <section class="level6">
+        <h6 id="parameters-7">Parameters</h6>
+        <ul>
+          <li><code>pubURL</code> (string)</li>
+          <li><code>documentOptions</code> (<a href="#documentoptions">DocumentOptions</a>, optional)</li>
+          <li><code>viewerOptions</code> (<a href="#corevieweroptions">CoreViewerOptions</a>, optional)</li>
+        </ul>
       </section>
-      <section class="level2">
-        <h2 id="print">print</h2>
-        <section class="level3">
-          <h3 id="printhtml"><code>printHTML</code></h3>
-          <p>Allows page-layouting using the vivliostyle for printing within a website without destroying the original layout</p>
-          <pre class="language-js"><code class="language-js"><span class="token keyword module">import</span> <span class="token imports"><span class="token punctuation">{</span> printHTML <span class="token punctuation">}</span></span> <span class="token keyword module">from</span> <span class="token string">'@vivliostyle/core'</span><span class="token punctuation">;</span>
+    </section>
+    <section class="level3">
+      <h3 id="coreviewernavigatetointernalurl"><code>CoreViewer.navigateToInternalUrl()</code></h3>
+      <p>Navigate to the specified internal URL.</p>
+    </section>
+    <section class="level3">
+      <h3 id="coreviewernavigatetopage"><code>CoreViewer.navigateToPage()</code></h3>
+      <p>Navigate to the specified page.</p>
+    </section>
+    <section class="level3">
+      <h3 id="coreviewerqueryzoomfactortype"><code>CoreViewer.queryZoomFactor(type)</code></h3>
+      <p>Returns zoom factor corresponding to the specified zoom type.</p>
+      <section class="level6">
+        <h6 id="parameters-8">Parameters</h6>
+        <ul>
+          <li><code>type</code> (<a href="#zoomtype">ZoomType</a>)</li>
+        </ul>
+      </section>
+      <section class="level6">
+        <h6 id="returns-2">Returns</h6>
+        <p>number</p>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="coreviewerremovelistenertype-listener"><code>CoreViewer.removeListener(type, listener)</code></h3>
+      <p>Remove an event listener.</p>
+      <section class="level6">
+        <h6 id="parameters-9">Parameters</h6>
+        <ul>
+          <li><code>type</code> (string) — Event type.</li>
+          <li><code>listener</code> (function) — Listener function.</li>
+        </ul>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="coreviewersetoptionsoptions"><code>CoreViewer.setOptions(options)</code></h3>
+      <p>Set CoreViewerOptions to the viewer.</p>
+      <section class="level6">
+        <h6 id="parameters-10">Parameters</h6>
+        <ul>
+          <li><code>options</code> (<a href="#corevieweroptions">CoreViewerOptions</a>)</li>
+        </ul>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="coreviewershowtocopt_show-opt_autohide"><code>CoreViewer.showTOC(opt_show, opt_autohide)</code></h3>
+      <p>Show or hide TOC box</p>
+      <section class="level6">
+        <h6 id="parameters-11">Parameters</h6>
+        <ul>
+          <li><code>opt_show</code> (boolean) - If true show TOC, false hide TOC. If null or undefined toggle TOC.</li>
+          <li><code>opt_autohide</code> (boolean) - If true, automatically hide when click TOC item</li>
+        </ul>
+      </section>
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="typedefs">TypeDefs</h2>
+    <section class="level3">
+      <h3 id="documentoptions"><code>DocumentOptions</code></h3>
+      <p>Options for the displayed document.</p>
+      <ul>
+        <li><code>documentObject</code> (Document, optional) — Document object for the document. If provided, it is used directly without parsing the source again.</li>
+        <li><code>fragment</code> (string, optional) — Fragmentation identifier (EPUB CFI) of the location in the document which is to be displayed.</li>
+        <li><code>authorStyleSheet</code> (<code>Array&lt;string&gt;</code>, optional) — An array of author style sheets to be injected after all author style sheets referenced from the document. A single stylesheet may be a URL of the style sheet or a text content of the style sheet.</li>
+        <li><code>userStyleSheet</code> (<code>Array&lt;string&gt;</code>, optional) — An array of user style sheets to be injected. A single stylesheet may be a URL of the style sheet or a text content of the style sheet.</li>
+      </ul>
+    </section>
+    <section class="level3">
+      <h3 id="singledocumentoptions"><code>SingleDocumentOptions</code></h3>
+      <p>
+        Options for a single source document.
+        <code>SingleDocumentOptions</code> is the object that has members below, or otherwise string that represents <code>url</code>.
+      </p>
+      <ul>
+        <li><code>url</code> (string) — URL of the document.</li>
+        <li><code>startPage</code> (number, optional) — If specified, the <code>page</code> page-based counter is set to the specified value on the first page of the document. It is equivalent to specifying <code>counter-reset: page [specified value - 1]</code> on that page.</li>
+        <li><code>skipPagesBefore</code> (number, optional) — If specified, the <code>page</code> page-based counter is incremented by the specified value <em>before</em> updating page-based counters on the first page of the document. This option is ignored if <code>startPageNumber</code> option is also specified.</li>
+      </ul>
+    </section>
+    <section class="level3">
+      <h3 id="coreviewersettings"><code>CoreViewerSettings</code></h3>
+      <p>CoreViewer settings that must be passed to CoreViewer's constructor.</p>
+      <ul>
+        <li><code>viewportElement</code> (HTMLElement, <strong>required</strong>) — An element used as the viewport of the displayed contents.</li>
+        <li><code>userAgentRootURL</code> (string, optional) — URL of a directory from which viewer resource files (under resources/ directory in the source repository) are served.</li>
+        <li><code>window</code> (Window, optional) — Window object. If omitted, current <code>window</code> is used.</li>
+        <li><code>debug</code> (boolean, optional) — Debug flag.</li>
+      </ul>
+    </section>
+    <section class="level3">
+      <h3 id="corevieweroptions"><code>CoreViewerOptions</code></h3>
+      <p>Viewer options that can be set after the Viewer object is constructed.</p>
+      <ul>
+        <li><code>autoResize</code> (boolean, optional) — Run layout again when the window is resized. default: true</li>
+        <li><code>fontSize</code> (number, optional) — Default font size (px). default: 16</li>
+        <li><code>pageBorderWidth</code> (number, optional) — Width of a border between two pages in a single spread (px). Effective only in spread view mode. default: 1</li>
+        <li><code>renderAllPages</code> (boolean, optional) — Render all pages at the document load time. default: true</li>
+        <li><code>pageViewMode</code> (PageViewMode, optional) — Page view mode (singlePage / spread / autoSpread). default: singlePage</li>
+        <li><code>zoom</code> (number, optional) — Zoom factor with which pages are displayed. default: 1</li>
+        <li><code>fitToScreen</code> (boolean, optional) — Auto adjust zoom factor to fit the screen. default: false</li>
+        <li><code>defaultPaperSize</code> ({width: number, height: number}, optional) — Default paper size in px. Effective when @page size is set to auto. default: undefined (means the windows size is used as paper size).</li>
+      </ul>
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="print">print</h2>
+    <section class="level3">
+      <h3 id="printhtml"><code>printHTML</code></h3>
+      <p>Allows page-layouting using the vivliostyle for printing within a website without destroying the original layout</p>
+      <pre class="language-js"><code class="language-js"><span class="token keyword module">import</span> <span class="token imports"><span class="token punctuation">{</span> printHTML <span class="token punctuation">}</span></span> <span class="token keyword module">from</span> <span class="token string">'@vivliostyle/core'</span><span class="token punctuation">;</span>
 
 <span class="token keyword">const</span> htmlDoc <span class="token operator">=</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token string">&lt;!doctype html&gt;
 &lt;html&gt;
@@ -615,9 +613,7 @@ const lang = "en";
 <span class="token punctuation">}</span><span class="token punctuation">;</span>
 
 <span class="token function">printHTML</span><span class="token punctuation">(</span>htmlDoc<span class="token punctuation">,</span> config<span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
-        </section>
-      </section>
     </section>
-  
-
+  </section>
+</section>
 </div> </article>  <nav class="page-navigation" data-astro-cid-z7g34ql7=""> <div class="nav-links" data-astro-cid-z7g34ql7=""> <a href="/en/reference/supported-css-features/" class="nav-link nav-prev" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">← Previous</span> <span class="nav-title" data-astro-cid-z7g34ql7="">Supported CSS Features</span> </a> <a href="/en/reference/contribution-guide/" class="nav-link nav-next" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">Next →</span> <span class="nav-title" data-astro-cid-z7g34ql7="">Vivliostyle.js Contribution Guide</span> </a> </div> </nav>   </article> </main> </div> <footer class="footer" data-astro-cid-mw7aashj=""> <p data-astro-cid-mw7aashj="">© 2026 Vivliostyle Foundation.</p> </footer> </div>  <script type="module">window.__bodyOverflowLockCount=0;window.lockBodyOverflow=function(){window.__bodyOverflowLockCount++,window.__bodyOverflowLockCount===1&&(document.body.style.overflow="hidden")};window.unlockBodyOverflow=function(){window.__bodyOverflowLockCount=Math.max(0,window.__bodyOverflowLockCount-1),window.__bodyOverflowLockCount===0&&(document.body.style.overflow="")};</script>  <script type="module">document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll(".accordion-toggle").forEach(t=>{t.addEventListener("click",a=>{a.preventDefault();const d=t.getAttribute("data-target"),e=document.getElementById(d),n=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",String(!n)),e&&(e.style.display=n?"none":"block")})}),document.querySelectorAll(".toc-toggle").forEach(t=>{t.addEventListener("click",a=>{if(a.target.tagName==="A")return;a.preventDefault();const d=t.getAttribute("data-target"),e=document.getElementById(d),n=t.getAttribute("aria-expanded")==="true";e&&(t.setAttribute("aria-expanded",String(!n)),e.style.display=n?"none":"block")})})});</script></body></html>

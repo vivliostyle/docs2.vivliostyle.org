@@ -178,12 +178,17 @@ const lang = "en";
     const open = () => {
       lastFocus = document.activeElement;
 
-      // 本番URL固定でマニフェストを参照する。
-      // localhost / preview からは Vivliostyle Viewer が manifest を取りに行けないので、
-      // その場合は警告を表示する。
-      const isProductionHost = window.location.hostname === 'docs2.vivliostyle.org' ||
-                               window.location.hostname === 'docs.vivliostyle.org';
-      const manifestUrl = `https://docs2.vivliostyle.org/publications/${product}-${lang}/publication.json`;
+      // production host (docs.vivliostyle.org / docs2.vivliostyle.org) では
+      // 自身のホスト上のマニフェストを参照する。それ以外（localhost や
+      // プレビュー環境）からは Vivliostyle Viewer が外部からマニフェストを
+      // 取得できないため、フォールバックとして既定の本番ホストを指定し、
+      // 警告を表示する。
+      const productionHosts = ['docs.vivliostyle.org', 'docs2.vivliostyle.org'];
+      const isProductionHost = productionHosts.includes(window.location.hostname);
+      const manifestHost = isProductionHost
+        ? window.location.hostname
+        : 'docs2.vivliostyle.org';
+      const manifestUrl = `https://${manifestHost}/publications/${product}-${lang}/publication.json`;
       const viewerUrl = `https://vivliostyle.org/viewer/?src=${encodeURIComponent(manifestUrl)}&bookMode=true&lng=${lang}`;
 
       iframe.src = viewerUrl;
@@ -218,22 +223,15 @@ const lang = "en";
     });
   }
 })();</script> </section>  </nav> </aside> <main class="content" data-astro-cid-mw7aashj=""> <nav aria-label="Breadcrumb" class="breadcrumb" data-astro-cid-qaanghzh=""> <ol data-astro-cid-qaanghzh=""> <li data-astro-cid-qaanghzh=""> <a href="/en/" data-astro-cid-qaanghzh="">Home</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <a href="/en/cli/" data-astro-cid-qaanghzh="">CLI</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <span aria-current="page" data-astro-cid-qaanghzh="">Using Config File</span>  </li> </ol> </nav> <!-- JSON-LD構造化データ --> <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://docs.vivliostyle.org/en/"},{"@type":"ListItem","position":2,"name":"CLI","item":"https://docs.vivliostyle.org/en/cli/"},{"@type":"ListItem","position":3,"name":"Using Config File","item":"https://docs.vivliostyle.org/en/cli/using-config-file/"}]}</script>  <article class="prose" data-astro-cid-mw7aashj="">    <article data-astro-cid-tdaouxoz="">
-
-  
-    <meta charset="utf-8">
-    <title>Using Config File</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  
-    <section class="level1">
-      <h1 id="using-config-file">Using Config File</h1>
-      <p>To compile multiple articles or chapter files into a single publication, use a configuration file. When you run the <code>vivliostyle build</code> or <code>vivliostyle preview</code> command, if there is a configuration file named <code>vivliostyle.config.js</code> in the current directory, it will be used. You can also create a configuration file in <a href="https://code.visualstudio.com/docs/languages/json#_json-with-comments">JSONC</a> (JSON with comments) format with the filename <code>vivliostyle.config.json</code>.</p>
-      <section class="level2">
-        <h2 id="creating-a-configuration-file">Creating a Configuration File</h2>
-        <p>You can create a configuration file <code>vivliostyle.config.js</code> with the following command:</p>
-        <pre class="language-text"><code class="language-text">vivliostyle init</code></pre>
-        <p>This will generate a <code>vivliostyle.config.js</code> file in the current directory. The created <code>vivliostyle.config.js</code> file will look like this:</p>
-        <pre class="language-js"><code class="language-js"><span class="token comment">// @ts-check</span>
+<section class="level1">
+  <h1 id="using-config-file">Using Config File</h1>
+  <p>To compile multiple articles or chapter files into a single publication, use a configuration file. When you run the <code>vivliostyle build</code> or <code>vivliostyle preview</code> command, if there is a configuration file named <code>vivliostyle.config.js</code> in the current directory, it will be used. You can also create a configuration file in <a href="https://code.visualstudio.com/docs/languages/json#_json-with-comments">JSONC</a> (JSON with comments) format with the filename <code>vivliostyle.config.json</code>.</p>
+  <section class="level2">
+    <h2 id="creating-a-configuration-file">Creating a Configuration File</h2>
+    <p>You can create a configuration file <code>vivliostyle.config.js</code> with the following command:</p>
+    <pre class="language-text"><code class="language-text">vivliostyle init</code></pre>
+    <p>This will generate a <code>vivliostyle.config.js</code> file in the current directory. The created <code>vivliostyle.config.js</code> file will look like this:</p>
+    <pre class="language-js"><code class="language-js"><span class="token comment">// @ts-check</span>
 <span class="token keyword module">import</span> <span class="token imports"><span class="token punctuation">{</span> defineConfig <span class="token punctuation">}</span></span> <span class="token keyword module">from</span> <span class="token string">'@vivliostyle/cli'</span><span class="token punctuation">;</span>
 
 <span class="token keyword module">export</span> <span class="token keyword module">default</span> <span class="token function">defineConfig</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
@@ -243,56 +241,56 @@ const lang = "en";
   <span class="token literal-property property">image</span><span class="token operator">:</span> <span class="token string">'ghcr.io/vivliostyle/cli:latest'</span><span class="token punctuation">,</span>
   <span class="token literal-property property">entry</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'manuscript.md'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
 <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
-      </section>
-      <section class="level2">
-        <h2 id="configuration-file-settings">Configuration File Settings</h2>
-        <p>The settings in the configuration file are explained in the comments within the file (starting with <code>//</code>). Here are the main settings for each item. For all settings, refer to the <a href="./config/">Config Reference</a>.</p>
+  </section>
+  <section class="level2">
+    <h2 id="configuration-file-settings">Configuration File Settings</h2>
+    <p>The settings in the configuration file are explained in the comments within the file (starting with <code>//</code>). Here are the main settings for each item. For all settings, refer to the <a href="./config/">Config Reference</a>.</p>
+    <ul>
+      <li><strong>title</strong>: The title of the publication (e.g., <code>title: 'Principia'</code>).</li>
+      <li><strong>author</strong>: The author's name (e.g., <code>author: 'Isaac Newton'</code>).</li>
+      <li><strong>language</strong>: The language (e.g., <code>language: 'en'</code>). This will be reflected in the <code>lang</code> attribute of the HTML.</li>
+      <li><strong>size</strong>: The page size (e.g., <code>size: 'A4'</code>). For how to specify, refer to <a href="./themes-and-css.md#specifying-page-size">Specifying Page Size</a>.</li>
+      <li><strong>theme</strong>: The package name of the <a href="./themes-and-css.md#about-vivliostyle-themes">Vivliostyle Themes</a> to apply to the entire document, or the path to a CSS file. You can specify the following values and also specify multiple themes in an array format:
         <ul>
-          <li><strong>title</strong>: The title of the publication (e.g., <code>title: 'Principia'</code>).</li>
-          <li><strong>author</strong>: The author's name (e.g., <code>author: 'Isaac Newton'</code>).</li>
-          <li><strong>language</strong>: The language (e.g., <code>language: 'en'</code>). This will be reflected in the <code>lang</code> attribute of the HTML.</li>
-          <li><strong>size</strong>: The page size (e.g., <code>size: 'A4'</code>). For how to specify, refer to <a href="./themes-and-css.md#specifying-page-size">Specifying Page Size</a>.</li>
-          <li><strong>theme</strong>: The package name of the <a href="./themes-and-css.md#about-vivliostyle-themes">Vivliostyle Themes</a> to apply to the entire document, or the path to a CSS file. You can specify the following values and also specify multiple themes in an array format:
-            <ul>
-              <li>npm-style package name (e.g., <code>@vivliostyle/theme-techbook</code>, <code>./local-pkg</code>)</li>
-              <li>URL or local file path specifying a single CSS (e.g., <code>./style.css</code>, <code>https://example.com/style.css</code>)</li>
-            </ul>
-          </li>
-          <li>
-            <strong>entry</strong>: Specify an array of input Markdown or HTML files.
-            <code>js entry: [ { path: 'about.md', title: 'About This Book', theme: 'about.css' }, 'chapter1.md', 'chapter2.md', 'glossary.html' ], </code>You can specify the input as a string or in object format. In the case of object format, you can add the following properties:
-            <ul>
-              <li><code>path</code>: Specify the path of the entry. This property is required, but not needed when specifying <code>rel: 'contents'</code> or <code>rel: 'cover'</code>. Refer to the following items for these specifications:
-                <ul>
-                  <li><a href="./toc-page.md#to-output-the-table-of-contents-in-a-location-other-than-the-beginning-of-the-publication">To output the table of contents in a location other than the beginning of the publication</a></li>
-                  <li><a href="./cover-page.md#to-output-the-cover-page-to-a-location-other-than-the-beginning-of-the-publication">To output the cover page to a location other than the beginning of the publication</a></li>
-                </ul>
-              </li>
-              <li><code>title</code>: Specify the title of the entry. If this property is not set, the title will be obtained from the content of the entry.</li>
-              <li><code>theme</code>: Specify the package name of the Vivliostyle Themes to apply to the entry, or the path to a CSS file.</li>
-            </ul>
-          </li>
-          <li>
-            <strong>output</strong>: Specify the output destination. Example: <code>output: 'output.pdf'</code>. The default is <code>{title}.pdf</code>. You can also specify multiple outputs in an array format as follows:
-            <code>js output: [ './output.pdf', { path: './book', format: 'webpub', }, ], </code>You can specify the output as a string or in object format. In the case of object format, you can add the following properties:
-            <ul>
-              <li><code>path</code>: Specify the path of the output destination. This property is required.</li>
-              <li><code>format</code>: Specify the format to output (available options: <code>pdf</code>, <code>epub</code>, <code>webpub</code>). For EPUB output, refer to <a href="./special-output-settings.md#output-in-epub-format">Output in EPUB Format</a>, and for WebPub output, refer to <a href="./special-output-settings.md#output-in-web-publication-webpub-format">Output in Web Publication (WebPub) Format</a>.</li>
-            </ul>
-          </li>
-          <li><strong>workspaceDir</strong>: Specify the directory to save intermediate files. If not specified, the default is the current directory, and the HTML files converted from Markdown will be saved in the same location as the Markdown files. Example: <code>workspaceDir: '.vivliostyle'</code></li>
-          <li><strong>toc</strong>: If this property is specified, an HTML file <code>index.html</code> containing the table of contents will be output. For details, refer to <a href="./toc-page/">Creating Table of Contents Page</a>.</li>
-          <li><strong>cover</strong>: If this property is specified, an HTML file <code>cover.html</code> for the cover page will be output. For details, refer to <a href="./cover-page/">Creating Cover Page</a>.</li>
-          <li><strong>image</strong>: Change the Docker image to use. For details, refer to <a href="./special-output-settings.md#generating-with-docker">Generating with Docker</a>.</li>
+          <li>npm-style package name (e.g., <code>@vivliostyle/theme-techbook</code>, <code>./local-pkg</code>)</li>
+          <li>URL or local file path specifying a single CSS (e.g., <code>./style.css</code>, <code>https://example.com/style.css</code>)</li>
         </ul>
-      </section>
-      <section class="level2">
-        <h2 id="handling-multiple-inputs-and-outputs-at-once">Handling Multiple Inputs and Outputs at Once</h2>
+      </li>
+      <li>
+        <strong>entry</strong>: Specify an array of input Markdown or HTML files.
+        <code>js entry: [ { path: 'about.md', title: 'About This Book', theme: 'about.css' }, 'chapter1.md', 'chapter2.md', 'glossary.html' ], </code>You can specify the input as a string or in object format. In the case of object format, you can add the following properties:
         <ul>
-          <li><a href="https://github.com/vivliostyle/vivliostyle-cli/tree/main/examples/multiple-input-and-output">Example: multiple-input-and-output</a></li>
+          <li><code>path</code>: Specify the path of the entry. This property is required, but not needed when specifying <code>rel: 'contents'</code> or <code>rel: 'cover'</code>. Refer to the following items for these specifications:
+            <ul>
+              <li><a href="./toc-page.md#to-output-the-table-of-contents-in-a-location-other-than-the-beginning-of-the-publication">To output the table of contents in a location other than the beginning of the publication</a></li>
+              <li><a href="./cover-page.md#to-output-the-cover-page-to-a-location-other-than-the-beginning-of-the-publication">To output the cover page to a location other than the beginning of the publication</a></li>
+            </ul>
+          </li>
+          <li><code>title</code>: Specify the title of the entry. If this property is not set, the title will be obtained from the content of the entry.</li>
+          <li><code>theme</code>: Specify the package name of the Vivliostyle Themes to apply to the entry, or the path to a CSS file.</li>
         </ul>
-        <p>The above configuration file options can be specified in an array. By setting them as an array, you can conveniently handle multiple inputs and outputs at once. The following example is a configuration file that converts Markdown files in the <code>src</code> directory to PDF files with the same name.</p>
-        <pre class="language-js"><code class="language-js"><span class="token keyword">const</span> fs <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'fs'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      </li>
+      <li>
+        <strong>output</strong>: Specify the output destination. Example: <code>output: 'output.pdf'</code>. The default is <code>{title}.pdf</code>. You can also specify multiple outputs in an array format as follows:
+        <code>js output: [ './output.pdf', { path: './book', format: 'webpub', }, ], </code>You can specify the output as a string or in object format. In the case of object format, you can add the following properties:
+        <ul>
+          <li><code>path</code>: Specify the path of the output destination. This property is required.</li>
+          <li><code>format</code>: Specify the format to output (available options: <code>pdf</code>, <code>epub</code>, <code>webpub</code>). For EPUB output, refer to <a href="./special-output-settings.md#output-in-epub-format">Output in EPUB Format</a>, and for WebPub output, refer to <a href="./special-output-settings.md#output-in-web-publication-webpub-format">Output in Web Publication (WebPub) Format</a>.</li>
+        </ul>
+      </li>
+      <li><strong>workspaceDir</strong>: Specify the directory to save intermediate files. If not specified, the default is the current directory, and the HTML files converted from Markdown will be saved in the same location as the Markdown files. Example: <code>workspaceDir: '.vivliostyle'</code></li>
+      <li><strong>toc</strong>: If this property is specified, an HTML file <code>index.html</code> containing the table of contents will be output. For details, refer to <a href="./toc-page/">Creating Table of Contents Page</a>.</li>
+      <li><strong>cover</strong>: If this property is specified, an HTML file <code>cover.html</code> for the cover page will be output. For details, refer to <a href="./cover-page/">Creating Cover Page</a>.</li>
+      <li><strong>image</strong>: Change the Docker image to use. For details, refer to <a href="./special-output-settings.md#generating-with-docker">Generating with Docker</a>.</li>
+    </ul>
+  </section>
+  <section class="level2">
+    <h2 id="handling-multiple-inputs-and-outputs-at-once">Handling Multiple Inputs and Outputs at Once</h2>
+    <ul>
+      <li><a href="https://github.com/vivliostyle/vivliostyle-cli/tree/main/examples/multiple-input-and-output">Example: multiple-input-and-output</a></li>
+    </ul>
+    <p>The above configuration file options can be specified in an array. By setting them as an array, you can conveniently handle multiple inputs and outputs at once. The following example is a configuration file that converts Markdown files in the <code>src</code> directory to PDF files with the same name.</p>
+    <pre class="language-js"><code class="language-js"><span class="token keyword">const</span> fs <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'fs'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token keyword">const</span> path <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'path'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 <span class="token keyword">const</span> inputDir <span class="token operator">=</span> path<span class="token punctuation">.</span><span class="token method function property-access">join</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">,</span> <span class="token string">'src'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -308,8 +306,6 @@ const lang = "en";
     <span class="token literal-property property">output</span><span class="token operator">:</span> path<span class="token punctuation">.</span><span class="token method function property-access">join</span><span class="token punctuation">(</span>outputDir<span class="token punctuation">,</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>path<span class="token punctuation">.</span><span class="token method function property-access">basename</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> <span class="token string">'.md'</span><span class="token punctuation">)</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">.pdf</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">,</span>
   <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 module<span class="token punctuation">.</span><span class="token property-access">exports</span> <span class="token operator">=</span> vivliostyleConfig<span class="token punctuation">;</span></code></pre>
-      </section>
-    </section>
-  
-
+  </section>
+</section>
 </article> <nav class="page-navigation" data-astro-cid-z7g34ql7=""> <div class="nav-links" data-astro-cid-z7g34ql7=""> <a href="/en/cli/themes-and-css/" class="nav-link nav-prev" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">← Previous</span> <span class="nav-title" data-astro-cid-z7g34ql7="">Themes and CSS</span> </a> <a href="/en/cli/toc-page/" class="nav-link nav-next" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">Next →</span> <span class="nav-title" data-astro-cid-z7g34ql7="">Creating Table of Contents Page</span> </a> </div> </nav>   </article> </main> </div> <footer class="footer" data-astro-cid-mw7aashj=""> <p data-astro-cid-mw7aashj="">© 2026 Vivliostyle Foundation.</p> </footer> </div>  <script type="module">window.__bodyOverflowLockCount=0;window.lockBodyOverflow=function(){window.__bodyOverflowLockCount++,window.__bodyOverflowLockCount===1&&(document.body.style.overflow="hidden")};window.unlockBodyOverflow=function(){window.__bodyOverflowLockCount=Math.max(0,window.__bodyOverflowLockCount-1),window.__bodyOverflowLockCount===0&&(document.body.style.overflow="")};</script>  <script type="module">document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll(".accordion-toggle").forEach(t=>{t.addEventListener("click",d=>{d.preventDefault();const a=t.getAttribute("data-target"),e=document.getElementById(a),n=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",!n),e&&(e.style.display=n?"none":"block")})})});</script></body></html>

@@ -178,12 +178,17 @@ const lang = "en";
     const open = () => {
       lastFocus = document.activeElement;
 
-      // 本番URL固定でマニフェストを参照する。
-      // localhost / preview からは Vivliostyle Viewer が manifest を取りに行けないので、
-      // その場合は警告を表示する。
-      const isProductionHost = window.location.hostname === 'docs2.vivliostyle.org' ||
-                               window.location.hostname === 'docs.vivliostyle.org';
-      const manifestUrl = `https://docs2.vivliostyle.org/publications/${product}-${lang}/publication.json`;
+      // production host (docs.vivliostyle.org / docs2.vivliostyle.org) では
+      // 自身のホスト上のマニフェストを参照する。それ以外（localhost や
+      // プレビュー環境）からは Vivliostyle Viewer が外部からマニフェストを
+      // 取得できないため、フォールバックとして既定の本番ホストを指定し、
+      // 警告を表示する。
+      const productionHosts = ['docs.vivliostyle.org', 'docs2.vivliostyle.org'];
+      const isProductionHost = productionHosts.includes(window.location.hostname);
+      const manifestHost = isProductionHost
+        ? window.location.hostname
+        : 'docs2.vivliostyle.org';
+      const manifestUrl = `https://${manifestHost}/publications/${product}-${lang}/publication.json`;
       const viewerUrl = `https://vivliostyle.org/viewer/?src=${encodeURIComponent(manifestUrl)}&bookMode=true&lng=${lang}`;
 
       iframe.src = viewerUrl;
@@ -218,21 +223,14 @@ const lang = "en";
     });
   }
 })();</script> </section>  </nav> </aside> <main class="content" data-astro-cid-mw7aashj=""> <nav aria-label="Breadcrumb" class="breadcrumb" data-astro-cid-qaanghzh=""> <ol data-astro-cid-qaanghzh=""> <li data-astro-cid-qaanghzh=""> <a href="/en/" data-astro-cid-qaanghzh="">Home</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <a href="/en/cli/" data-astro-cid-qaanghzh="">CLI</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <span aria-current="page" data-astro-cid-qaanghzh="">Creating Table of Contents Page</span>  </li> </ol> </nav> <!-- JSON-LD構造化データ --> <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://docs.vivliostyle.org/en/"},{"@type":"ListItem","position":2,"name":"CLI","item":"https://docs.vivliostyle.org/en/cli/"},{"@type":"ListItem","position":3,"name":"Creating Table of Contents Page","item":"https://docs.vivliostyle.org/en/cli/toc-page/"}]}</script>  <article class="prose" data-astro-cid-mw7aashj="">    <article data-astro-cid-tdaouxoz="">
-
-  
-    <meta charset="utf-8">
-    <title>Creating Table of Contents Page</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  
-    <section class="level1">
-      <h1 id="creating-table-of-contents-page">Creating Table of Contents Page</h1>
-      <ul>
-        <li><a href="https://github.com/vivliostyle/vivliostyle-cli/tree/main/examples/table-of-contents">Example: table-of-contents</a></li>
-      </ul>
-      <p>If the configuration file <code>vivliostyle.config.js</code> specifies <code>toc: true</code>, a table of contents HTML file named <code>index.html</code> will be generated as the first file of the publication.</p>
-      <p>The content of the generated table of contents HTML file will include the <code>title</code> and <code>h1</code> elements, which will output the title of the publication as specified in the configuration file's <code>title</code>.</p>
-      <pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span> <span class="token attr-name">lang</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>en<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+<section class="level1">
+  <h1 id="creating-table-of-contents-page">Creating Table of Contents Page</h1>
+  <ul>
+    <li><a href="https://github.com/vivliostyle/vivliostyle-cli/tree/main/examples/table-of-contents">Example: table-of-contents</a></li>
+  </ul>
+  <p>If the configuration file <code>vivliostyle.config.js</code> specifies <code>toc: true</code>, a table of contents HTML file named <code>index.html</code> will be generated as the first file of the publication.</p>
+  <p>The content of the generated table of contents HTML file will include the <code>title</code> and <code>h1</code> elements, which will output the title of the publication as specified in the configuration file's <code>title</code>.</p>
+  <pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span> <span class="token attr-name">lang</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>en<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>head</span><span class="token punctuation">&gt;</span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>meta</span> <span class="token attr-name">charset</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>utf-8<span class="token punctuation">"</span></span> <span class="token punctuation">/&gt;</span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>title</span><span class="token punctuation">&gt;</span></span>Book Title<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>title</span><span class="token punctuation">&gt;</span></span>
@@ -253,36 +251,36 @@ const lang = "en";
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>nav</span><span class="token punctuation">&gt;</span></span>
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>body</span><span class="token punctuation">&gt;</span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>html</span><span class="token punctuation">&gt;</span></span></code></pre>
-      <p>The <code>toc</code> can also be specified as an object with the following properties:</p>
-      <ul>
-        <li>By specifying <code>htmlPath</code>, the table of contents HTML file will be output to a file other than <code>index.html</code>.</li>
-        <li>By specifying <code>title</code>, the table of contents title (the content of the <code>h2</code> element within the <code>nav</code> element) will be changed.</li>
-        <li>To include headings within the entries in addition to references to each entry, specify a value from <code>1</code> to <code>6</code> for <code>sectionDepth</code> (indicating which levels from <code>h1</code> to <code>h6</code> to include).</li>
-      </ul>
-      <pre class="language-js"><code class="language-js"><span class="token literal-property property">toc</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+  <p>The <code>toc</code> can also be specified as an object with the following properties:</p>
+  <ul>
+    <li>By specifying <code>htmlPath</code>, the table of contents HTML file will be output to a file other than <code>index.html</code>.</li>
+    <li>By specifying <code>title</code>, the table of contents title (the content of the <code>h2</code> element within the <code>nav</code> element) will be changed.</li>
+    <li>To include headings within the entries in addition to references to each entry, specify a value from <code>1</code> to <code>6</code> for <code>sectionDepth</code> (indicating which levels from <code>h1</code> to <code>h6</code> to include).</li>
+  </ul>
+  <pre class="language-js"><code class="language-js"><span class="token literal-property property">toc</span><span class="token operator">:</span> <span class="token punctuation">{</span>
   <span class="token literal-property property">htmlPath</span><span class="token operator">:</span> <span class="token string">'toc.html'</span><span class="token punctuation">,</span>
   <span class="token literal-property property">title</span><span class="token operator">:</span> <span class="token string">'Contents'</span><span class="token punctuation">,</span>
   <span class="token literal-property property">sectionDepth</span><span class="token operator">:</span> <span class="token number">6</span><span class="token punctuation">,</span>
 <span class="token punctuation">}</span><span class="token punctuation">,</span></code></pre>
-      <section class="level2">
-        <h2 id="to-output-the-table-of-contents-in-a-location-other-than-the-beginning-of-the-publication">To output the table of contents in a location other than the beginning of the publication</h2>
-        <p>By specifying <code>{ rel: 'contents' }</code> as an element of the <code>entry</code> array in the configuration file <code>vivliostyle.config.js</code>, the table of contents HTML file will be generated at that position.</p>
-        <pre class="language-js"><code class="language-js"><span class="token literal-property property">entry</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+  <section class="level2">
+    <h2 id="to-output-the-table-of-contents-in-a-location-other-than-the-beginning-of-the-publication">To output the table of contents in a location other than the beginning of the publication</h2>
+    <p>By specifying <code>{ rel: 'contents' }</code> as an element of the <code>entry</code> array in the configuration file <code>vivliostyle.config.js</code>, the table of contents HTML file will be generated at that position.</p>
+    <pre class="language-js"><code class="language-js"><span class="token literal-property property">entry</span><span class="token operator">:</span> <span class="token punctuation">[</span>
   <span class="token string">'titlepage.md'</span><span class="token punctuation">,</span>
   <span class="token punctuation">{</span> <span class="token literal-property property">rel</span><span class="token operator">:</span> <span class="token string">'contents'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
   <span class="token string">'chapter1.md'</span><span class="token punctuation">,</span>
   <span class="token spread operator">...</span>
 <span class="token punctuation">]</span><span class="token punctuation">,</span>
 <span class="token literal-property property">toc</span><span class="token operator">:</span> <span class="token string">'toc.html'</span><span class="token punctuation">,</span></code></pre>
-        <p>As a result, the first HTML file of the publication will be <code>titlepage.html</code>, followed by the table of contents HTML file <code>toc.html</code>.</p>
-      </section>
-      <section class="level2">
-        <h2 id="to-customize-the-table-of-contents">To customize the table of contents</h2>
-        <ul>
-          <li><a href="https://github.com/vivliostyle/vivliostyle-cli/tree/main/examples/customize-generated-content">Example: customize-generated-content</a></li>
-        </ul>
-        <p>To customize the table of contents, specify the <code>path</code>, <code>output</code>, and <code>rel: 'contents'</code> of the table of contents file as elements of the <code>entry</code> array in the configuration file as follows:</p>
-        <pre class="language-js"><code class="language-js"><span class="token literal-property property">entry</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <p>As a result, the first HTML file of the publication will be <code>titlepage.html</code>, followed by the table of contents HTML file <code>toc.html</code>.</p>
+  </section>
+  <section class="level2">
+    <h2 id="to-customize-the-table-of-contents">To customize the table of contents</h2>
+    <ul>
+      <li><a href="https://github.com/vivliostyle/vivliostyle-cli/tree/main/examples/customize-generated-content">Example: customize-generated-content</a></li>
+    </ul>
+    <p>To customize the table of contents, specify the <code>path</code>, <code>output</code>, and <code>rel: 'contents'</code> of the table of contents file as elements of the <code>entry</code> array in the configuration file as follows:</p>
+    <pre class="language-js"><code class="language-js"><span class="token literal-property property">entry</span><span class="token operator">:</span> <span class="token punctuation">[</span>
   <span class="token punctuation">{</span>
     <span class="token literal-property property">path</span><span class="token operator">:</span> <span class="token string">'toc-template.html'</span><span class="token punctuation">,</span>
     <span class="token literal-property property">output</span><span class="token operator">:</span> <span class="token string">'index.html'</span><span class="token punctuation">,</span>
@@ -290,10 +288,8 @@ const lang = "en";
   <span class="token punctuation">}</span><span class="token punctuation">,</span>
   <span class="token spread operator">...</span>
 <span class="token punctuation">]</span><span class="token punctuation">,</span></code></pre>
-        <p>Then, prepare the HTML file <code>toc-template.html</code> as a template for the table of contents. By including the tag <code>&lt;nav role="doc-toc"&gt;&lt;/nav&gt;</code> in <code>toc-template.html</code>, the table of contents items will be inserted into that part, and the table of contents HTML file will be output to <code>index.html</code>.</p>
-        <p>For detailed instructions on creating a table of contents, refer to the <a href="https://www.w3.org/TR/pub-manifest/">W3C Publication Manifest</a> specification's <a href="https://www.w3.org/TR/pub-manifest/#app-toc-structure">Machine-Processable Table of Contents</a>.</p>
-      </section>
-    </section>
-  
-
+    <p>Then, prepare the HTML file <code>toc-template.html</code> as a template for the table of contents. By including the tag <code>&lt;nav role="doc-toc"&gt;&lt;/nav&gt;</code> in <code>toc-template.html</code>, the table of contents items will be inserted into that part, and the table of contents HTML file will be output to <code>index.html</code>.</p>
+    <p>For detailed instructions on creating a table of contents, refer to the <a href="https://www.w3.org/TR/pub-manifest/">W3C Publication Manifest</a> specification's <a href="https://www.w3.org/TR/pub-manifest/#app-toc-structure">Machine-Processable Table of Contents</a>.</p>
+  </section>
+</section>
 </article> <nav class="page-navigation" data-astro-cid-z7g34ql7=""> <div class="nav-links" data-astro-cid-z7g34ql7=""> <a href="/en/cli/using-config-file/" class="nav-link nav-prev" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">← Previous</span> <span class="nav-title" data-astro-cid-z7g34ql7="">Using Config File</span> </a> <a href="/en/cli/cover-page/" class="nav-link nav-next" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">Next →</span> <span class="nav-title" data-astro-cid-z7g34ql7="">Creating Cover Page</span> </a> </div> </nav>   </article> </main> </div> <footer class="footer" data-astro-cid-mw7aashj=""> <p data-astro-cid-mw7aashj="">© 2026 Vivliostyle Foundation.</p> </footer> </div>  <script type="module">window.__bodyOverflowLockCount=0;window.lockBodyOverflow=function(){window.__bodyOverflowLockCount++,window.__bodyOverflowLockCount===1&&(document.body.style.overflow="hidden")};window.unlockBodyOverflow=function(){window.__bodyOverflowLockCount=Math.max(0,window.__bodyOverflowLockCount-1),window.__bodyOverflowLockCount===0&&(document.body.style.overflow="")};</script>  <script type="module">document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll(".accordion-toggle").forEach(t=>{t.addEventListener("click",d=>{d.preventDefault();const a=t.getAttribute("data-target"),e=document.getElementById(a),n=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",!n),e&&(e.style.display=n?"none":"block")})})});</script></body></html>

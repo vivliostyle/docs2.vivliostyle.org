@@ -178,12 +178,17 @@ const lang = "ja";
     const open = () => {
       lastFocus = document.activeElement;
 
-      // 本番URL固定でマニフェストを参照する。
-      // localhost / preview からは Vivliostyle Viewer が manifest を取りに行けないので、
-      // その場合は警告を表示する。
-      const isProductionHost = window.location.hostname === 'docs2.vivliostyle.org' ||
-                               window.location.hostname === 'docs.vivliostyle.org';
-      const manifestUrl = `https://docs2.vivliostyle.org/publications/${product}-${lang}/publication.json`;
+      // production host (docs.vivliostyle.org / docs2.vivliostyle.org) では
+      // 自身のホスト上のマニフェストを参照する。それ以外（localhost や
+      // プレビュー環境）からは Vivliostyle Viewer が外部からマニフェストを
+      // 取得できないため、フォールバックとして既定の本番ホストを指定し、
+      // 警告を表示する。
+      const productionHosts = ['docs.vivliostyle.org', 'docs2.vivliostyle.org'];
+      const isProductionHost = productionHosts.includes(window.location.hostname);
+      const manifestHost = isProductionHost
+        ? window.location.hostname
+        : 'docs2.vivliostyle.org';
+      const manifestUrl = `https://${manifestHost}/publications/${product}-${lang}/publication.json`;
       const viewerUrl = `https://vivliostyle.org/viewer/?src=${encodeURIComponent(manifestUrl)}&bookMode=true&lng=${lang}`;
 
       iframe.src = viewerUrl;
@@ -218,21 +223,14 @@ const lang = "ja";
     });
   }
 })();</script> </section>  </nav> </aside> <main class="content" data-astro-cid-mw7aashj=""> <nav aria-label="Breadcrumb" class="breadcrumb" data-astro-cid-qaanghzh=""> <ol data-astro-cid-qaanghzh=""> <li data-astro-cid-qaanghzh=""> <a href="/ja/" data-astro-cid-qaanghzh="">ホーム</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <a href="/ja/cli/" data-astro-cid-qaanghzh="">CLI</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <span aria-current="page" data-astro-cid-qaanghzh="">目次の作成</span>  </li> </ol> </nav> <!-- JSON-LD構造化データ --> <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ホーム","item":"https://docs.vivliostyle.org/ja/"},{"@type":"ListItem","position":2,"name":"CLI","item":"https://docs.vivliostyle.org/ja/cli/"},{"@type":"ListItem","position":3,"name":"目次の作成","item":"https://docs.vivliostyle.org/ja/cli/toc-page/"}]}</script>  <article class="prose" data-astro-cid-mw7aashj="">    <article data-astro-cid-lxp5afuy="">
-
-  
-    <meta charset="utf-8">
-    <title>目次の作成</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  
-    <section class="level1">
-      <h1 id="目次の作成">目次の作成</h1>
-      <ul>
-        <li><a href="https://github.com/vivliostyle/vivliostyle-cli/tree/main/examples/table-of-contents">Example: table-of-contents</a></li>
-      </ul>
-      <p>構成ファイル <code>vivliostyle.config.js</code> に <code>toc: true</code> の指定がある場合、目次 HTML ファイル <code>index.html</code> が生成されて、それが出版物の先頭のファイルになります。</p>
-      <p>生成される目次 HTML ファイルの内容は次のようになります。目次 HTML の <code>title</code> と <code>h1</code> 要素には、出版物のタイトル（構成ファイルの <code>title</code> で指定）が出力されます。</p>
-      <pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span> <span class="token attr-name">lang</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>en<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+<section class="level1">
+  <h1 id="目次の作成">目次の作成</h1>
+  <ul>
+    <li><a href="https://github.com/vivliostyle/vivliostyle-cli/tree/main/examples/table-of-contents">Example: table-of-contents</a></li>
+  </ul>
+  <p>構成ファイル <code>vivliostyle.config.js</code> に <code>toc: true</code> の指定がある場合、目次 HTML ファイル <code>index.html</code> が生成されて、それが出版物の先頭のファイルになります。</p>
+  <p>生成される目次 HTML ファイルの内容は次のようになります。目次 HTML の <code>title</code> と <code>h1</code> 要素には、出版物のタイトル（構成ファイルの <code>title</code> で指定）が出力されます。</p>
+  <pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span> <span class="token attr-name">lang</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>en<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>head</span><span class="token punctuation">&gt;</span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>meta</span> <span class="token attr-name">charset</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>utf-8<span class="token punctuation">"</span></span> <span class="token punctuation">/&gt;</span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>title</span><span class="token punctuation">&gt;</span></span>Book Title<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>title</span><span class="token punctuation">&gt;</span></span>
@@ -253,36 +251,36 @@ const lang = "ja";
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>nav</span><span class="token punctuation">&gt;</span></span>
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>body</span><span class="token punctuation">&gt;</span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>html</span><span class="token punctuation">&gt;</span></span></code></pre>
-      <p><code>toc</code> はオブジェクト形式でも指定でき、以下のプロパティが指定できます。</p>
-      <ul>
-        <li><code>htmlPath</code> を指定すると、目次の HTML ファイルを <code>index.html</code> 以外に出力します。</li>
-        <li><code>title</code> を指定すると、目次タイトル（<code>nav</code> 要素内の見出し <code>h2</code> 要素の内容 "Table of Contents"）を変更します。</li>
-        <li>目次には各エントリーへの参照以外にも、エントリー内の見出しも目次に含めることができます。そのようにしたい場合、<code>sectionDepth</code> に <code>1</code> から <code>6</code> の値（それぞれ <code>h1</code> から <code>h6</code> までのどのレベルを含めるか）を指定します。</li>
-      </ul>
-      <pre class="language-js"><code class="language-js"><span class="token literal-property property">toc</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+  <p><code>toc</code> はオブジェクト形式でも指定でき、以下のプロパティが指定できます。</p>
+  <ul>
+    <li><code>htmlPath</code> を指定すると、目次の HTML ファイルを <code>index.html</code> 以外に出力します。</li>
+    <li><code>title</code> を指定すると、目次タイトル（<code>nav</code> 要素内の見出し <code>h2</code> 要素の内容 "Table of Contents"）を変更します。</li>
+    <li>目次には各エントリーへの参照以外にも、エントリー内の見出しも目次に含めることができます。そのようにしたい場合、<code>sectionDepth</code> に <code>1</code> から <code>6</code> の値（それぞれ <code>h1</code> から <code>h6</code> までのどのレベルを含めるか）を指定します。</li>
+  </ul>
+  <pre class="language-js"><code class="language-js"><span class="token literal-property property">toc</span><span class="token operator">:</span> <span class="token punctuation">{</span>
   <span class="token literal-property property">htmlPath</span><span class="token operator">:</span> <span class="token string">'toc.html'</span><span class="token punctuation">,</span>
   <span class="token literal-property property">title</span><span class="token operator">:</span> <span class="token string">'Contents'</span><span class="token punctuation">,</span>
   <span class="token literal-property property">sectionDepth</span><span class="token operator">:</span> <span class="token number">6</span><span class="token punctuation">,</span>
 <span class="token punctuation">}</span><span class="token punctuation">,</span></code></pre>
-      <section class="level2">
-        <h2 id="目次を出版物の先頭以外の場所に出力するには">目次を出版物の先頭以外の場所に出力するには</h2>
-        <p>構成ファイル <code>vivliostyle.config.js</code> の <code>entry</code> の配列の要素として <code>{ rel: 'contents' }</code> を指定すると、その位置に目次 HTML ファイルが生成されます。</p>
-        <pre class="language-js"><code class="language-js"><span class="token literal-property property">entry</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+  <section class="level2">
+    <h2 id="目次を出版物の先頭以外の場所に出力するには">目次を出版物の先頭以外の場所に出力するには</h2>
+    <p>構成ファイル <code>vivliostyle.config.js</code> の <code>entry</code> の配列の要素として <code>{ rel: 'contents' }</code> を指定すると、その位置に目次 HTML ファイルが生成されます。</p>
+    <pre class="language-js"><code class="language-js"><span class="token literal-property property">entry</span><span class="token operator">:</span> <span class="token punctuation">[</span>
   <span class="token string">'titlepage.md'</span><span class="token punctuation">,</span>
   <span class="token punctuation">{</span> <span class="token literal-property property">rel</span><span class="token operator">:</span> <span class="token string">'contents'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
   <span class="token string">'chapter1.md'</span><span class="token punctuation">,</span>
   <span class="token spread operator">...</span>
 <span class="token punctuation">]</span><span class="token punctuation">,</span>
 <span class="token literal-property property">toc</span><span class="token operator">:</span> <span class="token string">'toc.html'</span><span class="token punctuation">,</span></code></pre>
-        <p>これで、出版物の先頭の HTML ファイルは <code>titlepage.html</code> で、その次に目次の HTML ファイル <code>toc.html</code> という順番になります。</p>
-      </section>
-      <section class="level2">
-        <h2 id="目次をカスタマイズするには">目次をカスタマイズするには</h2>
-        <ul>
-          <li><a href="https://github.com/vivliostyle/vivliostyle-cli/tree/main/examples/customize-generated-content">Example: customize-generated-content</a></li>
-        </ul>
-        <p>目次をカスタマイズするには、次のように構成ファイルの <code>entry</code> の配列の要素として目次のファイルの <code>path</code> と <code>output</code>、<code>rel: 'contents'</code> を指定してください。</p>
-        <pre class="language-js"><code class="language-js"><span class="token literal-property property">entry</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <p>これで、出版物の先頭の HTML ファイルは <code>titlepage.html</code> で、その次に目次の HTML ファイル <code>toc.html</code> という順番になります。</p>
+  </section>
+  <section class="level2">
+    <h2 id="目次をカスタマイズするには">目次をカスタマイズするには</h2>
+    <ul>
+      <li><a href="https://github.com/vivliostyle/vivliostyle-cli/tree/main/examples/customize-generated-content">Example: customize-generated-content</a></li>
+    </ul>
+    <p>目次をカスタマイズするには、次のように構成ファイルの <code>entry</code> の配列の要素として目次のファイルの <code>path</code> と <code>output</code>、<code>rel: 'contents'</code> を指定してください。</p>
+    <pre class="language-js"><code class="language-js"><span class="token literal-property property">entry</span><span class="token operator">:</span> <span class="token punctuation">[</span>
   <span class="token punctuation">{</span>
     <span class="token literal-property property">path</span><span class="token operator">:</span> <span class="token string">'toc-template.html'</span><span class="token punctuation">,</span>
     <span class="token literal-property property">output</span><span class="token operator">:</span> <span class="token string">'index.html'</span><span class="token punctuation">,</span>
@@ -290,10 +288,8 @@ const lang = "ja";
   <span class="token punctuation">}</span><span class="token punctuation">,</span>
   <span class="token spread operator">...</span>
 <span class="token punctuation">]</span><span class="token punctuation">,</span></code></pre>
-        <p>そして、目次のテンプレートとなる HTML ファイル <code>toc-template.html</code> を用意してください。<code>toc-template.html</code> の中に <code>&lt;nav role="doc-toc"&gt;&lt;/nav&gt;</code> というタグを用意することで、その部分に目次の項目が挿入された上で目次の HTML ファイルが <code>index.html</code> に出力されます。</p>
-        <p>詳しい目次の作り方については <a href="https://www.w3.org/TR/pub-manifest/">W3C Publication Manifest</a> 仕様に付属の <a href="https://www.w3.org/TR/pub-manifest/#app-toc-structure">Machine-Processable Table of Contents</a> を参照してください。</p>
-      </section>
-    </section>
-  
-
+    <p>そして、目次のテンプレートとなる HTML ファイル <code>toc-template.html</code> を用意してください。<code>toc-template.html</code> の中に <code>&lt;nav role="doc-toc"&gt;&lt;/nav&gt;</code> というタグを用意することで、その部分に目次の項目が挿入された上で目次の HTML ファイルが <code>index.html</code> に出力されます。</p>
+    <p>詳しい目次の作り方については <a href="https://www.w3.org/TR/pub-manifest/">W3C Publication Manifest</a> 仕様に付属の <a href="https://www.w3.org/TR/pub-manifest/#app-toc-structure">Machine-Processable Table of Contents</a> を参照してください。</p>
+  </section>
+</section>
 </article> <nav class="page-navigation" data-astro-cid-z7g34ql7=""> <div class="nav-links" data-astro-cid-z7g34ql7=""> <a href="/ja/cli/using-config-file/" class="nav-link nav-prev" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">← 前へ</span> <span class="nav-title" data-astro-cid-z7g34ql7="">構成ファイル</span> </a> <a href="/ja/cli/cover-page/" class="nav-link nav-next" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">次へ →</span> <span class="nav-title" data-astro-cid-z7g34ql7="">表紙ページの作成</span> </a> </div> </nav>   </article> </main> </div> <footer class="footer" data-astro-cid-mw7aashj=""> <p data-astro-cid-mw7aashj="">© 2026 Vivliostyle Foundation.</p> </footer> </div>  <script type="module">window.__bodyOverflowLockCount=0;window.lockBodyOverflow=function(){window.__bodyOverflowLockCount++,window.__bodyOverflowLockCount===1&&(document.body.style.overflow="hidden")};window.unlockBodyOverflow=function(){window.__bodyOverflowLockCount=Math.max(0,window.__bodyOverflowLockCount-1),window.__bodyOverflowLockCount===0&&(document.body.style.overflow="")};</script>  <script type="module">document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll(".accordion-toggle").forEach(t=>{t.addEventListener("click",d=>{d.preventDefault();const a=t.getAttribute("data-target"),e=document.getElementById(a),n=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",!n),e&&(e.style.display=n?"none":"block")})})});</script></body></html>

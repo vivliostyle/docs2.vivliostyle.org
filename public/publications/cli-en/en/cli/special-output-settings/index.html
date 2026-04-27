@@ -178,12 +178,17 @@ const lang = "en";
     const open = () => {
       lastFocus = document.activeElement;
 
-      // 本番URL固定でマニフェストを参照する。
-      // localhost / preview からは Vivliostyle Viewer が manifest を取りに行けないので、
-      // その場合は警告を表示する。
-      const isProductionHost = window.location.hostname === 'docs2.vivliostyle.org' ||
-                               window.location.hostname === 'docs.vivliostyle.org';
-      const manifestUrl = `https://docs2.vivliostyle.org/publications/${product}-${lang}/publication.json`;
+      // production host (docs.vivliostyle.org / docs2.vivliostyle.org) では
+      // 自身のホスト上のマニフェストを参照する。それ以外（localhost や
+      // プレビュー環境）からは Vivliostyle Viewer が外部からマニフェストを
+      // 取得できないため、フォールバックとして既定の本番ホストを指定し、
+      // 警告を表示する。
+      const productionHosts = ['docs.vivliostyle.org', 'docs2.vivliostyle.org'];
+      const isProductionHost = productionHosts.includes(window.location.hostname);
+      const manifestHost = isProductionHost
+        ? window.location.hostname
+        : 'docs2.vivliostyle.org';
+      const manifestUrl = `https://${manifestHost}/publications/${product}-${lang}/publication.json`;
       const viewerUrl = `https://vivliostyle.org/viewer/?src=${encodeURIComponent(manifestUrl)}&bookMode=true&lng=${lang}`;
 
       iframe.src = viewerUrl;
@@ -218,63 +223,54 @@ const lang = "en";
     });
   }
 })();</script> </section>  </nav> </aside> <main class="content" data-astro-cid-mw7aashj=""> <nav aria-label="Breadcrumb" class="breadcrumb" data-astro-cid-qaanghzh=""> <ol data-astro-cid-qaanghzh=""> <li data-astro-cid-qaanghzh=""> <a href="/en/" data-astro-cid-qaanghzh="">Home</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <a href="/en/cli/" data-astro-cid-qaanghzh="">CLI</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <span aria-current="page" data-astro-cid-qaanghzh="">Special Output Settings</span>  </li> </ol> </nav> <!-- JSON-LD構造化データ --> <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://docs.vivliostyle.org/en/"},{"@type":"ListItem","position":2,"name":"CLI","item":"https://docs.vivliostyle.org/en/cli/"},{"@type":"ListItem","position":3,"name":"Special Output Settings","item":"https://docs.vivliostyle.org/en/cli/special-output-settings/"}]}</script>  <article class="prose" data-astro-cid-mw7aashj="">    <article data-astro-cid-tdaouxoz="">
-
-  
-    <meta charset="utf-8">
-    <title>Special Output Settings</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  
-    <section class="level1">
-      <h1 id="special-output-settings">Special Output Settings</h1>
-      <section class="level2">
-        <h2 id="output-in-epub-format">Output in EPUB Format</h2>
-        <p>To output in EPUB format, use the <code>-f</code> (<code>--format</code>) option with the <code>vivliostyle build</code> command, specifying <code>epub</code>, or use the <code>.epub</code> extension with the <code>-o</code> (<code>--output</code>) option.</p>
-        <p>When outputting in EPUB format, it is recommended to set the table of contents. Refer to <a href="./toc-page/">Creating Table of Contents Page</a> and configure <code>toc</code> in the configuration file. Then, set EPUB in the output options as follows:</p>
-        <pre class="language-text"><code class="language-text">vivliostyle build -o output.epub</code></pre>
-        <p>You can also generate both PDF and EPUB in a single <code>vivliostyle build</code> command as follows (this applies to other output formats as well):</p>
-        <pre class="language-text"><code class="language-text">vivliostyle build -o pdfbook.pdf -o epubbook.epub</code></pre>
-        <p>Vivliostyle CLI generates EPUB files compliant with EPUB 3. However, the CSS files applied to EPUB are output as they are, which may cause display issues depending on the EPUB viewer. To support more EPUB viewers, apply themes or CSS files compatible with each viewer. For Japanese EPUBs, we provide the Vivliostyle Theme <a href="https://github.com/vivliostyle/themes/tree/main/packages/%40vivliostyle/theme-epub3j">"@vivliostyle/theme-epub3j"</a> compliant with the <a href="https://dpfj.or.jp/counsel/guide">EBPAJ EPUB 3 File Creation Guide</a>.</p>
-      </section>
-      <section class="level2">
-        <h2 id="output-in-web-publication-webpub-format">Output in Web Publication (WebPub) Format</h2>
-        <p>To generate a Web Publication (WebPub), specify <code>webpub</code> with the <code>-f</code> (<code>--format</code>) option in the <code>vivliostyle build</code> command. Specify the directory to place the WebPub with the <code>-o</code> (<code>--output</code>) option.</p>
-        <pre class="language-text"><code class="language-text">vivliostyle build -o webpub/ -f webpub</code></pre>
-        <p>The generated WebPub directory contains a publication manifest <code>publication.json</code> file, which describes information such as the loading order of the HTML files of the content. This complies with the W3C standard specification <a href="https://www.w3.org/TR/pub-manifest/">Publication Manifest</a>.</p>
-        <p>WebPub can be used to create publications that can be read on the web. You can also generate a PDF from WebPub by specifying the <code>publication.json</code> file to the <code>vivliostyle build</code> command as follows:</p>
-        <pre class="language-text"><code class="language-text">vivliostyle build webpub/publication.json -o pdfbook.pdf</code></pre>
-      </section>
-      <section class="level2">
-        <h2 id="generating-print-ready-pdf-pdfx-1a-format">Generating Print-Ready PDF (PDF/X-1a Format)</h2>
-        <ul>
-          <li><a href="https://github.com/vivliostyle/vivliostyle-cli/tree/main/examples/preflight">Example: preflight</a></li>
-        </ul>
-        <p>To output in PDF/X-1a format suitable for print submission, specify the <code>--preflight press-ready</code> option in the <code>vivliostyle build</code> command, or specify <code>preflight: 'press-ready'</code> in the <a href="./using-config-file/">configuration file</a>. To use this feature, you need to install <a href="https://docs.docker.com/get-started/get-docker/">Docker</a> in advance.</p>
-        <p>By specifying the <code>--preflight-option</code> option, you can add options to <a href="https://github.com/vibranthq/press-ready">press-ready</a> that performs this processing.</p>
-        <pre class="language-text"><code class="language-text"># Output in grayscale
+<section class="level1">
+  <h1 id="special-output-settings">Special Output Settings</h1>
+  <section class="level2">
+    <h2 id="output-in-epub-format">Output in EPUB Format</h2>
+    <p>To output in EPUB format, use the <code>-f</code> (<code>--format</code>) option with the <code>vivliostyle build</code> command, specifying <code>epub</code>, or use the <code>.epub</code> extension with the <code>-o</code> (<code>--output</code>) option.</p>
+    <p>When outputting in EPUB format, it is recommended to set the table of contents. Refer to <a href="./toc-page/">Creating Table of Contents Page</a> and configure <code>toc</code> in the configuration file. Then, set EPUB in the output options as follows:</p>
+    <pre class="language-text"><code class="language-text">vivliostyle build -o output.epub</code></pre>
+    <p>You can also generate both PDF and EPUB in a single <code>vivliostyle build</code> command as follows (this applies to other output formats as well):</p>
+    <pre class="language-text"><code class="language-text">vivliostyle build -o pdfbook.pdf -o epubbook.epub</code></pre>
+    <p>Vivliostyle CLI generates EPUB files compliant with EPUB 3. However, the CSS files applied to EPUB are output as they are, which may cause display issues depending on the EPUB viewer. To support more EPUB viewers, apply themes or CSS files compatible with each viewer. For Japanese EPUBs, we provide the Vivliostyle Theme <a href="https://github.com/vivliostyle/themes/tree/main/packages/%40vivliostyle/theme-epub3j">"@vivliostyle/theme-epub3j"</a> compliant with the <a href="https://dpfj.or.jp/counsel/guide">EBPAJ EPUB 3 File Creation Guide</a>.</p>
+  </section>
+  <section class="level2">
+    <h2 id="output-in-web-publication-webpub-format">Output in Web Publication (WebPub) Format</h2>
+    <p>To generate a Web Publication (WebPub), specify <code>webpub</code> with the <code>-f</code> (<code>--format</code>) option in the <code>vivliostyle build</code> command. Specify the directory to place the WebPub with the <code>-o</code> (<code>--output</code>) option.</p>
+    <pre class="language-text"><code class="language-text">vivliostyle build -o webpub/ -f webpub</code></pre>
+    <p>The generated WebPub directory contains a publication manifest <code>publication.json</code> file, which describes information such as the loading order of the HTML files of the content. This complies with the W3C standard specification <a href="https://www.w3.org/TR/pub-manifest/">Publication Manifest</a>.</p>
+    <p>WebPub can be used to create publications that can be read on the web. You can also generate a PDF from WebPub by specifying the <code>publication.json</code> file to the <code>vivliostyle build</code> command as follows:</p>
+    <pre class="language-text"><code class="language-text">vivliostyle build webpub/publication.json -o pdfbook.pdf</code></pre>
+  </section>
+  <section class="level2">
+    <h2 id="generating-print-ready-pdf-pdfx-1a-format">Generating Print-Ready PDF (PDF/X-1a Format)</h2>
+    <ul>
+      <li><a href="https://github.com/vivliostyle/vivliostyle-cli/tree/main/examples/preflight">Example: preflight</a></li>
+    </ul>
+    <p>To output in PDF/X-1a format suitable for print submission, specify the <code>--preflight press-ready</code> option in the <code>vivliostyle build</code> command, or specify <code>preflight: 'press-ready'</code> in the <a href="./using-config-file/">configuration file</a>. To use this feature, you need to install <a href="https://docs.docker.com/get-started/get-docker/">Docker</a> in advance.</p>
+    <p>By specifying the <code>--preflight-option</code> option, you can add options to <a href="https://github.com/vibranthq/press-ready">press-ready</a> that performs this processing.</p>
+    <pre class="language-text"><code class="language-text"># Output in grayscale
 vivliostyle build manuscript.md --preflight press-ready --preflight-option gray-scale
 # Force outline fonts and output
 vivliostyle build manuscript.md --preflight press-ready --preflight-option enforce-outline</code></pre>
-        <p>You can also specify the <code>--preflight press-ready-local</code> option to execute the output to PDF/X-1a format in the local environment. However, it is generally recommended to execute it in the Docker environment.</p>
-      </section>
-      <section class="level2">
-        <h2 id="generating-with-docker">Generating with Docker</h2>
-        <ul>
-          <li><a href="https://github.com/vivliostyle/vivliostyle-cli/tree/main/examples/render-on-docker">Example: render-on-docker</a></li>
-        </ul>
-        <p>To specify Docker as the environment for PDF output, use the <code>--render-mode docker</code> option in the <code>vivliostyle build</code> command (the above option only executes post-processing on Docker, but this option executes all processing on Docker). This option ensures that all processing is executed on Docker, fixing the environment at the time of output and ensuring consistent results across different environments and OS.</p>
-        <p>When using Docker render mode, please note the following points:</p>
-        <ul>
-          <li>Docker is isolated from the host environment, so you cannot use fonts installed on the host. The fonts available by default in the Docker container are limited. You usually need to place local font files and specify them in CSS, or use web fonts such as Google Fonts.</li>
-          <li>The files mounted on Docker are only the project workspace directory (usually the directory containing <code>vivliostyle.config.js</code>), and other files cannot be referenced from inside the Docker container. All files referenced in the document, such as images, must be included in the workspace directory.</li>
-        </ul>
-      </section>
-      <section class="level2">
-        <h2 id="generating-pdf-bookmarks">Generating PDF Bookmarks</h2>
-        <p>The PDF output by the <code>vivliostyle build</code> command generates bookmarks based on the table of contents. PDF bookmarks can be used for table of contents navigation in PDF viewing software such as Adobe Acrobat.</p>
-        <p>This bookmark generation feature is enabled when the publication includes a table of contents. When <a href="./getting-started.md#generate-pdfs-from-other-formats">generating PDF from EPUB</a>, the table of contents included in the EPUB is used. For other cases, refer to <a href="./toc-page/">Creating a Table of Contents</a>.</p>
-      </section>
-    </section>
-  
-
+    <p>You can also specify the <code>--preflight press-ready-local</code> option to execute the output to PDF/X-1a format in the local environment. However, it is generally recommended to execute it in the Docker environment.</p>
+  </section>
+  <section class="level2">
+    <h2 id="generating-with-docker">Generating with Docker</h2>
+    <ul>
+      <li><a href="https://github.com/vivliostyle/vivliostyle-cli/tree/main/examples/render-on-docker">Example: render-on-docker</a></li>
+    </ul>
+    <p>To specify Docker as the environment for PDF output, use the <code>--render-mode docker</code> option in the <code>vivliostyle build</code> command (the above option only executes post-processing on Docker, but this option executes all processing on Docker). This option ensures that all processing is executed on Docker, fixing the environment at the time of output and ensuring consistent results across different environments and OS.</p>
+    <p>When using Docker render mode, please note the following points:</p>
+    <ul>
+      <li>Docker is isolated from the host environment, so you cannot use fonts installed on the host. The fonts available by default in the Docker container are limited. You usually need to place local font files and specify them in CSS, or use web fonts such as Google Fonts.</li>
+      <li>The files mounted on Docker are only the project workspace directory (usually the directory containing <code>vivliostyle.config.js</code>), and other files cannot be referenced from inside the Docker container. All files referenced in the document, such as images, must be included in the workspace directory.</li>
+    </ul>
+  </section>
+  <section class="level2">
+    <h2 id="generating-pdf-bookmarks">Generating PDF Bookmarks</h2>
+    <p>The PDF output by the <code>vivliostyle build</code> command generates bookmarks based on the table of contents. PDF bookmarks can be used for table of contents navigation in PDF viewing software such as Adobe Acrobat.</p>
+    <p>This bookmark generation feature is enabled when the publication includes a table of contents. When <a href="./getting-started.md#generate-pdfs-from-other-formats">generating PDF from EPUB</a>, the table of contents included in the EPUB is used. For other cases, refer to <a href="./toc-page/">Creating a Table of Contents</a>.</p>
+  </section>
+</section>
 </article> <nav class="page-navigation" data-astro-cid-z7g34ql7=""> <div class="nav-links" data-astro-cid-z7g34ql7=""> <a href="/en/cli/cover-page/" class="nav-link nav-prev" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">← Previous</span> <span class="nav-title" data-astro-cid-z7g34ql7="">Creating Cover Page</span> </a> <a href="/en/cli/frontend-framework-support/" class="nav-link nav-next" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">Next →</span> <span class="nav-title" data-astro-cid-z7g34ql7="">Frontend Framework Support</span> </a> </div> </nav>   </article> </main> </div> <footer class="footer" data-astro-cid-mw7aashj=""> <p data-astro-cid-mw7aashj="">© 2026 Vivliostyle Foundation.</p> </footer> </div>  <script type="module">window.__bodyOverflowLockCount=0;window.lockBodyOverflow=function(){window.__bodyOverflowLockCount++,window.__bodyOverflowLockCount===1&&(document.body.style.overflow="hidden")};window.unlockBodyOverflow=function(){window.__bodyOverflowLockCount=Math.max(0,window.__bodyOverflowLockCount-1),window.__bodyOverflowLockCount===0&&(document.body.style.overflow="")};</script>  <script type="module">document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll(".accordion-toggle").forEach(t=>{t.addEventListener("click",d=>{d.preventDefault();const a=t.getAttribute("data-target"),e=document.getElementById(a),n=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",!n),e&&(e.style.display=n?"none":"block")})})});</script></body></html>

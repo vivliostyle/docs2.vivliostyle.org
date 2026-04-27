@@ -178,12 +178,17 @@ const lang = "ja";
     const open = () => {
       lastFocus = document.activeElement;
 
-      // 本番URL固定でマニフェストを参照する。
-      // localhost / preview からは Vivliostyle Viewer が manifest を取りに行けないので、
-      // その場合は警告を表示する。
-      const isProductionHost = window.location.hostname === 'docs2.vivliostyle.org' ||
-                               window.location.hostname === 'docs.vivliostyle.org';
-      const manifestUrl = `https://docs2.vivliostyle.org/publications/${product}-${lang}/publication.json`;
+      // production host (docs.vivliostyle.org / docs2.vivliostyle.org) では
+      // 自身のホスト上のマニフェストを参照する。それ以外（localhost や
+      // プレビュー環境）からは Vivliostyle Viewer が外部からマニフェストを
+      // 取得できないため、フォールバックとして既定の本番ホストを指定し、
+      // 警告を表示する。
+      const productionHosts = ['docs.vivliostyle.org', 'docs2.vivliostyle.org'];
+      const isProductionHost = productionHosts.includes(window.location.hostname);
+      const manifestHost = isProductionHost
+        ? window.location.hostname
+        : 'docs2.vivliostyle.org';
+      const manifestUrl = `https://${manifestHost}/publications/${product}-${lang}/publication.json`;
       const viewerUrl = `https://vivliostyle.org/viewer/?src=${encodeURIComponent(manifestUrl)}&bookMode=true&lng=${lang}`;
 
       iframe.src = viewerUrl;
@@ -218,258 +223,249 @@ const lang = "ja";
     });
   }
 })();</script> </section>  </nav> </aside> <main class="content" data-astro-cid-mw7aashj=""> <nav aria-label="Breadcrumb" class="breadcrumb" data-astro-cid-qaanghzh=""> <ol data-astro-cid-qaanghzh=""> <li data-astro-cid-qaanghzh=""> <a href="/ja/" data-astro-cid-qaanghzh="">ホーム</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <a href="/ja/reference/" data-astro-cid-qaanghzh="">リファレンス</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <span aria-current="page" data-astro-cid-qaanghzh="">Vivliostyle.js コントリビューションガイド</span>  </li> </ol> </nav> <!-- JSON-LD構造化データ --> <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ホーム","item":"https://docs.vivliostyle.org/ja/"},{"@type":"ListItem","position":2,"name":"リファレンス","item":"https://docs.vivliostyle.org/ja/reference/"},{"@type":"ListItem","position":3,"name":"Vivliostyle.js コントリビューションガイド","item":"https://docs.vivliostyle.org/ja/reference/contribution-guide/"}]}</script>  <article class="prose" data-astro-cid-mw7aashj="">      <article class="docs-content" data-astro-cid-taydtmym=""> <!-- 抽出したTOCが存在する場合は表示 -->  <div data-astro-cid-taydtmym="">
-
-  
-    <meta charset="utf-8">
-    <title>Vivliostyle.js コントリビューションガイド</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  
-    <section class="level1">
-      <h1 id="vivliostylejs-コントリビューションガイド">Vivliostyle.js コントリビューションガイド</h1>
-      <section class="level2">
-        <h2 id="モジュール構成">モジュール構成</h2>
-        <p>Vivliostyle.js は2つのコンポーネントで構成されています:</p>
-        <table>
-          <thead>
-            <tr>
-              <th><a href="https://github.com/vivliostyle/vivliostyle.js/tree/master/packages/core">Core</a></th>
-              <th><a href="https://github.com/vivliostyle/vivliostyle.js/tree/master/packages/viewer">Viewer</a></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Vivliostyle.js Core layout engine</td>
-              <td>Vivliostyle.js Viewer UI</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
-      <section class="level2">
-        <h2 id="開発環境のセットアップ">開発環境のセットアップ</h2>
-        <p>以下のものがインストールされていることを確認してください:</p>
-        <ul>
-          <li><a href="https://nodejs.org">Node.js</a></li>
-          <li><a href="https://classic.yarnpkg.com">Yarn</a></li>
-          <li><a href="https://git-scm.com">Git</a></li>
-        </ul>
-        <p><a href="https://github.com/vivliostyle/vivliostyle.js">vivliostyle.js</a>をクローンします。</p>
-        <pre class="language-shell"><code class="language-shell"><span class="token function">git</span> clone https://github.com/vivliostyle/vivliostyle.js.git
+<section class="level1">
+  <h1 id="vivliostylejs-コントリビューションガイド">Vivliostyle.js コントリビューションガイド</h1>
+  <section class="level2">
+    <h2 id="モジュール構成">モジュール構成</h2>
+    <p>Vivliostyle.js は2つのコンポーネントで構成されています:</p>
+    <table>
+      <thead>
+        <tr>
+          <th><a href="https://github.com/vivliostyle/vivliostyle.js/tree/master/packages/core">Core</a></th>
+          <th><a href="https://github.com/vivliostyle/vivliostyle.js/tree/master/packages/viewer">Viewer</a></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Vivliostyle.js Core layout engine</td>
+          <td>Vivliostyle.js Viewer UI</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="level2">
+    <h2 id="開発環境のセットアップ">開発環境のセットアップ</h2>
+    <p>以下のものがインストールされていることを確認してください:</p>
+    <ul>
+      <li><a href="https://nodejs.org">Node.js</a></li>
+      <li><a href="https://classic.yarnpkg.com">Yarn</a></li>
+      <li><a href="https://git-scm.com">Git</a></li>
+    </ul>
+    <p><a href="https://github.com/vivliostyle/vivliostyle.js">vivliostyle.js</a>をクローンします。</p>
+    <pre class="language-shell"><code class="language-shell"><span class="token function">git</span> clone https://github.com/vivliostyle/vivliostyle.js.git
 <span class="token builtin class-name">cd</span> vivliostyle.js</code></pre>
-        <p>依存関係をインストールし、パッケージをリンクします:</p>
-        <pre class="language-shell"><code class="language-shell"><span class="token function">yarn</span> <span class="token function">install</span>    <span class="token comment"># install dependencies and link packages</span></code></pre>
-        <p><code>@vivliostyle/core</code> は <code>@vivliostyle/viewer</code> 内の <code>package.json</code> でdependencyに含まれています。開発時には、<code>@vivliostyle/core</code> はnpmからインストールされたパッケージではなくローカルのコピーが用いられます。</p>
-      </section>
-      <section class="level2">
-        <h2 id="ビルド開発サーバーの立ち上げ">ビルド・開発サーバーの立ち上げ</h2>
-        <pre class="language-shell"><code class="language-shell"><span class="token function">yarn</span> build-dev  <span class="token comment"># build a development version of both Core and Viewer.</span>
+    <p>依存関係をインストールし、パッケージをリンクします:</p>
+    <pre class="language-shell"><code class="language-shell"><span class="token function">yarn</span> <span class="token function">install</span>    <span class="token comment"># install dependencies and link packages</span></code></pre>
+    <p><code>@vivliostyle/core</code> は <code>@vivliostyle/viewer</code> 内の <code>package.json</code> でdependencyに含まれています。開発時には、<code>@vivliostyle/core</code> はnpmからインストールされたパッケージではなくローカルのコピーが用いられます。</p>
+  </section>
+  <section class="level2">
+    <h2 id="ビルド開発サーバーの立ち上げ">ビルド・開発サーバーの立ち上げ</h2>
+    <pre class="language-shell"><code class="language-shell"><span class="token function">yarn</span> build-dev  <span class="token comment"># build a development version of both Core and Viewer.</span>
 <span class="token function">yarn</span> dev        <span class="token comment"># start watching source files and open browser.</span></code></pre>
-        <p><code>yarn dev</code> を使用すると、（<a href="https://browsersync.io/">Browsersync</a> によりライブリロードが有効な）Webサーバーが起動し、Google Chromeが自動的に開きます。 ブラウザーが開かない場合は、<a href="http://localhost:3000/core/test/files/">http://localhost:3000/core/test/files/</a>を開きます。 ソースファイルを保存すると、ブラウザは自動的にリロードされます。</p>
-        <section class="level3">
-          <h3 id="ビューワーとテストファイル">ビューワーとテストファイル</h3>
-          <p>開発モード中のビューワーHTMLファイルは <code>packages/viewer/lib/vivliostyle-viewer-dev.html</code> にあります。<code>#src=</code> ハッシュパラメータを指定して、ビューワーHTMLファイルから相対の(X)HTMLファイルをURLで指定できます。例えば、<a href="http://localhost:3000/viewer/lib/vivliostyle-viewer-dev.html#src=../../core/test/files/print_media/index.html">http://localhost:3000/viewer/lib/vivliostyle-viewer-dev.html#src=../../core/test/files/print_media/index.html</a> は <code>packages/core/test/files/print_media/index.html</code> にあるprint mediaのテストファイルを開きます。</p>
-          <p>開発中に使用することを目的としたテストHTMLファイルは、 <code>packages/core/test/files/</code> にあります。 機能の実装と検証に役立つテストファイルを追加することをお勧めします。</p>
-          <p><code>packages/core/scripts/package-artifacts/samples/</code> ディレクトリにテスト用のサンプルファイルがあります。より多くのサンプルが <a href="https://vivliostyle.org/samples">vivliostyle.orgのサンプルページ</a> にあります。</p>
-        </section>
-        <section class="level3">
-          <h3 id="テスト">テスト</h3>
-          <p>TypeScriptで書かれたソースファイルは、Rollupによってコンパイル・minifyされます。 JavaScriptファイルのminifiedバージョンをビルドするには、（リポジトリのルートディレクトリで）<code>yarn build</code> を実行します。 ソースは型チェックされ、minifyされたファイルは <code>packages/core/lib/</code> と <code>packages/viewer/lib</code> ディレクトリの下に生成されます。</p>
-          <p><a href="http://jasmine.github.io/">Jasmine</a> はユニットテストに使用されます。 スペックファイルは <code>packages/core/test/spec/</code> の下にあります。 ローカルマシンでテストを実行するには、<code>yarn test</code> を実行します。</p>
-          <p>ユニットテストはGitHubにプッシュした際に <a href="https://travis-ci.org/vivliostyle/vivliostyle.js">Travis CI</a> が自動的に実行されます。masterにプッシュされると、すべてのテストに合格した後、コードは自動的に<a href="https://vivliostyle.github.io/#canary-release-equivalent-to-master">Canary release</a>にデプロイされます。masterへのプッシュ（PRのマージ）には注意してくだい。</p>
-        </section>
-        <section class="level3">
-          <h3 id="開発モード">開発モード</h3>
-          <p>開発モード (<code>yarn dev</code>) では、ブラウザの開発者ツールでVivliostyle.jsのTypeScriptソースコードをデバッグできます。</p>
-        </section>
-        <section class="level3">
-          <h3 id="lint-とコードのフォーマット">Lint とコードのフォーマット</h3>
-        </section>
-        <section class="level3">
-          <h3 id="lint--code-formatting">Lint / code formatting</h3>
-          <p>vivliostyleのソースコードは、<code>yarn lint</code> を実行（<a href="https://github.com/prettier/eslint-plugin-prettier">eslint-plugin-prettier</a> を用いた <a href="https://eslint.org/">ESLint</a>）して、コード整形してください。</p>
-          <p><code>yarn format</code> で <a href="https://prettier.io/">prettier</a> によるコードのフォーマットを行います。</p>
-        </section>
-        <section class="level3">
-          <h3 id="リリースのフロー">リリースのフロー</h3>
-          <p>リリース処理の前に、次のコードを実行して、リリースビルドが作成されることを確認します。</p>
-          <pre class="language-shell"><code class="language-shell"><span class="token function">yarn</span> lint
+    <p><code>yarn dev</code> を使用すると、（<a href="https://browsersync.io/">Browsersync</a> によりライブリロードが有効な）Webサーバーが起動し、Google Chromeが自動的に開きます。 ブラウザーが開かない場合は、<a href="http://localhost:3000/core/test/files/">http://localhost:3000/core/test/files/</a>を開きます。 ソースファイルを保存すると、ブラウザは自動的にリロードされます。</p>
+    <section class="level3">
+      <h3 id="ビューワーとテストファイル">ビューワーとテストファイル</h3>
+      <p>開発モード中のビューワーHTMLファイルは <code>packages/viewer/lib/vivliostyle-viewer-dev.html</code> にあります。<code>#src=</code> ハッシュパラメータを指定して、ビューワーHTMLファイルから相対の(X)HTMLファイルをURLで指定できます。例えば、<a href="http://localhost:3000/viewer/lib/vivliostyle-viewer-dev.html#src=../../core/test/files/print_media/index.html">http://localhost:3000/viewer/lib/vivliostyle-viewer-dev.html#src=../../core/test/files/print_media/index.html</a> は <code>packages/core/test/files/print_media/index.html</code> にあるprint mediaのテストファイルを開きます。</p>
+      <p>開発中に使用することを目的としたテストHTMLファイルは、 <code>packages/core/test/files/</code> にあります。 機能の実装と検証に役立つテストファイルを追加することをお勧めします。</p>
+      <p><code>packages/core/scripts/package-artifacts/samples/</code> ディレクトリにテスト用のサンプルファイルがあります。より多くのサンプルが <a href="https://vivliostyle.org/samples">vivliostyle.orgのサンプルページ</a> にあります。</p>
+    </section>
+    <section class="level3">
+      <h3 id="テスト">テスト</h3>
+      <p>TypeScriptで書かれたソースファイルは、Rollupによってコンパイル・minifyされます。 JavaScriptファイルのminifiedバージョンをビルドするには、（リポジトリのルートディレクトリで）<code>yarn build</code> を実行します。 ソースは型チェックされ、minifyされたファイルは <code>packages/core/lib/</code> と <code>packages/viewer/lib</code> ディレクトリの下に生成されます。</p>
+      <p><a href="http://jasmine.github.io/">Jasmine</a> はユニットテストに使用されます。 スペックファイルは <code>packages/core/test/spec/</code> の下にあります。 ローカルマシンでテストを実行するには、<code>yarn test</code> を実行します。</p>
+      <p>ユニットテストはGitHubにプッシュした際に <a href="https://travis-ci.org/vivliostyle/vivliostyle.js">Travis CI</a> が自動的に実行されます。masterにプッシュされると、すべてのテストに合格した後、コードは自動的に<a href="https://vivliostyle.github.io/#canary-release-equivalent-to-master">Canary release</a>にデプロイされます。masterへのプッシュ（PRのマージ）には注意してくだい。</p>
+    </section>
+    <section class="level3">
+      <h3 id="開発モード">開発モード</h3>
+      <p>開発モード (<code>yarn dev</code>) では、ブラウザの開発者ツールでVivliostyle.jsのTypeScriptソースコードをデバッグできます。</p>
+    </section>
+    <section class="level3">
+      <h3 id="lint-とコードのフォーマット">Lint とコードのフォーマット</h3>
+    </section>
+    <section class="level3">
+      <h3 id="lint--code-formatting">Lint / code formatting</h3>
+      <p>vivliostyleのソースコードは、<code>yarn lint</code> を実行（<a href="https://github.com/prettier/eslint-plugin-prettier">eslint-plugin-prettier</a> を用いた <a href="https://eslint.org/">ESLint</a>）して、コード整形してください。</p>
+      <p><code>yarn format</code> で <a href="https://prettier.io/">prettier</a> によるコードのフォーマットを行います。</p>
+    </section>
+    <section class="level3">
+      <h3 id="リリースのフロー">リリースのフロー</h3>
+      <p>リリース処理の前に、次のコードを実行して、リリースビルドが作成されることを確認します。</p>
+      <pre class="language-shell"><code class="language-shell"><span class="token function">yarn</span> lint
 <span class="token function">yarn</span> <span class="token builtin class-name">test</span>
 <span class="token function">yarn</span> clean
 <span class="token function">yarn</span> build</code></pre>
-          <section class="level4">
-            <h4 id="1-プレリリース">1. プレリリース</h4>
-            <p><code>yarn version:prerelease</code> を実行してプレリリース版を作成します。そして、 <code>yarn version:bump</code> でプレリリース番号を上げます。</p>
-          </section>
-          <section class="level4">
-            <h4 id="2-安定版stableリリース">2. 安定版(Stable)リリース</h4>
-            <p>現在のバージョンがプレリリース（例 v2.0.0-pre.4）なら、次を実行します:</p>
-            <pre class="language-shell"><code class="language-shell"><span class="token function">yarn</span> version:graduate</code></pre>
-            <p>安定版から次の安定版（例 v2.0.0 -&gt; v2.0.1）にバージョンアップする場合:</p>
-            <pre class="language-shell"><code class="language-shell"><span class="token function">yarn</span> version:bump</code></pre>
-          </section>
-          <section class="level4">
-            <h4 id="3-公開">3. 公開</h4>
-            <p><code>yarn version:*</code> コマンドを実行後、必要であれば <code>CHANGELOG.md</code> を編集し、その後 <code>yarn version:push</code> を実行します。これによりリリースコミットの修正（amend）とタグの更新、GitHubへのプッシュが行われ、CIがnpmへの公開とGitHub Releaseの作成を行います。</p>
-          </section>
-        </section>
+      <section class="level4">
+        <h4 id="1-プレリリース">1. プレリリース</h4>
+        <p><code>yarn version:prerelease</code> を実行してプレリリース版を作成します。そして、 <code>yarn version:bump</code> でプレリリース番号を上げます。</p>
       </section>
-      <section class="level2">
-        <h2 id="一貫した命名ガイドライン">一貫した命名ガイドライン</h2>
-        <ol>
-          <li>一貫性を保つために、クラス名とそのファイル名を一致させます。</li>
-          <li>モジュールのインポート名にはPascalCaseを、ファイル名にはkebab-caseを使用して、違いを視覚的に区別しやすくします。</li>
-          <li>分かりやすさのために、ファイル名とクラス名に省略語を使わないようにします。ただし以下を除きます:
-            <ol>
-              <li>イニシャリズム（EPUB、PDFなど）。</li>
-              <li>長い名前（conditional-properties よりも conditional-props が好ましい）。</li>
-            </ol>
-          </li>
-        </ol>
+      <section class="level4">
+        <h4 id="2-安定版stableリリース">2. 安定版(Stable)リリース</h4>
+        <p>現在のバージョンがプレリリース（例 v2.0.0-pre.4）なら、次を実行します:</p>
+        <pre class="language-shell"><code class="language-shell"><span class="token function">yarn</span> version:graduate</code></pre>
+        <p>安定版から次の安定版（例 v2.0.0 -&gt; v2.0.1）にバージョンアップする場合:</p>
+        <pre class="language-shell"><code class="language-shell"><span class="token function">yarn</span> version:bump</code></pre>
       </section>
-      <section class="level2">
-        <h2 id="コミットメッセージのガイドライン">コミットメッセージのガイドライン</h2>
-        <p>
-          このプロジェクトへの重要な変更は <code>CHANGELOG.md</code> に記録されます。
-          そのためのコミットメッセージのガイドラインは <a href="https://conventionalcommits.org">Conventional Commits</a> を参照。
-        </p>
-      </section>
-      <section class="level2">
-        <h2 id="ドキュメントのメンテナンス">ドキュメントのメンテナンス</h2>
-        <p>以下のドキュメントを開発中に更新してください。</p>
-        <ul>
-          <li><a href="https://github.com/vivliostyle/vivliostyle.js/blob/master/CHANGELOG.md"><code>CHANGELOG.md</code></a>
-            <ul>
-              <li><a href="https://conventionalcommits.org">Conventional Commits</a> により自動で生成されます.</li>
-            </ul>
-          </li>
-          <li><a href="/ja/reference/supported-css-features/">Supported CSS Features</a>
-            <ul>
-              <li>VivliostyleでサポートされるCSS機能(values, selectors, at-rules, media queries and properties)</li>
-            </ul>
-          </li>
-        </ul>
-      </section>
-      <section class="level2">
-        <h2 id="ソースファイル">ソースファイル</h2>
-        <p><code>packages/core/src/</code> 以下のソースファイルについて簡単に説明します。</p>
-        <section class="level3">
-          <h3 id="vivliostylecore-viewerts"><code>vivliostyle/core-viewer.ts</code></h3>
-          <ul>
-            <li>
-              Exposed interface of vivliostyle-core. To use vivliostyle-core, instantiate
-              Vivliostyle.CoreViewer, set options, register event listeners by addListener
-              method, and call loadDocument or loadPublication method.
-            </li>
-          </ul>
-        </section>
-        <section class="level3">
-          <h3 id="vivliostyleconstantsts"><code>vivliostyle/constants.ts</code></h3>
-          <ul>
-            <li>Defines constants used throughout the library.</li>
-          </ul>
-        </section>
-        <section class="level3">
-          <h3 id="vivliostyletaskts"><code>vivliostyle/task.ts</code></h3>
-          <ul>
-            <li>Task scheduling.</li>
-          </ul>
-        </section>
-        <section class="level3">
-          <h3 id="vivliostyleexprsts"><code>vivliostyle/exprs.ts</code></h3>
-          <ul>
-            <li>Definitions for <a href="http://www.idpf.org/epub/pgt/#s2">expressions</a> of Adaptive Layout.</li>
-          </ul>
-        </section>
-        <section class="level3">
-          <h3 id="vivliostylecssts"><code>vivliostyle/css.ts</code></h3>
-          <ul>
-            <li>Definitions for various CSS values.</li>
-          </ul>
-        </section>
-        <section class="level3">
-          <h3 id="vivliostylecss-parserts"><code>vivliostyle/css-parser.ts</code></h3>
-          <ul>
-            <li>CSS parser.</li>
-          </ul>
-        </section>
-        <section class="level3">
-          <h3 id="vivliostylecss-cascadets"><code>vivliostyle/css-cascade.ts</code></h3>
-          <ul>
-            <li>Classes for selector matching and cascading calculation.</li>
-          </ul>
-        </section>
-        <section class="level3">
-          <h3 id="vivliostylevtreets"><code>vivliostyle/vtree.ts</code></h3>
-          <ul>
-            <li>View tree data structures.</li>
-          </ul>
-        </section>
-        <section class="level3">
-          <h3 id="vivliostylecss-stylerts"><code>vivliostyle/css-styler.ts</code></h3>
-          <ul>
-            <li>Apply CSS cascade to a document incrementally.</li>
-          </ul>
-        </section>
-        <section class="level3">
-          <h3 id="vivliostylefontts"><code>vivliostyle/font.ts</code></h3>
-          <ul>
-            <li>Web font handling.</li>
-          </ul>
-        </section>
-        <section class="level3">
-          <h3 id="vivliostylepage-mastersts"><code>vivliostyle/page-masters.ts</code></h3>
-          <ul>
-            <li>Classes for <a href="http://www.idpf.org/epub/pgt/#s3.4">page masters of Adaptive Layout</a>.</li>
-          </ul>
-        </section>
-        <section class="level3">
-          <h3 id="vivliostylepage-floatsts"><code>vivliostyle/page-floats.ts</code></h3>
-          <ul>
-            <li>Page floats.</li>
-          </ul>
-        </section>
-        <section class="level3">
-          <h3 id="vivliostylevgents"><code>vivliostyle/vgen.ts</code></h3>
-          <ul>
-            <li>Generation of view tree.</li>
-          </ul>
-        </section>
-        <section class="level3">
-          <h3 id="vivliostylelayoutts"><code>vivliostyle/layout.ts</code></h3>
-          <ul>
-            <li>Content layout inside regions, including column breaking etc.</li>
-          </ul>
-        </section>
-        <section class="level3">
-          <h3 id="vivliostylecss-pagets"><code>vivliostyle/css-page.ts</code></h3>
-          <ul>
-            <li>Support for <a href="https://drafts.csswg.org/css-page/">CSS Paged Media</a>.</li>
-          </ul>
-        </section>
-        <section class="level3">
-          <h3 id="vivliostyleopsts"><code>vivliostyle/ops.ts</code></h3>
-          <ul>
-            <li>Select page master, layout regions (columns) one by one etc.</li>
-          </ul>
-        </section>
-        <section class="level3">
-          <h3 id="vivliostyleepubts"><code>vivliostyle/epub.ts</code></h3>
-          <ul>
-            <li>Handling EPUB metadata, rendering pages etc.</li>
-          </ul>
-          <blockquote>
-            <p>(There are more files... See the <code>pakcages/core/src</code> directory)</p>
-          </blockquote>
-        </section>
-      </section>
-      <section class="level2">
-        <h2 id="その他の開発ドキュメント">その他の開発ドキュメント</h2>
-        <ul>
-          <li><a href="/ja/reference/api/">Vivliostyle API Reference</a></li>
-          <li><a href="./typescript-migration/">Migration to TypeScript</a></li>
-        </ul>
+      <section class="level4">
+        <h4 id="3-公開">3. 公開</h4>
+        <p><code>yarn version:*</code> コマンドを実行後、必要であれば <code>CHANGELOG.md</code> を編集し、その後 <code>yarn version:push</code> を実行します。これによりリリースコミットの修正（amend）とタグの更新、GitHubへのプッシュが行われ、CIがnpmへの公開とGitHub Releaseの作成を行います。</p>
       </section>
     </section>
-  
-
+  </section>
+  <section class="level2">
+    <h2 id="一貫した命名ガイドライン">一貫した命名ガイドライン</h2>
+    <ol>
+      <li>一貫性を保つために、クラス名とそのファイル名を一致させます。</li>
+      <li>モジュールのインポート名にはPascalCaseを、ファイル名にはkebab-caseを使用して、違いを視覚的に区別しやすくします。</li>
+      <li>分かりやすさのために、ファイル名とクラス名に省略語を使わないようにします。ただし以下を除きます:
+        <ol>
+          <li>イニシャリズム（EPUB、PDFなど）。</li>
+          <li>長い名前（conditional-properties よりも conditional-props が好ましい）。</li>
+        </ol>
+      </li>
+    </ol>
+  </section>
+  <section class="level2">
+    <h2 id="コミットメッセージのガイドライン">コミットメッセージのガイドライン</h2>
+    <p>
+      このプロジェクトへの重要な変更は <code>CHANGELOG.md</code> に記録されます。
+      そのためのコミットメッセージのガイドラインは <a href="https://conventionalcommits.org">Conventional Commits</a> を参照。
+    </p>
+  </section>
+  <section class="level2">
+    <h2 id="ドキュメントのメンテナンス">ドキュメントのメンテナンス</h2>
+    <p>以下のドキュメントを開発中に更新してください。</p>
+    <ul>
+      <li><a href="https://github.com/vivliostyle/vivliostyle.js/blob/master/CHANGELOG.md"><code>CHANGELOG.md</code></a>
+        <ul>
+          <li><a href="https://conventionalcommits.org">Conventional Commits</a> により自動で生成されます.</li>
+        </ul>
+      </li>
+      <li><a href="/ja/reference/supported-css-features/">Supported CSS Features</a>
+        <ul>
+          <li>VivliostyleでサポートされるCSS機能(values, selectors, at-rules, media queries and properties)</li>
+        </ul>
+      </li>
+    </ul>
+  </section>
+  <section class="level2">
+    <h2 id="ソースファイル">ソースファイル</h2>
+    <p><code>packages/core/src/</code> 以下のソースファイルについて簡単に説明します。</p>
+    <section class="level3">
+      <h3 id="vivliostylecore-viewerts"><code>vivliostyle/core-viewer.ts</code></h3>
+      <ul>
+        <li>
+          Exposed interface of vivliostyle-core. To use vivliostyle-core, instantiate
+          Vivliostyle.CoreViewer, set options, register event listeners by addListener
+          method, and call loadDocument or loadPublication method.
+        </li>
+      </ul>
+    </section>
+    <section class="level3">
+      <h3 id="vivliostyleconstantsts"><code>vivliostyle/constants.ts</code></h3>
+      <ul>
+        <li>Defines constants used throughout the library.</li>
+      </ul>
+    </section>
+    <section class="level3">
+      <h3 id="vivliostyletaskts"><code>vivliostyle/task.ts</code></h3>
+      <ul>
+        <li>Task scheduling.</li>
+      </ul>
+    </section>
+    <section class="level3">
+      <h3 id="vivliostyleexprsts"><code>vivliostyle/exprs.ts</code></h3>
+      <ul>
+        <li>Definitions for <a href="http://www.idpf.org/epub/pgt/#s2">expressions</a> of Adaptive Layout.</li>
+      </ul>
+    </section>
+    <section class="level3">
+      <h3 id="vivliostylecssts"><code>vivliostyle/css.ts</code></h3>
+      <ul>
+        <li>Definitions for various CSS values.</li>
+      </ul>
+    </section>
+    <section class="level3">
+      <h3 id="vivliostylecss-parserts"><code>vivliostyle/css-parser.ts</code></h3>
+      <ul>
+        <li>CSS parser.</li>
+      </ul>
+    </section>
+    <section class="level3">
+      <h3 id="vivliostylecss-cascadets"><code>vivliostyle/css-cascade.ts</code></h3>
+      <ul>
+        <li>Classes for selector matching and cascading calculation.</li>
+      </ul>
+    </section>
+    <section class="level3">
+      <h3 id="vivliostylevtreets"><code>vivliostyle/vtree.ts</code></h3>
+      <ul>
+        <li>View tree data structures.</li>
+      </ul>
+    </section>
+    <section class="level3">
+      <h3 id="vivliostylecss-stylerts"><code>vivliostyle/css-styler.ts</code></h3>
+      <ul>
+        <li>Apply CSS cascade to a document incrementally.</li>
+      </ul>
+    </section>
+    <section class="level3">
+      <h3 id="vivliostylefontts"><code>vivliostyle/font.ts</code></h3>
+      <ul>
+        <li>Web font handling.</li>
+      </ul>
+    </section>
+    <section class="level3">
+      <h3 id="vivliostylepage-mastersts"><code>vivliostyle/page-masters.ts</code></h3>
+      <ul>
+        <li>Classes for <a href="http://www.idpf.org/epub/pgt/#s3.4">page masters of Adaptive Layout</a>.</li>
+      </ul>
+    </section>
+    <section class="level3">
+      <h3 id="vivliostylepage-floatsts"><code>vivliostyle/page-floats.ts</code></h3>
+      <ul>
+        <li>Page floats.</li>
+      </ul>
+    </section>
+    <section class="level3">
+      <h3 id="vivliostylevgents"><code>vivliostyle/vgen.ts</code></h3>
+      <ul>
+        <li>Generation of view tree.</li>
+      </ul>
+    </section>
+    <section class="level3">
+      <h3 id="vivliostylelayoutts"><code>vivliostyle/layout.ts</code></h3>
+      <ul>
+        <li>Content layout inside regions, including column breaking etc.</li>
+      </ul>
+    </section>
+    <section class="level3">
+      <h3 id="vivliostylecss-pagets"><code>vivliostyle/css-page.ts</code></h3>
+      <ul>
+        <li>Support for <a href="https://drafts.csswg.org/css-page/">CSS Paged Media</a>.</li>
+      </ul>
+    </section>
+    <section class="level3">
+      <h3 id="vivliostyleopsts"><code>vivliostyle/ops.ts</code></h3>
+      <ul>
+        <li>Select page master, layout regions (columns) one by one etc.</li>
+      </ul>
+    </section>
+    <section class="level3">
+      <h3 id="vivliostyleepubts"><code>vivliostyle/epub.ts</code></h3>
+      <ul>
+        <li>Handling EPUB metadata, rendering pages etc.</li>
+      </ul>
+      <blockquote>
+        <p>(There are more files... See the <code>pakcages/core/src</code> directory)</p>
+      </blockquote>
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="その他の開発ドキュメント">その他の開発ドキュメント</h2>
+    <ul>
+      <li><a href="/ja/reference/api/">Vivliostyle API Reference</a></li>
+      <li><a href="./typescript-migration/">Migration to TypeScript</a></li>
+    </ul>
+  </section>
+</section>
 </div> </article>  <nav class="page-navigation" data-astro-cid-z7g34ql7=""> <div class="nav-links" data-astro-cid-z7g34ql7=""> <a href="/ja/reference/api/" class="nav-link nav-prev" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">← 前へ</span> <span class="nav-title" data-astro-cid-z7g34ql7="">Core API リファレンス</span> </a> <a href="/ja/reference/contributing-cli/" class="nav-link nav-next" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">次へ →</span> <span class="nav-title" data-astro-cid-z7g34ql7="">Vivliostyle CLI</span> </a> </div> </nav>   </article> </main> </div> <footer class="footer" data-astro-cid-mw7aashj=""> <p data-astro-cid-mw7aashj="">© 2026 Vivliostyle Foundation.</p> </footer> </div>  <script type="module">window.__bodyOverflowLockCount=0;window.lockBodyOverflow=function(){window.__bodyOverflowLockCount++,window.__bodyOverflowLockCount===1&&(document.body.style.overflow="hidden")};window.unlockBodyOverflow=function(){window.__bodyOverflowLockCount=Math.max(0,window.__bodyOverflowLockCount-1),window.__bodyOverflowLockCount===0&&(document.body.style.overflow="")};</script>  <script type="module">document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll(".accordion-toggle").forEach(t=>{t.addEventListener("click",a=>{a.preventDefault();const d=t.getAttribute("data-target"),e=document.getElementById(d),n=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",String(!n)),e&&(e.style.display=n?"none":"block")})}),document.querySelectorAll(".toc-toggle").forEach(t=>{t.addEventListener("click",a=>{if(a.target.tagName==="A")return;a.preventDefault();const d=t.getAttribute("data-target"),e=document.getElementById(d),n=t.getAttribute("aria-expanded")==="true";e&&(t.setAttribute("aria-expanded",String(!n)),e.style.display=n?"none":"block")})})});</script></body></html>

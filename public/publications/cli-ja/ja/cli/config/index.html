@@ -178,12 +178,17 @@ const lang = "ja";
     const open = () => {
       lastFocus = document.activeElement;
 
-      // 本番URL固定でマニフェストを参照する。
-      // localhost / preview からは Vivliostyle Viewer が manifest を取りに行けないので、
-      // その場合は警告を表示する。
-      const isProductionHost = window.location.hostname === 'docs2.vivliostyle.org' ||
-                               window.location.hostname === 'docs.vivliostyle.org';
-      const manifestUrl = `https://docs2.vivliostyle.org/publications/${product}-${lang}/publication.json`;
+      // production host (docs.vivliostyle.org / docs2.vivliostyle.org) では
+      // 自身のホスト上のマニフェストを参照する。それ以外（localhost や
+      // プレビュー環境）からは Vivliostyle Viewer が外部からマニフェストを
+      // 取得できないため、フォールバックとして既定の本番ホストを指定し、
+      // 警告を表示する。
+      const productionHosts = ['docs.vivliostyle.org', 'docs2.vivliostyle.org'];
+      const isProductionHost = productionHosts.includes(window.location.hostname);
+      const manifestHost = isProductionHost
+        ? window.location.hostname
+        : 'docs2.vivliostyle.org';
+      const manifestUrl = `https://${manifestHost}/publications/${product}-${lang}/publication.json`;
       const viewerUrl = `https://vivliostyle.org/viewer/?src=${encodeURIComponent(manifestUrl)}&bookMode=true&lng=${lang}`;
 
       iframe.src = viewerUrl;
@@ -218,164 +223,157 @@ const lang = "ja";
     });
   }
 })();</script> </section>  </nav> </aside> <main class="content" data-astro-cid-mw7aashj=""> <nav aria-label="Breadcrumb" class="breadcrumb" data-astro-cid-qaanghzh=""> <ol data-astro-cid-qaanghzh=""> <li data-astro-cid-qaanghzh=""> <a href="/ja/" data-astro-cid-qaanghzh="">ホーム</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <a href="/ja/cli/" data-astro-cid-qaanghzh="">CLI</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <span aria-current="page" data-astro-cid-qaanghzh="">Config Reference</span>  </li> </ol> </nav> <!-- JSON-LD構造化データ --> <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ホーム","item":"https://docs.vivliostyle.org/ja/"},{"@type":"ListItem","position":2,"name":"CLI","item":"https://docs.vivliostyle.org/ja/cli/"},{"@type":"ListItem","position":3,"name":"Config Reference","item":"https://docs.vivliostyle.org/ja/cli/config/"}]}</script>  <article class="prose" data-astro-cid-mw7aashj="">    <article data-astro-cid-lxp5afuy="">
-
-  
-    <meta charset="utf-8">
-    <title>Config Reference</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  
-    <section class="level1">
-      <h1 id="config-reference">Config Reference</h1>
-      <p>The configuration files <code>vivliostyle.config.js</code> and <code>vivliostyle.config.json</code> accept the <a href="#vivliostyleconfigschema"><code>VivliostyleConfigSchema</code></a> for configuring the Vivliostyle CLI. You can reference the configuration's type scheme from TypeScript files.</p>
-      <pre class="language-ts"><code class="language-ts"><span class="token keyword module">import</span> <span class="token imports"><span class="token punctuation">{</span> <span class="token maybe-class-name">VivliostyleConfigSchema</span> <span class="token punctuation">}</span></span> <span class="token keyword module">from</span> <span class="token string">'@vivliostyle/cli'</span><span class="token punctuation">;</span></code></pre>
-      <p>Alternatively, you can use the <code>defineConfig</code> helper function to define the configuration.</p>
-      <pre class="language-ts"><code class="language-ts"><span class="token keyword module">import</span> <span class="token imports"><span class="token punctuation">{</span> defineConfig <span class="token punctuation">}</span></span> <span class="token keyword module">from</span> <span class="token string">'@vivliostyle/cli'</span><span class="token punctuation">;</span>
+<section class="level1">
+  <h1 id="config-reference">Config Reference</h1>
+  <p>The configuration files <code>vivliostyle.config.js</code> and <code>vivliostyle.config.json</code> accept the <a href="#vivliostyleconfigschema"><code>VivliostyleConfigSchema</code></a> for configuring the Vivliostyle CLI. You can reference the configuration's type scheme from TypeScript files.</p>
+  <pre class="language-ts"><code class="language-ts"><span class="token keyword module">import</span> <span class="token imports"><span class="token punctuation">{</span> <span class="token maybe-class-name">VivliostyleConfigSchema</span> <span class="token punctuation">}</span></span> <span class="token keyword module">from</span> <span class="token string">'@vivliostyle/cli'</span><span class="token punctuation">;</span></code></pre>
+  <p>Alternatively, you can use the <code>defineConfig</code> helper function to define the configuration.</p>
+  <pre class="language-ts"><code class="language-ts"><span class="token keyword module">import</span> <span class="token imports"><span class="token punctuation">{</span> defineConfig <span class="token punctuation">}</span></span> <span class="token keyword module">from</span> <span class="token string">'@vivliostyle/cli'</span><span class="token punctuation">;</span>
 
 <span class="token keyword module">export</span> <span class="token keyword module">default</span> <span class="token function">defineConfig</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token spread operator">...</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
-      <section class="level2">
-        <h2 id="config-api">Config API</h2><!-- START config API -->
-        <section class="level3">
-          <h3 id="vivliostyleconfigschema">VivliostyleConfigSchema</h3>
-          <section class="level4">
-            <h4 id="type-definition">Type definition</h4>
-            <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">VivliostyleConfigSchema</span></span> <span class="token operator">=</span>
+  <section class="level2">
+    <h2 id="config-api">Config API</h2><!-- START config API -->
+    <section class="level3">
+      <h3 id="vivliostyleconfigschema">VivliostyleConfigSchema</h3>
+      <section class="level4">
+        <h4 id="type-definition">Type definition</h4>
+        <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">VivliostyleConfigSchema</span></span> <span class="token operator">=</span>
   <span class="token operator">|</span> <span class="token maybe-class-name">BuildTask</span><span class="token punctuation">[</span><span class="token punctuation">]</span>
   <span class="token operator">|</span> <span class="token maybe-class-name">BuildTask</span><span class="token punctuation">;</span></code></pre>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="buildtask">BuildTask</h3>
-          <section class="level4">
-            <h4 id="properties">Properties</h4>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="buildtask">BuildTask</h3>
+      <section class="level4">
+        <h4 id="properties">Properties</h4>
+        <ul>
+          <li>
+            <p><code>BuildTask</code></p>
             <ul>
               <li>
-                <p><code>BuildTask</code></p>
+                <p><code>entry</code>: (string | <a href="#contentsentryconfig">ContentsEntryConfig</a> | <a href="#coverentryconfig">CoverEntryConfig</a> | <a href="#articleentryconfig">ArticleEntryConfig</a>)[] | <a href="#articleentryconfig">ArticleEntryConfig</a> | string<br>Entry file(s) of the document.</p>
+              </li>
+              <li>
+                <p><code>title</code>: string<br>Title of the document.</p>
+              </li>
+              <li>
+                <p><code>author</code>: string<br>Author of the document.</p>
+              </li>
+              <li>
+                <p><code>theme</code>: (<a href="#themeconfig">ThemeConfig</a> | string)[] | <a href="#themeconfig">ThemeConfig</a> | string<br>Theme package path(s) or URL(s) of the CSS file.</p>
+              </li>
+              <li>
+                <p><code>entryContext</code>: string<br>Directory containing the referenced entry file(s).</p>
+              </li>
+              <li>
+                <p><code>output</code>: (<a href="#outputconfig">OutputConfig</a> | string)[] | <a href="#outputconfig">OutputConfig</a> | string<br>Output options.</p>
+              </li>
+              <li>
+                <p><code>workspaceDir</code>: string<br>Directory where intermediate files (e.g., manuscript HTMLs, publication.json) are saved. (default: <code>.vivliostyle</code>)</p>
+              </li>
+              <li>
+                <p><del><code>includeAssets</code></del> <em>Deprecated</em><br>Use <code>copyAsset.includes</code> instead.</p>
+              </li>
+              <li>
+                <p><code>copyAsset</code>: <a href="#copyassetconfig">CopyAssetConfig</a><br>Options for asset files to be copied when exporting output.</p>
+              </li>
+              <li>
+                <p><code>size</code>: string<br>PDF output size. (default: <code>letter</code>)</p>
                 <ul>
-                  <li>
-                    <p><code>entry</code>: (string | <a href="#contentsentryconfig">ContentsEntryConfig</a> | <a href="#coverentryconfig">CoverEntryConfig</a> | <a href="#articleentryconfig">ArticleEntryConfig</a>)[] | <a href="#articleentryconfig">ArticleEntryConfig</a> | string<br>Entry file(s) of the document.</p>
-                  </li>
-                  <li>
-                    <p><code>title</code>: string<br>Title of the document.</p>
-                  </li>
-                  <li>
-                    <p><code>author</code>: string<br>Author of the document.</p>
-                  </li>
-                  <li>
-                    <p><code>theme</code>: (<a href="#themeconfig">ThemeConfig</a> | string)[] | <a href="#themeconfig">ThemeConfig</a> | string<br>Theme package path(s) or URL(s) of the CSS file.</p>
-                  </li>
-                  <li>
-                    <p><code>entryContext</code>: string<br>Directory containing the referenced entry file(s).</p>
-                  </li>
-                  <li>
-                    <p><code>output</code>: (<a href="#outputconfig">OutputConfig</a> | string)[] | <a href="#outputconfig">OutputConfig</a> | string<br>Output options.</p>
-                  </li>
-                  <li>
-                    <p><code>workspaceDir</code>: string<br>Directory where intermediate files (e.g., manuscript HTMLs, publication.json) are saved. (default: <code>.vivliostyle</code>)</p>
-                  </li>
-                  <li>
-                    <p><del><code>includeAssets</code></del> <em>Deprecated</em><br>Use <code>copyAsset.includes</code> instead.</p>
-                  </li>
-                  <li>
-                    <p><code>copyAsset</code>: <a href="#copyassetconfig">CopyAssetConfig</a><br>Options for asset files to be copied when exporting output.</p>
-                  </li>
-                  <li>
-                    <p><code>size</code>: string<br>PDF output size. (default: <code>letter</code>)</p>
-                    <ul>
-                      <li>Preset: <code>A5</code>, <code>A4</code>, <code>A3</code>, <code>B5</code>, <code>B4</code>, <code>JIS-B5</code>, <code>JIS-B4</code>, <code>letter</code>, <code>legal</code>, <code>ledger</code></li>
-                      <li>Custom (comma-separated): <code>182mm,257mm</code> or <code>8.5in,11in</code></li>
-                    </ul>
-                  </li>
-                  <li>
-                    <p><del><code>pressReady</code></del> <em>Deprecated</em><br>Use <code>pdfPostprocess.preflight: "press-ready"</code> instead</p>
-                  </li>
-                  <li>
-                    <p>
-                      <code>pdfPostprocess</code>: <a href="#pdfpostprocessconfig">PdfPostprocessConfig</a><br>PDF post-processing options.
-                      When both pdfPostprocess and legacy options (pressReady, preflight, etc.) are specified,
-                      pdfPostprocess takes precedence.
-                    </p>
-                  </li>
-                  <li>
-                    <p><code>language</code>: string<br>Language of the document.</p>
-                  </li>
-                  <li>
-                    <p>
-                      <code>readingProgression</code>: "ltr" | "rtl"<br>Specifies the reading progression of the document.
-                      This is typically determined automatically by the CSS writing-mode.
-                      Use this option only if explicit configuration is needed.
-                    </p>
-                  </li>
-                  <li>
-                    <p><code>toc</code>: <a href="#tocconfig">TocConfig</a> | boolean | string<br>Options for Table of Contents (ToC) documents.</p>
-                  </li>
-                  <li>
-                    <p><del><code>tocTitle</code></del> <em>Deprecated</em><br>Use <code>toc.title</code> instead</p>
-                  </li>
-                  <li>
-                    <p><code>cover</code>: <a href="#coverconfig">CoverConfig</a> | string<br>Options for cover images and cover page documents.</p>
-                  </li>
-                  <li>
-                    <p><code>timeout</code>: number<br>Timeout limit for waiting for the Vivliostyle process (in ms). (default: <code>300000</code>)</p>
-                  </li>
-                  <li>
-                    <p><code>documentProcessor</code>: (option: import("@vivliostyle/vfm").StringifyMarkdownOptions, metadata: import("@vivliostyle/vfm").Metadata) =&gt; import("unified").Processor<br>Custom function to provide a unified Processor for converting the source document to HTML.</p>
-                  </li>
-                  <li>
-                    <p><code>documentMetadataReader</code>: (content: string) =&gt; import("@vivliostyle/vfm").Metadata<br>Custom function to extract metadata from the source document content.</p>
-                  </li>
-                  <li>
-                    <p><code>vfm</code>: <a href="#vfmconfig">VfmConfig</a><br>Options for converting Markdown into a stringified format (HTML).</p>
-                  </li>
-                  <li>
-                    <p><code>image</code>: string<br>Docker image used for rendering.</p>
-                  </li>
-                  <li>
-                    <p><del><code>http</code></del> <em>Deprecated</em><br>This option is enabled by default, and the file protocol is no longer supported.</p>
-                  </li>
-                  <li>
-                    <p>
-                      <code>viewer</code>: string<br>URL of a custom viewer to display content instead of the default Vivliostyle CLI viewer.
-                      Useful for using a custom viewer with staging features (e.g., <code>https://vivliostyle.vercel.app/</code>).
-                    </p>
-                  </li>
-                  <li>
-                    <p><code>viewerParam</code>: string<br>Parameters for the Vivliostyle viewer (e.g., <code>allowScripts=false&amp;pixelRatio=16</code>).</p>
-                  </li>
-                  <li>
-                    <p><code>browser</code>: string<br>Specify a browser type and version to launch the Vivliostyle viewer.</p>
-                  </li>
-                  <li>
-                    <p><code>base</code>: string<br>Base path of the served documents. (default: <code>/vivliostyle</code>)</p>
-                  </li>
-                  <li>
-                    <p><code>server</code>: <a href="#serverconfig">ServerConfig</a><br>Options for the preview server.</p>
-                  </li>
-                  <li>
-                    <p>
-                      <code>static</code>: <ruby>[key: (string)]: (string)[] <rt>string</rt></ruby><br>Specifies static files to be served by the preview server.
-                      <code>js export default { static: { '/static': 'path/to/static', '/': ['root1', 'root2'], }, };</code>
-                    </p>
-                  </li>
-                  <li>
-                    <p><code>temporaryFilePrefix</code>: string<br>Prefix for temporary file names.</p>
-                  </li>
-                  <li>
-                    <p><code>vite</code>: import("vite").UserConfig<br>Configuration options for the Vite server.</p>
-                  </li>
-                  <li>
-                    <p>
-                      <code>viteConfigFile</code>: string | boolean<br>Path to the Vite config file.
-                      If a falsy value is provided, Vivliostyle CLI ignores the existing Vite config file.
-                    </p>
-                  </li>
+                  <li>Preset: <code>A5</code>, <code>A4</code>, <code>A3</code>, <code>B5</code>, <code>B4</code>, <code>JIS-B5</code>, <code>JIS-B4</code>, <code>letter</code>, <code>legal</code>, <code>ledger</code></li>
+                  <li>Custom (comma-separated): <code>182mm,257mm</code> or <code>8.5in,11in</code></li>
                 </ul>
               </li>
+              <li>
+                <p><del><code>pressReady</code></del> <em>Deprecated</em><br>Use <code>pdfPostprocess.preflight: "press-ready"</code> instead</p>
+              </li>
+              <li>
+                <p>
+                  <code>pdfPostprocess</code>: <a href="#pdfpostprocessconfig">PdfPostprocessConfig</a><br>PDF post-processing options.
+                  When both pdfPostprocess and legacy options (pressReady, preflight, etc.) are specified,
+                  pdfPostprocess takes precedence.
+                </p>
+              </li>
+              <li>
+                <p><code>language</code>: string<br>Language of the document.</p>
+              </li>
+              <li>
+                <p>
+                  <code>readingProgression</code>: "ltr" | "rtl"<br>Specifies the reading progression of the document.
+                  This is typically determined automatically by the CSS writing-mode.
+                  Use this option only if explicit configuration is needed.
+                </p>
+              </li>
+              <li>
+                <p><code>toc</code>: <a href="#tocconfig">TocConfig</a> | boolean | string<br>Options for Table of Contents (ToC) documents.</p>
+              </li>
+              <li>
+                <p><del><code>tocTitle</code></del> <em>Deprecated</em><br>Use <code>toc.title</code> instead</p>
+              </li>
+              <li>
+                <p><code>cover</code>: <a href="#coverconfig">CoverConfig</a> | string<br>Options for cover images and cover page documents.</p>
+              </li>
+              <li>
+                <p><code>timeout</code>: number<br>Timeout limit for waiting for the Vivliostyle process (in ms). (default: <code>300000</code>)</p>
+              </li>
+              <li>
+                <p><code>documentProcessor</code>: (option: import("@vivliostyle/vfm").StringifyMarkdownOptions, metadata: import("@vivliostyle/vfm").Metadata) =&gt; import("unified").Processor<br>Custom function to provide a unified Processor for converting the source document to HTML.</p>
+              </li>
+              <li>
+                <p><code>documentMetadataReader</code>: (content: string) =&gt; import("@vivliostyle/vfm").Metadata<br>Custom function to extract metadata from the source document content.</p>
+              </li>
+              <li>
+                <p><code>vfm</code>: <a href="#vfmconfig">VfmConfig</a><br>Options for converting Markdown into a stringified format (HTML).</p>
+              </li>
+              <li>
+                <p><code>image</code>: string<br>Docker image used for rendering.</p>
+              </li>
+              <li>
+                <p><del><code>http</code></del> <em>Deprecated</em><br>This option is enabled by default, and the file protocol is no longer supported.</p>
+              </li>
+              <li>
+                <p>
+                  <code>viewer</code>: string<br>URL of a custom viewer to display content instead of the default Vivliostyle CLI viewer.
+                  Useful for using a custom viewer with staging features (e.g., <code>https://vivliostyle.vercel.app/</code>).
+                </p>
+              </li>
+              <li>
+                <p><code>viewerParam</code>: string<br>Parameters for the Vivliostyle viewer (e.g., <code>allowScripts=false&amp;pixelRatio=16</code>).</p>
+              </li>
+              <li>
+                <p><code>browser</code>: string<br>Specify a browser type and version to launch the Vivliostyle viewer.</p>
+              </li>
+              <li>
+                <p><code>base</code>: string<br>Base path of the served documents. (default: <code>/vivliostyle</code>)</p>
+              </li>
+              <li>
+                <p><code>server</code>: <a href="#serverconfig">ServerConfig</a><br>Options for the preview server.</p>
+              </li>
+              <li>
+                <p>
+                  <code>static</code>: <ruby>[key: (string)]: (string)[] <rt>string</rt></ruby><br>Specifies static files to be served by the preview server.
+                  <code>js export default { static: { '/static': 'path/to/static', '/': ['root1', 'root2'], }, };</code>
+                </p>
+              </li>
+              <li>
+                <p><code>temporaryFilePrefix</code>: string<br>Prefix for temporary file names.</p>
+              </li>
+              <li>
+                <p><code>vite</code>: import("vite").UserConfig<br>Configuration options for the Vite server.</p>
+              </li>
+              <li>
+                <p>
+                  <code>viteConfigFile</code>: string | boolean<br>Path to the Vite config file.
+                  If a falsy value is provided, Vivliostyle CLI ignores the existing Vite config file.
+                </p>
+              </li>
             </ul>
-          </section>
-          <section class="level4">
-            <h4 id="type-definition-1">Type definition</h4>
-            <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">BuildTask</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+          </li>
+        </ul>
+      </section>
+      <section class="level4">
+        <h4 id="type-definition-1">Type definition</h4>
+        <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">BuildTask</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
   entry<span class="token operator">:</span>
     <span class="token operator">|</span> <span class="token punctuation">(</span>
         <span class="token operator">|</span> <span class="token builtin">string</span>
@@ -430,50 +428,50 @@ const lang = "ja";
   vite<span class="token operator">?</span><span class="token operator">:</span> <span class="token keyword module">import</span><span class="token punctuation">(</span><span class="token string">"vite"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token property-access"><span class="token maybe-class-name">UserConfig</span></span><span class="token punctuation">;</span>
   viteConfigFile<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span> <span class="token operator">|</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="contentsentryconfig">ContentsEntryConfig</h3>
-          <section class="level4">
-            <h4 id="properties-1">Properties</h4>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="contentsentryconfig">ContentsEntryConfig</h3>
+      <section class="level4">
+        <h4 id="properties-1">Properties</h4>
+        <ul>
+          <li>
+            <p><code>ContentsEntryConfig</code></p>
             <ul>
               <li>
-                <p><code>ContentsEntryConfig</code></p>
-                <ul>
-                  <li>
-                    <p><code>rel</code>: "contents"</p>
-                  </li>
-                  <li>
-                    <p><code>path</code>: string</p>
-                  </li>
-                  <li>
-                    <p><code>output</code>: string</p>
-                  </li>
-                  <li>
-                    <p><code>title</code>: string</p>
-                  </li>
-                  <li>
-                    <p><code>theme</code>: (<a href="#themeconfig">ThemeConfig</a> | string)[] | <a href="#themeconfig">ThemeConfig</a> | string</p>
-                  </li>
-                  <li>
-                    <p>
-                      <code>pageBreakBefore</code>: "left" | "right" | "recto" | "verso"<br>Specifies the page break position before this document.
-                      Useful for determining which side the first page of the document should be placed on in a two-page spread.
-                    </p>
-                  </li>
-                  <li>
-                    <p>
-                      <code>pageCounterReset</code>: number<br>Resets the starting page number of this document to the specified integer.
-                      Useful for controlling page numbers when including a page.
-                    </p>
-                  </li>
-                </ul>
+                <p><code>rel</code>: "contents"</p>
+              </li>
+              <li>
+                <p><code>path</code>: string</p>
+              </li>
+              <li>
+                <p><code>output</code>: string</p>
+              </li>
+              <li>
+                <p><code>title</code>: string</p>
+              </li>
+              <li>
+                <p><code>theme</code>: (<a href="#themeconfig">ThemeConfig</a> | string)[] | <a href="#themeconfig">ThemeConfig</a> | string</p>
+              </li>
+              <li>
+                <p>
+                  <code>pageBreakBefore</code>: "left" | "right" | "recto" | "verso"<br>Specifies the page break position before this document.
+                  Useful for determining which side the first page of the document should be placed on in a two-page spread.
+                </p>
+              </li>
+              <li>
+                <p>
+                  <code>pageCounterReset</code>: number<br>Resets the starting page number of this document to the specified integer.
+                  Useful for controlling page numbers when including a page.
+                </p>
               </li>
             </ul>
-          </section>
-          <section class="level4">
-            <h4 id="type-definition-2">Type definition</h4>
-            <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">ContentsEntryConfig</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+          </li>
+        </ul>
+      </section>
+      <section class="level4">
+        <h4 id="type-definition-2">Type definition</h4>
+        <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">ContentsEntryConfig</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
   rel<span class="token operator">:</span> <span class="token string">"contents"</span><span class="token punctuation">;</span>
   path<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
   output<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
@@ -489,83 +487,83 @@ const lang = "ja";
     <span class="token operator">|</span> <span class="token string">"verso"</span><span class="token punctuation">;</span>
   pageCounterReset<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="themeconfig">ThemeConfig</h3>
-          <section class="level4">
-            <h4 id="properties-2">Properties</h4>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="themeconfig">ThemeConfig</h3>
+      <section class="level4">
+        <h4 id="properties-2">Properties</h4>
+        <ul>
+          <li>
+            <p><code>ThemeConfig</code></p>
             <ul>
               <li>
-                <p><code>ThemeConfig</code></p>
+                <p><code>specifier</code>: string<br>The specifier name for importing the theme package or the path to a CSS file.</p>
                 <ul>
-                  <li>
-                    <p><code>specifier</code>: string<br>The specifier name for importing the theme package or the path to a CSS file.</p>
-                    <ul>
-                      <li>An npm-style package argument is allowed (e.g., <code>@vivliostyle/theme-academic@1</code>, <code>./local-pkg</code>).</li>
-                      <li>A URL or a local path to a CSS file is allowed (e.g., <code>./style.css</code>, <code>https://example.com/style.css</code>).</li>
-                    </ul>
-                  </li>
-                  <li>
-                    <p>
-                      <code>import</code>: (string)[] | string<br>The path(s) to the CSS file(s) to import from the package.
-                      Specify this if you want to import files other than the default.
-                    </p>
-                  </li>
+                  <li>An npm-style package argument is allowed (e.g., <code>@vivliostyle/theme-academic@1</code>, <code>./local-pkg</code>).</li>
+                  <li>A URL or a local path to a CSS file is allowed (e.g., <code>./style.css</code>, <code>https://example.com/style.css</code>).</li>
                 </ul>
               </li>
+              <li>
+                <p>
+                  <code>import</code>: (string)[] | string<br>The path(s) to the CSS file(s) to import from the package.
+                  Specify this if you want to import files other than the default.
+                </p>
+              </li>
             </ul>
-          </section>
-          <section class="level4">
-            <h4 id="type-definition-3">Type definition</h4>
-            <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">ThemeConfig</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+          </li>
+        </ul>
+      </section>
+      <section class="level4">
+        <h4 id="type-definition-3">Type definition</h4>
+        <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">ThemeConfig</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
   specifier<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
   <span class="token keyword module">import</span><span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">|</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="coverentryconfig">CoverEntryConfig</h3>
-          <section class="level4">
-            <h4 id="properties-3">Properties</h4>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="coverentryconfig">CoverEntryConfig</h3>
+      <section class="level4">
+        <h4 id="properties-3">Properties</h4>
+        <ul>
+          <li>
+            <p><code>CoverEntryConfig</code></p>
             <ul>
               <li>
-                <p><code>CoverEntryConfig</code></p>
-                <ul>
-                  <li>
-                    <p><code>rel</code>: "cover"</p>
-                  </li>
-                  <li>
-                    <p><code>path</code>: string</p>
-                  </li>
-                  <li>
-                    <p><code>output</code>: string</p>
-                  </li>
-                  <li>
-                    <p><code>title</code>: string</p>
-                  </li>
-                  <li>
-                    <p><code>theme</code>: (<a href="#themeconfig">ThemeConfig</a> | string)[] | <a href="#themeconfig">ThemeConfig</a> | string</p>
-                  </li>
-                  <li>
-                    <p><code>imageSrc</code>: string</p>
-                  </li>
-                  <li>
-                    <p><code>imageAlt</code>: string</p>
-                  </li>
-                  <li>
-                    <p>
-                      <code>pageBreakBefore</code>: "left" | "right" | "recto" | "verso"<br>Specifies the page break position before this document.
-                      Useful for determining which side the first page of the document should be placed on in a two-page spread.
-                    </p>
-                  </li>
-                </ul>
+                <p><code>rel</code>: "cover"</p>
+              </li>
+              <li>
+                <p><code>path</code>: string</p>
+              </li>
+              <li>
+                <p><code>output</code>: string</p>
+              </li>
+              <li>
+                <p><code>title</code>: string</p>
+              </li>
+              <li>
+                <p><code>theme</code>: (<a href="#themeconfig">ThemeConfig</a> | string)[] | <a href="#themeconfig">ThemeConfig</a> | string</p>
+              </li>
+              <li>
+                <p><code>imageSrc</code>: string</p>
+              </li>
+              <li>
+                <p><code>imageAlt</code>: string</p>
+              </li>
+              <li>
+                <p>
+                  <code>pageBreakBefore</code>: "left" | "right" | "recto" | "verso"<br>Specifies the page break position before this document.
+                  Useful for determining which side the first page of the document should be placed on in a two-page spread.
+                </p>
               </li>
             </ul>
-          </section>
-          <section class="level4">
-            <h4 id="type-definition-4">Type definition</h4>
-            <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">CoverEntryConfig</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+          </li>
+        </ul>
+      </section>
+      <section class="level4">
+        <h4 id="type-definition-4">Type definition</h4>
+        <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">CoverEntryConfig</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
   rel<span class="token operator">:</span> <span class="token string">"cover"</span><span class="token punctuation">;</span>
   path<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
   output<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
@@ -582,47 +580,47 @@ const lang = "ja";
     <span class="token operator">|</span> <span class="token string">"recto"</span>
     <span class="token operator">|</span> <span class="token string">"verso"</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="articleentryconfig">ArticleEntryConfig</h3>
-          <section class="level4">
-            <h4 id="properties-4">Properties</h4>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="articleentryconfig">ArticleEntryConfig</h3>
+      <section class="level4">
+        <h4 id="properties-4">Properties</h4>
+        <ul>
+          <li>
+            <p><code>ArticleEntryConfig</code></p>
             <ul>
               <li>
-                <p><code>ArticleEntryConfig</code></p>
-                <ul>
-                  <li>
-                    <p><code>path</code>: string</p>
-                  </li>
-                  <li>
-                    <p><code>output</code>: string</p>
-                  </li>
-                  <li>
-                    <p><code>title</code>: string</p>
-                  </li>
-                  <li>
-                    <p><code>theme</code>: (<a href="#themeconfig">ThemeConfig</a> | string)[] | <a href="#themeconfig">ThemeConfig</a> | string</p>
-                  </li>
-                  <li>
-                    <p><code>encodingFormat</code>: string</p>
-                  </li>
-                  <li>
-                    <p><code>rel</code>: (string)[] | string</p>
-                  </li>
-                  <li>
-                    <p><code>documentProcessor</code>: (option: import("@vivliostyle/vfm").StringifyMarkdownOptions, metadata: import("@vivliostyle/vfm").Metadata) =&gt; import("unified").Processor<br>Custom function to provide a unified Processor for converting the source document to HTML.</p>
-                  </li>
-                  <li>
-                    <p><code>documentMetadataReader</code>: (content: string) =&gt; import("@vivliostyle/vfm").Metadata<br>Custom function to extract metadata from the source document content.</p>
-                  </li>
-                </ul>
+                <p><code>path</code>: string</p>
+              </li>
+              <li>
+                <p><code>output</code>: string</p>
+              </li>
+              <li>
+                <p><code>title</code>: string</p>
+              </li>
+              <li>
+                <p><code>theme</code>: (<a href="#themeconfig">ThemeConfig</a> | string)[] | <a href="#themeconfig">ThemeConfig</a> | string</p>
+              </li>
+              <li>
+                <p><code>encodingFormat</code>: string</p>
+              </li>
+              <li>
+                <p><code>rel</code>: (string)[] | string</p>
+              </li>
+              <li>
+                <p><code>documentProcessor</code>: (option: import("@vivliostyle/vfm").StringifyMarkdownOptions, metadata: import("@vivliostyle/vfm").Metadata) =&gt; import("unified").Processor<br>Custom function to provide a unified Processor for converting the source document to HTML.</p>
+              </li>
+              <li>
+                <p><code>documentMetadataReader</code>: (content: string) =&gt; import("@vivliostyle/vfm").Metadata<br>Custom function to extract metadata from the source document content.</p>
               </li>
             </ul>
-          </section>
-          <section class="level4">
-            <h4 id="type-definition-5">Type definition</h4>
-            <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">ArticleEntryConfig</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+          </li>
+        </ul>
+      </section>
+      <section class="level4">
+        <h4 id="type-definition-5">Type definition</h4>
+        <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">ArticleEntryConfig</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
   path<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
   output<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
   title<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
@@ -640,45 +638,45 @@ const lang = "ja";
     content<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">,</span>
   <span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> <span class="token keyword module">import</span><span class="token punctuation">(</span><span class="token string">"@vivliostyle/vfm"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token property-access"><span class="token maybe-class-name">Metadata</span></span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="outputconfig">OutputConfig</h3>
-          <section class="level4">
-            <h4 id="properties-5">Properties</h4>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="outputconfig">OutputConfig</h3>
+      <section class="level4">
+        <h4 id="properties-5">Properties</h4>
+        <ul>
+          <li>
+            <p><code>OutputConfig</code></p>
             <ul>
               <li>
-                <p><code>OutputConfig</code></p>
-                <ul>
-                  <li>
-                    <p><code>path</code>: string<br>Specifies the output file name or directory. (default: <code>&lt;title&gt;.pdf</code>)</p>
-                  </li>
-                  <li>
-                    <p><code>format</code>: "pdf" | "epub" | "webpub"<br>Specifies the output format.</p>
-                  </li>
-                  <li>
-                    <p><code>renderMode</code>: "local" | "docker"<br>If set to <code>docker</code>, Vivliostyle will render the PDF using a Docker container. (default: <code>local</code>)</p>
-                  </li>
-                  <li>
-                    <p><del><code>preflight</code></del> <em>Deprecated</em><br>Use <code>pdfPostprocess.preflight</code> instead</p>
-                  </li>
-                  <li>
-                    <p><del><code>preflightOption</code></del> <em>Deprecated</em><br>Use <code>pdfPostprocess.preflightOption</code> instead</p>
-                  </li>
-                  <li>
-                    <p>
-                      <code>pdfPostprocess</code>: <a href="#pdfpostprocessconfig">PdfPostprocessConfig</a><br>PDF post-processing options.
-                      When both pdfPostprocess and legacy options (pressReady, preflight, etc.) are specified,
-                      pdfPostprocess takes precedence.
-                    </p>
-                  </li>
-                </ul>
+                <p><code>path</code>: string<br>Specifies the output file name or directory. (default: <code>&lt;title&gt;.pdf</code>)</p>
+              </li>
+              <li>
+                <p><code>format</code>: "pdf" | "epub" | "webpub"<br>Specifies the output format.</p>
+              </li>
+              <li>
+                <p><code>renderMode</code>: "local" | "docker"<br>If set to <code>docker</code>, Vivliostyle will render the PDF using a Docker container. (default: <code>local</code>)</p>
+              </li>
+              <li>
+                <p><del><code>preflight</code></del> <em>Deprecated</em><br>Use <code>pdfPostprocess.preflight</code> instead</p>
+              </li>
+              <li>
+                <p><del><code>preflightOption</code></del> <em>Deprecated</em><br>Use <code>pdfPostprocess.preflightOption</code> instead</p>
+              </li>
+              <li>
+                <p>
+                  <code>pdfPostprocess</code>: <a href="#pdfpostprocessconfig">PdfPostprocessConfig</a><br>PDF post-processing options.
+                  When both pdfPostprocess and legacy options (pressReady, preflight, etc.) are specified,
+                  pdfPostprocess takes precedence.
+                </p>
               </li>
             </ul>
-          </section>
-          <section class="level4">
-            <h4 id="type-definition-6">Type definition</h4>
-            <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">OutputConfig</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+          </li>
+        </ul>
+      </section>
+      <section class="level4">
+        <h4 id="type-definition-6">Type definition</h4>
+        <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">OutputConfig</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
   path<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
   format<span class="token operator">?</span><span class="token operator">:</span> <span class="token string">"pdf"</span> <span class="token operator">|</span> <span class="token string">"epub"</span> <span class="token operator">|</span> <span class="token string">"webpub"</span><span class="token punctuation">;</span>
   renderMode<span class="token operator">?</span><span class="token operator">:</span> <span class="token string">"local"</span> <span class="token operator">|</span> <span class="token string">"docker"</span><span class="token punctuation">;</span>
@@ -688,50 +686,50 @@ const lang = "ja";
   preflightOption<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
   pdfPostprocess<span class="token operator">?</span><span class="token operator">:</span> <span class="token maybe-class-name">PdfPostprocessConfig</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="pdfpostprocessconfig">PdfPostprocessConfig</h3>
-          <p>
-            PDF post-processing options.
-            When both pdfPostprocess and legacy options (pressReady, preflight, etc.) are specified,
-            pdfPostprocess takes precedence.
-          </p>
-          <section class="level4">
-            <h4 id="properties-6">Properties</h4>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="pdfpostprocessconfig">PdfPostprocessConfig</h3>
+      <p>
+        PDF post-processing options.
+        When both pdfPostprocess and legacy options (pressReady, preflight, etc.) are specified,
+        pdfPostprocess takes precedence.
+      </p>
+      <section class="level4">
+        <h4 id="properties-6">Properties</h4>
+        <ul>
+          <li>
+            <p><code>PdfPostprocessConfig</code></p>
             <ul>
               <li>
-                <p><code>PdfPostprocessConfig</code></p>
-                <ul>
-                  <li>
-                    <p><code>preflight</code>: "press-ready" | "press-ready-local"<br>Apply the process to generate a print-ready PDF.</p>
-                  </li>
-                  <li>
-                    <p>
-                      <code>preflightOption</code>: (string)[]<br>Options for the preflight process (e.g., <code>gray-scale</code>, <code>enforce-outline</code>).
-                      Refer to the press-ready documentation for more information: <a href="https://github.com/vibranthq/press-ready">press-ready</a>
-                    </p>
-                  </li>
-                  <li>
-                    <p>
-                      <code>cmyk</code>: boolean | <a href="#cmykconfig">CmykConfig</a><br>Convert device-cmyk() colors to CMYK in the output PDF.
-                      Can be a boolean or a config object with overrideMap and warnUnmapped options.
-                    </p>
-                  </li>
-                  <li>
-                    <p>
-                      <code>replaceImage</code>: (<a href="#replaceimageentry">ReplaceImageEntry</a>)[]<br>Replace images in the output PDF.
-                      Each entry specifies a source image path and its replacement image path.
-                      Useful for replacing RGB images with CMYK versions.
-                    </p>
-                  </li>
-                </ul>
+                <p><code>preflight</code>: "press-ready" | "press-ready-local"<br>Apply the process to generate a print-ready PDF.</p>
+              </li>
+              <li>
+                <p>
+                  <code>preflightOption</code>: (string)[]<br>Options for the preflight process (e.g., <code>gray-scale</code>, <code>enforce-outline</code>).
+                  Refer to the press-ready documentation for more information: <a href="https://github.com/vibranthq/press-ready">press-ready</a>
+                </p>
+              </li>
+              <li>
+                <p>
+                  <code>cmyk</code>: boolean | <a href="#cmykconfig">CmykConfig</a><br>Convert device-cmyk() colors to CMYK in the output PDF.
+                  Can be a boolean or a config object with overrideMap and warnUnmapped options.
+                </p>
+              </li>
+              <li>
+                <p>
+                  <code>replaceImage</code>: (<a href="#replaceimageentry">ReplaceImageEntry</a>)[]<br>Replace images in the output PDF.
+                  Each entry specifies a source image path and its replacement image path.
+                  Useful for replacing RGB images with CMYK versions.
+                </p>
               </li>
             </ul>
-          </section>
-          <section class="level4">
-            <h4 id="type-definition-7">Type definition</h4>
-            <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">PdfPostprocessConfig</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+          </li>
+        </ul>
+      </section>
+      <section class="level4">
+        <h4 id="type-definition-7">Type definition</h4>
+        <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">PdfPostprocessConfig</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
   preflight<span class="token operator">?</span><span class="token operator">:</span>
     <span class="token operator">|</span> <span class="token string">"press-ready"</span>
     <span class="token operator">|</span> <span class="token string">"press-ready-local"</span><span class="token punctuation">;</span>
@@ -739,140 +737,140 @@ const lang = "ja";
   cmyk<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span> <span class="token operator">|</span> <span class="token maybe-class-name">CmykConfig</span><span class="token punctuation">;</span>
   replaceImage<span class="token operator">?</span><span class="token operator">:</span> <span class="token maybe-class-name">ReplaceImageEntry</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="cmykconfig">CmykConfig</h3>
-          <section class="level4">
-            <h4 id="properties-7">Properties</h4>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="cmykconfig">CmykConfig</h3>
+      <section class="level4">
+        <h4 id="properties-7">Properties</h4>
+        <ul>
+          <li>
+            <p><code>CmykConfig</code></p>
             <ul>
               <li>
-                <p><code>CmykConfig</code></p>
-                <ul>
-                  <li>
-                    <p>
-                      <code>overrideMap</code>: ("{tuple(Array)}")[]<br>Custom RGB to CMYK color mapping.
-                      Each entry is a tuple of [rgb, {c, m, y, k}].
-                      RGB can be an object {r, g, b} with integers (0-10000) or a hex color string (e.g. "#ff0000").
-                    </p>
-                  </li>
-                  <li>
-                    <p>
-                      <code>reserveMap</code>: ("{tuple(Array)}")[]<br>Pre-register RGB to CMYK color mappings for use in SVG or other non-CSS contexts.
-                      Each entry is a tuple of [rgb, {c, m, y, k}].
-                      RGB can be an object {r, g, b} with integers (0-10000) or a hex color string (e.g. "#ff0000").
-                    </p>
-                  </li>
-                  <li>
-                    <p><code>warnUnmapped</code>: boolean<br>Warn when RGB colors not mapped to CMYK are encountered. (default: true)</p>
-                  </li>
-                  <li>
-                    <p><code>mapOutput</code>: string<br>Output the CMYK color map to a JSON file at the specified path.</p>
-                  </li>
-                </ul>
+                <p>
+                  <code>overrideMap</code>: ("{tuple(Array)}")[]<br>Custom RGB to CMYK color mapping.
+                  Each entry is a tuple of [rgb, {c, m, y, k}].
+                  RGB can be an object {r, g, b} with integers (0-10000) or a hex color string (e.g. "#ff0000").
+                </p>
+              </li>
+              <li>
+                <p>
+                  <code>reserveMap</code>: ("{tuple(Array)}")[]<br>Pre-register RGB to CMYK color mappings for use in SVG or other non-CSS contexts.
+                  Each entry is a tuple of [rgb, {c, m, y, k}].
+                  RGB can be an object {r, g, b} with integers (0-10000) or a hex color string (e.g. "#ff0000").
+                </p>
+              </li>
+              <li>
+                <p><code>warnUnmapped</code>: boolean<br>Warn when RGB colors not mapped to CMYK are encountered. (default: true)</p>
+              </li>
+              <li>
+                <p><code>mapOutput</code>: string<br>Output the CMYK color map to a JSON file at the specified path.</p>
               </li>
             </ul>
-          </section>
-          <section class="level4">
-            <h4 id="type-definition-8">Type definition</h4>
-            <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">CmykConfig</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+          </li>
+        </ul>
+      </section>
+      <section class="level4">
+        <h4 id="type-definition-8">Type definition</h4>
+        <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">CmykConfig</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
   overrideMap<span class="token operator">?</span><span class="token operator">:</span> <span class="token string">"{tuple(Array)}"</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
   reserveMap<span class="token operator">?</span><span class="token operator">:</span> <span class="token string">"{tuple(Array)}"</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
   warnUnmapped<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
   mapOutput<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="replaceimageentry">ReplaceImageEntry</h3>
-          <section class="level4">
-            <h4 id="properties-8">Properties</h4>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="replaceimageentry">ReplaceImageEntry</h3>
+      <section class="level4">
+        <h4 id="properties-8">Properties</h4>
+        <ul>
+          <li>
+            <p><code>ReplaceImageEntry</code></p>
             <ul>
               <li>
-                <p><code>ReplaceImageEntry</code></p>
-                <ul>
-                  <li>
-                    <p><code>source</code>: string | RegExp<br>Path to the source image file, or a RegExp pattern to match multiple files.</p>
-                  </li>
-                  <li>
-                    <p><code>replacement</code>: string<br>Path to the replacement image file. When source is a RegExp, supports $1, $2, etc. for captured groups.</p>
-                  </li>
-                </ul>
+                <p><code>source</code>: string | RegExp<br>Path to the source image file, or a RegExp pattern to match multiple files.</p>
+              </li>
+              <li>
+                <p><code>replacement</code>: string<br>Path to the replacement image file. When source is a RegExp, supports $1, $2, etc. for captured groups.</p>
               </li>
             </ul>
-          </section>
-          <section class="level4">
-            <h4 id="type-definition-9">Type definition</h4>
-            <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">ReplaceImageEntry</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+          </li>
+        </ul>
+      </section>
+      <section class="level4">
+        <h4 id="type-definition-9">Type definition</h4>
+        <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">ReplaceImageEntry</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
   source<span class="token operator">:</span> <span class="token builtin">string</span> <span class="token operator">|</span> <span class="token known-class-name class-name">RegExp</span><span class="token punctuation">;</span>
   replacement<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="copyassetconfig">CopyAssetConfig</h3>
-          <section class="level4">
-            <h4 id="properties-9">Properties</h4>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="copyassetconfig">CopyAssetConfig</h3>
+      <section class="level4">
+        <h4 id="properties-9">Properties</h4>
+        <ul>
+          <li>
+            <p><code>CopyAssetConfig</code></p>
             <ul>
               <li>
-                <p><code>CopyAssetConfig</code></p>
-                <ul>
-                  <li>
-                    <p><code>includes</code>: (string)[]<br>Directories and files to include as asset files. Supports wildcard characters for glob patterns.</p>
-                  </li>
-                  <li>
-                    <p><code>excludes</code>: (string)[]<br>Directories and files to exclude from asset files. Supports wildcard characters for glob patterns.</p>
-                  </li>
-                  <li>
-                    <p><code>includeFileExtensions</code>: (string)[]<br>File extensions to include as asset files. (default: <code>[css, css.map, png, jpg, jpeg, svg, gif, webp, apng, ttf, otf, woff, woff2]</code>)</p>
-                  </li>
-                  <li>
-                    <p><code>excludeFileExtensions</code>: (string)[]<br>File extensions to exclude from asset files.</p>
-                  </li>
-                </ul>
+                <p><code>includes</code>: (string)[]<br>Directories and files to include as asset files. Supports wildcard characters for glob patterns.</p>
+              </li>
+              <li>
+                <p><code>excludes</code>: (string)[]<br>Directories and files to exclude from asset files. Supports wildcard characters for glob patterns.</p>
+              </li>
+              <li>
+                <p><code>includeFileExtensions</code>: (string)[]<br>File extensions to include as asset files. (default: <code>[css, css.map, png, jpg, jpeg, svg, gif, webp, apng, ttf, otf, woff, woff2]</code>)</p>
+              </li>
+              <li>
+                <p><code>excludeFileExtensions</code>: (string)[]<br>File extensions to exclude from asset files.</p>
               </li>
             </ul>
-          </section>
-          <section class="level4">
-            <h4 id="type-definition-10">Type definition</h4>
-            <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">CopyAssetConfig</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+          </li>
+        </ul>
+      </section>
+      <section class="level4">
+        <h4 id="type-definition-10">Type definition</h4>
+        <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">CopyAssetConfig</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
   includes<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
   excludes<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
   includeFileExtensions<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
   excludeFileExtensions<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="tocconfig">TocConfig</h3>
-          <section class="level4">
-            <h4 id="properties-10">Properties</h4>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="tocconfig">TocConfig</h3>
+      <section class="level4">
+        <h4 id="properties-10">Properties</h4>
+        <ul>
+          <li>
+            <p><code>TocConfig</code></p>
             <ul>
               <li>
-                <p><code>TocConfig</code></p>
-                <ul>
-                  <li>
-                    <p><code>title</code>: string<br>Title of the generated ToC document.</p>
-                  </li>
-                  <li>
-                    <p><code>htmlPath</code>: string<br>Location where the generated ToC document will be saved. (default: <code>index.html</code>)</p>
-                  </li>
-                  <li>
-                    <p><code>sectionDepth</code>: number<br>Depth of sections to include in the ToC document. (default: <code>0</code>)</p>
-                  </li>
-                  <li>
-                    <p><code>transformDocumentList</code>: (nodeList: <a href="#structureddocument">StructuredDocument</a>[]) =&gt; (propsList: { children: any }[]) =&gt; any<br>Function to transform the document list.</p>
-                  </li>
-                  <li>
-                    <p><code>transformSectionList</code>: (nodeList: <a href="#structureddocumentsection">StructuredDocumentSection</a>[]) =&gt; (propsList: { children: any }[]) =&gt; any<br>Function to transform the section list.</p>
-                  </li>
-                </ul>
+                <p><code>title</code>: string<br>Title of the generated ToC document.</p>
+              </li>
+              <li>
+                <p><code>htmlPath</code>: string<br>Location where the generated ToC document will be saved. (default: <code>index.html</code>)</p>
+              </li>
+              <li>
+                <p><code>sectionDepth</code>: number<br>Depth of sections to include in the ToC document. (default: <code>0</code>)</p>
+              </li>
+              <li>
+                <p><code>transformDocumentList</code>: (nodeList: <a href="#structureddocument">StructuredDocument</a>[]) =&gt; (propsList: { children: any }[]) =&gt; any<br>Function to transform the document list.</p>
+              </li>
+              <li>
+                <p><code>transformSectionList</code>: (nodeList: <a href="#structureddocumentsection">StructuredDocumentSection</a>[]) =&gt; (propsList: { children: any }[]) =&gt; any<br>Function to transform the section list.</p>
               </li>
             </ul>
-          </section>
-          <section class="level4">
-            <h4 id="type-definition-11">Type definition</h4>
-            <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">TocConfig</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+          </li>
+        </ul>
+      </section>
+      <section class="level4">
+        <h4 id="type-definition-11">Type definition</h4>
+        <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">TocConfig</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
   title<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
   htmlPath<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
   sectionDepth<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span>
@@ -887,75 +885,75 @@ const lang = "ja";
     propsList<span class="token operator">:</span> <span class="token punctuation">{</span> children<span class="token operator">:</span> <span class="token builtin">any</span> <span class="token punctuation">}</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
   <span class="token punctuation">)</span> <span class="token arrow operator">=&gt;</span> <span class="token builtin">any</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="structureddocument">StructuredDocument</h3>
-          <section class="level4">
-            <h4 id="properties-11">Properties</h4>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="structureddocument">StructuredDocument</h3>
+      <section class="level4">
+        <h4 id="properties-11">Properties</h4>
+        <ul>
+          <li>
+            <p><code>StructuredDocument</code></p>
             <ul>
               <li>
-                <p><code>StructuredDocument</code></p>
-                <ul>
-                  <li>
-                    <p><code>title</code>: string</p>
-                  </li>
-                  <li>
-                    <p><code>href</code>: string</p>
-                  </li>
-                  <li>
-                    <p><code>children</code>: (<a href="#structureddocument">StructuredDocument</a>)[]</p>
-                  </li>
-                  <li>
-                    <p><code>sections</code>: (<a href="#structureddocumentsection">StructuredDocumentSection</a>)[]</p>
-                  </li>
-                </ul>
+                <p><code>title</code>: string</p>
+              </li>
+              <li>
+                <p><code>href</code>: string</p>
+              </li>
+              <li>
+                <p><code>children</code>: (<a href="#structureddocument">StructuredDocument</a>)[]</p>
+              </li>
+              <li>
+                <p><code>sections</code>: (<a href="#structureddocumentsection">StructuredDocumentSection</a>)[]</p>
               </li>
             </ul>
-          </section>
-          <section class="level4">
-            <h4 id="type-definition-12">Type definition</h4>
-            <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">StructuredDocument</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+          </li>
+        </ul>
+      </section>
+      <section class="level4">
+        <h4 id="type-definition-12">Type definition</h4>
+        <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">StructuredDocument</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
   title<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
   href<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
   children<span class="token operator">:</span> <span class="token maybe-class-name">StructuredDocument</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
   sections<span class="token operator">?</span><span class="token operator">:</span> <span class="token maybe-class-name">StructuredDocumentSection</span><span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="structureddocumentsection">StructuredDocumentSection</h3>
-          <section class="level4">
-            <h4 id="properties-12">Properties</h4>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="structureddocumentsection">StructuredDocumentSection</h3>
+      <section class="level4">
+        <h4 id="properties-12">Properties</h4>
+        <ul>
+          <li>
+            <p><code>StructuredDocumentSection</code></p>
             <ul>
               <li>
-                <p><code>StructuredDocumentSection</code></p>
-                <ul>
-                  <li>
-                    <p><code>headingHtml</code>: string</p>
-                  </li>
-                  <li>
-                    <p><code>headingText</code>: string</p>
-                  </li>
-                  <li>
-                    <p><code>level</code>: number</p>
-                  </li>
-                  <li>
-                    <p><code>children</code>: (<a href="#structureddocumentsection">StructuredDocumentSection</a>)[]</p>
-                  </li>
-                  <li>
-                    <p><code>href</code>: string</p>
-                  </li>
-                  <li>
-                    <p><code>id</code>: string</p>
-                  </li>
-                </ul>
+                <p><code>headingHtml</code>: string</p>
+              </li>
+              <li>
+                <p><code>headingText</code>: string</p>
+              </li>
+              <li>
+                <p><code>level</code>: number</p>
+              </li>
+              <li>
+                <p><code>children</code>: (<a href="#structureddocumentsection">StructuredDocumentSection</a>)[]</p>
+              </li>
+              <li>
+                <p><code>href</code>: string</p>
+              </li>
+              <li>
+                <p><code>id</code>: string</p>
               </li>
             </ul>
-          </section>
-          <section class="level4">
-            <h4 id="type-definition-13">Type definition</h4>
-            <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">StructuredDocumentSection</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+          </li>
+        </ul>
+      </section>
+      <section class="level4">
+        <h4 id="type-definition-13">Type definition</h4>
+        <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">StructuredDocumentSection</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
   headingHtml<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
   headingText<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
   level<span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span>
@@ -963,89 +961,89 @@ const lang = "ja";
   href<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
   id<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="coverconfig">CoverConfig</h3>
-          <section class="level4">
-            <h4 id="properties-13">Properties</h4>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="coverconfig">CoverConfig</h3>
+      <section class="level4">
+        <h4 id="properties-13">Properties</h4>
+        <ul>
+          <li>
+            <p><code>CoverConfig</code></p>
             <ul>
               <li>
-                <p><code>CoverConfig</code></p>
-                <ul>
-                  <li>
-                    <p><code>src</code>: string<br>Path to the cover image for the cover page.</p>
-                  </li>
-                  <li>
-                    <p><code>name</code>: string<br>Alternative text for the cover image.</p>
-                  </li>
-                  <li>
-                    <p>
-                      <code>htmlPath</code>: string | boolean<br>Path where the generated cover document will be saved. (default: <code>cover.html</code>)
-                      If set to a falsy value, the cover document will not be generated.
-                    </p>
-                  </li>
-                </ul>
+                <p><code>src</code>: string<br>Path to the cover image for the cover page.</p>
+              </li>
+              <li>
+                <p><code>name</code>: string<br>Alternative text for the cover image.</p>
+              </li>
+              <li>
+                <p>
+                  <code>htmlPath</code>: string | boolean<br>Path where the generated cover document will be saved. (default: <code>cover.html</code>)
+                  If set to a falsy value, the cover document will not be generated.
+                </p>
               </li>
             </ul>
-          </section>
-          <section class="level4">
-            <h4 id="type-definition-14">Type definition</h4>
-            <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">CoverConfig</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+          </li>
+        </ul>
+      </section>
+      <section class="level4">
+        <h4 id="type-definition-14">Type definition</h4>
+        <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">CoverConfig</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
   src<span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
   name<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
   htmlPath<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span> <span class="token operator">|</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="vfmconfig">VfmConfig</h3>
-          <section class="level4">
-            <h4 id="properties-14">Properties</h4>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="vfmconfig">VfmConfig</h3>
+      <section class="level4">
+        <h4 id="properties-14">Properties</h4>
+        <ul>
+          <li>
+            <p><code>VfmConfig</code></p>
             <ul>
               <li>
-                <p><code>VfmConfig</code></p>
-                <ul>
-                  <li>
-                    <p><code>style</code>: (string)[] | string<br>Path(s) or URL(s) to custom stylesheets.</p>
-                  </li>
-                  <li>
-                    <p><code>partial</code>: boolean<br>Output markdown fragments instead of a full document.</p>
-                  </li>
-                  <li>
-                    <p><code>title</code>: string<br>Title of the document (ignored in partial mode).</p>
-                  </li>
-                  <li>
-                    <p><code>language</code>: string<br>Language of the document (ignored in partial mode).</p>
-                  </li>
-                  <li>
-                    <p><code>replace</code>: (<ruby>test: RegExp; match: (result: RegExpMatchArray, h: any) =&gt; Object <rt>string</rt></ruby>)[]<br>Handlers for replacing matched HTML strings.</p>
-                  </li>
-                  <li>
-                    <p><code>hardLineBreaks</code>: boolean<br>Insert <code>&lt;br&gt;</code> tags at hard line breaks without requiring spaces.</p>
-                  </li>
-                  <li>
-                    <p><code>disableFormatHtml</code>: boolean<br>Disable automatic HTML formatting.</p>
-                  </li>
-                  <li>
-                    <p><code>math</code>: boolean<br>Enable support for math syntax.</p>
-                  </li>
-                  <li>
-                    <p><code>imgFigcaptionOrder</code>: "img-figcaption" | "figcaption-img"<br>Order of img and figcaption elements in figure.</p>
-                  </li>
-                  <li>
-                    <p><code>assignIdToFigcaption</code>: boolean<br>Assign ID to figcaption instead of img/code.</p>
-                  </li>
-                  <li>
-                    <p><code>footnote</code>: "pandoc" | "dpub" | "gcpm" | <ruby>mode: "pandoc" <rt>"dpub" | "gcpm"</rt></ruby><br>Footnote output mode. Default is <code>'pandoc'</code> (endnote section).</p>
-                  </li>
-                </ul>
+                <p><code>style</code>: (string)[] | string<br>Path(s) or URL(s) to custom stylesheets.</p>
+              </li>
+              <li>
+                <p><code>partial</code>: boolean<br>Output markdown fragments instead of a full document.</p>
+              </li>
+              <li>
+                <p><code>title</code>: string<br>Title of the document (ignored in partial mode).</p>
+              </li>
+              <li>
+                <p><code>language</code>: string<br>Language of the document (ignored in partial mode).</p>
+              </li>
+              <li>
+                <p><code>replace</code>: (<ruby>test: RegExp; match: (result: RegExpMatchArray, h: any) =&gt; Object <rt>string</rt></ruby>)[]<br>Handlers for replacing matched HTML strings.</p>
+              </li>
+              <li>
+                <p><code>hardLineBreaks</code>: boolean<br>Insert <code>&lt;br&gt;</code> tags at hard line breaks without requiring spaces.</p>
+              </li>
+              <li>
+                <p><code>disableFormatHtml</code>: boolean<br>Disable automatic HTML formatting.</p>
+              </li>
+              <li>
+                <p><code>math</code>: boolean<br>Enable support for math syntax.</p>
+              </li>
+              <li>
+                <p><code>imgFigcaptionOrder</code>: "img-figcaption" | "figcaption-img"<br>Order of img and figcaption elements in figure.</p>
+              </li>
+              <li>
+                <p><code>assignIdToFigcaption</code>: boolean<br>Assign ID to figcaption instead of img/code.</p>
+              </li>
+              <li>
+                <p><code>footnote</code>: "pandoc" | "dpub" | "gcpm" | <ruby>mode: "pandoc" <rt>"dpub" | "gcpm"</rt></ruby><br>Footnote output mode. Default is <code>'pandoc'</code> (endnote section).</p>
               </li>
             </ul>
-          </section>
-          <section class="level4">
-            <h4 id="type-definition-15">Type definition</h4>
-            <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">VfmConfig</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+          </li>
+        </ul>
+      </section>
+      <section class="level4">
+        <h4 id="type-definition-15">Type definition</h4>
+        <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">VfmConfig</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
   style<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">|</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
   partial<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
   title<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
@@ -1075,43 +1073,43 @@ const lang = "ja";
           <span class="token operator">|</span> <span class="token string">"gcpm"</span><span class="token punctuation">;</span>
       <span class="token punctuation">}</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="serverconfig">ServerConfig</h3>
-          <section class="level4">
-            <h4 id="properties-15">Properties</h4>
+      </section>
+    </section>
+    <section class="level3">
+      <h3 id="serverconfig">ServerConfig</h3>
+      <section class="level4">
+        <h4 id="properties-15">Properties</h4>
+        <ul>
+          <li>
+            <p><code>ServerConfig</code></p>
             <ul>
               <li>
-                <p><code>ServerConfig</code></p>
-                <ul>
-                  <li>
-                    <p>
-                      <code>host</code>: boolean | string<br>IP address the server should listen on.
-                      Set to <code>true</code> to listen on all addresses.
-                      (default: <code>true</code> if a PDF build with Docker render mode is required, otherwise <code>false</code>)
-                    </p>
-                  </li>
-                  <li>
-                    <p><code>port</code>: number<br>Port the server should listen on. (default: <code>13000</code>)</p>
-                  </li>
-                  <li>
-                    <p><code>proxy</code>: <ruby>[key: (string)]: import("vite").ProxyOptions <rt>string</rt></ruby><br>Custom proxy rules for the Vivliostyle preview server.</p>
-                  </li>
-                  <li>
-                    <p>
-                      <code>allowedHosts</code>: (string)[] | boolean<br>The hostnames that are allowed to respond to.
-                      Set to <code>true</code> to allow all hostnames.
-                      See <a href="https://vite.dev/config/server-options.html#server-allowedhosts"><code>server.allowedHosts</code> option of Vite</a> for more details.
-                    </p>
-                  </li>
-                </ul>
+                <p>
+                  <code>host</code>: boolean | string<br>IP address the server should listen on.
+                  Set to <code>true</code> to listen on all addresses.
+                  (default: <code>true</code> if a PDF build with Docker render mode is required, otherwise <code>false</code>)
+                </p>
+              </li>
+              <li>
+                <p><code>port</code>: number<br>Port the server should listen on. (default: <code>13000</code>)</p>
+              </li>
+              <li>
+                <p><code>proxy</code>: <ruby>[key: (string)]: import("vite").ProxyOptions <rt>string</rt></ruby><br>Custom proxy rules for the Vivliostyle preview server.</p>
+              </li>
+              <li>
+                <p>
+                  <code>allowedHosts</code>: (string)[] | boolean<br>The hostnames that are allowed to respond to.
+                  Set to <code>true</code> to allow all hostnames.
+                  See <a href="https://vite.dev/config/server-options.html#server-allowedhosts"><code>server.allowedHosts</code> option of Vite</a> for more details.
+                </p>
               </li>
             </ul>
-          </section>
-          <section class="level4">
-            <h4 id="type-definition-16">Type definition</h4>
-            <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">ServerConfig</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+          </li>
+        </ul>
+      </section>
+      <section class="level4">
+        <h4 id="type-definition-16">Type definition</h4>
+        <pre class="language-ts"><code class="language-ts"><span class="token keyword">type</span> <span class="token class-name"><span class="token maybe-class-name">ServerConfig</span></span> <span class="token operator">=</span> <span class="token punctuation">{</span>
   host<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">boolean</span> <span class="token operator">|</span> <span class="token builtin">string</span><span class="token punctuation">;</span>
   port<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">number</span><span class="token punctuation">;</span>
   proxy<span class="token operator">?</span><span class="token operator">:</span> <span class="token punctuation">{</span>
@@ -1121,10 +1119,8 @@ const lang = "ja";
   <span class="token punctuation">}</span><span class="token punctuation">;</span>
   allowedHosts<span class="token operator">?</span><span class="token operator">:</span> <span class="token builtin">string</span><span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">|</span> <span class="token builtin">boolean</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre><!-- END config API -->
-          </section>
-        </section>
       </section>
     </section>
-  
-
+  </section>
+</section>
 </article> <nav class="page-navigation" data-astro-cid-z7g34ql7=""> <div class="nav-links" data-astro-cid-z7g34ql7=""> <a href="/ja/cli/frontend-framework-support/" class="nav-link nav-prev" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">← 前へ</span> <span class="nav-title" data-astro-cid-z7g34ql7="">フロントエンドフレームワークのサポート</span> </a> <a href="/ja/cli/api-javascript/" class="nav-link nav-next" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">次へ →</span> <span class="nav-title" data-astro-cid-z7g34ql7="">JavaScript API</span> </a> </div> </nav>   </article> </main> </div> <footer class="footer" data-astro-cid-mw7aashj=""> <p data-astro-cid-mw7aashj="">© 2026 Vivliostyle Foundation.</p> </footer> </div>  <script type="module">window.__bodyOverflowLockCount=0;window.lockBodyOverflow=function(){window.__bodyOverflowLockCount++,window.__bodyOverflowLockCount===1&&(document.body.style.overflow="hidden")};window.unlockBodyOverflow=function(){window.__bodyOverflowLockCount=Math.max(0,window.__bodyOverflowLockCount-1),window.__bodyOverflowLockCount===0&&(document.body.style.overflow="")};</script>  <script type="module">document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll(".accordion-toggle").forEach(t=>{t.addEventListener("click",d=>{d.preventDefault();const a=t.getAttribute("data-target"),e=document.getElementById(a),n=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",!n),e&&(e.style.display=n?"none":"block")})})});</script></body></html>

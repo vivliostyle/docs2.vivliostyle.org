@@ -4,11 +4,34 @@
  * Web専用要素を自動的に除外し、印刷に適したレイアウトを提供
  */
 
-/* 日本語フォントを明示的にインポートして埋め込めるようにする。
+/* 日本語フォントを明示的に参照して埋め込めるようにする。
  * これがないと、英語ドキュメント中の日本語文字（書籍タイトル等）が
  * macOS 製 Hiragino Sans へフォールバックされ、Chrome がそれを
- * Type 3 フォントとして埋め込み、PDF が肥大化する。 */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap');
+ * Type 3 フォントとして埋め込み、PDF が肥大化する。
+ *
+ * 外部ネットワーク（Google Fonts 等）への @import は CI / オフライン
+ * 環境でビルドが不安定になるため、まずシステム/ユーザーがインストール
+ * している Noto Sans JP を local() で参照する。フォントが手元にない
+ * 環境では Hiragino Sans 等のシステム日本語フォントへフォールバック
+ * する（Type 3 埋め込みになる可能性はあるが、ビルドは必ず通る）。 */
+@font-face {
+  font-family: 'Noto Sans JP';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Noto Sans JP'), local('NotoSansJP-Regular');
+}
+@font-face {
+  font-family: 'Noto Sans JP';
+  font-style: normal;
+  font-weight: 500;
+  src: local('Noto Sans JP Medium'), local('NotoSansJP-Medium');
+}
+@font-face {
+  font-family: 'Noto Sans JP';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Noto Sans JP Bold'), local('NotoSansJP-Bold');
+}
 
 /* ページ設定 */
 @page {

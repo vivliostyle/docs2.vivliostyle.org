@@ -178,12 +178,17 @@ const lang = "en";
     const open = () => {
       lastFocus = document.activeElement;
 
-      // 本番URL固定でマニフェストを参照する。
-      // localhost / preview からは Vivliostyle Viewer が manifest を取りに行けないので、
-      // その場合は警告を表示する。
-      const isProductionHost = window.location.hostname === 'docs2.vivliostyle.org' ||
-                               window.location.hostname === 'docs.vivliostyle.org';
-      const manifestUrl = `https://docs2.vivliostyle.org/publications/${product}-${lang}/publication.json`;
+      // production host (docs.vivliostyle.org / docs2.vivliostyle.org) では
+      // 自身のホスト上のマニフェストを参照する。それ以外（localhost や
+      // プレビュー環境）からは Vivliostyle Viewer が外部からマニフェストを
+      // 取得できないため、フォールバックとして既定の本番ホストを指定し、
+      // 警告を表示する。
+      const productionHosts = ['docs.vivliostyle.org', 'docs2.vivliostyle.org'];
+      const isProductionHost = productionHosts.includes(window.location.hostname);
+      const manifestHost = isProductionHost
+        ? window.location.hostname
+        : 'docs2.vivliostyle.org';
+      const manifestUrl = `https://${manifestHost}/publications/${product}-${lang}/publication.json`;
       const viewerUrl = `https://vivliostyle.org/viewer/?src=${encodeURIComponent(manifestUrl)}&bookMode=true&lng=${lang}`;
 
       iframe.src = viewerUrl;
@@ -218,240 +223,233 @@ const lang = "en";
     });
   }
 })();</script> </section>  </nav> </aside> <main class="content" data-astro-cid-mw7aashj=""> <nav aria-label="Breadcrumb" class="breadcrumb" data-astro-cid-qaanghzh=""> <ol data-astro-cid-qaanghzh=""> <li data-astro-cid-qaanghzh=""> <a href="/en/" data-astro-cid-qaanghzh="">Home</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <a href="/en/viewer/" data-astro-cid-qaanghzh="">Viewer</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <span aria-current="page" data-astro-cid-qaanghzh="">Vivliostyle Viewer</span>  </li> </ol> </nav> <!-- JSON-LD構造化データ --> <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://docs.vivliostyle.org/en/"},{"@type":"ListItem","position":2,"name":"Viewer","item":"https://docs.vivliostyle.org/en/viewer/"},{"@type":"ListItem","position":3,"name":"Vivliostyle Viewer","item":"https://docs.vivliostyle.org/en/viewer/vivliostyle-viewer/"}]}</script>  <article class="prose" data-astro-cid-mw7aashj="">      <article class="docs-content" data-astro-cid-epeiquka=""> <!-- Display extracted TOC if exists -->  <div data-astro-cid-epeiquka="">
-
-  
-    <meta charset="utf-8">
-    <title>Vivliostyle Viewer</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  
-    <section class="level1">
-      <h1 id="vivliostyle-viewer">Vivliostyle Viewer</h1>
-      <p>Vivliostyle Viewer is a web application displaying and typesetting HTML+CSS documents.</p>
-      <section class="level2">
-        <h2 id="how-to-use">How to use</h2>
-        <section class="level3">
-          <h3 id="to-use-vivliostyle-viewer-in-a-local-environment">To use Vivliostyle Viewer in a local environment</h3>
-          <p>To use Vivliostyle Viewer in a local environment, it is convenient to use the preview command of the Vivliostyle CLI. For information on how to install and use the Vivliostyle CLI, see <a href="./vivliostyle-cli/">Vivliostyle CLI User Guide</a>, and <a href="./vivliostyle-cli#preview-the-typesetting-results">Preview the typesetting results</a>.</p>
-          <p>
-            If you want to use Vivliostyle Viewer in a local environment by other means, start a web
-            server by following the instructions described in the
-            <a href="https://github.com/vivliostyle/vivliostyle.js/blob/master/packages/viewer/README.md">README</a>
-            attached to the distribution package.
-          </p>
-        </section>
-        <section class="level3">
-          <h3 id="public-online-vivliostyle-viewer">Public online Vivliostyle Viewer</h3>
-          <p>You can also use the public online Vivliostyle Viewer (<a href="https://vivliostyle.org/viewer/">vivliostyle.org/viewer/</a>) that has always been updated to the latest release version. For early bird users, there is also canary version available <a href="https://vivliostyle.vercel.app">vivliostyle.vercel.app</a>.</p>
-        </section>
-        <section class="level3">
-          <h3 id="placing-vivliostyle-viewer-on-your-site">Placing Vivliostyle Viewer on your site</h3>
-          <p>You can place the unzipped copy of the Vivliostyle Viewer distribution package (download from <a href="https://vivliostyle.org/download/">https://vivliostyle.org/download/</a>) in your site, and then you can publish your publications to be viewed with Vivliostyle Viewer on your site.</p>
-          <p>To use it in a Node.js application, use the npm package <a href="https://www.npmjs.com/package/@vivliostyle/viewer">@vivliostyle/viewer</a>.</p>
-        </section>
-        <section class="level3">
-          <h3 id="the-start-page-of-vivliostyle-viewer">The start page of Vivliostyle Viewer</h3>
-          <p>When you open <a href="https://vivliostyle.org/viewer/">Vivliostyle Viewer</a> without specifying parameters, an “Input a document URL” box, <strong>Book Mode</strong> and <strong>Render All Pages</strong> check boxes, and usage help is displayed.</p>
-          <p>Access to <a href="https://vivliostyle.org/viewer/">https://vivliostyle.org/viewer/</a>.</p>
-        </section>
-      </section>
-      <section class="level2">
-        <h2 id="supported-document-types">Supported document types</h2>
+<section class="level1">
+  <h1 id="vivliostyle-viewer">Vivliostyle Viewer</h1>
+  <p>Vivliostyle Viewer is a web application displaying and typesetting HTML+CSS documents.</p>
+  <section class="level2">
+    <h2 id="how-to-use">How to use</h2>
+    <section class="level3">
+      <h3 id="to-use-vivliostyle-viewer-in-a-local-environment">To use Vivliostyle Viewer in a local environment</h3>
+      <p>To use Vivliostyle Viewer in a local environment, it is convenient to use the preview command of the Vivliostyle CLI. For information on how to install and use the Vivliostyle CLI, see <a href="./vivliostyle-cli/">Vivliostyle CLI User Guide</a>, and <a href="./vivliostyle-cli#preview-the-typesetting-results">Preview the typesetting results</a>.</p>
+      <p>
+        If you want to use Vivliostyle Viewer in a local environment by other means, start a web
+        server by following the instructions described in the
+        <a href="https://github.com/vivliostyle/vivliostyle.js/blob/master/packages/viewer/README.md">README</a>
+        attached to the distribution package.
+      </p>
+    </section>
+    <section class="level3">
+      <h3 id="public-online-vivliostyle-viewer">Public online Vivliostyle Viewer</h3>
+      <p>You can also use the public online Vivliostyle Viewer (<a href="https://vivliostyle.org/viewer/">vivliostyle.org/viewer/</a>) that has always been updated to the latest release version. For early bird users, there is also canary version available <a href="https://vivliostyle.vercel.app">vivliostyle.vercel.app</a>.</p>
+    </section>
+    <section class="level3">
+      <h3 id="placing-vivliostyle-viewer-on-your-site">Placing Vivliostyle Viewer on your site</h3>
+      <p>You can place the unzipped copy of the Vivliostyle Viewer distribution package (download from <a href="https://vivliostyle.org/download/">https://vivliostyle.org/download/</a>) in your site, and then you can publish your publications to be viewed with Vivliostyle Viewer on your site.</p>
+      <p>To use it in a Node.js application, use the npm package <a href="https://www.npmjs.com/package/@vivliostyle/viewer">@vivliostyle/viewer</a>.</p>
+    </section>
+    <section class="level3">
+      <h3 id="the-start-page-of-vivliostyle-viewer">The start page of Vivliostyle Viewer</h3>
+      <p>When you open <a href="https://vivliostyle.org/viewer/">Vivliostyle Viewer</a> without specifying parameters, an “Input a document URL” box, <strong>Book Mode</strong> and <strong>Render All Pages</strong> check boxes, and usage help is displayed.</p>
+      <p>Access to <a href="https://vivliostyle.org/viewer/">https://vivliostyle.org/viewer/</a>.</p>
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="supported-document-types">Supported document types</h2>
+    <ul>
+      <li>HTML documents, with CSS for paged media</li>
+      <li>Book-like publications, with Table of Contents (<strong>Book Mode</strong>: On)
         <ul>
-          <li>HTML documents, with CSS for paged media</li>
-          <li>Book-like publications, with Table of Contents (<strong>Book Mode</strong>: On)
-            <ul>
-              <li>Web publications (a collection of HTML documents): specify URL of the first HTML or the manifest file.</li>
-              <li>Unzipped EPUB: specify URL of OPF file or top directory of the unzipped EPUB files.</li>
-            </ul>
-          </li>
+          <li>Web publications (a collection of HTML documents): specify URL of the first HTML or the manifest file.</li>
+          <li>Unzipped EPUB: specify URL of OPF file or top directory of the unzipped EPUB files.</li>
         </ul>
-        <section class="level3">
-          <h3 id="notes">Notes</h3>
-          <ul>
-            <li>
-              GitHub and Gist URLs can be directly specified. Vivliostyle loads raw
-              github/gist content when such URL is specified.
-            </li>
-            <li>⚠️Mixed Content (“http:” URL is specified to “https:” Vivliostyle Viewer) is usually blocked by browser.</li>
-            <li>⚠️Cross-Origin (request to different domain) is usually blocked by browser unless the server is configured to allow Cross-Origin Resource Sharing (CORS).</li>
-          </ul>
-        </section>
-      </section>
-      <section class="level2">
-        <h2 id="url-parameter-options">URL parameter options</h2>
+      </li>
+    </ul>
+    <section class="level3">
+      <h3 id="notes">Notes</h3>
+      <ul>
+        <li>
+          GitHub and Gist URLs can be directly specified. Vivliostyle loads raw
+          github/gist content when such URL is specified.
+        </li>
+        <li>⚠️Mixed Content (“http:” URL is specified to “https:” Vivliostyle Viewer) is usually blocked by browser.</li>
+        <li>⚠️Cross-Origin (request to different domain) is usually blocked by browser unless the server is configured to allow Cross-Origin Resource Sharing (CORS).</li>
+      </ul>
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="url-parameter-options">URL parameter options</h2>
+    <ul>
+      <li>#<strong>src</strong>=&lt;document URL&gt;</li>
+      <li>&amp;<strong>bookMode</strong>=[<strong>true</strong>&nbsp;|&nbsp;<strong>false</strong>] (<strong>Book Mode</strong>)
         <ul>
-          <li>#<strong>src</strong>=&lt;document URL&gt;</li>
-          <li>&amp;<strong>bookMode</strong>=[<strong>true</strong>&nbsp;|&nbsp;<strong>false</strong>] (<strong>Book Mode</strong>)
+          <li><strong>true</strong>&nbsp;(default): for Book-like publications, with Table of Contents.
             <ul>
-              <li><strong>true</strong>&nbsp;(default): for Book-like publications, with Table of Contents.
-                <ul>
-                  <li>When an HTML document URL is specified, a series of HTML documents linked from the publication manifest or Table of Contents (e.g., marked up with&nbsp;<code>&lt;nav role="doc-toc"&gt;</code>) are automatically loaded.</li>
-                </ul>
-              </li>
-              <li><strong>false</strong>: for single HTML documents</li>
+              <li>When an HTML document URL is specified, a series of HTML documents linked from the publication manifest or Table of Contents (e.g., marked up with&nbsp;<code>&lt;nav role="doc-toc"&gt;</code>) are automatically loaded.</li>
             </ul>
           </li>
-          <li>&amp;<strong>renderAllPages</strong>=[<strong>true</strong>&nbsp;|&nbsp;<strong>false</strong>] (<strong>Render All Pages</strong>)
-            <ul>
-              <li><strong>true</strong>&nbsp;(default): for Print (all pages printable, page count works as expected)</li>
-              <li><strong>false</strong>: for Read (quick loading with rough page count)</li>
-            </ul>
-          </li>
-          <li>&amp;<strong>spread</strong>=[<strong>true</strong>&nbsp;|&nbsp;<strong>false</strong>&nbsp;|&nbsp;<strong>auto</strong>] (<strong>Page Spread View</strong>)
-            <ul>
-              <li><strong>true</strong>: Spread view</li>
-              <li><strong>false</strong>: Single page view</li>
-              <li><strong>auto</strong>&nbsp;(default): Auto spread view</li>
-            </ul>
-          </li>
-          <li>&amp;<strong>style</strong>=&lt;additional (custom) stylesheet URL&gt;</li>
-          <li>&amp;<strong>userStyle</strong>=&lt;user stylesheet URL&gt;</li>
+          <li><strong>false</strong>: for single HTML documents</li>
         </ul>
-        <p>Options can also be set in the 
-          <img src="/viewer/assets/vivliostyle-icon.png" width="16" height="16" alt="[Vivliostyle]"><strong>Settings</strong> panel.
-        </p>
-        <p><strong>NOTE:</strong> The default for Book Mode was previously off, but has been changed to on in v2.18.0. The parameter <code>&amp;bookMode=true</code> can be omitted since it is enabled by default. To view only the first HTML file without concatenating the HTML documents linked to the table of contents in the first HTML file, specify <code>&amp;bookMode=false</code>.</p>
-      </section>
-      <section class="level2">
-        <h2 id="how-to-specify-html-document-to-display">How to specify HTML document to display</h2>
-        <p>
-          To display an HTML file in the Vivliostyle Viewer, place the file
-          (and CSS or image files read from the file) somewhere which the
-          web server can read (if you start the web server following the
-          above instructions in case of local environment, it is the folder
-          generated by unzipping the distribution package), then open the
-          following URL in your browser:
-        </p>
-        <pre class="language-text"><code class="language-text">⟨Vivliostyle Viewer URL⟩#src=⟨URL of the file (relative to the Viewer)⟩</code></pre>
-        <p>
-          Note: If you want to display a document from a domain which is
-          different from the domain of the Vivliostyle Viewer itself, it is
-          possible that it cannot be displayed, depending on the web server
-          that serves the document file. You need to configure CORS
-          (Cross-Origin Resource Sharing) on the server.
-        </p>
-        <p>
-          Note: Since Vivliostyle Viewer uses an online JavaScript library
-          (<a href="https://www.mathjax.org">MathJax</a>) to display
-          mathematics (supports MathML and TeX formats), the internet
-          connection is required when the document contains mathematics.
-        </p>
-        <p>Example: If you want to display a HTML file <a href="https://vivliostyle.github.io/vivliostyle_doc/samples/wood/index.html">https://vivliostyle.github.io/vivliostyle_doc/samples/wood/index.html</a>:</p>
-        <p><a href="https://vivliostyle.org/viewer/#src=https://vivliostyle.github.io/vivliostyle_doc/samples/wood/index.html">https://vivliostyle.org/viewer/#src=https://vivliostyle.github.io/vivliostyle_doc/samples/wood/index.html</a></p>
-      </section>
-      <section class="level2">
-        <h2 id="epub">EPUB</h2>
-        <p>You can display unzipped EPUB files with the Vivliostyle Viewer.</p>
-        <p>In this case, use the following parameter:</p>
-        <pre class="language-text"><code class="language-text">#src=⟨URL of the unzipped EPUB folder⟩&amp;bookMode=true</code></pre>
-        <p>An example of displaying unzipped EPUB on GitHub:</p>
+      </li>
+      <li>&amp;<strong>renderAllPages</strong>=[<strong>true</strong>&nbsp;|&nbsp;<strong>false</strong>] (<strong>Render All Pages</strong>)
         <ul>
-          <li>
-            <p><a href="https://github.com/IDPF/epub3-samples/tree/master/30/accessible_epub_3/">Accessible EPUB 3</a> on <a href="https://github.com/IDPF/epub3-samples/">IDPF/epub3-samples</a></p>
-            <p><a href="https://vivliostyle.org/viewer/#src=https://github.com/IDPF/epub3-samples/tree/master/30/accessible_epub_3/&amp;bookMode=true">https://vivliostyle.org/viewer/#src=https://github.com/IDPF/epub3-samples/tree/master/30/accessible_epub_3/&amp;bookMode=true</a></p>
-          </li>
+          <li><strong>true</strong>&nbsp;(default): for Print (all pages printable, page count works as expected)</li>
+          <li><strong>false</strong>: for Read (quick loading with rough page count)</li>
         </ul>
-      </section>
-      <section class="level2">
-        <h2 id="web-publications-multi-html-documents">Web publications (multi-HTML documents)</h2>
-        <p>
-          You can display Web publications (a collection of HTML documents)
-          with the Vivliostyle Viewer. In this case, use the following
-          parameter:
-        </p>
-        <pre class="language-text"><code class="language-text">#src=⟨URL of the first HTML document or manifest file⟩&amp;bookMode=true</code></pre>
-        <p>For the format of Web publication manifest, W3C draft <a href="https://www.w3.org/TR/pub-manifest/">Publication Manifest</a> and <a href="https://github.com/readium/webpub-manifest/">Readium Web Publication Manifest</a> are supported.</p>
-        <section class="level3">
-          <h3 id="table-of-contents-in-html">Table of Contents in HTML</h3>
-          <p>
-            When Web publication manifest does not exist, and there are links
-            to other HTML documents in the table of contents in the specified
-            HTML document, those documents are loaded automatically.
-            Vivliostyle treats HTML elements that match the following CSS
-            selector as a table of contents element:
-            <code>[role=doc-toc], [role=directory], nav li, .toc, #toc</code>
-          </p>
-          <p>
-            An example of displaying publications composed of multiple HTML
-            documents published on the Web:
-          </p>
-          <ul>
-            <li>
-              <p><a href="https://www.w3.org/TR/CSS2/">Cascading Style Sheets Level 2 Revision 1 (CSS 2.1) Specification</a></p>
-              <p><a href="https://vivliostyle.org/viewer/#src=https://www.w3.org/TR/CSS2/&amp;bookMode=true">https://vivliostyle.org/viewer/#src=https://www.w3.org/TR/CSS2/&amp;bookMode=true</a></p>
-            </li>
-          </ul>
-        </section>
-      </section>
-      <section class="level2">
-        <h2 id="toc-panel">TOC panel</h2>
-        <p>Specifying <code>&amp;bookMode=true</code> (or <strong>Book Mode</strong> check box On) enables the TOC panel (open by clicking the 
-          <img src="/viewer/assets/toc-icon.png" width="16" height="16" alt="[TOC]"> icon in the upper left corner of the viewer) if there is a TOC element in the HTML, even for a single HTML file, as well as <a href="#web-publications-multi-html-documents">Web publications</a>.
-        </p>
-      </section>
-      <section class="level2">
-        <h2 id="page-spread-view-mode">Page spread view mode</h2>
-        <p>
-          Vivliostyle Viewer displays pages automatically with spread view
-          mode when the width of the view area is wide (1.45 times the
-          height or more). To change the spread view mode, append one of the
-          following to the URL:
-        </p>
-        <pre class="language-text"><code class="language-text">&amp;spread=true (always spread view)</code></pre>
-        <pre class="language-text"><code class="language-text">&amp;spread=false (always single page view)</code></pre>
-        <pre class="language-text"><code class="language-text">&amp;spread=auto (auto spread view = default)</code></pre>
-        <p>
-          You can also change the page view mode in the Vivliostyle Viewer's
-          setting panel (open by clicking the 
-          <img src="/viewer/assets/vivliostyle-icon.png" width="16" height="16" alt="[Settings]"> icon in the upper right corner of the viewer).
-        </p>
-      </section>
-      <section class="level2">
-        <h2 id="additional-stylesheets-custom-stylesheets">Additional stylesheets (custom stylesheets)</h2>
-        <p>
-          Additional stylesheets (CSS files) can be specified in addition to the stylesheets specified in the HTML file.
-          This allows you to specify a custom stylesheet to customize the style of the document.
-          To use an additional stylesheet (custom stylesheet), add the following to the URL:
-        </p>
-        <pre class="language-text"><code class="language-text">&amp;style=⟨stylesheet URL (relative to the Vivliostyle Viewer)⟩</code></pre>
-        <p>
-          The stylesheets specified in this way are treated as author stylesheets,
-          as if they are specified in the HTML file at very last,
-          and can override styles of other stylesheets according to the CSS cascading rules.
-        </p>
-        <section class="level3">
-          <h3 id="user-stylesheets">User stylesheets</h3>
-          <p>
-            On the other hand, you can also specify user stylesheets (cannot
-            override styles of author stylesheets unless specifying
-            <code>!important</code>) as follows:
-          </p>
-          <pre class="language-text"><code class="language-text">&amp;userStyle=⟨user stylesheet URL (relative to the Vivliostyle Viewer)⟩</code></pre>
-          <p>
-            Using multiple <code>&amp;amp;style=</code> and/or
-            <code>&amp;amp;userStyle=</code> you can specify as many stylesheets as needed.
-          </p>
-          <p>You can also use data URL. For example:</p>
-          <pre class="language-text"><code class="language-text">&amp;style=data:,html{writing-mode:vertical-rl}</code></pre>
-        </section>
-        <section class="level3">
-          <h3 id="custom-style-settings-in-settings-panel">Custom Style Settings in Settings panel</h3>
-          <p>
-            Custom style can also be set in the <strong>Custom Style Settings</strong> in the settings panel.
-            You can check the CSS in the <strong>Edit CSS</strong> box (you can also add CSS code).
-          </p>
-          <p>
-            An example in which custom style settings are added from the settings panel to
-            the document on the Web:
-          </p>
-          <ul>
-            <li>
-              <p><a href="https://www.w3.org/TR/CSS2/">Cascading Style Sheets Level 2 Revision 1 (CSS 2.1) Specification</a></p>
-              <p><a href="https://vivliostyle.org/viewer/#src=https://www.w3.org/TR/CSS2/&amp;bookMode=true&amp;style=data:,/*%3Cviewer%3E*/%0A@page%20%7B%20size:%20A4;%20%7D%0A/*%3C/viewer%3E*/%0A%0A@page%20:first%20%7B%0A%20%20@top-left%20%7B%0A%20%20%20%20content:%20none;%0A%20%20%7D%0A%20%20@top-right%20%7B%0A%20%20%20%20content:%20none;%0A%20%20%7D%0A%20%20@bottom-center%20%7B%0A%20%20%20%20content:%20none;%0A%20%20%7D%0A%7D%0A%0A@page%20:left%20%7B%0A%20%20font-size:%200.8rem;%0A%20%20@top-left%20%7B%0A%20%20%20%20content:%20env(pub-title);%0A%20%20%7D%0A%20%20@bottom-center%20%7B%0A%20%20%20%20content:%20counter(page);%0A%20%20%7D%0A%7D%0A%0A@page%20:right%20%7B%0A%20%20font-size:%200.8rem;%0A%20%20@top-right%20%7B%0A%20%20%20%20content:%20env(doc-title);%0A%20%20%7D%0A%20%20@bottom-center%20%7B%0A%20%20%20%20content:%20counter(page);%0A%20%20%7D%0A%7D">…#src=https://www.w3.org/TR/CSS2/&amp;bookMode=true&amp;style=data:,…</a></p>
-            </li>
-          </ul>
-          <pre class="language-css"><code class="language-css"><span class="token comment">/*&lt;viewer&gt;*/</span>
+      </li>
+      <li>&amp;<strong>spread</strong>=[<strong>true</strong>&nbsp;|&nbsp;<strong>false</strong>&nbsp;|&nbsp;<strong>auto</strong>] (<strong>Page Spread View</strong>)
+        <ul>
+          <li><strong>true</strong>: Spread view</li>
+          <li><strong>false</strong>: Single page view</li>
+          <li><strong>auto</strong>&nbsp;(default): Auto spread view</li>
+        </ul>
+      </li>
+      <li>&amp;<strong>style</strong>=&lt;additional (custom) stylesheet URL&gt;</li>
+      <li>&amp;<strong>userStyle</strong>=&lt;user stylesheet URL&gt;</li>
+    </ul>
+    <p>Options can also be set in the 
+      <img src="/viewer/assets/vivliostyle-icon.png" width="16" height="16" alt="[Vivliostyle]"><strong>Settings</strong> panel.
+    </p>
+    <p><strong>NOTE:</strong> The default for Book Mode was previously off, but has been changed to on in v2.18.0. The parameter <code>&amp;bookMode=true</code> can be omitted since it is enabled by default. To view only the first HTML file without concatenating the HTML documents linked to the table of contents in the first HTML file, specify <code>&amp;bookMode=false</code>.</p>
+  </section>
+  <section class="level2">
+    <h2 id="how-to-specify-html-document-to-display">How to specify HTML document to display</h2>
+    <p>
+      To display an HTML file in the Vivliostyle Viewer, place the file
+      (and CSS or image files read from the file) somewhere which the
+      web server can read (if you start the web server following the
+      above instructions in case of local environment, it is the folder
+      generated by unzipping the distribution package), then open the
+      following URL in your browser:
+    </p>
+    <pre class="language-text"><code class="language-text">⟨Vivliostyle Viewer URL⟩#src=⟨URL of the file (relative to the Viewer)⟩</code></pre>
+    <p>
+      Note: If you want to display a document from a domain which is
+      different from the domain of the Vivliostyle Viewer itself, it is
+      possible that it cannot be displayed, depending on the web server
+      that serves the document file. You need to configure CORS
+      (Cross-Origin Resource Sharing) on the server.
+    </p>
+    <p>
+      Note: Since Vivliostyle Viewer uses an online JavaScript library
+      (<a href="https://www.mathjax.org">MathJax</a>) to display
+      mathematics (supports MathML and TeX formats), the internet
+      connection is required when the document contains mathematics.
+    </p>
+    <p>Example: If you want to display a HTML file <a href="https://vivliostyle.github.io/vivliostyle_doc/samples/wood/index.html">https://vivliostyle.github.io/vivliostyle_doc/samples/wood/index.html</a>:</p>
+    <p><a href="https://vivliostyle.org/viewer/#src=https://vivliostyle.github.io/vivliostyle_doc/samples/wood/index.html">https://vivliostyle.org/viewer/#src=https://vivliostyle.github.io/vivliostyle_doc/samples/wood/index.html</a></p>
+  </section>
+  <section class="level2">
+    <h2 id="epub">EPUB</h2>
+    <p>You can display unzipped EPUB files with the Vivliostyle Viewer.</p>
+    <p>In this case, use the following parameter:</p>
+    <pre class="language-text"><code class="language-text">#src=⟨URL of the unzipped EPUB folder⟩&amp;bookMode=true</code></pre>
+    <p>An example of displaying unzipped EPUB on GitHub:</p>
+    <ul>
+      <li>
+        <p><a href="https://github.com/IDPF/epub3-samples/tree/master/30/accessible_epub_3/">Accessible EPUB 3</a> on <a href="https://github.com/IDPF/epub3-samples/">IDPF/epub3-samples</a></p>
+        <p><a href="https://vivliostyle.org/viewer/#src=https://github.com/IDPF/epub3-samples/tree/master/30/accessible_epub_3/&amp;bookMode=true">https://vivliostyle.org/viewer/#src=https://github.com/IDPF/epub3-samples/tree/master/30/accessible_epub_3/&amp;bookMode=true</a></p>
+      </li>
+    </ul>
+  </section>
+  <section class="level2">
+    <h2 id="web-publications-multi-html-documents">Web publications (multi-HTML documents)</h2>
+    <p>
+      You can display Web publications (a collection of HTML documents)
+      with the Vivliostyle Viewer. In this case, use the following
+      parameter:
+    </p>
+    <pre class="language-text"><code class="language-text">#src=⟨URL of the first HTML document or manifest file⟩&amp;bookMode=true</code></pre>
+    <p>For the format of Web publication manifest, W3C draft <a href="https://www.w3.org/TR/pub-manifest/">Publication Manifest</a> and <a href="https://github.com/readium/webpub-manifest/">Readium Web Publication Manifest</a> are supported.</p>
+    <section class="level3">
+      <h3 id="table-of-contents-in-html">Table of Contents in HTML</h3>
+      <p>
+        When Web publication manifest does not exist, and there are links
+        to other HTML documents in the table of contents in the specified
+        HTML document, those documents are loaded automatically.
+        Vivliostyle treats HTML elements that match the following CSS
+        selector as a table of contents element:
+        <code>[role=doc-toc], [role=directory], nav li, .toc, #toc</code>
+      </p>
+      <p>
+        An example of displaying publications composed of multiple HTML
+        documents published on the Web:
+      </p>
+      <ul>
+        <li>
+          <p><a href="https://www.w3.org/TR/CSS2/">Cascading Style Sheets Level 2 Revision 1 (CSS 2.1) Specification</a></p>
+          <p><a href="https://vivliostyle.org/viewer/#src=https://www.w3.org/TR/CSS2/&amp;bookMode=true">https://vivliostyle.org/viewer/#src=https://www.w3.org/TR/CSS2/&amp;bookMode=true</a></p>
+        </li>
+      </ul>
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="toc-panel">TOC panel</h2>
+    <p>Specifying <code>&amp;bookMode=true</code> (or <strong>Book Mode</strong> check box On) enables the TOC panel (open by clicking the 
+      <img src="/viewer/assets/toc-icon.png" width="16" height="16" alt="[TOC]"> icon in the upper left corner of the viewer) if there is a TOC element in the HTML, even for a single HTML file, as well as <a href="#web-publications-multi-html-documents">Web publications</a>.
+    </p>
+  </section>
+  <section class="level2">
+    <h2 id="page-spread-view-mode">Page spread view mode</h2>
+    <p>
+      Vivliostyle Viewer displays pages automatically with spread view
+      mode when the width of the view area is wide (1.45 times the
+      height or more). To change the spread view mode, append one of the
+      following to the URL:
+    </p>
+    <pre class="language-text"><code class="language-text">&amp;spread=true (always spread view)</code></pre>
+    <pre class="language-text"><code class="language-text">&amp;spread=false (always single page view)</code></pre>
+    <pre class="language-text"><code class="language-text">&amp;spread=auto (auto spread view = default)</code></pre>
+    <p>
+      You can also change the page view mode in the Vivliostyle Viewer's
+      setting panel (open by clicking the 
+      <img src="/viewer/assets/vivliostyle-icon.png" width="16" height="16" alt="[Settings]"> icon in the upper right corner of the viewer).
+    </p>
+  </section>
+  <section class="level2">
+    <h2 id="additional-stylesheets-custom-stylesheets">Additional stylesheets (custom stylesheets)</h2>
+    <p>
+      Additional stylesheets (CSS files) can be specified in addition to the stylesheets specified in the HTML file.
+      This allows you to specify a custom stylesheet to customize the style of the document.
+      To use an additional stylesheet (custom stylesheet), add the following to the URL:
+    </p>
+    <pre class="language-text"><code class="language-text">&amp;style=⟨stylesheet URL (relative to the Vivliostyle Viewer)⟩</code></pre>
+    <p>
+      The stylesheets specified in this way are treated as author stylesheets,
+      as if they are specified in the HTML file at very last,
+      and can override styles of other stylesheets according to the CSS cascading rules.
+    </p>
+    <section class="level3">
+      <h3 id="user-stylesheets">User stylesheets</h3>
+      <p>
+        On the other hand, you can also specify user stylesheets (cannot
+        override styles of author stylesheets unless specifying
+        <code>!important</code>) as follows:
+      </p>
+      <pre class="language-text"><code class="language-text">&amp;userStyle=⟨user stylesheet URL (relative to the Vivliostyle Viewer)⟩</code></pre>
+      <p>
+        Using multiple <code>&amp;amp;style=</code> and/or
+        <code>&amp;amp;userStyle=</code> you can specify as many stylesheets as needed.
+      </p>
+      <p>You can also use data URL. For example:</p>
+      <pre class="language-text"><code class="language-text">&amp;style=data:,html{writing-mode:vertical-rl}</code></pre>
+    </section>
+    <section class="level3">
+      <h3 id="custom-style-settings-in-settings-panel">Custom Style Settings in Settings panel</h3>
+      <p>
+        Custom style can also be set in the <strong>Custom Style Settings</strong> in the settings panel.
+        You can check the CSS in the <strong>Edit CSS</strong> box (you can also add CSS code).
+      </p>
+      <p>
+        An example in which custom style settings are added from the settings panel to
+        the document on the Web:
+      </p>
+      <ul>
+        <li>
+          <p><a href="https://www.w3.org/TR/CSS2/">Cascading Style Sheets Level 2 Revision 1 (CSS 2.1) Specification</a></p>
+          <p><a href="https://vivliostyle.org/viewer/#src=https://www.w3.org/TR/CSS2/&amp;bookMode=true&amp;style=data:,/*%3Cviewer%3E*/%0A@page%20%7B%20size:%20A4;%20%7D%0A/*%3C/viewer%3E*/%0A%0A@page%20:first%20%7B%0A%20%20@top-left%20%7B%0A%20%20%20%20content:%20none;%0A%20%20%7D%0A%20%20@top-right%20%7B%0A%20%20%20%20content:%20none;%0A%20%20%7D%0A%20%20@bottom-center%20%7B%0A%20%20%20%20content:%20none;%0A%20%20%7D%0A%7D%0A%0A@page%20:left%20%7B%0A%20%20font-size:%200.8rem;%0A%20%20@top-left%20%7B%0A%20%20%20%20content:%20env(pub-title);%0A%20%20%7D%0A%20%20@bottom-center%20%7B%0A%20%20%20%20content:%20counter(page);%0A%20%20%7D%0A%7D%0A%0A@page%20:right%20%7B%0A%20%20font-size:%200.8rem;%0A%20%20@top-right%20%7B%0A%20%20%20%20content:%20env(doc-title);%0A%20%20%7D%0A%20%20@bottom-center%20%7B%0A%20%20%20%20content:%20counter(page);%0A%20%20%7D%0A%7D">…#src=https://www.w3.org/TR/CSS2/&amp;bookMode=true&amp;style=data:,…</a></p>
+        </li>
+      </ul>
+      <pre class="language-css"><code class="language-css"><span class="token comment">/*&lt;viewer&gt;*/</span>
 <span class="token atrule"><span class="token rule">@page</span></span> <span class="token punctuation">{</span> <span class="token property">size</span><span class="token punctuation">:</span> A4<span class="token punctuation">;</span> <span class="token punctuation">}</span>
 <span class="token comment">/*&lt;/viewer&gt;*/</span>
 
@@ -486,43 +484,41 @@ const lang = "en";
     <span class="token property">content</span><span class="token punctuation">:</span> <span class="token function">counter</span><span class="token punctuation">(</span>page<span class="token punctuation">)</span><span class="token punctuation">;</span>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre>
-          <p>
-            When setting styles from the settings panel like this example, the CSS code of
-            the styles set from option items in the settings panel is generated between
-            the comments
-            <code>/*&lt;viewer&gt;*/</code> and
-            <code>/*&lt;/viewer&gt;*/</code> in the custom style CSS that are displayed in
-            the <strong>Edit CSS</strong> box. You can add your own CSS code to it. In
-            this example, page header and footer are added.
-          </p>
-        </section>
-      </section>
-      <section class="level2">
-        <h2 id="print--save-as-pdf">Print / Save as PDF</h2>
-        <p>Utilizing your browser’s print / save as PDF functionality, you can convert rendered document into PDF.</p>
-        <p>
-          For example, to save as PDF with
-          Google Chrome, select Print from menu, set Destination to “Save as PDF”, check
-          “Background graphics”, and “Save” to PDF.
-        </p>
-        <blockquote>
-          <p>
-            <strong>Note:</strong> When you print all pages of a document, check that
-            <strong>Render All Pages</strong> is On in the setting panel. When this is
-            Off, only the pages that have already been displayed can be printed, and the
-            page number will not be output correctly.
-          </p>
-        </blockquote>
-        <section class="level3">
-          <h3 id="vivliostyle-cli">Vivliostyle CLI</h3>
-          <p>Use <a href="https://github.com/vivliostyle/vivliostyle-cli">Vivliostyle CLI</a> to output to PDF from the command line. Conversion to PDF/X-1a format suitable for printing is also possible.</p>
-        </section>
-      </section>
-      <section class="level2">
-        <h2 id="supported-css-features">Supported CSS Features</h2>
-        <p>Supported CSS Features are described in <a href="/en/reference/supported-css-features/">Supported CSS Features</a>.</p>
-      </section>
+      <p>
+        When setting styles from the settings panel like this example, the CSS code of
+        the styles set from option items in the settings panel is generated between
+        the comments
+        <code>/*&lt;viewer&gt;*/</code> and
+        <code>/*&lt;/viewer&gt;*/</code> in the custom style CSS that are displayed in
+        the <strong>Edit CSS</strong> box. You can add your own CSS code to it. In
+        this example, page header and footer are added.
+      </p>
     </section>
-  
-
+  </section>
+  <section class="level2">
+    <h2 id="print--save-as-pdf">Print / Save as PDF</h2>
+    <p>Utilizing your browser’s print / save as PDF functionality, you can convert rendered document into PDF.</p>
+    <p>
+      For example, to save as PDF with
+      Google Chrome, select Print from menu, set Destination to “Save as PDF”, check
+      “Background graphics”, and “Save” to PDF.
+    </p>
+    <blockquote>
+      <p>
+        <strong>Note:</strong> When you print all pages of a document, check that
+        <strong>Render All Pages</strong> is On in the setting panel. When this is
+        Off, only the pages that have already been displayed can be printed, and the
+        page number will not be output correctly.
+      </p>
+    </blockquote>
+    <section class="level3">
+      <h3 id="vivliostyle-cli">Vivliostyle CLI</h3>
+      <p>Use <a href="https://github.com/vivliostyle/vivliostyle-cli">Vivliostyle CLI</a> to output to PDF from the command line. Conversion to PDF/X-1a format suitable for printing is also possible.</p>
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="supported-css-features">Supported CSS Features</h2>
+    <p>Supported CSS Features are described in <a href="/en/reference/supported-css-features/">Supported CSS Features</a>.</p>
+  </section>
+</section>
 </div> </article>  <nav class="page-navigation" data-astro-cid-z7g34ql7=""> <div class="nav-links" data-astro-cid-z7g34ql7=""> <div class="nav-link nav-prev nav-disabled" data-astro-cid-z7g34ql7=""></div> <div class="nav-link nav-next nav-disabled" data-astro-cid-z7g34ql7=""></div> </div> </nav>   </article> </main> </div> <footer class="footer" data-astro-cid-mw7aashj=""> <p data-astro-cid-mw7aashj="">© 2026 Vivliostyle Foundation.</p> </footer> </div>  <script type="module">window.__bodyOverflowLockCount=0;window.lockBodyOverflow=function(){window.__bodyOverflowLockCount++,window.__bodyOverflowLockCount===1&&(document.body.style.overflow="hidden")};window.unlockBodyOverflow=function(){window.__bodyOverflowLockCount=Math.max(0,window.__bodyOverflowLockCount-1),window.__bodyOverflowLockCount===0&&(document.body.style.overflow="")};</script>  <script type="module">document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll(".toc-toggle").forEach(t=>{t.addEventListener("click",e=>{if(e.target.tagName==="A")return;e.preventDefault();const d=t.getAttribute("data-target"),a=document.getElementById(d),n=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",!n),a&&(a.style.display=n?"none":"block")})})});</script></body></html>

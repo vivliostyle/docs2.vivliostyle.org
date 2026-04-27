@@ -178,12 +178,17 @@ const lang = "en";
     const open = () => {
       lastFocus = document.activeElement;
 
-      // 本番URL固定でマニフェストを参照する。
-      // localhost / preview からは Vivliostyle Viewer が manifest を取りに行けないので、
-      // その場合は警告を表示する。
-      const isProductionHost = window.location.hostname === 'docs2.vivliostyle.org' ||
-                               window.location.hostname === 'docs.vivliostyle.org';
-      const manifestUrl = `https://docs2.vivliostyle.org/publications/${product}-${lang}/publication.json`;
+      // production host (docs.vivliostyle.org / docs2.vivliostyle.org) では
+      // 自身のホスト上のマニフェストを参照する。それ以外（localhost や
+      // プレビュー環境）からは Vivliostyle Viewer が外部からマニフェストを
+      // 取得できないため、フォールバックとして既定の本番ホストを指定し、
+      // 警告を表示する。
+      const productionHosts = ['docs.vivliostyle.org', 'docs2.vivliostyle.org'];
+      const isProductionHost = productionHosts.includes(window.location.hostname);
+      const manifestHost = isProductionHost
+        ? window.location.hostname
+        : 'docs2.vivliostyle.org';
+      const manifestUrl = `https://${manifestHost}/publications/${product}-${lang}/publication.json`;
       const viewerUrl = `https://vivliostyle.org/viewer/?src=${encodeURIComponent(manifestUrl)}&bookMode=true&lng=${lang}`;
 
       iframe.src = viewerUrl;
@@ -218,123 +223,114 @@ const lang = "en";
     });
   }
 })();</script> </section>  </nav> </aside> <main class="content" data-astro-cid-mw7aashj=""> <nav aria-label="Breadcrumb" class="breadcrumb" data-astro-cid-qaanghzh=""> <ol data-astro-cid-qaanghzh=""> <li data-astro-cid-qaanghzh=""> <a href="/en/" data-astro-cid-qaanghzh="">Home</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <a href="/en/themes/" data-astro-cid-qaanghzh="">Themes</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <span aria-current="page" data-astro-cid-qaanghzh="">Vivliostyle Themes Gallery</span>  </li> </ol> </nav> <!-- JSON-LD構造化データ --> <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://docs.vivliostyle.org/en/"},{"@type":"ListItem","position":2,"name":"Themes","item":"https://docs.vivliostyle.org/en/themes/"},{"@type":"ListItem","position":3,"name":"Vivliostyle Themes Gallery","item":"https://docs.vivliostyle.org/en/themes/gallery/"}]}</script>  <article class="prose" data-astro-cid-mw7aashj="">    <article data-astro-cid-l22pnfr6="">
-
-  
-    <meta charset="utf-8">
-    <title>Vivliostyle Themes Gallery</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  
-    <section class="level1">
-      <h1 id="vivliostyle-themes-gallery">Vivliostyle Themes Gallery</h1>
-      <p>This is a gallery of Vivliostyle Themes released as npm packages. Newly released themes are added here as soon as we find them, but if you find something that is not listed, please send an <a href="https://github.com/vivliostyle/themes/issues">issue</a> or pull request.</p>
-      <section class="level2">
-        <h2 id="official-vivliostyle-themes">Official Vivliostyle Themes</h2>
-        <p>Currently, there are six official themes.</p>
-        <section class="level3">
-          <h3 id="vivliostyletheme-bunko"><a href="https://www.npmjs.com/package/@vivliostyle/theme-bunko">@vivliostyle/theme-bunko</a></h3>
-          <p>It is suitable for Japanese vertical novels. It also supports ruby and horizontal-in-vertical composition (in Japanese, "縦中横"). CSS variables allow customization of lines/characters per page, page headers, and more.</p>
-          <ul>
-            <li><a href="https://github.com/vivliostyle/themes/tree/main/packages/@vivliostyle/theme-bunko#readme">README (CSS variables list)</a></li>
-          </ul>
-          <figure>
-            <img src="/themes/assets/captures/theme-bunko.webp" alt="Theme-bunko sample image. The manuscript is 'Night on the Galactic Railroad'.">
-            <figcaption aria-hidden="true">Theme-bunko sample image. The manuscript is 'Night on the Galactic Railroad'.</figcaption>
-          </figure>
-        </section>
-        <section class="level3">
-          <h3 id="vivliostyletheme-slide"><a href="https://www.npmjs.com/package/@vivliostyle/theme-slide">@vivliostyle/theme-slide</a></h3>
-          <p>This is good for slide presentations. The style changes between the cover page and the general page. CSS variables allow customization of colors, layout, and cover page styles.</p>
-          <ul>
-            <li><a href="https://github.com/vivliostyle/themes/tree/main/packages/@vivliostyle/theme-slide#readme">README (CSS variables list)</a></li>
-          </ul>
-          <figure>
-            <img src="/themes/assets/captures/theme-slide.webp" alt="Theme-slide sample image. On the left is the cover page with a blue background, and on the right is the general page with a white background.">
-            <figcaption aria-hidden="true">Theme-slide sample image. On the left is the cover page with a blue background, and on the right is the general page with a white background.</figcaption>
-          </figure>
-        </section>
-        <section class="level3">
-          <h3 id="vivliostyletheme-techbook"><a href="https://www.npmjs.com/package/@vivliostyle/theme-techbook">@vivliostyle/theme-techbook</a></h3>
-          <p>A technical book designed with printing in mind (e.g., margins adjustment at the inside/outside margin). Source code and table of contents are also supported. CSS variables allow customization of colors, page headers/footers, and image resolution.</p>
-          <ul>
-            <li><a href="https://github.com/vivliostyle/themes/tree/main/packages/@vivliostyle/theme-techbook#readme">README (CSS variables list)</a></li>
-          </ul>
-          <figure>
-            <img src="/themes/assets/captures/theme-techbook.webp" alt="Sample images from theme-techbook. In addition to text, it has a table and source code.">
-            <figcaption aria-hidden="true">Sample images from theme-techbook. In addition to text, it has a table and source code.</figcaption>
-          </figure>
-        </section>
-        <section class="level3">
-          <h3 id="vivliostyletheme-academic"><a href="https://www.npmjs.com/package/@vivliostyle/theme-academic">@vivliostyle/theme-academic</a></h3>
-          <p>This is suitable for reports written by students. Chapter and section numbers are automatically added. CSS variables allow customization of figure sizes and frame element styles.</p>
-          <ul>
-            <li><a href="https://github.com/vivliostyle/themes/tree/main/packages/@vivliostyle/theme-academic#readme">README (CSS variables list)</a></li>
-          </ul>
-          <figure>
-            <img src="/themes/assets/captures/theme-academic.webp" alt="Sample images from theme-academic. In addition to text, it contains diagrams and tables.">
-            <figcaption aria-hidden="true">Sample images from theme-academic. In addition to text, it contains diagrams and tables.</figcaption>
-          </figure>
-        </section>
-        <section class="level3">
-          <h3 id="vivliostyletheme-gutenberg"><a href="https://www.npmjs.com/package/@vivliostyle/theme-gutenberg">@vivliostyle/theme-gutenberg</a></h3>
-          <p>This is suitable for horizontal novels in English. In addition to the default <code>theme.css</code>, three CSS variations (<code>alice.css</code>, <code>fang.css</code>, <code>sherlock.css</code>) are available.</p>
-          <ul>
-            <li><a href="https://github.com/vivliostyle/themes/tree/main/packages/@vivliostyle/theme-gutenberg#readme">README</a></li>
-          </ul>
-          <section class="level4">
-            <h4 id="alicecss">alice.css</h4>
-            <figure>
-              <img src="/themes/assets/captures/theme-gutenberg-alice.webp" alt="Sample image from theme-gutenberg. The manuscript is 'Alice's Adventures in Wonderland'.">
-              <figcaption aria-hidden="true">Sample image from theme-gutenberg. The manuscript is 'Alice's Adventures in Wonderland'.</figcaption>
-            </figure>
-          </section>
-          <section class="level4">
-            <h4 id="fangcss">fang.css</h4>
-            <figure>
-              <img src="/themes/assets/captures/theme-gutenberg-fang.webp" alt="Sample image from theme-gutenberg. The manuscript is 'White Fang'.">
-              <figcaption aria-hidden="true">Sample image from theme-gutenberg. The manuscript is 'White Fang'.</figcaption>
-            </figure>
-          </section>
-          <section class="level4">
-            <h4 id="sherlockcss">sherlock.css</h4>
-            <figure>
-              <img src="/themes/assets/captures/theme-gutenberg-sherlock.webp" alt="Sample image from theme-gutenberg. The manuscript is 'The Adventures of Sherlock Holmes'.">
-              <figcaption aria-hidden="true">Sample image from theme-gutenberg. The manuscript is 'The Adventures of Sherlock Holmes'.</figcaption>
-            </figure>
-          </section>
-        </section>
-        <section class="level3">
-          <h3 id="vivliostyletheme-epub3j"><a href="https://www.npmjs.com/package/@vivliostyle/theme-epub3j">@vivliostyle/theme-epub3j</a></h3>
-          <p>This is a theme for creating EPUB compatible with the <a href="http://ebpaj.jp/counsel/guide">EBPAJ EPUB 3 File Creation Guide</a>. Suitable for Japanese vertical text EPUB publications.</p>
-          <ul>
-            <li><a href="https://github.com/vivliostyle/themes/tree/main/packages/@vivliostyle/theme-epub3j#readme">README</a></li>
-          </ul>
-          <figure>
-            <img src="/themes/assets/captures/theme-epub3j.webp" alt="Screenshot of theme-epub3j example.">
-            <figcaption aria-hidden="true">Screenshot of theme-epub3j example.</figcaption>
-          </figure>
-        </section>
+<section class="level1">
+  <h1 id="vivliostyle-themes-gallery">Vivliostyle Themes Gallery</h1>
+  <p>This is a gallery of Vivliostyle Themes released as npm packages. Newly released themes are added here as soon as we find them, but if you find something that is not listed, please send an <a href="https://github.com/vivliostyle/themes/issues">issue</a> or pull request.</p>
+  <section class="level2">
+    <h2 id="official-vivliostyle-themes">Official Vivliostyle Themes</h2>
+    <p>Currently, there are six official themes.</p>
+    <section class="level3">
+      <h3 id="vivliostyletheme-bunko"><a href="https://www.npmjs.com/package/@vivliostyle/theme-bunko">@vivliostyle/theme-bunko</a></h3>
+      <p>It is suitable for Japanese vertical novels. It also supports ruby and horizontal-in-vertical composition (in Japanese, "縦中横"). CSS variables allow customization of lines/characters per page, page headers, and more.</p>
+      <ul>
+        <li><a href="https://github.com/vivliostyle/themes/tree/main/packages/@vivliostyle/theme-bunko#readme">README (CSS variables list)</a></li>
+      </ul>
+      <figure>
+        <img src="/themes/assets/captures/theme-bunko.webp" alt="Theme-bunko sample image. The manuscript is 'Night on the Galactic Railroad'.">
+        <figcaption aria-hidden="true">Theme-bunko sample image. The manuscript is 'Night on the Galactic Railroad'.</figcaption>
+      </figure>
+    </section>
+    <section class="level3">
+      <h3 id="vivliostyletheme-slide"><a href="https://www.npmjs.com/package/@vivliostyle/theme-slide">@vivliostyle/theme-slide</a></h3>
+      <p>This is good for slide presentations. The style changes between the cover page and the general page. CSS variables allow customization of colors, layout, and cover page styles.</p>
+      <ul>
+        <li><a href="https://github.com/vivliostyle/themes/tree/main/packages/@vivliostyle/theme-slide#readme">README (CSS variables list)</a></li>
+      </ul>
+      <figure>
+        <img src="/themes/assets/captures/theme-slide.webp" alt="Theme-slide sample image. On the left is the cover page with a blue background, and on the right is the general page with a white background.">
+        <figcaption aria-hidden="true">Theme-slide sample image. On the left is the cover page with a blue background, and on the right is the general page with a white background.</figcaption>
+      </figure>
+    </section>
+    <section class="level3">
+      <h3 id="vivliostyletheme-techbook"><a href="https://www.npmjs.com/package/@vivliostyle/theme-techbook">@vivliostyle/theme-techbook</a></h3>
+      <p>A technical book designed with printing in mind (e.g., margins adjustment at the inside/outside margin). Source code and table of contents are also supported. CSS variables allow customization of colors, page headers/footers, and image resolution.</p>
+      <ul>
+        <li><a href="https://github.com/vivliostyle/themes/tree/main/packages/@vivliostyle/theme-techbook#readme">README (CSS variables list)</a></li>
+      </ul>
+      <figure>
+        <img src="/themes/assets/captures/theme-techbook.webp" alt="Sample images from theme-techbook. In addition to text, it has a table and source code.">
+        <figcaption aria-hidden="true">Sample images from theme-techbook. In addition to text, it has a table and source code.</figcaption>
+      </figure>
+    </section>
+    <section class="level3">
+      <h3 id="vivliostyletheme-academic"><a href="https://www.npmjs.com/package/@vivliostyle/theme-academic">@vivliostyle/theme-academic</a></h3>
+      <p>This is suitable for reports written by students. Chapter and section numbers are automatically added. CSS variables allow customization of figure sizes and frame element styles.</p>
+      <ul>
+        <li><a href="https://github.com/vivliostyle/themes/tree/main/packages/@vivliostyle/theme-academic#readme">README (CSS variables list)</a></li>
+      </ul>
+      <figure>
+        <img src="/themes/assets/captures/theme-academic.webp" alt="Sample images from theme-academic. In addition to text, it contains diagrams and tables.">
+        <figcaption aria-hidden="true">Sample images from theme-academic. In addition to text, it contains diagrams and tables.</figcaption>
+      </figure>
+    </section>
+    <section class="level3">
+      <h3 id="vivliostyletheme-gutenberg"><a href="https://www.npmjs.com/package/@vivliostyle/theme-gutenberg">@vivliostyle/theme-gutenberg</a></h3>
+      <p>This is suitable for horizontal novels in English. In addition to the default <code>theme.css</code>, three CSS variations (<code>alice.css</code>, <code>fang.css</code>, <code>sherlock.css</code>) are available.</p>
+      <ul>
+        <li><a href="https://github.com/vivliostyle/themes/tree/main/packages/@vivliostyle/theme-gutenberg#readme">README</a></li>
+      </ul>
+      <section class="level4">
+        <h4 id="alicecss">alice.css</h4>
+        <figure>
+          <img src="/themes/assets/captures/theme-gutenberg-alice.webp" alt="Sample image from theme-gutenberg. The manuscript is 'Alice's Adventures in Wonderland'.">
+          <figcaption aria-hidden="true">Sample image from theme-gutenberg. The manuscript is 'Alice's Adventures in Wonderland'.</figcaption>
+        </figure>
       </section>
-      <section class="level2">
-        <h2 id="unofficial-vivliostyle-themes">Unofficial Vivliostyle Themes</h2>
-        <section class="level3">
-          <h3 id="vivliostyle-theme-dnd-5e-phb"><a href="https://www.npmjs.com/package/vivliostyle-theme-dnd-5e-phb">vivliostyle-theme dnd-5e-phb</a></h3>
-          <p>Author: oldgeese</p>
-          <p>D&amp;D 5e PHB theme for Vivliostyle</p>
-          <img src="https://raw.githubusercontent.com/oldgeese/vivliostyle-theme-dnd5e-phb/HEAD/example/sample.png" alt="" style="max-width:500px">
-        </section>
-        <section class="level3">
-          <h3 id="vivliostyle-theme-thesis"><a href="https://www.npmjs.com/package/vivliostyle-theme-thesis">vivliostyle-theme-thesis</a></h3>
-          <p>Author: yamasy1549</p>
-          <p>Academic theme (thesis)</p>
-        </section>
-        <section class="level3">
-          <h3 id="vivliostyle-akashi-kosen-bulletin"><a href="https://www.npmjs.com/package/vivliostyle-akashi-kosen-bulletin">vivliostyle-akashi-kosen-bulletin</a></h3>
-          <p>Created by: yamasy1549</p>
-          <p>A style for annual report of National Institute of Technology, Akashi College (unofficial)</p>
-        </section>
+      <section class="level4">
+        <h4 id="fangcss">fang.css</h4>
+        <figure>
+          <img src="/themes/assets/captures/theme-gutenberg-fang.webp" alt="Sample image from theme-gutenberg. The manuscript is 'White Fang'.">
+          <figcaption aria-hidden="true">Sample image from theme-gutenberg. The manuscript is 'White Fang'.</figcaption>
+        </figure>
+      </section>
+      <section class="level4">
+        <h4 id="sherlockcss">sherlock.css</h4>
+        <figure>
+          <img src="/themes/assets/captures/theme-gutenberg-sherlock.webp" alt="Sample image from theme-gutenberg. The manuscript is 'The Adventures of Sherlock Holmes'.">
+          <figcaption aria-hidden="true">Sample image from theme-gutenberg. The manuscript is 'The Adventures of Sherlock Holmes'.</figcaption>
+        </figure>
       </section>
     </section>
-  
-
+    <section class="level3">
+      <h3 id="vivliostyletheme-epub3j"><a href="https://www.npmjs.com/package/@vivliostyle/theme-epub3j">@vivliostyle/theme-epub3j</a></h3>
+      <p>This is a theme for creating EPUB compatible with the <a href="http://ebpaj.jp/counsel/guide">EBPAJ EPUB 3 File Creation Guide</a>. Suitable for Japanese vertical text EPUB publications.</p>
+      <ul>
+        <li><a href="https://github.com/vivliostyle/themes/tree/main/packages/@vivliostyle/theme-epub3j#readme">README</a></li>
+      </ul>
+      <figure>
+        <img src="/themes/assets/captures/theme-epub3j.webp" alt="Screenshot of theme-epub3j example.">
+        <figcaption aria-hidden="true">Screenshot of theme-epub3j example.</figcaption>
+      </figure>
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="unofficial-vivliostyle-themes">Unofficial Vivliostyle Themes</h2>
+    <section class="level3">
+      <h3 id="vivliostyle-theme-dnd-5e-phb"><a href="https://www.npmjs.com/package/vivliostyle-theme-dnd-5e-phb">vivliostyle-theme dnd-5e-phb</a></h3>
+      <p>Author: oldgeese</p>
+      <p>D&amp;D 5e PHB theme for Vivliostyle</p>
+      <img src="https://raw.githubusercontent.com/oldgeese/vivliostyle-theme-dnd5e-phb/HEAD/example/sample.png" alt="" style="max-width:500px">
+    </section>
+    <section class="level3">
+      <h3 id="vivliostyle-theme-thesis"><a href="https://www.npmjs.com/package/vivliostyle-theme-thesis">vivliostyle-theme-thesis</a></h3>
+      <p>Author: yamasy1549</p>
+      <p>Academic theme (thesis)</p>
+    </section>
+    <section class="level3">
+      <h3 id="vivliostyle-akashi-kosen-bulletin"><a href="https://www.npmjs.com/package/vivliostyle-akashi-kosen-bulletin">vivliostyle-akashi-kosen-bulletin</a></h3>
+      <p>Created by: yamasy1549</p>
+      <p>A style for annual report of National Institute of Technology, Akashi College (unofficial)</p>
+    </section>
+  </section>
+</section>
 </article> <nav class="page-navigation" data-astro-cid-z7g34ql7=""> <div class="nav-links" data-astro-cid-z7g34ql7=""> <a href="/en/themes/spec/" class="nav-link nav-prev" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">← Previous</span> <span class="nav-title" data-astro-cid-z7g34ql7="">Spec of Vivliostyle Theme</span> </a> <a href="/en/themes/official/" class="nav-link nav-next" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">Next →</span> <span class="nav-title" data-astro-cid-z7g34ql7="">Adoption of the Official Theme</span> </a> </div> </nav>   </article> </main> </div> <footer class="footer" data-astro-cid-mw7aashj=""> <p data-astro-cid-mw7aashj="">© 2026 Vivliostyle Foundation.</p> </footer> </div>  <script type="module">window.__bodyOverflowLockCount=0;window.lockBodyOverflow=function(){window.__bodyOverflowLockCount++,window.__bodyOverflowLockCount===1&&(document.body.style.overflow="hidden")};window.unlockBodyOverflow=function(){window.__bodyOverflowLockCount=Math.max(0,window.__bodyOverflowLockCount-1),window.__bodyOverflowLockCount===0&&(document.body.style.overflow="")};</script>  <script type="module">document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll(".accordion-toggle").forEach(t=>{t.addEventListener("click",d=>{d.preventDefault();const a=t.getAttribute("data-target"),e=document.getElementById(a),n=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",!n),e&&(e.style.display=n?"none":"block")})})});</script></body></html>

@@ -178,12 +178,17 @@ const lang = "ja";
     const open = () => {
       lastFocus = document.activeElement;
 
-      // 本番URL固定でマニフェストを参照する。
-      // localhost / preview からは Vivliostyle Viewer が manifest を取りに行けないので、
-      // その場合は警告を表示する。
-      const isProductionHost = window.location.hostname === 'docs2.vivliostyle.org' ||
-                               window.location.hostname === 'docs.vivliostyle.org';
-      const manifestUrl = `https://docs2.vivliostyle.org/publications/${product}-${lang}/publication.json`;
+      // production host (docs.vivliostyle.org / docs2.vivliostyle.org) では
+      // 自身のホスト上のマニフェストを参照する。それ以外（localhost や
+      // プレビュー環境）からは Vivliostyle Viewer が外部からマニフェストを
+      // 取得できないため、フォールバックとして既定の本番ホストを指定し、
+      // 警告を表示する。
+      const productionHosts = ['docs.vivliostyle.org', 'docs2.vivliostyle.org'];
+      const isProductionHost = productionHosts.includes(window.location.hostname);
+      const manifestHost = isProductionHost
+        ? window.location.hostname
+        : 'docs2.vivliostyle.org';
+      const manifestUrl = `https://${manifestHost}/publications/${product}-${lang}/publication.json`;
       const viewerUrl = `https://vivliostyle.org/viewer/?src=${encodeURIComponent(manifestUrl)}&bookMode=true&lng=${lang}`;
 
       iframe.src = viewerUrl;
@@ -218,81 +223,72 @@ const lang = "ja";
     });
   }
 })();</script> </section>  </nav> </aside> <main class="content" data-astro-cid-mw7aashj=""> <nav aria-label="Breadcrumb" class="breadcrumb" data-astro-cid-qaanghzh=""> <ol data-astro-cid-qaanghzh=""> <li data-astro-cid-qaanghzh=""> <a href="/ja/" data-astro-cid-qaanghzh="">ホーム</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <a href="/ja/cli/" data-astro-cid-qaanghzh="">CLI</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <span aria-current="page" data-astro-cid-qaanghzh="">テーマと CSS</span>  </li> </ol> </nav> <!-- JSON-LD構造化データ --> <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ホーム","item":"https://docs.vivliostyle.org/ja/"},{"@type":"ListItem","position":2,"name":"CLI","item":"https://docs.vivliostyle.org/ja/cli/"},{"@type":"ListItem","position":3,"name":"テーマと CSS","item":"https://docs.vivliostyle.org/ja/cli/themes-and-css/"}]}</script>  <article class="prose" data-astro-cid-mw7aashj="">    <article data-astro-cid-lxp5afuy="">
-
-  
-    <meta charset="utf-8">
-    <title>テーマと CSS</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  
-    <section class="level1">
-      <h1 id="テーマと-css">テーマと CSS</h1>
-      <p>原稿に対してフォントや文字の大きさなどの装飾を加えるには、カスケーディングスタイルシート（CSS）を適用します（HTMLファイルと同様のやり方です）。</p>
-      <section class="level2">
-        <h2 id="スタイルシートの追加の指定">スタイルシートの追加の指定</h2>
-        <p>HTMLファイルに指定されているスタイルシートに加えて、追加のスタイルシート（CSSファイル）を使うには、<code>--style</code> オプションでスタイルシートを指定します。</p>
-        <pre class="language-text"><code class="language-text">vivliostyle build example.html --style additional-style.css</code></pre>
-        <p>この方法で指定したスタイルシートは、HTMLファイルで指定されているスタイルシートと同様（<a href="https://developer.mozilla.org/ja/docs/Web/CSS/Cascade#%E4%BD%9C%E6%88%90%E8%80%85%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB%E3%82%B7%E3%83%BC%E3%83%88">作成者スタイルシート</a>）の扱いで、よりあとに指定されたことになるので、CSSのカスケーディング規則により、HTMLファイルからのスタイルの指定を上書きすることになります。</p>
-        <section class="level3">
-          <h3 id="ユーザースタイルシートの指定">ユーザースタイルシートの指定</h3>
-          <p><a href="https://developer.mozilla.org/ja/docs/Web/CSS/Cascade#%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB%E3%82%B7%E3%83%BC%E3%83%88">ユーザースタイルシート</a>を使うには、<code>--user-style</code> オプションでスタイルシートを指定します。（ユーザースタイルシートは、スタイル指定に <code>!important</code> を付けないかぎり、制作者スタイルシートのスタイル指定を上書きしません。）</p>
-          <pre class="language-text"><code class="language-text">vivliostyle build example.html --user-style user-style.css</code></pre>
-        </section>
-        <section class="level3">
-          <h3 id="css-の内容を直接指定">CSS の内容を直接指定</h3>
-          <p><code>--css</code> オプションを指定すると、追加したいスタイルシートを直接 CSS のテキストで渡すことができます。このオプションは、簡単なスタイルシートや CSS 変数を設定するのに便利です。</p>
-          <pre class="language-text"><code class="language-text">vivliostyle build example.html --css "body { background-color: lime; }"</code></pre>
-        </section>
-        <section class="level3">
-          <h3 id="ページサイズの指定">ページサイズの指定</h3>
-          <p><code>-s</code> (<code>--size</code>) オプションでページサイズを指定できます。指定できるサイズは、A5, A4, A3, B5, B4, JIS-B5, JIS-B4, letter, legal, ledger のいずれか、またはコンマで区切って幅と高さを指定します。</p>
-          <pre class="language-text"><code class="language-text">vivliostyle build paper.html -s A4 -o paper.pdf
+<section class="level1">
+  <h1 id="テーマと-css">テーマと CSS</h1>
+  <p>原稿に対してフォントや文字の大きさなどの装飾を加えるには、カスケーディングスタイルシート（CSS）を適用します（HTMLファイルと同様のやり方です）。</p>
+  <section class="level2">
+    <h2 id="スタイルシートの追加の指定">スタイルシートの追加の指定</h2>
+    <p>HTMLファイルに指定されているスタイルシートに加えて、追加のスタイルシート（CSSファイル）を使うには、<code>--style</code> オプションでスタイルシートを指定します。</p>
+    <pre class="language-text"><code class="language-text">vivliostyle build example.html --style additional-style.css</code></pre>
+    <p>この方法で指定したスタイルシートは、HTMLファイルで指定されているスタイルシートと同様（<a href="https://developer.mozilla.org/ja/docs/Web/CSS/Cascade#%E4%BD%9C%E6%88%90%E8%80%85%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB%E3%82%B7%E3%83%BC%E3%83%88">作成者スタイルシート</a>）の扱いで、よりあとに指定されたことになるので、CSSのカスケーディング規則により、HTMLファイルからのスタイルの指定を上書きすることになります。</p>
+    <section class="level3">
+      <h3 id="ユーザースタイルシートの指定">ユーザースタイルシートの指定</h3>
+      <p><a href="https://developer.mozilla.org/ja/docs/Web/CSS/Cascade#%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E3%82%B9%E3%82%BF%E3%82%A4%E3%83%AB%E3%82%B7%E3%83%BC%E3%83%88">ユーザースタイルシート</a>を使うには、<code>--user-style</code> オプションでスタイルシートを指定します。（ユーザースタイルシートは、スタイル指定に <code>!important</code> を付けないかぎり、制作者スタイルシートのスタイル指定を上書きしません。）</p>
+      <pre class="language-text"><code class="language-text">vivliostyle build example.html --user-style user-style.css</code></pre>
+    </section>
+    <section class="level3">
+      <h3 id="css-の内容を直接指定">CSS の内容を直接指定</h3>
+      <p><code>--css</code> オプションを指定すると、追加したいスタイルシートを直接 CSS のテキストで渡すことができます。このオプションは、簡単なスタイルシートや CSS 変数を設定するのに便利です。</p>
+      <pre class="language-text"><code class="language-text">vivliostyle build example.html --css "body { background-color: lime; }"</code></pre>
+    </section>
+    <section class="level3">
+      <h3 id="ページサイズの指定">ページサイズの指定</h3>
+      <p><code>-s</code> (<code>--size</code>) オプションでページサイズを指定できます。指定できるサイズは、A5, A4, A3, B5, B4, JIS-B5, JIS-B4, letter, legal, ledger のいずれか、またはコンマで区切って幅と高さを指定します。</p>
+      <pre class="language-text"><code class="language-text">vivliostyle build paper.html -s A4 -o paper.pdf
 vivliostyle build letter.html -s letter -o letter.pdf
 vivliostyle build slide.html -s 10in,7.5in -o slide.pdf</code></pre>
-          <p>このオプションは、<code>--css "@page { size: &lt;size&gt;; }"</code> と同等です。</p>
-        </section>
-        <section class="level3">
-          <h3 id="トンボcrop-marksの指定">トンボ（crop marks）の指定</h3>
-          <p><code>-m</code> (<code>--crop-marks</code>) オプションを指定すると、出力されるPDFにトンボ（印刷物の裁断位置を示す目印）が追加されます。</p>
-          <pre class="language-text"><code class="language-text">vivliostyle build example.html -m</code></pre>
-          <p><code>--bleed</code> オプションでトンボを追加したときの塗り足し幅を指定することができます。また、<code>--crop-offset</code> オプションで裁ち落とし線から外側の幅を指定することができます。</p>
-          <pre class="language-text"><code class="language-text">vivliostyle build example.html -m --bleed 5mm
-vivliostyle build example.html -m --crop-offset 20mm</code></pre>
-          <p>このオプションは、<code>--css "@page { marks: crop cross; bleed: &lt;bleed&gt;; crop-offset: &lt;crop-offset&gt;; }"</code> と同等です。</p>
-        </section>
-      </section>
-      <section class="level2">
-        <h2 id="vivliostyle-themes-について">Vivliostyle Themes について</h2>
-        <ul>
-          <li><a href="https://vivliostyle.github.io/themes/">Vivliostyle Themes</a></li>
-        </ul>
-        <p>Vivliostyle Themes は、Vivliostyle で出版物を作る際に使う公式のスタイルテーマ集です。Vivliostyle Themes を参照することで、自分でCSSを用意することなくスタイルを適用することができます。</p>
-        <section class="level3">
-          <h3 id="テーマを見つける">テーマを見つける</h3>
-          <p>npm パッケージとして公開されているテーマを見つけるには <a href="https://www.npmjs.com/">npm</a> でキーワード "vivliostyle-theme" を検索してください:</p>
-          <ul>
-            <li><a href="https://www.npmjs.com/search?q=keywords%3Avivliostyle-theme">List of Themes (npm)</a></li>
-          </ul>
-        </section>
-        <section class="level3">
-          <h3 id="テーマの利用">テーマの利用</h3>
-          <ul>
-            <li><a href="https://github.com/vivliostyle/vivliostyle-cli/tree/main/examples/theme-css">Example: theme-css</a></li>
-            <li><a href="https://github.com/vivliostyle/vivliostyle-cli/tree/main/examples/theme-preset">Example: theme-preset</a></li>
-          </ul>
-          <p><code>-T</code>（<code>--theme</code>）オプション、または <a href="./using-config-file/">構成ファイル</a> で <code>theme</code> を指定するとテーマを利用できます。ローカルにテーマファイルが存在しない場合、初回実行時に <code>themes</code> ディレクトリに自動的にインストールされます。</p>
-          <pre class="language-text"><code class="language-text">vivliostyle build manuscript.md --theme @vivliostyle/theme-techbook -o paper.pdf</code></pre>
-          <p>また、ローカル環境にあるテーマを利用することもできます。単一の CSS ファイルであれば、以下のように直接 CSS ファイルを指定します。</p>
-          <pre class="language-text"><code class="language-text">vivliostyle build manuscript.md --theme ./my-theme/style.css -o paper.pdf</code></pre>
-          <p>また、ローカル環境に npm に準拠した <code>package.json</code> ファイルがある場合、そのディレクトリにある Vivliostyle Theme を読み込むこともできます。以下は <code>my-theme</code> ディレクトリに Vivliostyle Theme として利用可能なパッケージが配置されているときの例です。</p>
-          <pre class="language-text"><code class="language-text">vivliostyle build manuscript.md --theme ./my-theme -o paper.pdf</code></pre>
-        </section>
-        <section class="level3">
-          <h3 id="create-book-の利用">Create Book の利用</h3>
-          <p>Create Book を使用すると、あらかじめテーマが設定された状態のプロジェクトを簡単に作成できます。<a href="https://docs.vivliostyle.org/#/ja/create-book">Create Book</a> を参照してください。</p>
-        </section>
-      </section>
+      <p>このオプションは、<code>--css "@page { size: &lt;size&gt;; }"</code> と同等です。</p>
     </section>
-  
-
+    <section class="level3">
+      <h3 id="トンボcrop-marksの指定">トンボ（crop marks）の指定</h3>
+      <p><code>-m</code> (<code>--crop-marks</code>) オプションを指定すると、出力されるPDFにトンボ（印刷物の裁断位置を示す目印）が追加されます。</p>
+      <pre class="language-text"><code class="language-text">vivliostyle build example.html -m</code></pre>
+      <p><code>--bleed</code> オプションでトンボを追加したときの塗り足し幅を指定することができます。また、<code>--crop-offset</code> オプションで裁ち落とし線から外側の幅を指定することができます。</p>
+      <pre class="language-text"><code class="language-text">vivliostyle build example.html -m --bleed 5mm
+vivliostyle build example.html -m --crop-offset 20mm</code></pre>
+      <p>このオプションは、<code>--css "@page { marks: crop cross; bleed: &lt;bleed&gt;; crop-offset: &lt;crop-offset&gt;; }"</code> と同等です。</p>
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="vivliostyle-themes-について">Vivliostyle Themes について</h2>
+    <ul>
+      <li><a href="https://vivliostyle.github.io/themes/">Vivliostyle Themes</a></li>
+    </ul>
+    <p>Vivliostyle Themes は、Vivliostyle で出版物を作る際に使う公式のスタイルテーマ集です。Vivliostyle Themes を参照することで、自分でCSSを用意することなくスタイルを適用することができます。</p>
+    <section class="level3">
+      <h3 id="テーマを見つける">テーマを見つける</h3>
+      <p>npm パッケージとして公開されているテーマを見つけるには <a href="https://www.npmjs.com/">npm</a> でキーワード "vivliostyle-theme" を検索してください:</p>
+      <ul>
+        <li><a href="https://www.npmjs.com/search?q=keywords%3Avivliostyle-theme">List of Themes (npm)</a></li>
+      </ul>
+    </section>
+    <section class="level3">
+      <h3 id="テーマの利用">テーマの利用</h3>
+      <ul>
+        <li><a href="https://github.com/vivliostyle/vivliostyle-cli/tree/main/examples/theme-css">Example: theme-css</a></li>
+        <li><a href="https://github.com/vivliostyle/vivliostyle-cli/tree/main/examples/theme-preset">Example: theme-preset</a></li>
+      </ul>
+      <p><code>-T</code>（<code>--theme</code>）オプション、または <a href="./using-config-file/">構成ファイル</a> で <code>theme</code> を指定するとテーマを利用できます。ローカルにテーマファイルが存在しない場合、初回実行時に <code>themes</code> ディレクトリに自動的にインストールされます。</p>
+      <pre class="language-text"><code class="language-text">vivliostyle build manuscript.md --theme @vivliostyle/theme-techbook -o paper.pdf</code></pre>
+      <p>また、ローカル環境にあるテーマを利用することもできます。単一の CSS ファイルであれば、以下のように直接 CSS ファイルを指定します。</p>
+      <pre class="language-text"><code class="language-text">vivliostyle build manuscript.md --theme ./my-theme/style.css -o paper.pdf</code></pre>
+      <p>また、ローカル環境に npm に準拠した <code>package.json</code> ファイルがある場合、そのディレクトリにある Vivliostyle Theme を読み込むこともできます。以下は <code>my-theme</code> ディレクトリに Vivliostyle Theme として利用可能なパッケージが配置されているときの例です。</p>
+      <pre class="language-text"><code class="language-text">vivliostyle build manuscript.md --theme ./my-theme -o paper.pdf</code></pre>
+    </section>
+    <section class="level3">
+      <h3 id="create-book-の利用">Create Book の利用</h3>
+      <p>Create Book を使用すると、あらかじめテーマが設定された状態のプロジェクトを簡単に作成できます。<a href="https://docs.vivliostyle.org/#/ja/create-book">Create Book</a> を参照してください。</p>
+    </section>
+  </section>
+</section>
 </article> <nav class="page-navigation" data-astro-cid-z7g34ql7=""> <div class="nav-links" data-astro-cid-z7g34ql7=""> <a href="/ja/cli/getting-started/" class="nav-link nav-prev" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">← 前へ</span> <span class="nav-title" data-astro-cid-z7g34ql7="">はじめに</span> </a> <a href="/ja/cli/using-config-file/" class="nav-link nav-next" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">次へ →</span> <span class="nav-title" data-astro-cid-z7g34ql7="">構成ファイル</span> </a> </div> </nav>   </article> </main> </div> <footer class="footer" data-astro-cid-mw7aashj=""> <p data-astro-cid-mw7aashj="">© 2026 Vivliostyle Foundation.</p> </footer> </div>  <script type="module">window.__bodyOverflowLockCount=0;window.lockBodyOverflow=function(){window.__bodyOverflowLockCount++,window.__bodyOverflowLockCount===1&&(document.body.style.overflow="hidden")};window.unlockBodyOverflow=function(){window.__bodyOverflowLockCount=Math.max(0,window.__bodyOverflowLockCount-1),window.__bodyOverflowLockCount===0&&(document.body.style.overflow="")};</script>  <script type="module">document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll(".accordion-toggle").forEach(t=>{t.addEventListener("click",d=>{d.preventDefault();const a=t.getAttribute("data-target"),e=document.getElementById(a),n=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",!n),e&&(e.style.display=n?"none":"block")})})});</script></body></html>

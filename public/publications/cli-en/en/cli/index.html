@@ -178,12 +178,17 @@ const lang = "en";
     const open = () => {
       lastFocus = document.activeElement;
 
-      // 本番URL固定でマニフェストを参照する。
-      // localhost / preview からは Vivliostyle Viewer が manifest を取りに行けないので、
-      // その場合は警告を表示する。
-      const isProductionHost = window.location.hostname === 'docs2.vivliostyle.org' ||
-                               window.location.hostname === 'docs.vivliostyle.org';
-      const manifestUrl = `https://docs2.vivliostyle.org/publications/${product}-${lang}/publication.json`;
+      // production host (docs.vivliostyle.org / docs2.vivliostyle.org) では
+      // 自身のホスト上のマニフェストを参照する。それ以外（localhost や
+      // プレビュー環境）からは Vivliostyle Viewer が外部からマニフェストを
+      // 取得できないため、フォールバックとして既定の本番ホストを指定し、
+      // 警告を表示する。
+      const productionHosts = ['docs.vivliostyle.org', 'docs2.vivliostyle.org'];
+      const isProductionHost = productionHosts.includes(window.location.hostname);
+      const manifestHost = isProductionHost
+        ? window.location.hostname
+        : 'docs2.vivliostyle.org';
+      const manifestUrl = `https://${manifestHost}/publications/${product}-${lang}/publication.json`;
       const viewerUrl = `https://vivliostyle.org/viewer/?src=${encodeURIComponent(manifestUrl)}&bookMode=true&lng=${lang}`;
 
       iframe.src = viewerUrl;
@@ -218,46 +223,37 @@ const lang = "en";
     });
   }
 })();</script> </section>  </nav> </aside> <main class="content" data-astro-cid-mw7aashj=""> <nav aria-label="Breadcrumb" class="breadcrumb" data-astro-cid-qaanghzh=""> <ol data-astro-cid-qaanghzh=""> <li data-astro-cid-qaanghzh=""> <a href="/en/" data-astro-cid-qaanghzh="">Home</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <span aria-current="page" data-astro-cid-qaanghzh="">Vivliostyle CLI Documentation</span>  </li> </ol> </nav> <!-- JSON-LD構造化データ --> <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://docs.vivliostyle.org/en/"},{"@type":"ListItem","position":2,"name":"Vivliostyle CLI Documentation","item":"https://docs.vivliostyle.org/en/cli/"}]}</script>  <article class="prose" data-astro-cid-mw7aashj="">    <article data-astro-cid-tdaouxoz="">
-
-  
-    <meta charset="utf-8">
-    <title>Vivliostyle CLI Documentation</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  
-    <section class="level1">
-      <h1 id="vivliostyle-cli-documentation">Vivliostyle CLI Documentation</h1>
-      <ul>
-        
-      </ul>
-      <nav role="doc-toc">
-        <ul>
-          <li>
-            <section class="level3">
-              <h3 id="guide">Guide</h3>
-              <ul>
-                <li><a href="./getting-started/">Getting Started</a></li>
-                <li><a href="./themes-and-css/">Themes and CSS</a></li>
-                <li><a href="./templates/">Templates</a></li>
-                <li><a href="./using-config-file/">Using Config File</a></li>
-                <li><a href="./toc-page/">Creating Table of Contents Page</a></li>
-                <li><a href="./cover-page/">Creating Cover Page</a></li>
-                <li><a href="./special-output-settings/">Special Output Settings</a></li>
-                <li><a href="./frotnend-framework-support/">Frontend Framework Support</a></li>
-              </ul>
-            </section>
-          </li>
-          
-        </ul>
-      </nav>
-    </section>
-    <section class="level3">
-      <h3 id="api">API</h3>
-      <ul>
-        <li><a href="./config/">Config Reference</a></li>
-        <li><a href="./api-javascript/">JavaScript API</a></li>
-      </ul>
-    </section>
-  
-
+<section class="level1">
+  <h1 id="vivliostyle-cli-documentation">Vivliostyle CLI Documentation</h1>
+  <ul>
+    
+  </ul>
+  <nav role="doc-toc">
+    <ul>
+      <li>
+        <section class="level3">
+          <h3 id="guide">Guide</h3>
+          <ul>
+            <li><a href="./getting-started/">Getting Started</a></li>
+            <li><a href="./themes-and-css/">Themes and CSS</a></li>
+            <li><a href="./templates/">Templates</a></li>
+            <li><a href="./using-config-file/">Using Config File</a></li>
+            <li><a href="./toc-page/">Creating Table of Contents Page</a></li>
+            <li><a href="./cover-page/">Creating Cover Page</a></li>
+            <li><a href="./special-output-settings/">Special Output Settings</a></li>
+            <li><a href="./frontend-framework-support/">Frontend Framework Support</a></li>
+          </ul>
+        </section>
+      </li>
+      
+    </ul>
+  </nav>
+</section>
+<section class="level3">
+  <h3 id="api">API</h3>
+  <ul>
+    <li><a href="./config/">Config Reference</a></li>
+    <li><a href="./api-javascript/">JavaScript API</a></li>
+  </ul>
+</section>
 </article> <nav class="page-navigation" data-astro-cid-z7g34ql7=""> <div class="nav-links" data-astro-cid-z7g34ql7=""> <div class="nav-link nav-prev nav-disabled" data-astro-cid-z7g34ql7=""></div> <a href="/en/cli/getting-started/" class="nav-link nav-next" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">Next →</span> <span class="nav-title" data-astro-cid-z7g34ql7="">Getting Started</span> </a> </div> </nav>   </article> </main> </div> <footer class="footer" data-astro-cid-mw7aashj=""> <p data-astro-cid-mw7aashj="">© 2026 Vivliostyle Foundation.</p> </footer> </div>  <script type="module">window.__bodyOverflowLockCount=0;window.lockBodyOverflow=function(){window.__bodyOverflowLockCount++,window.__bodyOverflowLockCount===1&&(document.body.style.overflow="hidden")};window.unlockBodyOverflow=function(){window.__bodyOverflowLockCount=Math.max(0,window.__bodyOverflowLockCount-1),window.__bodyOverflowLockCount===0&&(document.body.style.overflow="")};</script>  <script type="module">document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll(".accordion-toggle").forEach(t=>{t.addEventListener("click",d=>{d.preventDefault();const a=t.getAttribute("data-target"),e=document.getElementById(a),n=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",!n),e&&(e.style.display=n?"none":"block")})})});</script></body></html>

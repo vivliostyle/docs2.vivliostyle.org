@@ -178,12 +178,17 @@ const lang = "ja";
     const open = () => {
       lastFocus = document.activeElement;
 
-      // 本番URL固定でマニフェストを参照する。
-      // localhost / preview からは Vivliostyle Viewer が manifest を取りに行けないので、
-      // その場合は警告を表示する。
-      const isProductionHost = window.location.hostname === 'docs2.vivliostyle.org' ||
-                               window.location.hostname === 'docs.vivliostyle.org';
-      const manifestUrl = `https://docs2.vivliostyle.org/publications/${product}-${lang}/publication.json`;
+      // production host (docs.vivliostyle.org / docs2.vivliostyle.org) では
+      // 自身のホスト上のマニフェストを参照する。それ以外（localhost や
+      // プレビュー環境）からは Vivliostyle Viewer が外部からマニフェストを
+      // 取得できないため、フォールバックとして既定の本番ホストを指定し、
+      // 警告を表示する。
+      const productionHosts = ['docs.vivliostyle.org', 'docs2.vivliostyle.org'];
+      const isProductionHost = productionHosts.includes(window.location.hostname);
+      const manifestHost = isProductionHost
+        ? window.location.hostname
+        : 'docs2.vivliostyle.org';
+      const manifestUrl = `https://${manifestHost}/publications/${product}-${lang}/publication.json`;
       const viewerUrl = `https://vivliostyle.org/viewer/?src=${encodeURIComponent(manifestUrl)}&bookMode=true&lng=${lang}`;
 
       iframe.src = viewerUrl;
@@ -218,57 +223,50 @@ const lang = "ja";
     });
   }
 })();</script> </section>  </nav> </aside> <main class="content" data-astro-cid-mw7aashj=""> <nav aria-label="Breadcrumb" class="breadcrumb" data-astro-cid-qaanghzh=""> <ol data-astro-cid-qaanghzh=""> <li data-astro-cid-qaanghzh=""> <a href="/ja/" data-astro-cid-qaanghzh="">ホーム</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <a href="/ja/themes/" data-astro-cid-qaanghzh="">Themes</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <span aria-current="page" data-astro-cid-qaanghzh="">Themeの開発</span>  </li> </ol> </nav> <!-- JSON-LD構造化データ --> <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ホーム","item":"https://docs.vivliostyle.org/ja/"},{"@type":"ListItem","position":2,"name":"Themes","item":"https://docs.vivliostyle.org/ja/themes/"},{"@type":"ListItem","position":3,"name":"Themeの開発","item":"https://docs.vivliostyle.org/ja/themes/development/"}]}</script>  <article class="prose" data-astro-cid-mw7aashj="">    <article data-astro-cid-4zjl2uzy="">
-
-  
-    <meta charset="utf-8">
-    <title>Themeの開発</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  
-    <section class="level1">
-      <h1 id="themeの開発">Themeの開発</h1>
-      <section class="level2">
-        <h2 id="themeを作成する">Themeを作成する</h2>
-        <section class="level3">
-          <h3 id="create-vivliostyle-themeによる雛形生成">create-vivliostyle-themeによる雛形生成</h3>
-          <p><code>create-vivliostyle-theme</code> CLIを使って、テーマプロジェクトの雛形を生成します。</p>
-          <pre class="language-bash"><code class="language-bash"><span class="token function">npm</span> create vivliostyle-theme <span class="token operator">&lt;</span>theme-name<span class="token operator">&gt;</span></code></pre>
-          <p>対話形式で以下の項目を入力します。</p>
-          <table>
-            <thead>
-              <tr>
-                <th>項目</th>
-                <th>説明</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>description</code></td>
-                <td>テーマの説明</td>
-              </tr>
-              <tr>
-                <td><code>author</code></td>
-                <td>作者名</td>
-              </tr>
-              <tr>
-                <td><code>email</code></td>
-                <td>メールアドレス</td>
-              </tr>
-              <tr>
-                <td><code>license</code></td>
-                <td>ライセンス（MIT、Apache-2.0等）</td>
-              </tr>
-              <tr>
-                <td><code>category</code></td>
-                <td>テーマの分類（<code>novel</code> / <code>magazine</code> / <code>journal</code> / <code>report</code> / <code>misc</code>）</td>
-              </tr>
-            </tbody>
-          </table>
-          <p>実行後、<code>vivliostyle-theme-&lt;theme-name&gt;</code> ディレクトリが生成されます。</p>
-        </section>
-        <section class="level3">
-          <h3 id="生成されるファイル構成">生成されるファイル構成</h3>
-          <pre class="language-text"><code class="language-text">vivliostyle-theme-&lt;name&gt;/
+<section class="level1">
+  <h1 id="themeの開発">Themeの開発</h1>
+  <section class="level2">
+    <h2 id="themeを作成する">Themeを作成する</h2>
+    <section class="level3">
+      <h3 id="create-vivliostyle-themeによる雛形生成">create-vivliostyle-themeによる雛形生成</h3>
+      <p><code>create-vivliostyle-theme</code> CLIを使って、テーマプロジェクトの雛形を生成します。</p>
+      <pre class="language-bash"><code class="language-bash"><span class="token function">npm</span> create vivliostyle-theme <span class="token operator">&lt;</span>theme-name<span class="token operator">&gt;</span></code></pre>
+      <p>対話形式で以下の項目を入力します。</p>
+      <table>
+        <thead>
+          <tr>
+            <th>項目</th>
+            <th>説明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>description</code></td>
+            <td>テーマの説明</td>
+          </tr>
+          <tr>
+            <td><code>author</code></td>
+            <td>作者名</td>
+          </tr>
+          <tr>
+            <td><code>email</code></td>
+            <td>メールアドレス</td>
+          </tr>
+          <tr>
+            <td><code>license</code></td>
+            <td>ライセンス（MIT、Apache-2.0等）</td>
+          </tr>
+          <tr>
+            <td><code>category</code></td>
+            <td>テーマの分類（<code>novel</code> / <code>magazine</code> / <code>journal</code> / <code>report</code> / <code>misc</code>）</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>実行後、<code>vivliostyle-theme-&lt;theme-name&gt;</code> ディレクトリが生成されます。</p>
+    </section>
+    <section class="level3">
+      <h3 id="生成されるファイル構成">生成されるファイル構成</h3>
+      <pre class="language-text"><code class="language-text">vivliostyle-theme-&lt;name&gt;/
 ├── .gitignore
 ├── package.json          # パッケージ定義（vivliostyle.theme 設定を含む）
 ├── README.md             # テーマの説明・使い方
@@ -276,41 +274,41 @@ const lang = "ja";
 ├── vivliostyle.config.js # プレビュー用の設定ファイル
 └── example/
     └── default.md        # サンプル原稿（VFM 形式）</code></pre>
-          <p>各ファイルの役割:</p>
-          <table>
-            <thead>
-              <tr>
-                <th>ファイル</th>
-                <th>役割</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>package.json</code></td>
-                <td>テーマのメタ情報。<code>vivliostyle.theme</code> プロパティでテーマ名・作者・メインCSS・カテゴリを定義</td>
-              </tr>
-              <tr>
-                <td><code>theme.css</code></td>
-                <td>テーマのスタイル定義本体。theme-baseの <code>@import</code> とCSS変数のカスタマイズが初期設定済み</td>
-              </tr>
-              <tr>
-                <td><code>vivliostyle.config.js</code></td>
-                <td><code>vivliostyle preview</code> でテーマの動作確認に使用。entryに <code>example/default.md</code> を指定</td>
-              </tr>
-              <tr>
-                <td><code>example/default.md</code></td>
-                <td>テーマ適用例を示すサンプルMarkdown。<a href="https://vivliostyle.github.io/vfm/#/vfm">VFM</a> 記法に対応</td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-      </section>
-      <section class="level2">
-        <h2 id="雛形をカスタマイズする">雛形をカスタマイズする</h2>
-        <section class="level3">
-          <h3 id="themecssの編集">theme.cssの編集</h3>
-          <p>生成直後の <code>theme.css</code> にはtheme-baseの全モジュールインポートとCSS変数のカスタマイズ例が含まれています。</p>
-          <pre class="language-css"><code class="language-css"><span class="token comment">/* theme-base の全モジュールをインポート */</span>
+      <p>各ファイルの役割:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>ファイル</th>
+            <th>役割</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>package.json</code></td>
+            <td>テーマのメタ情報。<code>vivliostyle.theme</code> プロパティでテーマ名・作者・メインCSS・カテゴリを定義</td>
+          </tr>
+          <tr>
+            <td><code>theme.css</code></td>
+            <td>テーマのスタイル定義本体。theme-baseの <code>@import</code> とCSS変数のカスタマイズが初期設定済み</td>
+          </tr>
+          <tr>
+            <td><code>vivliostyle.config.js</code></td>
+            <td><code>vivliostyle preview</code> でテーマの動作確認に使用。entryに <code>example/default.md</code> を指定</td>
+          </tr>
+          <tr>
+            <td><code>example/default.md</code></td>
+            <td>テーマ適用例を示すサンプルMarkdown。<a href="https://vivliostyle.github.io/vfm/#/vfm">VFM</a> 記法に対応</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="雛形をカスタマイズする">雛形をカスタマイズする</h2>
+    <section class="level3">
+      <h3 id="themecssの編集">theme.cssの編集</h3>
+      <p>生成直後の <code>theme.css</code> にはtheme-baseの全モジュールインポートとCSS変数のカスタマイズ例が含まれています。</p>
+      <pre class="language-css"><code class="language-css"><span class="token comment">/* theme-base の全モジュールをインポート */</span>
 <span class="token atrule"><span class="token rule">@import</span> <span class="token url"><span class="token function">url</span><span class="token punctuation">(</span>../@vivliostyle/theme-base/theme-all.css<span class="token punctuation">)</span></span><span class="token punctuation">;</span></span>
 
 <span class="token comment">/* コードハイライト（Prism）を追加 */</span>
@@ -334,16 +332,16 @@ const lang = "ja";
   <span class="token comment">/* 目次 */</span>
   <span class="token variable">--vs-toc--marker-margin-inline</span><span class="token punctuation">:</span> <span class="token number">8</span><span class="token unit">rem</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span></code></pre>
-          <p>独自のスタイルを追加するには、このファイルの末尾にルールを記述します。ページサイズの設定例:</p>
-          <pre class="language-css"><code class="language-css"><span class="token atrule"><span class="token rule">@page</span></span> <span class="token punctuation">{</span>
+      <p>独自のスタイルを追加するには、このファイルの末尾にルールを記述します。ページサイズの設定例:</p>
+      <pre class="language-css"><code class="language-css"><span class="token atrule"><span class="token rule">@page</span></span> <span class="token punctuation">{</span>
   <span class="token property">size</span><span class="token punctuation">:</span> A5<span class="token punctuation">;</span>
   <span class="token property">margin</span><span class="token punctuation">:</span> <span class="token number">20</span><span class="token unit">mm</span> <span class="token number">15</span><span class="token unit">mm</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span></code></pre>
-        </section>
-        <section class="level3">
-          <h3 id="theme-baseのモジュール活用">theme-baseのモジュール活用</h3>
-          <p>theme-baseは機能ごとにモジュール分割されています。全モジュールが不要な場合は、<code>theme-all.css</code> の代わりに必要なモジュールのみをインポートできます。</p>
-          <pre class="language-css"><code class="language-css"><span class="token comment">/* 基本モジュールのみ */</span>
+    </section>
+    <section class="level3">
+      <h3 id="theme-baseのモジュール活用">theme-baseのモジュール活用</h3>
+      <p>theme-baseは機能ごとにモジュール分割されています。全モジュールが不要な場合は、<code>theme-all.css</code> の代わりに必要なモジュールのみをインポートできます。</p>
+      <pre class="language-css"><code class="language-css"><span class="token comment">/* 基本モジュールのみ */</span>
 <span class="token atrule"><span class="token rule">@import</span> <span class="token url"><span class="token function">url</span><span class="token punctuation">(</span>../@vivliostyle/theme-base/css/common/meta-properties.css<span class="token punctuation">)</span></span><span class="token punctuation">;</span></span>
 <span class="token atrule"><span class="token rule">@import</span> <span class="token url"><span class="token function">url</span><span class="token punctuation">(</span>../@vivliostyle/theme-base/css/common/reset.css<span class="token punctuation">)</span></span><span class="token punctuation">;</span></span>
 <span class="token atrule"><span class="token rule">@import</span> <span class="token url"><span class="token function">url</span><span class="token punctuation">(</span>../@vivliostyle/theme-base/css/common/basic.css<span class="token punctuation">)</span></span><span class="token punctuation">;</span></span>
@@ -351,94 +349,94 @@ const lang = "ja";
 <span class="token comment">/* 必要な機能モジュールを追加 */</span>
 <span class="token atrule"><span class="token rule">@import</span> <span class="token url"><span class="token function">url</span><span class="token punctuation">(</span>../@vivliostyle/theme-base/css/partial/toc.css<span class="token punctuation">)</span></span><span class="token punctuation">;</span></span>
 <span class="token atrule"><span class="token rule">@import</span> <span class="token url"><span class="token function">url</span><span class="token punctuation">(</span>../@vivliostyle/theme-base/css/partial/footnote.css<span class="token punctuation">)</span></span><span class="token punctuation">;</span></span></code></pre>
-          <p>利用可能なモジュール一覧:</p>
-          <table>
-            <thead>
-              <tr>
-                <th>カテゴリ</th>
-                <th>モジュール</th>
-                <th>CSS変数プレフィックス</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>common</td>
-                <td><code>meta-properties.css</code> — ドキュメント全体のメタプロパティ</td>
-                <td><code>--vs-</code></td>
-              </tr>
-              <tr>
-                <td>common</td>
-                <td><code>reset.css</code> — CSSリセット</td>
-                <td>—</td>
-              </tr>
-              <tr>
-                <td>common</td>
-                <td><code>basic.css</code> — 基本HTMLタグのスタイル</td>
-                <td><code>--vs--</code></td>
-              </tr>
-              <tr>
-                <td>partial</td>
-                <td><code>crossref.css</code> — 図表・引用の相互参照</td>
-                <td><code>--vs-crossref--</code></td>
-              </tr>
-              <tr>
-                <td>partial</td>
-                <td><code>endnote.css</code> — 後注</td>
-                <td><code>--vs-endnote--</code></td>
-              </tr>
-              <tr>
-                <td>partial</td>
-                <td><code>footnote.css</code> — 脚注</td>
-                <td><code>--vs-footnote--</code></td>
-              </tr>
-              <tr>
-                <td>partial</td>
-                <td><code>footnote-external-link.css</code> — 外部リンクの脚注化</td>
-                <td><code>--vs-footnote--</code></td>
-              </tr>
-              <tr>
-                <td>partial</td>
-                <td><code>page.css</code> — ページメディア</td>
-                <td><code>--vs-page--</code></td>
-              </tr>
-              <tr>
-                <td>partial</td>
-                <td><code>section.css</code> — 見出し番号・節参照</td>
-                <td><code>--vs-section--</code></td>
-              </tr>
-              <tr>
-                <td>partial</td>
-                <td><code>toc.css</code> — 目次</td>
-                <td><code>--vs-toc--</code></td>
-              </tr>
-              <tr>
-                <td>partial</td>
-                <td><code>utility-classes.css</code> — ユーティリティクラス</td>
-                <td>—</td>
-              </tr>
-              <tr>
-                <td>lib</td>
-                <td><code>prism/base.css</code> — コードハイライト基盤</td>
-                <td><code>--vs-prism--</code></td>
-              </tr>
-              <tr>
-                <td>lib</td>
-                <td><code>prism/theme-prism.css</code> — Prismデフォルトテーマ</td>
-                <td><code>--vs-prism--</code></td>
-              </tr>
-              <tr>
-                <td>lib</td>
-                <td><code>prism/theme-okaidia.css</code> — Okaidiaテーマ</td>
-                <td><code>--vs-prism--</code></td>
-              </tr>
-            </tbody>
-          </table>
-          <p>詳細は <a href="https://github.com/vivliostyle/themes/tree/main/packages/@vivliostyle/theme-base#available-modules-and-css-variables">theme-baseのREADME</a> を参照してください。</p>
-        </section>
-        <section class="level3">
-          <h3 id="css変数のオーバーライド">CSS変数のオーバーライド</h3>
-          <p>theme-baseや各テーマが公開するCSS変数を <code>:root</code> で上書きすることで、テーマをカスタマイズできます。</p>
-          <pre class="language-css"><code class="language-css"><span class="token selector"><span class="token pseudo-class">:root</span></span> <span class="token punctuation">{</span>
+      <p>利用可能なモジュール一覧:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>カテゴリ</th>
+            <th>モジュール</th>
+            <th>CSS変数プレフィックス</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>common</td>
+            <td><code>meta-properties.css</code> — ドキュメント全体のメタプロパティ</td>
+            <td><code>--vs-</code></td>
+          </tr>
+          <tr>
+            <td>common</td>
+            <td><code>reset.css</code> — CSSリセット</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>common</td>
+            <td><code>basic.css</code> — 基本HTMLタグのスタイル</td>
+            <td><code>--vs--</code></td>
+          </tr>
+          <tr>
+            <td>partial</td>
+            <td><code>crossref.css</code> — 図表・引用の相互参照</td>
+            <td><code>--vs-crossref--</code></td>
+          </tr>
+          <tr>
+            <td>partial</td>
+            <td><code>endnote.css</code> — 後注</td>
+            <td><code>--vs-endnote--</code></td>
+          </tr>
+          <tr>
+            <td>partial</td>
+            <td><code>footnote.css</code> — 脚注</td>
+            <td><code>--vs-footnote--</code></td>
+          </tr>
+          <tr>
+            <td>partial</td>
+            <td><code>footnote-external-link.css</code> — 外部リンクの脚注化</td>
+            <td><code>--vs-footnote--</code></td>
+          </tr>
+          <tr>
+            <td>partial</td>
+            <td><code>page.css</code> — ページメディア</td>
+            <td><code>--vs-page--</code></td>
+          </tr>
+          <tr>
+            <td>partial</td>
+            <td><code>section.css</code> — 見出し番号・節参照</td>
+            <td><code>--vs-section--</code></td>
+          </tr>
+          <tr>
+            <td>partial</td>
+            <td><code>toc.css</code> — 目次</td>
+            <td><code>--vs-toc--</code></td>
+          </tr>
+          <tr>
+            <td>partial</td>
+            <td><code>utility-classes.css</code> — ユーティリティクラス</td>
+            <td>—</td>
+          </tr>
+          <tr>
+            <td>lib</td>
+            <td><code>prism/base.css</code> — コードハイライト基盤</td>
+            <td><code>--vs-prism--</code></td>
+          </tr>
+          <tr>
+            <td>lib</td>
+            <td><code>prism/theme-prism.css</code> — Prismデフォルトテーマ</td>
+            <td><code>--vs-prism--</code></td>
+          </tr>
+          <tr>
+            <td>lib</td>
+            <td><code>prism/theme-okaidia.css</code> — Okaidiaテーマ</td>
+            <td><code>--vs-prism--</code></td>
+          </tr>
+        </tbody>
+      </table>
+      <p>詳細は <a href="https://github.com/vivliostyle/themes/tree/main/packages/@vivliostyle/theme-base#available-modules-and-css-variables">theme-baseのREADME</a> を参照してください。</p>
+    </section>
+    <section class="level3">
+      <h3 id="css変数のオーバーライド">CSS変数のオーバーライド</h3>
+      <p>theme-baseや各テーマが公開するCSS変数を <code>:root</code> で上書きすることで、テーマをカスタマイズできます。</p>
+      <pre class="language-css"><code class="language-css"><span class="token selector"><span class="token pseudo-class">:root</span></span> <span class="token punctuation">{</span>
   <span class="token comment">/* フォント設定 */</span>
   <span class="token variable">--vs-font-family</span><span class="token punctuation">:</span> <span class="token string">'Noto Serif JP'</span><span class="token punctuation">,</span> serif<span class="token punctuation">;</span>
   <span class="token variable">--vs-font-size</span><span class="token punctuation">:</span> <span class="token number">10.5</span><span class="token unit">pt</span><span class="token punctuation">;</span>
@@ -455,8 +453,8 @@ const lang = "ja";
   <span class="token variable">--vs-page--mbox-content-top-right</span><span class="token punctuation">:</span> <span class="token function">env</span><span class="token punctuation">(</span>doc-title<span class="token punctuation">)</span><span class="token punctuation">;</span>
   <span class="token variable">--vs-page--mbox-content-bottom-center</span><span class="token punctuation">:</span> <span class="token function">counter</span><span class="token punctuation">(</span>page<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span></code></pre>
-          <p>実際のテーマでの活用例として、<a href="https://github.com/vivliostyle/themes/tree/main/packages/@vivliostyle/theme-techbook">theme-techbook</a> はテーマ固有のCSS変数（<code>--vs-theme--*</code>）を公開しています:</p>
-          <pre class="language-css"><code class="language-css"><span class="token selector"><span class="token pseudo-class">:root</span></span> <span class="token punctuation">{</span>
+      <p>実際のテーマでの活用例として、<a href="https://github.com/vivliostyle/themes/tree/main/packages/@vivliostyle/theme-techbook">theme-techbook</a> はテーマ固有のCSS変数（<code>--vs-theme--*</code>）を公開しています:</p>
+      <pre class="language-css"><code class="language-css"><span class="token selector"><span class="token pseudo-class">:root</span></span> <span class="token punctuation">{</span>
   <span class="token variable">--vs-theme--anchor-color-body</span><span class="token punctuation">:</span> <span class="token hexcode color">#3498db</span><span class="token punctuation">;</span>
   <span class="token variable">--vs-theme--blockquote-color-bg</span><span class="token punctuation">:</span> <span class="token hexcode color">#ecf0f1</span><span class="token punctuation">;</span>
   <span class="token variable">--vs-theme--inline-code-color-bg</span><span class="token punctuation">:</span> <span class="token hexcode color">#ecf0f1</span><span class="token punctuation">;</span>
@@ -464,56 +462,56 @@ const lang = "ja";
   <span class="token variable">--vs-theme--page-top-left-content</span><span class="token punctuation">:</span> <span class="token function">env</span><span class="token punctuation">(</span>pub-title<span class="token punctuation">)</span><span class="token punctuation">;</span>
   <span class="token variable">--vs-theme--page-bottom-content</span><span class="token punctuation">:</span> <span class="token function">counter</span><span class="token punctuation">(</span>page<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span></code></pre>
-        </section>
-        <section class="level3">
-          <h3 id="example-ディレクトリの編集">example/ ディレクトリの編集</h3>
-          <p><code>example/</code> にはテーマの適用例を示すサンプルMarkdownを配置します。</p>
-          <ul>
-            <li>最低1つのMarkdownファイルが必要です</li>
-            <li><a href="https://vivliostyle.github.io/vfm/#/vfm">VFM (Vivliostyle Flavored Markdown)</a> 記法が利用できます</li>
-            <li>テーマが対応する主要なスタイル（見出し、コードブロック、脚注、画像、数式等）を網羅する内容を推奨します</li>
-          </ul>
-          <p>プレビューで動作確認:</p>
-          <pre class="language-bash"><code class="language-bash"><span class="token function">npm</span> run preview</code></pre>
-        </section>
-      </section>
-      <section class="level2">
-        <h2 id="themeを公開する">Themeを公開する</h2>
-        <section class="level3">
-          <h3 id="事前検証">事前検証</h3>
-          <p>公開前に <code>vivliostyle-theme-scripts validate</code> を実行して、パッケージの妥当性を検証します。</p>
-          <pre class="language-bash"><code class="language-bash"><span class="token function">npm</span> run validate</code></pre>
-          <p>検証項目:</p>
-          <table>
-            <thead>
-              <tr>
-                <th>チェック</th>
-                <th>種別</th>
-                <th>内容</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>スタイルロケータ</td>
-                <td>エラー</td>
-                <td><code>vivliostyle.theme.style</code>、<code>style</code>、<code>main</code> のいずれかが設定されていること</td>
-              </tr>
-              <tr>
-                <td>作者情報</td>
-                <td>警告</td>
-                <td><code>vivliostyle.theme.author</code> または <code>author</code> が設定されていること</td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-        <section class="level3">
-          <h3 id="プレビュー確認">プレビュー確認</h3>
-          <pre class="language-bash"><code class="language-bash"><span class="token function">npm</span> run preview</code></pre>
-          <p><code>vivliostyle.config.js</code> の設定に基づき、<code>example/</code> のサンプル原稿にテーマを適用した状態でプレビューが表示されます。</p>
-        </section>
-        <section class="level3">
-          <h3 id="packagejsonの必須フィールド">package.jsonの必須フィールド</h3>
-          <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+    </section>
+    <section class="level3">
+      <h3 id="example-ディレクトリの編集">example/ ディレクトリの編集</h3>
+      <p><code>example/</code> にはテーマの適用例を示すサンプルMarkdownを配置します。</p>
+      <ul>
+        <li>最低1つのMarkdownファイルが必要です</li>
+        <li><a href="https://vivliostyle.github.io/vfm/#/vfm">VFM (Vivliostyle Flavored Markdown)</a> 記法が利用できます</li>
+        <li>テーマが対応する主要なスタイル（見出し、コードブロック、脚注、画像、数式等）を網羅する内容を推奨します</li>
+      </ul>
+      <p>プレビューで動作確認:</p>
+      <pre class="language-bash"><code class="language-bash"><span class="token function">npm</span> run preview</code></pre>
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="themeを公開する">Themeを公開する</h2>
+    <section class="level3">
+      <h3 id="事前検証">事前検証</h3>
+      <p>公開前に <code>vivliostyle-theme-scripts validate</code> を実行して、パッケージの妥当性を検証します。</p>
+      <pre class="language-bash"><code class="language-bash"><span class="token function">npm</span> run validate</code></pre>
+      <p>検証項目:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>チェック</th>
+            <th>種別</th>
+            <th>内容</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>スタイルロケータ</td>
+            <td>エラー</td>
+            <td><code>vivliostyle.theme.style</code>、<code>style</code>、<code>main</code> のいずれかが設定されていること</td>
+          </tr>
+          <tr>
+            <td>作者情報</td>
+            <td>警告</td>
+            <td><code>vivliostyle.theme.author</code> または <code>author</code> が設定されていること</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    <section class="level3">
+      <h3 id="プレビュー確認">プレビュー確認</h3>
+      <pre class="language-bash"><code class="language-bash"><span class="token function">npm</span> run preview</code></pre>
+      <p><code>vivliostyle.config.js</code> の設定に基づき、<code>example/</code> のサンプル原稿にテーマを適用した状態でプレビューが表示されます。</p>
+    </section>
+    <section class="level3">
+      <h3 id="packagejsonの必須フィールド">package.jsonの必須フィールド</h3>
+      <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"vivliostyle-theme-&lt;name&gt;"</span><span class="token punctuation">,</span>
   <span class="token property">"main"</span><span class="token operator">:</span> <span class="token string">"theme.css"</span><span class="token punctuation">,</span>
   <span class="token property">"keywords"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"vivliostyle"</span><span class="token punctuation">,</span> <span class="token string">"vivliostyle-theme"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
@@ -527,64 +525,62 @@ const lang = "ja";
     <span class="token punctuation">}</span>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre>
-          <table>
-            <thead>
-              <tr>
-                <th>フィールド</th>
-                <th>必須</th>
-                <th>説明</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>vivliostyle.theme.style</code></td>
-                <td>✅</td>
-                <td>メインCSSファイルのパス</td>
-              </tr>
-              <tr>
-                <td><code>vivliostyle.theme.author</code></td>
-                <td>✅</td>
-                <td>テーマの作者名</td>
-              </tr>
-              <tr>
-                <td><code>vivliostyle.theme.name</code></td>
-                <td>—</td>
-                <td>テーマの表示名</td>
-              </tr>
-              <tr>
-                <td><code>vivliostyle.theme.category</code></td>
-                <td>—</td>
-                <td><code>novel</code> / <code>magazine</code> / <code>journal</code> / <code>report</code> / <code>misc</code></td>
-              </tr>
-              <tr>
-                <td><code>vivliostyle.theme.topics</code></td>
-                <td>—</td>
-                <td>テーマの用途を示すトピックの配列</td>
-              </tr>
-              <tr>
-                <td><code>keywords</code></td>
-                <td>—</td>
-                <td><code>"vivliostyle"</code> と <code>"vivliostyle-theme"</code> を含めることを推奨</td>
-              </tr>
-            </tbody>
-          </table>
-          <p>詳細な仕様は <a href="./spec/">Vivliostyle Themeの仕様</a> を参照してください。</p>
-        </section>
-        <section class="level3">
-          <h3 id="npmへの公開">npmへの公開</h3>
-          <pre class="language-bash"><code class="language-bash"><span class="token function">npm</span> publish</code></pre>
-          <p>公開後、テーマは以下から検索可能になります:</p>
-          <ul>
-            <li><a href="https://github.com/topics/vivliostyle-theme">GitHub Topics: vivliostyle-theme</a></li>
-            <li><a href="https://www.npmjs.com/search?q=keywords%3Avivliostyle-theme">npm: vivliostyle-theme</a></li>
-          </ul>
-        </section>
-        <section class="level3">
-          <h3 id="公式テーマとして提案する">公式テーマとして提案する</h3>
-          <p>自作したテーマは、ぜひVivliostyle公式テーマとして提案してください。詳細は <a href="./official/">公式Themeの採用</a> を参照してください。</p>
-        </section>
-      </section>
+      <table>
+        <thead>
+          <tr>
+            <th>フィールド</th>
+            <th>必須</th>
+            <th>説明</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>vivliostyle.theme.style</code></td>
+            <td>✅</td>
+            <td>メインCSSファイルのパス</td>
+          </tr>
+          <tr>
+            <td><code>vivliostyle.theme.author</code></td>
+            <td>✅</td>
+            <td>テーマの作者名</td>
+          </tr>
+          <tr>
+            <td><code>vivliostyle.theme.name</code></td>
+            <td>—</td>
+            <td>テーマの表示名</td>
+          </tr>
+          <tr>
+            <td><code>vivliostyle.theme.category</code></td>
+            <td>—</td>
+            <td><code>novel</code> / <code>magazine</code> / <code>journal</code> / <code>report</code> / <code>misc</code></td>
+          </tr>
+          <tr>
+            <td><code>vivliostyle.theme.topics</code></td>
+            <td>—</td>
+            <td>テーマの用途を示すトピックの配列</td>
+          </tr>
+          <tr>
+            <td><code>keywords</code></td>
+            <td>—</td>
+            <td><code>"vivliostyle"</code> と <code>"vivliostyle-theme"</code> を含めることを推奨</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>詳細な仕様は <a href="./spec/">Vivliostyle Themeの仕様</a> を参照してください。</p>
     </section>
-  
-
+    <section class="level3">
+      <h3 id="npmへの公開">npmへの公開</h3>
+      <pre class="language-bash"><code class="language-bash"><span class="token function">npm</span> publish</code></pre>
+      <p>公開後、テーマは以下から検索可能になります:</p>
+      <ul>
+        <li><a href="https://github.com/topics/vivliostyle-theme">GitHub Topics: vivliostyle-theme</a></li>
+        <li><a href="https://www.npmjs.com/search?q=keywords%3Avivliostyle-theme">npm: vivliostyle-theme</a></li>
+      </ul>
+    </section>
+    <section class="level3">
+      <h3 id="公式テーマとして提案する">公式テーマとして提案する</h3>
+      <p>自作したテーマは、ぜひVivliostyle公式テーマとして提案してください。詳細は <a href="./official/">公式Themeの採用</a> を参照してください。</p>
+    </section>
+  </section>
+</section>
 </article> <nav class="page-navigation" data-astro-cid-z7g34ql7=""> <div class="nav-links" data-astro-cid-z7g34ql7=""> <a href="/ja/themes/official/" class="nav-link nav-prev" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">← 前へ</span> <span class="nav-title" data-astro-cid-z7g34ql7="">公式 Theme の採用</span> </a> <a href="/ja/themes/usage/" class="nav-link nav-next" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">次へ →</span> <span class="nav-title" data-astro-cid-z7g34ql7="">テーマの使い方</span> </a> </div> </nav>   </article> </main> </div> <footer class="footer" data-astro-cid-mw7aashj=""> <p data-astro-cid-mw7aashj="">© 2026 Vivliostyle Foundation.</p> </footer> </div>  <script type="module">window.__bodyOverflowLockCount=0;window.lockBodyOverflow=function(){window.__bodyOverflowLockCount++,window.__bodyOverflowLockCount===1&&(document.body.style.overflow="hidden")};window.unlockBodyOverflow=function(){window.__bodyOverflowLockCount=Math.max(0,window.__bodyOverflowLockCount-1),window.__bodyOverflowLockCount===0&&(document.body.style.overflow="")};</script>  <script type="module">document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll(".accordion-toggle").forEach(t=>{t.addEventListener("click",d=>{d.preventDefault();const a=t.getAttribute("data-target"),e=document.getElementById(a),n=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",!n),e&&(e.style.display=n?"none":"block")})})});</script></body></html>

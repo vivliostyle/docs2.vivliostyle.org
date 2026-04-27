@@ -32,7 +32,7 @@ jobs:
         run: npm run build
 
       - name: Build PDF and EPUB for all products
-        run: npm run build:pdf
+        run: npm run build:formats
 
       - name: Upload generated PDFs and EPUBs
         uses: actions/upload-artifact@v4

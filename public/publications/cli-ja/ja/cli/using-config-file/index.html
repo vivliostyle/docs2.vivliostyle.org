@@ -178,12 +178,17 @@ const lang = "ja";
     const open = () => {
       lastFocus = document.activeElement;
 
-      // 本番URL固定でマニフェストを参照する。
-      // localhost / preview からは Vivliostyle Viewer が manifest を取りに行けないので、
-      // その場合は警告を表示する。
-      const isProductionHost = window.location.hostname === 'docs2.vivliostyle.org' ||
-                               window.location.hostname === 'docs.vivliostyle.org';
-      const manifestUrl = `https://docs2.vivliostyle.org/publications/${product}-${lang}/publication.json`;
+      // production host (docs.vivliostyle.org / docs2.vivliostyle.org) では
+      // 自身のホスト上のマニフェストを参照する。それ以外（localhost や
+      // プレビュー環境）からは Vivliostyle Viewer が外部からマニフェストを
+      // 取得できないため、フォールバックとして既定の本番ホストを指定し、
+      // 警告を表示する。
+      const productionHosts = ['docs.vivliostyle.org', 'docs2.vivliostyle.org'];
+      const isProductionHost = productionHosts.includes(window.location.hostname);
+      const manifestHost = isProductionHost
+        ? window.location.hostname
+        : 'docs2.vivliostyle.org';
+      const manifestUrl = `https://${manifestHost}/publications/${product}-${lang}/publication.json`;
       const viewerUrl = `https://vivliostyle.org/viewer/?src=${encodeURIComponent(manifestUrl)}&bookMode=true&lng=${lang}`;
 
       iframe.src = viewerUrl;
@@ -218,22 +223,15 @@ const lang = "ja";
     });
   }
 })();</script> </section>  </nav> </aside> <main class="content" data-astro-cid-mw7aashj=""> <nav aria-label="Breadcrumb" class="breadcrumb" data-astro-cid-qaanghzh=""> <ol data-astro-cid-qaanghzh=""> <li data-astro-cid-qaanghzh=""> <a href="/ja/" data-astro-cid-qaanghzh="">ホーム</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <a href="/ja/cli/" data-astro-cid-qaanghzh="">CLI</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <span aria-current="page" data-astro-cid-qaanghzh="">構成ファイル</span>  </li> </ol> </nav> <!-- JSON-LD構造化データ --> <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"ホーム","item":"https://docs.vivliostyle.org/ja/"},{"@type":"ListItem","position":2,"name":"CLI","item":"https://docs.vivliostyle.org/ja/cli/"},{"@type":"ListItem","position":3,"name":"構成ファイル","item":"https://docs.vivliostyle.org/ja/cli/using-config-file/"}]}</script>  <article class="prose" data-astro-cid-mw7aashj="">    <article data-astro-cid-lxp5afuy="">
-
-  
-    <meta charset="utf-8">
-    <title>構成ファイル</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  
-    <section class="level1">
-      <h1 id="構成ファイル">構成ファイル</h1>
-      <p>複数の記事や章ごとのファイルをまとめて１つの出版物を構成するには、構成ファイルを利用します。<code>vivliostyle build</code> または <code>vivliostyle preview</code> コマンドを実行するとき、カレントディレクトリに構成ファイル <code>vivliostyle.config.js</code> があるとそれが使われます。また、<code>vivliostyle.config.json</code> というファイル名で <a href="https://code.visualstudio.com/docs/languages/json#_json-with-comments">JSONC</a>（コメント付きJSON）形式で構成ファイルを作成することもできます。</p>
-      <section class="level2">
-        <h2 id="構成ファイルの作成">構成ファイルの作成</h2>
-        <p>次のコマンドで構成ファイル <code>vivliostyle.config.js</code> を作成することができます。</p>
-        <pre class="language-text"><code class="language-text">vivliostyle init</code></pre>
-        <p>これでカレントディレクトリに <code>vivliostyle.config.js</code> が生成されます。作成される <code>vivliostyle.config.js</code> ファイルは以下のようなものです。</p>
-        <pre class="language-js"><code class="language-js"><span class="token comment">// @ts-check</span>
+<section class="level1">
+  <h1 id="構成ファイル">構成ファイル</h1>
+  <p>複数の記事や章ごとのファイルをまとめて１つの出版物を構成するには、構成ファイルを利用します。<code>vivliostyle build</code> または <code>vivliostyle preview</code> コマンドを実行するとき、カレントディレクトリに構成ファイル <code>vivliostyle.config.js</code> があるとそれが使われます。また、<code>vivliostyle.config.json</code> というファイル名で <a href="https://code.visualstudio.com/docs/languages/json#_json-with-comments">JSONC</a>（コメント付きJSON）形式で構成ファイルを作成することもできます。</p>
+  <section class="level2">
+    <h2 id="構成ファイルの作成">構成ファイルの作成</h2>
+    <p>次のコマンドで構成ファイル <code>vivliostyle.config.js</code> を作成することができます。</p>
+    <pre class="language-text"><code class="language-text">vivliostyle init</code></pre>
+    <p>これでカレントディレクトリに <code>vivliostyle.config.js</code> が生成されます。作成される <code>vivliostyle.config.js</code> ファイルは以下のようなものです。</p>
+    <pre class="language-js"><code class="language-js"><span class="token comment">// @ts-check</span>
 <span class="token keyword module">import</span> <span class="token imports"><span class="token punctuation">{</span> defineConfig <span class="token punctuation">}</span></span> <span class="token keyword module">from</span> <span class="token string">'@vivliostyle/cli'</span><span class="token punctuation">;</span>
 
 <span class="token keyword module">export</span> <span class="token keyword module">default</span> <span class="token function">defineConfig</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
@@ -243,59 +241,59 @@ const lang = "ja";
   <span class="token literal-property property">image</span><span class="token operator">:</span> <span class="token string">'ghcr.io/vivliostyle/cli:latest'</span><span class="token punctuation">,</span>
   <span class="token literal-property property">entry</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">'manuscript.md'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
 <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
-      </section>
-      <section class="level2">
-        <h2 id="構成ファイルの設定内容">構成ファイルの設定内容</h2>
-        <p>構成ファイルの設定内容についてはファイル内のコメント（<code>//</code> ではじまる）に説明があります。それぞれの項目について主要な設定内容を紹介します。すべての設定内容については <a href="/en/cli/config/">Config Reference</a> を参照してください。</p>
+  </section>
+  <section class="level2">
+    <h2 id="構成ファイルの設定内容">構成ファイルの設定内容</h2>
+    <p>構成ファイルの設定内容についてはファイル内のコメント（<code>//</code> ではじまる）に説明があります。それぞれの項目について主要な設定内容を紹介します。すべての設定内容については <a href="/ja/cli/config/">Config Reference</a> を参照してください。</p>
+    <ul>
+      <li><strong>title</strong>: 出版物のタイトル（例: <code>title: 'Principia'</code>）</li>
+      <li><strong>author</strong>: 著者名（例: <code>author: 'Isaac Newton'</code>）</li>
+      <li><strong>language</strong>: 言語（例: <code>language: 'en'</code>）。この指定があると HTML の <code>lang</code> 属性に反映されます。</li>
+      <li><strong>size</strong>: ページサイズ（例: <code>size: 'A4'</code>）。指定方法は <a href="./themes-and-css.md#%E3%83%9A%E3%83%BC%E3%82%B8%E3%82%B5%E3%82%A4%E3%82%BA%E3%81%AE%E6%8C%87%E5%AE%9A">ページサイズの指定</a> を参照してください。</li>
+      <li><strong>theme</strong>: ドキュメント全体に適用する <a href="./themes-and-css.md#vivliostyle-themes-%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6">Vivliostyle Themes</a> のパッケージ名、または CSS ファイルのパスを指定します。以下の値を指定することができ、複数のテーマを配列形式で指定することもできます。
         <ul>
-          <li><strong>title</strong>: 出版物のタイトル（例: <code>title: 'Principia'</code>）</li>
-          <li><strong>author</strong>: 著者名（例: <code>author: 'Isaac Newton'</code>）</li>
-          <li><strong>language</strong>: 言語（例: <code>language: 'en'</code>）。この指定があると HTML の <code>lang</code> 属性に反映されます。</li>
-          <li><strong>size</strong>: ページサイズ（例: <code>size: 'A4'</code>）。指定方法は <a href="./themes-and-css.md#%E3%83%9A%E3%83%BC%E3%82%B8%E3%82%B5%E3%82%A4%E3%82%BA%E3%81%AE%E6%8C%87%E5%AE%9A">ページサイズの指定</a> を参照してください。</li>
-          <li><strong>theme</strong>: ドキュメント全体に適用する <a href="./themes-and-css.md#vivliostyle-themes-%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6">Vivliostyle Themes</a> のパッケージ名、または CSS ファイルのパスを指定します。以下の値を指定することができ、複数のテーマを配列形式で指定することもできます。
-            <ul>
-              <li>npm スタイルのパッケージ名（例: <code>@vivliostyle/theme-techbook</code>, <code>./local-pkg</code>）</li>
-              <li>単一の CSS を指定する URL やローカルファイルのパス（例: <code>./style.css</code>, <code>https://example.com/style.css</code>）</li>
-            </ul>
-          </li>
-          <li>
-            <strong>entry</strong>: 入力の Markdown または HTML ファイルの配列を指定します。
-            <code>js entry: [ { path: 'about.md', title: 'About This Book', theme: 'about.css' }, 'chapter1.md', 'chapter2.md', 'glossary.html' ], </code>entry には文字列またはオブジェクト形式で入力の指定ができます。オブジェクト形式の場合、以下のプロパティを追加できます。
-            <ul>
-              <li><code>path</code>: エントリーのパスを指定します。このプロパティは必須ですが、<code>rel: 'contents'</code> または <code>rel: 'cover'</code> を指定するときのみ不要です。この指定については、以下の項目を参照してください
-                <ul>
-                  <li><a href="./toc-page.md#%E7%9B%AE%E6%AC%A1%E3%82%92%E5%87%BA%E7%89%88%E7%89%A9%E3%81%AE%E5%85%88%E9%A0%AD%E4%BB%A5%E5%A4%96%E3%81%AE%E5%A0%B4%E6%89%80%E3%81%AB%E5%87%BA%E5%8A%9B%E3%81%99%E3%82%8B%E3%81%AB%E3%81%AF">目次を出版物の先頭以外の場所に出力するには</a></li>
-                  <li><a href="./cover-page.md#%E8%A1%A8%E7%B4%99%E3%83%9A%E3%83%BC%E3%82%B8%E3%82%92%E5%87%BA%E7%89%88%E7%89%A9%E3%81%AE%E5%85%88%E9%A0%AD%E4%BB%A5%E5%A4%96%E3%81%AE%E5%A0%B4%E6%89%80%E3%81%AB%E5%87%BA%E5%8A%9B%E3%81%99%E3%82%8B%E3%81%AB%E3%81%AF">表紙ページを出版物の先頭以外の場所に出力するには</a></li>
-                </ul>
-              </li>
-              <li><code>title</code>: エントリーのタイトルを指定します。このプロパティを設定しない場合、エントリーの内容からタイトルが取得されます。</li>
-              <li><code>theme</code>: エントリーに適用する Vivliostyle Themes のパッケージ名、または CSS ファイルのパスを指定します。</li>
-            </ul>
-          </li>
-          <li>
-            <strong>output</strong>: 出力先を指定。例: <code>output: 'output.pdf'</code>。デフォルトは <code>{title}.pdf</code>。次のように複数の出力を配列形式で指定することも可能です:
-            <code>js output: [ './output.pdf', { path: './book', format: 'webpub', }, ], </code>output には文字列またはオブジェクト形式で出力の指定ができます。オブジェクト形式の場合、以下のプロパティを追加できます。
-            <ul>
-              <li><code>path</code>: 出力先のパスを指定します。このプロパティは必須です。</li>
-              <li><code>format</code>: 出力するフォーマットを指定します（指定可能なオプション: <code>pdf</code>, <code>epub</code>, <code>webpub</code>）EPUB出力については <a href="./special-output-settings.md#epub-%E5%BD%A2%E5%BC%8F%E3%81%AE%E5%87%BA%E5%8A%9B">EPUB 形式の出力</a> を、WebPub 出力については <a href="./special-output-settings.md#web-%E5%87%BA%E7%89%88%E7%89%A9webpub%E3%81%AE%E5%87%BA%E5%8A%9B">Web 出版物（WebPub）の出力</a> を参照してください。</li>
-            </ul>
-          </li>
-          <li><strong>workspaceDir</strong>: 中間ファイルを保存するディレクトリを指定。この指定がない場合のデフォルトはカレントディレクトリであり、Markdown から変換された HTML ファイルは Markdown ファイルと同じ場所に保存されます。例: <code>workspaceDir: '.vivliostyle'</code></li>
-          <li><strong>toc</strong>: このプロパティを指定すると、目次を含む HTML ファイル <code>index.html</code> が出力されます。詳しくは <a href="./toc-page/">目次の作成</a> を参照してください。</li>
-          <li><strong>cover</strong>: このプロパティを指定すると、表紙ページ用の HTML ファイル <code>cover.html</code> が出力されます。詳しくは <a href="./cover-page/">表紙ページの作成</a> を参照してください。</li>
-          <li><strong>image</strong>: 使用する Docker のイメージを変更します。詳細は <a href="./special-output-settings#docker-%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%9F%E7%94%9F%E6%88%90">Dockerを利用した生成</a> を参照してください。</li>
+          <li>npm スタイルのパッケージ名（例: <code>@vivliostyle/theme-techbook</code>, <code>./local-pkg</code>）</li>
+          <li>単一の CSS を指定する URL やローカルファイルのパス（例: <code>./style.css</code>, <code>https://example.com/style.css</code>）</li>
         </ul>
-      </section>
-      <section class="level2">
-        <h2 id="複数の入出力を一度に対応する">複数の入出力を一度に対応する</h2>
+      </li>
+      <li>
+        <strong>entry</strong>: 入力の Markdown または HTML ファイルの配列を指定します。
+        <code>js entry: [ { path: 'about.md', title: 'About This Book', theme: 'about.css' }, 'chapter1.md', 'chapter2.md', 'glossary.html' ], </code>entry には文字列またはオブジェクト形式で入力の指定ができます。オブジェクト形式の場合、以下のプロパティを追加できます。
         <ul>
-          <li><a href="https://github.com/vivliostyle/vivliostyle-cli/tree/main/examples/multiple-input-and-output">Example: multiple-input-and-output</a></li>
+          <li><code>path</code>: エントリーのパスを指定します。このプロパティは必須ですが、<code>rel: 'contents'</code> または <code>rel: 'cover'</code> を指定するときのみ不要です。この指定については、以下の項目を参照してください
+            <ul>
+              <li><a href="./toc-page.md#%E7%9B%AE%E6%AC%A1%E3%82%92%E5%87%BA%E7%89%88%E7%89%A9%E3%81%AE%E5%85%88%E9%A0%AD%E4%BB%A5%E5%A4%96%E3%81%AE%E5%A0%B4%E6%89%80%E3%81%AB%E5%87%BA%E5%8A%9B%E3%81%99%E3%82%8B%E3%81%AB%E3%81%AF">目次を出版物の先頭以外の場所に出力するには</a></li>
+              <li><a href="./cover-page.md#%E8%A1%A8%E7%B4%99%E3%83%9A%E3%83%BC%E3%82%B8%E3%82%92%E5%87%BA%E7%89%88%E7%89%A9%E3%81%AE%E5%85%88%E9%A0%AD%E4%BB%A5%E5%A4%96%E3%81%AE%E5%A0%B4%E6%89%80%E3%81%AB%E5%87%BA%E5%8A%9B%E3%81%99%E3%82%8B%E3%81%AB%E3%81%AF">表紙ページを出版物の先頭以外の場所に出力するには</a></li>
+            </ul>
+          </li>
+          <li><code>title</code>: エントリーのタイトルを指定します。このプロパティを設定しない場合、エントリーの内容からタイトルが取得されます。</li>
+          <li><code>theme</code>: エントリーに適用する Vivliostyle Themes のパッケージ名、または CSS ファイルのパスを指定します。</li>
         </ul>
-        <p>
-          以上の構成ファイルのオプションは、配列で複数指定することができます。配列として設定すると、複数の入力・出力を一度に扱うことができて便利です。
-          以下の例は、<code>src</code> ディレクトリにある Markdown ファイルから同名の PDF ファイルに変換する構成ファイルです。
-        </p>
-        <pre class="language-js"><code class="language-js"><span class="token keyword">const</span> fs <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'fs'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      </li>
+      <li>
+        <strong>output</strong>: 出力先を指定。例: <code>output: 'output.pdf'</code>。デフォルトは <code>{title}.pdf</code>。次のように複数の出力を配列形式で指定することも可能です:
+        <code>js output: [ './output.pdf', { path: './book', format: 'webpub', }, ], </code>output には文字列またはオブジェクト形式で出力の指定ができます。オブジェクト形式の場合、以下のプロパティを追加できます。
+        <ul>
+          <li><code>path</code>: 出力先のパスを指定します。このプロパティは必須です。</li>
+          <li><code>format</code>: 出力するフォーマットを指定します（指定可能なオプション: <code>pdf</code>, <code>epub</code>, <code>webpub</code>）EPUB出力については <a href="./special-output-settings.md#epub-%E5%BD%A2%E5%BC%8F%E3%81%AE%E5%87%BA%E5%8A%9B">EPUB 形式の出力</a> を、WebPub 出力については <a href="./special-output-settings.md#web-%E5%87%BA%E7%89%88%E7%89%A9webpub%E3%81%AE%E5%87%BA%E5%8A%9B">Web 出版物（WebPub）の出力</a> を参照してください。</li>
+        </ul>
+      </li>
+      <li><strong>workspaceDir</strong>: 中間ファイルを保存するディレクトリを指定。この指定がない場合のデフォルトはカレントディレクトリであり、Markdown から変換された HTML ファイルは Markdown ファイルと同じ場所に保存されます。例: <code>workspaceDir: '.vivliostyle'</code></li>
+      <li><strong>toc</strong>: このプロパティを指定すると、目次を含む HTML ファイル <code>index.html</code> が出力されます。詳しくは <a href="./toc-page/">目次の作成</a> を参照してください。</li>
+      <li><strong>cover</strong>: このプロパティを指定すると、表紙ページ用の HTML ファイル <code>cover.html</code> が出力されます。詳しくは <a href="./cover-page/">表紙ページの作成</a> を参照してください。</li>
+      <li><strong>image</strong>: 使用する Docker のイメージを変更します。詳細は <a href="./special-output-settings#docker-%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%9F%E7%94%9F%E6%88%90">Dockerを利用した生成</a> を参照してください。</li>
+    </ul>
+  </section>
+  <section class="level2">
+    <h2 id="複数の入出力を一度に対応する">複数の入出力を一度に対応する</h2>
+    <ul>
+      <li><a href="https://github.com/vivliostyle/vivliostyle-cli/tree/main/examples/multiple-input-and-output">Example: multiple-input-and-output</a></li>
+    </ul>
+    <p>
+      以上の構成ファイルのオプションは、配列で複数指定することができます。配列として設定すると、複数の入力・出力を一度に扱うことができて便利です。
+      以下の例は、<code>src</code> ディレクトリにある Markdown ファイルから同名の PDF ファイルに変換する構成ファイルです。
+    </p>
+    <pre class="language-js"><code class="language-js"><span class="token keyword">const</span> fs <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'fs'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token keyword">const</span> path <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'path'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 <span class="token keyword">const</span> inputDir <span class="token operator">=</span> path<span class="token punctuation">.</span><span class="token method function property-access">join</span><span class="token punctuation">(</span>__dirname<span class="token punctuation">,</span> <span class="token string">'src'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -311,8 +309,6 @@ const lang = "ja";
     <span class="token literal-property property">output</span><span class="token operator">:</span> path<span class="token punctuation">.</span><span class="token method function property-access">join</span><span class="token punctuation">(</span>outputDir<span class="token punctuation">,</span> <span class="token template-string"><span class="token template-punctuation string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>path<span class="token punctuation">.</span><span class="token method function property-access">basename</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> <span class="token string">'.md'</span><span class="token punctuation">)</span><span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">.pdf</span><span class="token template-punctuation string">`</span></span><span class="token punctuation">)</span><span class="token punctuation">,</span>
   <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 module<span class="token punctuation">.</span><span class="token property-access">exports</span> <span class="token operator">=</span> vivliostyleConfig<span class="token punctuation">;</span></code></pre>
-      </section>
-    </section>
-  
-
+  </section>
+</section>
 </article> <nav class="page-navigation" data-astro-cid-z7g34ql7=""> <div class="nav-links" data-astro-cid-z7g34ql7=""> <a href="/ja/cli/themes-and-css/" class="nav-link nav-prev" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">← 前へ</span> <span class="nav-title" data-astro-cid-z7g34ql7="">テーマと CSS</span> </a> <a href="/ja/cli/toc-page/" class="nav-link nav-next" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">次へ →</span> <span class="nav-title" data-astro-cid-z7g34ql7="">目次の作成</span> </a> </div> </nav>   </article> </main> </div> <footer class="footer" data-astro-cid-mw7aashj=""> <p data-astro-cid-mw7aashj="">© 2026 Vivliostyle Foundation.</p> </footer> </div>  <script type="module">window.__bodyOverflowLockCount=0;window.lockBodyOverflow=function(){window.__bodyOverflowLockCount++,window.__bodyOverflowLockCount===1&&(document.body.style.overflow="hidden")};window.unlockBodyOverflow=function(){window.__bodyOverflowLockCount=Math.max(0,window.__bodyOverflowLockCount-1),window.__bodyOverflowLockCount===0&&(document.body.style.overflow="")};</script>  <script type="module">document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll(".accordion-toggle").forEach(t=>{t.addEventListener("click",d=>{d.preventDefault();const a=t.getAttribute("data-target"),e=document.getElementById(a),n=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",!n),e&&(e.style.display=n?"none":"block")})})});</script></body></html>

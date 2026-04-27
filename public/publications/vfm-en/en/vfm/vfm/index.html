@@ -178,12 +178,17 @@ const lang = "en";
     const open = () => {
       lastFocus = document.activeElement;
 
-      // 本番URL固定でマニフェストを参照する。
-      // localhost / preview からは Vivliostyle Viewer が manifest を取りに行けないので、
-      // その場合は警告を表示する。
-      const isProductionHost = window.location.hostname === 'docs2.vivliostyle.org' ||
-                               window.location.hostname === 'docs.vivliostyle.org';
-      const manifestUrl = `https://docs2.vivliostyle.org/publications/${product}-${lang}/publication.json`;
+      // production host (docs.vivliostyle.org / docs2.vivliostyle.org) では
+      // 自身のホスト上のマニフェストを参照する。それ以外（localhost や
+      // プレビュー環境）からは Vivliostyle Viewer が外部からマニフェストを
+      // 取得できないため、フォールバックとして既定の本番ホストを指定し、
+      // 警告を表示する。
+      const productionHosts = ['docs.vivliostyle.org', 'docs2.vivliostyle.org'];
+      const isProductionHost = productionHosts.includes(window.location.hostname);
+      const manifestHost = isProductionHost
+        ? window.location.hostname
+        : 'docs2.vivliostyle.org';
+      const manifestUrl = `https://${manifestHost}/publications/${product}-${lang}/publication.json`;
       const viewerUrl = `https://vivliostyle.org/viewer/?src=${encodeURIComponent(manifestUrl)}&bookMode=true&lng=${lang}`;
 
       iframe.src = viewerUrl;
@@ -218,48 +223,41 @@ const lang = "en";
     });
   }
 })();</script> </section>  </nav> </aside> <main class="content" data-astro-cid-mw7aashj=""> <nav aria-label="Breadcrumb" class="breadcrumb" data-astro-cid-qaanghzh=""> <ol data-astro-cid-qaanghzh=""> <li data-astro-cid-qaanghzh=""> <a href="/en/" data-astro-cid-qaanghzh="">Home</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <a href="/en/vfm/" data-astro-cid-qaanghzh="">VFM</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <span aria-current="page" data-astro-cid-qaanghzh="">Vivliostyle Flavored Markdown</span>  </li> </ol> </nav> <!-- JSON-LD構造化データ --> <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://docs.vivliostyle.org/en/"},{"@type":"ListItem","position":2,"name":"VFM","item":"https://docs.vivliostyle.org/en/vfm/"},{"@type":"ListItem","position":3,"name":"Vivliostyle Flavored Markdown","item":"https://docs.vivliostyle.org/en/vfm/vfm/"}]}</script>  <article class="prose" data-astro-cid-mw7aashj="">    <article data-astro-cid-fnldsdjm="">
-
-  
-    <meta charset="utf-8">
-    <title>Vivliostyle Flavored Markdown</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  
-    <section class="level1">
-      <h1 id="vivliostyle-flavored-markdown">Vivliostyle Flavored Markdown</h1>
-      <p>Vivliostyle Flavored Markdown (VFM), a Markdown syntax optimized for book authoring. It is standardized and published for Vivliostyle and its sibling projects. VFM is implemented top on <a href="https://commonmark.org/">CommonMark</a> and <a href="https://github.github.com/gfm/">GitHub Flavored Markdown (GFM)</a>.</p>
-      <section class="level2">
-        <h2 id="table-of-contents">Table of contents</h2>
-        <p>VFM syntax and features are listed in ascending alphabetical (<code>A</code>-<code>Z</code>) order.</p>
-      </section>
-      <section class="level2">
-        <h2 id="code">Code</h2>
-        <p><strong>VFM</strong></p>
-        <pre class="language-md"><code class="language-md"><span class="token code"><span class="token punctuation">```</span><span class="token code-language">javascript</span>
+<section class="level1">
+  <h1 id="vivliostyle-flavored-markdown">Vivliostyle Flavored Markdown</h1>
+  <p>Vivliostyle Flavored Markdown (VFM), a Markdown syntax optimized for book authoring. It is standardized and published for Vivliostyle and its sibling projects. VFM is implemented top on <a href="https://commonmark.org/">CommonMark</a> and <a href="https://github.github.com/gfm/">GitHub Flavored Markdown (GFM)</a>.</p>
+  <section class="level2">
+    <h2 id="table-of-contents">Table of contents</h2>
+    <p>VFM syntax and features are listed in ascending alphabetical (<code>A</code>-<code>Z</code>) order.</p>
+  </section>
+  <section class="level2">
+    <h2 id="code">Code</h2>
+    <p><strong>VFM</strong></p>
+    <pre class="language-md"><code class="language-md"><span class="token code"><span class="token punctuation">```</span><span class="token code-language">javascript</span>
 <span class="token code-block language-javascript"><span class="token keyword">function</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span></span>
 <span class="token punctuation">```</span></span></code></pre>
-        <p><strong>HTML</strong></p>
-        <pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>pre</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>language-javascript<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+    <p><strong>HTML</strong></p>
+    <pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>pre</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>language-javascript<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>code</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>language-javascript<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>token keyword<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>function<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">&gt;</span></span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>token function<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>main<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>token punctuation<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>(<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>token punctuation<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>)<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">&gt;</span></span> <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>token punctuation<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>{<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>token punctuation<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>}<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">&gt;</span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>code</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>pre</span><span class="token punctuation">&gt;</span></span></code></pre>
-        <p><strong>CSS</strong></p>
-        <pre class="language-css"><code class="language-css"><span class="token selector">pre</span> <span class="token punctuation">{</span>
+    <p><strong>CSS</strong></p>
+    <pre class="language-css"><code class="language-css"><span class="token selector">pre</span> <span class="token punctuation">{</span>
 <span class="token punctuation">}</span>
 <span class="token selector">pre code</span> <span class="token punctuation">{</span>
 <span class="token punctuation">}</span></code></pre>
-        <p>VFM uses <a href="https://prismjs.com/">Prism</a> for syntax highlighting.</p>
-        <section class="level3">
-          <h3 id="with-caption">with caption</h3>
-          <p><strong>VFM</strong></p>
-          <pre class="language-md"><code class="language-md"><span class="token code"><span class="token punctuation">```</span><span class="token code-language">javascript:app.js</span>
+    <p>VFM uses <a href="https://prismjs.com/">Prism</a> for syntax highlighting.</p>
+    <section class="level3">
+      <h3 id="with-caption">with caption</h3>
+      <p><strong>VFM</strong></p>
+      <pre class="language-md"><code class="language-md"><span class="token code"><span class="token punctuation">```</span><span class="token code-language">javascript:app.js</span>
 <span class="token code-block language-javascript"><span class="token keyword">function</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span></span>
 <span class="token punctuation">```</span></span></code></pre>
-          <p>or</p>
-          <pre class="language-md"><code class="language-md"><span class="token code"><span class="token punctuation">```</span><span class="token code-language">javascript title=app.js</span>
+      <p>or</p>
+      <pre class="language-md"><code class="language-md"><span class="token code"><span class="token punctuation">```</span><span class="token code-language">javascript title=app.js</span>
 <span class="token code-block language-javascript"><span class="token keyword">function</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token punctuation">}</span></span>
 <span class="token punctuation">```</span></span></code></pre>
-          <p><strong>HTML</strong></p>
-          <pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>figure</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>language-javascript<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+      <p><strong>HTML</strong></p>
+      <pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>figure</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>language-javascript<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>figcaption</span><span class="token punctuation">&gt;</span></span>app.js<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>figcaption</span><span class="token punctuation">&gt;</span></span>
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>pre</span><span class="token punctuation">&gt;</span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>code</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>language-javascript<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
@@ -267,8 +265,8 @@ const lang = "en";
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>code</span><span class="token punctuation">&gt;</span></span>
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>pre</span><span class="token punctuation">&gt;</span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>figure</span><span class="token punctuation">&gt;</span></span></code></pre>
-          <p><strong>CSS</strong></p>
-          <pre class="language-css"><code class="language-css"><span class="token selector">figure<span class="token attribute"><span class="token punctuation">[</span><span class="token attr-name">class</span><span class="token operator">^=</span><span class="token attr-value">'language-'</span><span class="token punctuation">]</span></span></span> <span class="token punctuation">{</span>
+      <p><strong>CSS</strong></p>
+      <pre class="language-css"><code class="language-css"><span class="token selector">figure<span class="token attribute"><span class="token punctuation">[</span><span class="token attr-name">class</span><span class="token operator">^=</span><span class="token attr-value">'language-'</span><span class="token punctuation">]</span></span></span> <span class="token punctuation">{</span>
 <span class="token punctuation">}</span>
 <span class="token selector">figure<span class="token attribute"><span class="token punctuation">[</span><span class="token attr-name">class</span><span class="token operator">^=</span><span class="token attr-value">'language-'</span><span class="token punctuation">]</span></span> figcaption</span> <span class="token punctuation">{</span>
 <span class="token punctuation">}</span>
@@ -276,21 +274,21 @@ const lang = "en";
 <span class="token punctuation">}</span>
 <span class="token selector">figure<span class="token attribute"><span class="token punctuation">[</span><span class="token attr-name">class</span><span class="token operator">^=</span><span class="token attr-value">'language-'</span><span class="token punctuation">]</span></span> pre code</span> <span class="token punctuation">{</span>
 <span class="token punctuation">}</span></code></pre>
-        </section>
-      </section>
-      <section class="level2">
-        <h2 id="footnotes">Footnotes</h2>
-        <p>Define a footnotes, like <a href="https://pandoc.org/MANUAL.html#footnotes">Pandoc</a>.</p>
-        <p><strong>VFM</strong></p>
-        <pre class="language-markdown"><code class="language-markdown">VFM is developed in the GitHub repository[^1].
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="footnotes">Footnotes</h2>
+    <p>Define a footnotes, like <a href="https://pandoc.org/MANUAL.html#footnotes">Pandoc</a>.</p>
+    <p><strong>VFM</strong></p>
+    <pre class="language-markdown"><code class="language-markdown">VFM is developed in the GitHub repository[^1].
 Issues are managed on GitHub[^Issues].
 Footnotes can also be written inline^[This part is a footnote.].
 
 <span class="token url-reference url"><span class="token punctuation">[</span><span class="token variable">^1</span><span class="token punctuation">]</span><span class="token punctuation">:</span> [VFM]<span class="token string">(https://github.com/vivliostyle/vfm)</span></span>
 
 <span class="token url-reference url"><span class="token punctuation">[</span><span class="token variable">^Issues</span><span class="token punctuation">]</span><span class="token punctuation">:</span> [Issues]<span class="token string">(https://github.com/vivliostyle/vfm/issues)</span></span></code></pre>
-        <p><strong>HTML</strong></p>
-        <pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">&gt;</span></span>
+    <p><strong>HTML</strong></p>
+    <pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">&gt;</span></span>
   VFM is developed in the GitHub repository <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>fnref1<span class="token punctuation">"</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#fn1<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>footnote-ref<span class="token punctuation">"</span></span> <span class="token attr-name">role</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>doc-noteref<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>sup</span><span class="token punctuation">&gt;</span></span>1<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>sup</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">&gt;</span></span>.
   Issues are managed on GitHub <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>fnref2<span class="token punctuation">"</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#fn2<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>footnote-ref<span class="token punctuation">"</span></span> <span class="token attr-name">role</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>doc-noteref<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>sup</span><span class="token punctuation">&gt;</span></span>2<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>sup</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">&gt;</span></span>.
   Footnotes can also be written inline <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>fnref3<span class="token punctuation">"</span></span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#fn3<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>footnote-ref<span class="token punctuation">"</span></span> <span class="token attr-name">role</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>doc-noteref<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>sup</span><span class="token punctuation">&gt;</span></span>3<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>sup</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">&gt;</span></span>.
@@ -303,17 +301,17 @@ Footnotes can also be written inline^[This part is a footnote.].
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>fn3<span class="token punctuation">"</span></span> <span class="token attr-name">role</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>doc-endnote<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>This part is a footnote.<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>a</span> <span class="token attr-name">href</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>#fnref3<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>footnote-back<span class="token punctuation">"</span></span> <span class="token attr-name">role</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>doc-backlink<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>↩<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>a</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">&gt;</span></span>
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ol</span><span class="token punctuation">&gt;</span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>section</span><span class="token punctuation">&gt;</span></span></code></pre>
-        <p><strong>CSS</strong></p>
-        <pre class="language-css"><code class="language-css"><span class="token selector"><span class="token class">.footnotes</span></span> <span class="token punctuation">{</span>
+    <p><strong>CSS</strong></p>
+    <pre class="language-css"><code class="language-css"><span class="token selector"><span class="token class">.footnotes</span></span> <span class="token punctuation">{</span>
 <span class="token punctuation">}</span></code></pre>
-      </section>
-      <section class="level2">
-        <h2 id="frontmatter">Frontmatter</h2>
-        <p>Frontmatter is a way of defining metadata in Markdown (file) units. Write YAML at the beginning of the file.</p>
-        <p>I'm using <a href="https://www.npmjs.com/package/js-yaml">js-yaml</a> for parse in YAML. Schema is <a href="https://yaml.org/spec/1.2/spec.html#id2803231">JSON_SCHEMA</a>.</p>
-        <p>The js-yaml parse makes <code>key:</code> to <code>key: null</code>. However, VFM treats this as an empty string. If <code>key:</code> or <code>key:""</code> is specified as the property of the attribute value, it is output as <code>key=""</code>.</p>
-        <p><strong>VFM</strong></p>
-        <pre class="language-yaml"><code class="language-yaml"><span class="token punctuation">---</span>
+  </section>
+  <section class="level2">
+    <h2 id="frontmatter">Frontmatter</h2>
+    <p>Frontmatter is a way of defining metadata in Markdown (file) units. Write YAML at the beginning of the file.</p>
+    <p>I'm using <a href="https://www.npmjs.com/package/js-yaml">js-yaml</a> for parse in YAML. Schema is <a href="https://yaml.org/spec/1.2/spec.html#id2803231">JSON_SCHEMA</a>.</p>
+    <p>The js-yaml parse makes <code>key:</code> to <code>key: null</code>. However, VFM treats this as an empty string. If <code>key:</code> or <code>key:""</code> is specified as the property of the attribute value, it is output as <code>key=""</code>.</p>
+    <p><strong>VFM</strong></p>
+    <pre class="language-yaml"><code class="language-yaml"><span class="token punctuation">---</span>
 <span class="token key atrule">id</span><span class="token punctuation">:</span> <span class="token string">'my-page'</span>
 <span class="token key atrule">lang</span><span class="token punctuation">:</span> <span class="token string">'ja'</span>
 <span class="token key atrule">dir</span><span class="token punctuation">:</span> <span class="token string">'ltr'</span>
@@ -356,8 +354,8 @@ Footnotes can also be written inline^[This part is a footnote.].
 <span class="token punctuation">---</span>
 
 Text</code></pre>
-        <p><strong>HTML</strong></p>
-        <pre class="language-html"><code class="language-html"><span class="token doctype"><span class="token punctuation">&lt;!</span><span class="token doctype-tag">doctype</span> <span class="token name">html</span><span class="token punctuation">&gt;</span></span>
+    <p><strong>HTML</strong></p>
+    <pre class="language-html"><code class="language-html"><span class="token doctype"><span class="token punctuation">&lt;!</span><span class="token doctype-tag">doctype</span> <span class="token name">html</span><span class="token punctuation">&gt;</span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span> <span class="token attr-name">data-color-mode</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>dark<span class="token punctuation">"</span></span> <span class="token attr-name">data-light-theme</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>light<span class="token punctuation">"</span></span> <span class="token attr-name">data-dark-theme</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>dark<span class="token punctuation">"</span></span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>my-page<span class="token punctuation">"</span></span> <span class="token attr-name">lang</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>ja<span class="token punctuation">"</span></span> <span class="token attr-name">dir</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>ltr<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>my-class<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>head</span><span class="token punctuation">&gt;</span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>meta</span> <span class="token attr-name">charset</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>utf-8<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
@@ -376,192 +374,192 @@ Text</code></pre>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">&gt;</span></span>Text<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">&gt;</span></span>
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>body</span><span class="token punctuation">&gt;</span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>html</span><span class="token punctuation">&gt;</span></span></code></pre>
-        <p><strong>CSS</strong></p>
-        <pre class="language-css"><code class="language-css"><span class="token selector"><span class="token class">.my-class</span></span> <span class="token punctuation">{</span>
+    <p><strong>CSS</strong></p>
+    <pre class="language-css"><code class="language-css"><span class="token selector"><span class="token class">.my-class</span></span> <span class="token punctuation">{</span>
 <span class="token punctuation">}</span>
 
 <span class="token selector"><span class="token class">.foo</span><span class="token class">.bar</span></span> <span class="token punctuation">{</span>
 <span class="token punctuation">}</span></code></pre>
-        <section class="level3">
-          <h3 id="defined-properties">Defined properties</h3>
-          <table>
-            <thead>
-              <tr>
-                <th align="right">Property</th>
-                <th align="center">Type</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td align="right"><code>id</code></td>
-                <td align="center"><code>String</code></td>
-                <td><code>&lt;html id="..."&gt;</code></td>
-              </tr>
-              <tr>
-                <td align="right"><code>lang</code></td>
-                <td align="center"><code>String</code></td>
-                <td><code>&lt;html lang="..."&gt;</code></td>
-              </tr>
-              <tr>
-                <td align="right"><code>dir</code></td>
-                <td align="center"><code>String</code></td>
-                <td><code>&lt;html dir="..."&gt;</code>, value is <code>ltr</code>, <code>rtl</code> or <code>auto</code>.</td>
-              </tr>
-              <tr>
-                <td align="right"><code>class</code></td>
-                <td align="center"><code>String</code></td>
-                <td><code>&lt;html class="..."&gt;</code> and <code>&lt;body class="..."&gt;</code></td>
-              </tr>
-              <tr>
-                <td align="right"><code>title</code></td>
-                <td align="center"><code>String</code></td>
-                <td><code>&lt;title&gt;...&lt;/title&gt;</code>, if missing, very first heading of the content will be treated as title.</td>
-              </tr>
-              <tr>
-                <td align="right"><code>html</code></td>
-                <td align="center"><code>Object</code></td>
-                <td><code>&lt;html key="value"&gt;</code>, key/value pair becomes attribute of <code>&lt;html&gt;</code>.</td>
-              </tr>
-              <tr>
-                <td align="right"><code>body</code></td>
-                <td align="center"><code>Object</code></td>
-                <td><code>&lt;body key="value"&gt;</code>, key/value pair becomes attribute of <code>&lt;body&gt;</code>.</td>
-              </tr>
-              <tr>
-                <td align="right"><code>base</code></td>
-                <td align="center"><code>Object</code></td>
-                <td><code>&lt;base key="value"&gt;</code>, key/value pair becomes attribute of <code>&lt;base&gt;</code>.</td>
-              </tr>
-              <tr>
-                <td align="right"><code>meta</code></td>
-                <td align="center"><code>Object[]</code></td>
-                <td><code>&lt;meta key="value"&gt;</code>, key/value pair becomes attribute of <code>&lt;meta&gt;</code>.</td>
-              </tr>
-              <tr>
-                <td align="right"><code>link</code></td>
-                <td align="center"><code>Object[]</code></td>
-                <td><code>&lt;link key="value"&gt;</code>, key/value pair becomes attribute of <code>&lt;link&gt;</code>.</td>
-              </tr>
-              <tr>
-                <td align="right"><code>script</code></td>
-                <td align="center"><code>Object[]</code></td>
-                <td><code>&lt;script key="value"&gt;</code>, key/value pair becomes attribute of <code>&lt;script&gt;</code>.</td>
-              </tr>
-              <tr>
-                <td align="right"><code>vfm</code></td>
-                <td align="center"><code>Object</code></td>
-                <td>VFM settings.</td>
-              </tr>
-              <tr>
-                <td align="right"><code>head</code></td>
-                <td align="center">-</td>
-                <td>Reserved for future use.</td>
-              </tr>
-              <tr>
-                <td align="right"><code>style</code></td>
-                <td align="center">-</td>
-                <td>Reserved for future use.</td>
-              </tr>
-              <tr>
-                <td align="right">Other</td>
-                <td align="center"><code>String</code></td>
-                <td><code>&lt;meta name="key" content="value"&gt;</code>, key/value pair becomes one <code>&lt;meta&gt;</code>.</td>
-              </tr>
-            </tbody>
-          </table>
-          <p><strong>vfm</strong></p>
-          <table>
-            <thead>
-              <tr>
-                <th align="right">Property</th>
-                <th align="center">Type</th>
-                <th align="center">Default</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td align="right"><code>math</code></td>
-                <td align="center"><code>Boolean</code></td>
-                <td align="center"><code>true</code></td>
-                <td>Enable math syntax.</td>
-              </tr>
-              <tr>
-                <td align="right"><code>partial</code></td>
-                <td align="center"><code>Boolean</code></td>
-                <td align="center"><code>false</code></td>
-                <td>Output markdown fragments.</td>
-              </tr>
-              <tr>
-                <td align="right"><code>hardLineBreaks</code></td>
-                <td align="center"><code>Boolean</code></td>
-                <td align="center"><code>false</code></td>
-                <td>Add <code>&lt;br&gt;</code> at the position of hard line breaks, without needing spaces.</td>
-              </tr>
-              <tr>
-                <td align="right"><code>disableFormatHtml</code></td>
-                <td align="center"><code>Boolean</code></td>
-                <td align="center"><code>false</code></td>
-                <td>Disable automatic HTML format.</td>
-              </tr>
-              <tr>
-                <td align="right"><code>theme</code></td>
-                <td align="center"><code>String</code></td>
-                <td align="center">-</td>
-                <td>Vivliostyle theme package or bare CSS file.</td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-        <section class="level3">
-          <h3 id="priority-with-options">Priority with options</h3>
-          <p>If there are multiple specifications for the same purpose, the priority is as follows.</p>
-          <ol>
-            <li>Frontmatter</li>
-            <li>VFM options</li>
-          </ol>
-          <p>In Frontmatter, if there is a duplicate of the root <code>id</code> and <code>id</code> in the <code>html</code> property, the root definition takes precedence.</p>
-          <pre class="language-yaml"><code class="language-yaml"><span class="token punctuation">---</span>
+    <section class="level3">
+      <h3 id="defined-properties">Defined properties</h3>
+      <table>
+        <thead>
+          <tr>
+            <th align="right">Property</th>
+            <th align="center">Type</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td align="right"><code>id</code></td>
+            <td align="center"><code>String</code></td>
+            <td><code>&lt;html id="..."&gt;</code></td>
+          </tr>
+          <tr>
+            <td align="right"><code>lang</code></td>
+            <td align="center"><code>String</code></td>
+            <td><code>&lt;html lang="..."&gt;</code></td>
+          </tr>
+          <tr>
+            <td align="right"><code>dir</code></td>
+            <td align="center"><code>String</code></td>
+            <td><code>&lt;html dir="..."&gt;</code>, value is <code>ltr</code>, <code>rtl</code> or <code>auto</code>.</td>
+          </tr>
+          <tr>
+            <td align="right"><code>class</code></td>
+            <td align="center"><code>String</code></td>
+            <td><code>&lt;html class="..."&gt;</code> and <code>&lt;body class="..."&gt;</code></td>
+          </tr>
+          <tr>
+            <td align="right"><code>title</code></td>
+            <td align="center"><code>String</code></td>
+            <td><code>&lt;title&gt;...&lt;/title&gt;</code>, if missing, very first heading of the content will be treated as title.</td>
+          </tr>
+          <tr>
+            <td align="right"><code>html</code></td>
+            <td align="center"><code>Object</code></td>
+            <td><code>&lt;html key="value"&gt;</code>, key/value pair becomes attribute of <code>&lt;html&gt;</code>.</td>
+          </tr>
+          <tr>
+            <td align="right"><code>body</code></td>
+            <td align="center"><code>Object</code></td>
+            <td><code>&lt;body key="value"&gt;</code>, key/value pair becomes attribute of <code>&lt;body&gt;</code>.</td>
+          </tr>
+          <tr>
+            <td align="right"><code>base</code></td>
+            <td align="center"><code>Object</code></td>
+            <td><code>&lt;base key="value"&gt;</code>, key/value pair becomes attribute of <code>&lt;base&gt;</code>.</td>
+          </tr>
+          <tr>
+            <td align="right"><code>meta</code></td>
+            <td align="center"><code>Object[]</code></td>
+            <td><code>&lt;meta key="value"&gt;</code>, key/value pair becomes attribute of <code>&lt;meta&gt;</code>.</td>
+          </tr>
+          <tr>
+            <td align="right"><code>link</code></td>
+            <td align="center"><code>Object[]</code></td>
+            <td><code>&lt;link key="value"&gt;</code>, key/value pair becomes attribute of <code>&lt;link&gt;</code>.</td>
+          </tr>
+          <tr>
+            <td align="right"><code>script</code></td>
+            <td align="center"><code>Object[]</code></td>
+            <td><code>&lt;script key="value"&gt;</code>, key/value pair becomes attribute of <code>&lt;script&gt;</code>.</td>
+          </tr>
+          <tr>
+            <td align="right"><code>vfm</code></td>
+            <td align="center"><code>Object</code></td>
+            <td>VFM settings.</td>
+          </tr>
+          <tr>
+            <td align="right"><code>head</code></td>
+            <td align="center">-</td>
+            <td>Reserved for future use.</td>
+          </tr>
+          <tr>
+            <td align="right"><code>style</code></td>
+            <td align="center">-</td>
+            <td>Reserved for future use.</td>
+          </tr>
+          <tr>
+            <td align="right">Other</td>
+            <td align="center"><code>String</code></td>
+            <td><code>&lt;meta name="key" content="value"&gt;</code>, key/value pair becomes one <code>&lt;meta&gt;</code>.</td>
+          </tr>
+        </tbody>
+      </table>
+      <p><strong>vfm</strong></p>
+      <table>
+        <thead>
+          <tr>
+            <th align="right">Property</th>
+            <th align="center">Type</th>
+            <th align="center">Default</th>
+            <th>Description</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td align="right"><code>math</code></td>
+            <td align="center"><code>Boolean</code></td>
+            <td align="center"><code>true</code></td>
+            <td>Enable math syntax.</td>
+          </tr>
+          <tr>
+            <td align="right"><code>partial</code></td>
+            <td align="center"><code>Boolean</code></td>
+            <td align="center"><code>false</code></td>
+            <td>Output markdown fragments.</td>
+          </tr>
+          <tr>
+            <td align="right"><code>hardLineBreaks</code></td>
+            <td align="center"><code>Boolean</code></td>
+            <td align="center"><code>false</code></td>
+            <td>Add <code>&lt;br&gt;</code> at the position of hard line breaks, without needing spaces.</td>
+          </tr>
+          <tr>
+            <td align="right"><code>disableFormatHtml</code></td>
+            <td align="center"><code>Boolean</code></td>
+            <td align="center"><code>false</code></td>
+            <td>Disable automatic HTML format.</td>
+          </tr>
+          <tr>
+            <td align="right"><code>theme</code></td>
+            <td align="center"><code>String</code></td>
+            <td align="center">-</td>
+            <td>Vivliostyle theme package or bare CSS file.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+    <section class="level3">
+      <h3 id="priority-with-options">Priority with options</h3>
+      <p>If there are multiple specifications for the same purpose, the priority is as follows.</p>
+      <ol>
+        <li>Frontmatter</li>
+        <li>VFM options</li>
+      </ol>
+      <p>In Frontmatter, if there is a duplicate of the root <code>id</code> and <code>id</code> in the <code>html</code> property, the root definition takes precedence.</p>
+      <pre class="language-yaml"><code class="language-yaml"><span class="token punctuation">---</span>
 <span class="token key atrule">id</span><span class="token punctuation">:</span> <span class="token string">'sample1'</span>
 <span class="token key atrule">html</span><span class="token punctuation">:</span>
   <span class="token key atrule">id</span><span class="token punctuation">:</span> <span class="token string">'sample2'</span>
 <span class="token punctuation">---</span></code></pre>
-          <p>In this example, <code>sample1</code> is adopted.</p>
-          <pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>sample1<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+      <p>In this example, <code>sample1</code> is adopted.</p>
+      <pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>sample1<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>html</span><span class="token punctuation">&gt;</span></span></code></pre>
-        </section>
-        <section class="level3">
-          <h3 id="merge-class-properties">Merge class properties</h3>
-          <p>The <code>class</code> properties of the root, <code>html</code>, and <code>body</code> are combined separated by spaces.</p>
-          <pre class="language-yaml"><code class="language-yaml"><span class="token punctuation">---</span>
+    </section>
+    <section class="level3">
+      <h3 id="merge-class-properties">Merge class properties</h3>
+      <p>The <code>class</code> properties of the root, <code>html</code>, and <code>body</code> are combined separated by spaces.</p>
+      <pre class="language-yaml"><code class="language-yaml"><span class="token punctuation">---</span>
 <span class="token key atrule">class</span><span class="token punctuation">:</span> <span class="token string">'root'</span>
 <span class="token key atrule">html</span><span class="token punctuation">:</span>
   <span class="token key atrule">class</span><span class="token punctuation">:</span> <span class="token string">'html'</span>
 <span class="token key atrule">body</span><span class="token punctuation">:</span>
   <span class="token key atrule">class</span><span class="token punctuation">:</span> <span class="token string">'body sample'</span>
 <span class="token punctuation">---</span></code></pre>
-          <p>In this example, merged.</p>
-          <pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>root html<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+      <p>In this example, merged.</p>
+      <pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>root html<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>body</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>root body sample<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>body</span><span class="token punctuation">&gt;</span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>html</span><span class="token punctuation">&gt;</span></span></code></pre>
-        </section>
-      </section>
-      <section class="level2">
-        <h2 id="hard-new-line">Hard new line</h2>
-        <ul>
-          <li>A newline puts <code>&lt;br/&gt;</code> to the end of a line.</li>
-          <li>Consecutive 2 newlines creates a new sentence block.</li>
-        </ul>
-        <p>This feature is optional. The Node.js API is enabled by specifying <code>hardLineBreaks: true</code> as an option and the CLI by specifying <code>--hard-line-breaks</code>.</p>
-        <p><strong>VFM</strong></p>
-        <pre class="language-md"><code class="language-md">はじめまして。
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="hard-new-line">Hard new line</h2>
+    <ul>
+      <li>A newline puts <code>&lt;br/&gt;</code> to the end of a line.</li>
+      <li>Consecutive 2 newlines creates a new sentence block.</li>
+    </ul>
+    <p>This feature is optional. The Node.js API is enabled by specifying <code>hardLineBreaks: true</code> as an option and the CLI by specifying <code>--hard-line-breaks</code>.</p>
+    <p><strong>VFM</strong></p>
+    <pre class="language-md"><code class="language-md">はじめまして。
 
 Vivliostyle Flavored Markdown（略して VFM）の世界へようこそ。
 VFM は出版物の執筆に適した Markdown 方言であり、Vivliostyle プロジェクトのために策定・実装されました。</code></pre>
-        <p><strong>HTML</strong></p>
-        <pre class="language-html"><code class="language-html"><span class="token comment">&lt;!-- hardLineBreaks: true --&gt;</span>
+    <p><strong>HTML</strong></p>
+    <pre class="language-html"><code class="language-html"><span class="token comment">&lt;!-- hardLineBreaks: true --&gt;</span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">&gt;</span></span>はじめまして。<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">&gt;</span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">&gt;</span></span>
   Vivliostyle Flavored Markdown（略して VFM）の世界へようこそ。<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>br</span> <span class="token punctuation">/&gt;</span></span>
@@ -576,30 +574,30 @@ VFM は出版物の執筆に適した Markdown 方言であり、Vivliostyle プ
   は出版物の執筆に適した Markdown 方言であり、Vivliostyle
   プロジェクトのために策定・実装されました。
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">&gt;</span></span></code></pre>
-        <p><strong>CSS</strong></p>
-        <pre class="language-css"><code class="language-css"><span class="token selector">p</span> <span class="token punctuation">{</span>
+    <p><strong>CSS</strong></p>
+    <pre class="language-css"><code class="language-css"><span class="token selector">p</span> <span class="token punctuation">{</span>
 <span class="token punctuation">}</span></code></pre>
-      </section>
-      <section class="level2">
-        <h2 id="image">Image</h2>
-        <p><strong>VFM</strong></p>
-        <pre class="language-md"><code class="language-md">![](./fig1.png)</code></pre>
-        <p><strong>HTML</strong></p>
-        <pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./fig1.png<span class="token punctuation">"</span></span> <span class="token punctuation">/&gt;</span></span></code></pre>
-        <p><strong>CSS</strong></p>
-        <pre class="language-css"><code class="language-css"><span class="token selector">img</span> <span class="token punctuation">{</span>
+  </section>
+  <section class="level2">
+    <h2 id="image">Image</h2>
+    <p><strong>VFM</strong></p>
+    <pre class="language-md"><code class="language-md">![](./fig1.png)</code></pre>
+    <p><strong>HTML</strong></p>
+    <pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./fig1.png<span class="token punctuation">"</span></span> <span class="token punctuation">/&gt;</span></span></code></pre>
+    <p><strong>CSS</strong></p>
+    <pre class="language-css"><code class="language-css"><span class="token selector">img</span> <span class="token punctuation">{</span>
 <span class="token punctuation">}</span></code></pre>
-        <section class="level3">
-          <h3 id="with-caption-and-single-line">with caption and single line</h3>
-          <p>Wraps an image written as a single line and with a caption in <code>&lt;figure&gt;</code>.</p>
-          <p><strong>VFM</strong></p>
-          <pre class="language-md"><code class="language-md"><span class="token url"><span class="token operator">!</span>[<span class="token content">Figure 1</span>](<span class="token url">./fig1.png</span>)</span>
+    <section class="level3">
+      <h3 id="with-caption-and-single-line">with caption and single line</h3>
+      <p>Wraps an image written as a single line and with a caption in <code>&lt;figure&gt;</code>.</p>
+      <p><strong>VFM</strong></p>
+      <pre class="language-md"><code class="language-md"><span class="token url"><span class="token operator">!</span>[<span class="token content">Figure 1</span>](<span class="token url">./fig1.png</span>)</span>
 
 <span class="token url"><span class="token operator">!</span>[<span class="token content">Figure 2</span>](<span class="token url">./fig2.png</span> <span class="token string">"Figure 2"</span>)</span>{id="image" data-sample="sample"}
 
 text <span class="token url"><span class="token operator">!</span>[<span class="token content">Figure 3</span>](<span class="token url">./fig3.png</span>)</span></code></pre>
-          <p><strong>HTML</strong></p>
-          <pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>figure</span><span class="token punctuation">&gt;</span></span>
+      <p><strong>HTML</strong></p>
+      <pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>figure</span><span class="token punctuation">&gt;</span></span>
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./fig1.png<span class="token punctuation">"</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Figure 1<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>figcaption</span> <span class="token attr-name">aria-hidden</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Figure 1<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>figcaption</span><span class="token punctuation">&gt;</span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>figure</span><span class="token punctuation">&gt;</span></span>
@@ -610,51 +608,51 @@ text <span class="token url"><span class="token operator">!</span>[<span class="
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">&gt;</span></span>text 
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>img</span> <span class="token attr-name">src</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>./fig3.png<span class="token punctuation">"</span></span> <span class="token attr-name">alt</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>Figure 3<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">&gt;</span></span></code></pre>
-          <p><strong>CSS</strong></p>
-          <pre class="language-css"><code class="language-css"><span class="token selector">figure img</span> <span class="token punctuation">{</span>
+      <p><strong>CSS</strong></p>
+      <pre class="language-css"><code class="language-css"><span class="token selector">figure img</span> <span class="token punctuation">{</span>
 <span class="token punctuation">}</span>
 <span class="token selector">figure figcaption</span> <span class="token punctuation">{</span>
 <span class="token punctuation">}</span></code></pre>
-        </section>
-      </section>
-      <section class="level2">
-        <h2 id="math-equation">Math equation</h2>
-        <p>Outputs HTML processed by <a href="https://www.mathjax.org/">MathJax</a>.</p>
-        <p>It is Enabled by default. To disable it, specify the following.</p>
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="math-equation">Math equation</h2>
+    <p>Outputs HTML processed by <a href="https://www.mathjax.org/">MathJax</a>.</p>
+    <p>It is Enabled by default. To disable it, specify the following.</p>
+    <ul>
+      <li><code>stringify</code> API options: <code>math: false</code></li>
+      <li><code>VFM</code> API options: <code>math: false</code></li>
+      <li>CLI options: <code>--disable-math</code></li>
+      <li>Frontmatter: <code>math: false</code> of <code>vfm:</code> property
         <ul>
-          <li><code>stringify</code> API options: <code>math: false</code></li>
-          <li><code>VFM</code> API options: <code>math: false</code></li>
-          <li>CLI options: <code>--disable-math</code></li>
-          <li>Frontmatter: <code>math: false</code> of <code>vfm:</code> property
-            <ul>
-              <li>refs: <a href="#frontmatter">Frontmatter</a></li>
-              <li>It takes precedence over <code>stringify</code>, but<code> VFM</code> does not.</li>
-            </ul>
-          </li>
+          <li>refs: <a href="#frontmatter">Frontmatter</a></li>
+          <li>It takes precedence over <code>stringify</code>, but<code> VFM</code> does not.</li>
         </ul>
-        <p>The VFM syntax for MathJax inline is <code>$...$</code> and the display is <code>$$...$$</code>.</p>
-        <p>It also supports multiple lines, such as <code>$x = y\n1 + 1 = 2$</code> and <code>$$\nx = y\n$$</code>. However, if there is a blank line <code>\n\n</code> such as <code>$x = y\n\n1 + 1 = 2$ </code>, the paragraphs will be separated and it will not be a mathematical syntax.</p>
-        <p>OK:</p>
-        <ul>
-          <li><code>$...$</code>, <code>$$...$$</code> ...Range specification matches</li>
-          <li><code>$...\n...$</code>, <code>$$\n...\n$$</code> ...Within the same paragraph</li>
-          <li><code>$...\$...$</code>, <code>$...\$...\\\$..$</code>, <code>$$...\$...\\\$...$$</code> ...Escape <code>$</code> by odd <code>\</code></li>
-        </ul>
-        <p>NG:</p>
-        <ul>
-          <li><code>$...$$</code>, <code>$$...$</code> ...Range specification does not match</li>
-          <li><code>$...\n\n...$</code>, <code>$$...\n\n...$$</code> ...Separated into paragraphs by line breaks</li>
-          <li><code>$ ...$</code> ...Spaces (space, tab, new line, ...etc), <code></code>immediately after <code>$</code> at start of inline</li>
-          <li><code>$... $</code> ...Spaces (space, tab, new line, ...etc), <code></code>immediately before <code>$</code> at end of inline</li>
-          <li><code>$...$5</code> ...Digit <code>0...N</code> immediately after <code>$</code> at end of inline</li>
-        </ul>
-        <p><strong>VFM</strong></p>
-        <pre class="language-markdown"><code class="language-markdown">inline:$x = y$
+      </li>
+    </ul>
+    <p>The VFM syntax for MathJax inline is <code>$...$</code> and the display is <code>$$...$$</code>.</p>
+    <p>It also supports multiple lines, such as <code>$x = y\n1 + 1 = 2$</code> and <code>$$\nx = y\n$$</code>. However, if there is a blank line <code>\n\n</code> such as <code>$x = y\n\n1 + 1 = 2$ </code>, the paragraphs will be separated and it will not be a mathematical syntax.</p>
+    <p>OK:</p>
+    <ul>
+      <li><code>$...$</code>, <code>$$...$$</code> ...Range specification matches</li>
+      <li><code>$...\n...$</code>, <code>$$\n...\n$$</code> ...Within the same paragraph</li>
+      <li><code>$...\$...$</code>, <code>$...\$...\\\$..$</code>, <code>$$...\$...\\\$...$$</code> ...Escape <code>$</code> by odd <code>\</code></li>
+    </ul>
+    <p>NG:</p>
+    <ul>
+      <li><code>$...$$</code>, <code>$$...$</code> ...Range specification does not match</li>
+      <li><code>$...\n\n...$</code>, <code>$$...\n\n...$$</code> ...Separated into paragraphs by line breaks</li>
+      <li><code>$ ...$</code> ...Spaces (space, tab, new line, ...etc), <code></code>immediately after <code>$</code> at start of inline</li>
+      <li><code>$... $</code> ...Spaces (space, tab, new line, ...etc), <code></code>immediately before <code>$</code> at end of inline</li>
+      <li><code>$...$5</code> ...Digit <code>0...N</code> immediately after <code>$</code> at end of inline</li>
+    </ul>
+    <p><strong>VFM</strong></p>
+    <pre class="language-markdown"><code class="language-markdown">inline:$x = y$
 
 display: $$1 + 1 = 2$$</code></pre>
-        <p><strong>HTML</strong></p>
-        <p>It also outputs <code>&lt;script&gt;</code> for processing MathJax if <code>math</code> is enabled and the math syntax or the <code>&lt;math&gt;</code> tag is actually existed.</p>
-        <pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span><span class="token punctuation">&gt;</span></span>
+    <p><strong>HTML</strong></p>
+    <p>It also outputs <code>&lt;script&gt;</code> for processing MathJax if <code>math</code> is enabled and the math syntax or the <code>&lt;math&gt;</code> tag is actually existed.</p>
+    <pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>html</span><span class="token punctuation">&gt;</span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>head</span><span class="token punctuation">&gt;</span></span>
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>meta</span> <span class="token attr-name">charset</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>utf-8<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>meta</span> <span class="token attr-name">name</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>viewport<span class="token punctuation">"</span></span> <span class="token attr-name">content</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>width=device-width, initial-scale=1<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
@@ -665,79 +663,79 @@ display: $$1 + 1 = 2$$</code></pre>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">&gt;</span></span>display: <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>span</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>math display<span class="token punctuation">"</span></span> <span class="token attr-name">data-math-typeset</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>$$1 + 1 = 2$$<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>span</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">&gt;</span></span>
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>body</span><span class="token punctuation">&gt;</span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>html</span><span class="token punctuation">&gt;</span></span></code></pre>
-        <p><strong>CSS</strong></p>
-        <pre class="language-css"><code class="language-css"><span class="token selector"><span class="token class">.math</span><span class="token class">.inline</span></span> <span class="token punctuation">{</span>
+    <p><strong>CSS</strong></p>
+    <pre class="language-css"><code class="language-css"><span class="token selector"><span class="token class">.math</span><span class="token class">.inline</span></span> <span class="token punctuation">{</span>
 <span class="token punctuation">}</span>
 
 <span class="token selector"><span class="token class">.math</span><span class="token class">.display</span></span> <span class="token punctuation">{</span>
 <span class="token punctuation">}</span></code></pre>
-      </section>
-      <section class="level2">
-        <h2 id="raw-html">Raw HTML</h2>
-        <p><strong>VFM</strong></p>
-        <pre class="language-markdown"><code class="language-markdown"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>custom<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+  </section>
+  <section class="level2">
+    <h2 id="raw-html">Raw HTML</h2>
+    <p><strong>VFM</strong></p>
+    <pre class="language-markdown"><code class="language-markdown"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>custom<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">&gt;</span></span>Hey<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">&gt;</span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span></code></pre>
-        <p><strong>HTML</strong></p>
-        <pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>custom<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+    <p><strong>HTML</strong></p>
+    <pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>custom<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">&gt;</span></span>Hey<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">&gt;</span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span></code></pre>
-        <section class="level3">
-          <h3 id="with-markdown">with Markdown</h3>
-          <p><strong>VFM</strong></p>
-          <pre class="language-markdown"><code class="language-markdown"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>custom<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+    <section class="level3">
+      <h3 id="with-markdown">with Markdown</h3>
+      <p><strong>VFM</strong></p>
+      <pre class="language-markdown"><code class="language-markdown"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>custom<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
 
 <span class="token title important"><span class="token punctuation">#</span> Heading</span>
 
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span></code></pre>
-          <p><strong>HTML</strong></p>
-          <pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>custom<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+      <p><strong>HTML</strong></p>
+      <pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>custom<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>section</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>level1<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>heading<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Heading<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">&gt;</span></span>
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>section</span><span class="token punctuation">&gt;</span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">&gt;</span></span></code></pre>
-        </section>
-      </section>
-      <section class="level2">
-        <h2 id="ruby">Ruby</h2>
-        <p><strong>VFM</strong></p>
-        <pre class="language-text"><code class="language-text">This is {Ruby|ルビ}</code></pre>
-        <p><strong>HTML</strong></p>
-        <pre class="language-html"><code class="language-html">This is <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ruby</span><span class="token punctuation">&gt;</span></span>Ruby<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rt</span><span class="token punctuation">&gt;</span></span>ルビ<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rt</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ruby</span><span class="token punctuation">&gt;</span></span></code></pre>
-        <p><strong>CSS</strong></p>
-        <pre class="language-css"><code class="language-css"><span class="token selector">ruby</span> <span class="token punctuation">{</span>
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="ruby">Ruby</h2>
+    <p><strong>VFM</strong></p>
+    <pre class="language-text"><code class="language-text">This is {Ruby|ルビ}</code></pre>
+    <p><strong>HTML</strong></p>
+    <pre class="language-html"><code class="language-html">This is <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ruby</span><span class="token punctuation">&gt;</span></span>Ruby<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rt</span><span class="token punctuation">&gt;</span></span>ルビ<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rt</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ruby</span><span class="token punctuation">&gt;</span></span></code></pre>
+    <p><strong>CSS</strong></p>
+    <pre class="language-css"><code class="language-css"><span class="token selector">ruby</span> <span class="token punctuation">{</span>
 <span class="token punctuation">}</span>
 <span class="token selector">ruby rt</span> <span class="token punctuation">{</span>
 <span class="token punctuation">}</span></code></pre>
-        <section class="level3">
-          <h3 id="escape-pipe-in-ruby-body">Escape pipe in ruby body</h3>
-          <p>If want to escape the delimiter pipe <code>|</code>, add <code>\</code> immediately before it.</p>
-          <p><strong>VFM</strong></p>
-          <pre class="language-text"><code class="language-text">{a\|b|c}</code></pre>
-          <p><strong>HTML</strong></p>
-          <pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ruby</span><span class="token punctuation">&gt;</span></span>a|b<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rt</span><span class="token punctuation">&gt;</span></span>c<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rt</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ruby</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">&gt;</span></span></code></pre>
-        </section>
-      </section>
-      <section class="level2">
-        <h2 id="sectionization">Sectionization</h2>
-        <p>Make the heading a hierarchical section.</p>
+    <section class="level3">
+      <h3 id="escape-pipe-in-ruby-body">Escape pipe in ruby body</h3>
+      <p>If want to escape the delimiter pipe <code>|</code>, add <code>\</code> immediately before it.</p>
+      <p><strong>VFM</strong></p>
+      <pre class="language-text"><code class="language-text">{a\|b|c}</code></pre>
+      <p><strong>HTML</strong></p>
+      <pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ruby</span><span class="token punctuation">&gt;</span></span>a|b<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>rt</span><span class="token punctuation">&gt;</span></span>c<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>rt</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ruby</span><span class="token punctuation">&gt;</span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">&gt;</span></span></code></pre>
+    </section>
+  </section>
+  <section class="level2">
+    <h2 id="sectionization">Sectionization</h2>
+    <p>Make the heading a hierarchical section.</p>
+    <ul>
+      <li>Do not sectionize if the heading line starts with <code>#</code>s and ends with equal or greater number of <code>#</code>s.
         <ul>
-          <li>Do not sectionize if the heading line starts with <code>#</code>s and ends with equal or greater number of <code>#</code>s.
-            <ul>
-              <li><code>### Not Sectionize ###</code> (enclosed by equal number of <code>#</code>s) -- not sectionize</li>
-              <li><code>### Sectionize ##</code> (insufficient number of closing <code>#</code>s) -- sectionize</li>
-            </ul>
-          </li>
-          <li>A line with only <code>#</code>s can be used to end the section whose depth matches the number of the <code>#</code>s.
-            <ul>
-              <li>e.g., the section starting with <code>### Heading 3</code> can end with <code>###</code>.</li>
-            </ul>
-          </li>
-          <li>Do not sectionize if parent is <code>blockquote</code>.</li>
-          <li>Set the <code>levelN</code> class in the section to match the heading depth.</li>
+          <li><code>### Not Sectionize ###</code> (enclosed by equal number of <code>#</code>s) -- not sectionize</li>
+          <li><code>### Sectionize ##</code> (insufficient number of closing <code>#</code>s) -- sectionize</li>
         </ul>
-        <p><strong>VFM</strong></p>
-        <pre class="language-md"><code class="language-md"><span class="token title important"><span class="token punctuation">#</span> Plain</span>
+      </li>
+      <li>A line with only <code>#</code>s can be used to end the section whose depth matches the number of the <code>#</code>s.
+        <ul>
+          <li>e.g., the section starting with <code>### Heading 3</code> can end with <code>###</code>.</li>
+        </ul>
+      </li>
+      <li>Do not sectionize if parent is <code>blockquote</code>.</li>
+      <li>Set the <code>levelN</code> class in the section to match the heading depth.</li>
+    </ul>
+    <p><strong>VFM</strong></p>
+    <pre class="language-md"><code class="language-md"><span class="token title important"><span class="token punctuation">#</span> Plain</span>
 
 <span class="token title important"><span class="token punctuation">#</span> Introduction {#intro}</span>
 
@@ -756,8 +754,8 @@ Level 2 was ended by <span class="token code-snippet code keyword">`##`</span>.
 <span class="token title important"><span class="token punctuation">##</span> Not Sectionize {.just-a-heading} <span class="token punctuation">##</span></span>
 
 <span class="token blockquote punctuation">&gt;</span> <span class="token title important"><span class="token punctuation">#</span> Not Sectionize in Blockquote</span></code></pre>
-        <p><strong>HTML</strong></p>
-        <pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>section</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>level1<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
+    <p><strong>HTML</strong></p>
+    <pre class="language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>section</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>level1<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>plain<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Plain<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">&gt;</span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>section</span><span class="token punctuation">&gt;</span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>section</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>level1<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>
@@ -780,8 +778,8 @@ Level 2 was ended by <span class="token code-snippet code keyword">`##`</span>.
     <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation attr-equals">=</span><span class="token punctuation">"</span>not-sectionize-in-blockquote<span class="token punctuation">"</span></span><span class="token punctuation">&gt;</span></span>Not Sectionize in Blockquote<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">&gt;</span></span>
   <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>blockquote</span><span class="token punctuation">&gt;</span></span>
 <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>section</span><span class="token punctuation">&gt;</span></span></code></pre>
-        <p><strong>CSS</strong></p>
-        <pre class="language-css"><code class="language-css"><span class="token selector">body <span class="token combinator">&gt;</span> section</span> <span class="token punctuation">{</span>
+    <p><strong>CSS</strong></p>
+    <pre class="language-css"><code class="language-css"><span class="token selector">body <span class="token combinator">&gt;</span> section</span> <span class="token punctuation">{</span>
 <span class="token punctuation">}</span>
 
 <span class="token selector">section<span class="token pseudo-class">:has</span><span class="token punctuation">(</span><span class="token combinator">&gt;</span> <span class="token id">#intro</span><span class="token punctuation">)</span></span> <span class="token punctuation">{</span>
@@ -797,8 +795,6 @@ Level 2 was ended by <span class="token code-snippet code keyword">`##`</span>.
 
 <span class="token selector">blockquote <span class="token combinator">&gt;</span> h1</span> <span class="token punctuation">{</span>
 <span class="token punctuation">}</span></code></pre>
-      </section>
-    </section>
-  
-
+  </section>
+</section>
 </article> <nav class="page-navigation" data-astro-cid-z7g34ql7=""> <div class="nav-links" data-astro-cid-z7g34ql7=""> <a href="/en/vfm/README/" class="nav-link nav-prev" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">← Previous</span> <span class="nav-title" data-astro-cid-z7g34ql7="">Vivliostyle Flavored Markdown</span> </a> <a href="/en/vfm/hooks/" class="nav-link nav-next" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">Next →</span> <span class="nav-title" data-astro-cid-z7g34ql7="">Hooks</span> </a> </div> </nav>   </article> </main> </div> <footer class="footer" data-astro-cid-mw7aashj=""> <p data-astro-cid-mw7aashj="">© 2026 Vivliostyle Foundation.</p> </footer> </div>  <script type="module">window.__bodyOverflowLockCount=0;window.lockBodyOverflow=function(){window.__bodyOverflowLockCount++,window.__bodyOverflowLockCount===1&&(document.body.style.overflow="hidden")};window.unlockBodyOverflow=function(){window.__bodyOverflowLockCount=Math.max(0,window.__bodyOverflowLockCount-1),window.__bodyOverflowLockCount===0&&(document.body.style.overflow="")};</script>  <script type="module">document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll(".accordion-toggle").forEach(t=>{t.addEventListener("click",d=>{d.preventDefault();const a=t.getAttribute("data-target"),e=document.getElementById(a),n=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",!n),e&&(e.style.display=n?"none":"block")})})});</script></body></html>

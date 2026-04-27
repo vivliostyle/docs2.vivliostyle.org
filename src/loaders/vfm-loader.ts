@@ -245,9 +245,16 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
 
             let html: string;
             try {
+              // partial: true で `<html>` / `<head>` / `<body>` ラッパーを
+              // 出力しないようにする。我々は DocsLayout 内の `<article>`
+              // にコンテンツを注入するため、フルドキュメントを set:html で
+              // 埋め込むと `<meta charset>` や `<title>` が body 内に出て
+              // しまい、HTML 仕様上不正な構造（および EPUB ビルド成果物
+              // の警告原因）になっていた。
               html = stringify(processedMarkdownBody, {
                 hardLineBreaks: false,
                 disableFormatHtml: false,
+                partial: true,
               });
               logger.debug(`VFM Loader [${lang}]: Successfully converted markdown to HTML for file: ${filePath}`);
             } catch (stringifyError) {
@@ -338,6 +345,17 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
               );
             }
 
+            // 3.7. upstream submodule のタイポ・文法エラーを応急処置で補正
+            // （upstream に PR を出すのが本筋。それまでの暫定対応）
+            html = html
+              // submodules/vivliostyle-cli/docs/index.md:18 のリンク先タイポ
+              .replace(/frotnend-framework-support/g, 'frontend-framework-support')
+              // submodules/vivliostyle-cli/CONTRIBUTING.md の冠詞ミス
+              .replace(
+                /pnpm:&gt;=10 is installed in your machine/g,
+                'pnpm:&gt;=10 is installed on your machine',
+              );
+
             // 4. 相対リンクの.md拡張子を削除し、末尾スラッシュを追加
             // 例: ./getting-started.md -> ./getting-started/
             html = html.replace(/href="\.\/([^"]+)\.md"/g, 'href="./$1/"');
@@ -351,11 +369,14 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
             }
             
             // 5. ../で始まるリンク（親ディレクトリ）の処理
-            // docs/ja/index.md から docs/config.md への参照を適切に変換
-            // ../config.md は /en/cli/config/ になるべき（英語版のみ存在）
+            // docs/ja/index.md から docs/config.md / docs/api-javascript.md
+            // への参照を適切に変換する。
+            // upstream の `docs/config.md` などは英語版しか存在しないが、
+            // 本サイトでは `/ja/cli/config/` でも英語コンテンツとして
+            // ルーティングしているため、ja ページからのリンクも `/ja/cli/`
+            // に揃える（言語コンテキストを維持）。
             if (lang === 'ja') {
-              // 日本語版から親ディレクトリへのリンクは英語版を参照
-              html = html.replace(/href="\.\.\/([^"]+)\.md"/g, 'href="/en/cli/$1/"');
+              html = html.replace(/href="\.\.\/([^"]+)\.md"/g, 'href="/ja/cli/$1/"');
             } else {
               // 英語版は親ディレクトリ参照を維持（.md拡張子削除と末尾スラッシュ追加）
               html = html.replace(/href="\.\.\/([^"]+)\.md"/g, 'href="../$1/"');

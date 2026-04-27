@@ -178,12 +178,17 @@ const lang = "en";
     const open = () => {
       lastFocus = document.activeElement;
 
-      // 本番URL固定でマニフェストを参照する。
-      // localhost / preview からは Vivliostyle Viewer が manifest を取りに行けないので、
-      // その場合は警告を表示する。
-      const isProductionHost = window.location.hostname === 'docs2.vivliostyle.org' ||
-                               window.location.hostname === 'docs.vivliostyle.org';
-      const manifestUrl = `https://docs2.vivliostyle.org/publications/${product}-${lang}/publication.json`;
+      // production host (docs.vivliostyle.org / docs2.vivliostyle.org) では
+      // 自身のホスト上のマニフェストを参照する。それ以外（localhost や
+      // プレビュー環境）からは Vivliostyle Viewer が外部からマニフェストを
+      // 取得できないため、フォールバックとして既定の本番ホストを指定し、
+      // 警告を表示する。
+      const productionHosts = ['docs.vivliostyle.org', 'docs2.vivliostyle.org'];
+      const isProductionHost = productionHosts.includes(window.location.hostname);
+      const manifestHost = isProductionHost
+        ? window.location.hostname
+        : 'docs2.vivliostyle.org';
+      const manifestUrl = `https://${manifestHost}/publications/${product}-${lang}/publication.json`;
       const viewerUrl = `https://vivliostyle.org/viewer/?src=${encodeURIComponent(manifestUrl)}&bookMode=true&lng=${lang}`;
 
       iframe.src = viewerUrl;
@@ -218,21 +223,14 @@ const lang = "en";
     });
   }
 })();</script> </section>  </nav> </aside> <main class="content" data-astro-cid-mw7aashj=""> <nav aria-label="Breadcrumb" class="breadcrumb" data-astro-cid-qaanghzh=""> <ol data-astro-cid-qaanghzh=""> <li data-astro-cid-qaanghzh=""> <a href="/en/" data-astro-cid-qaanghzh="">Home</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <a href="/en/cli/" data-astro-cid-qaanghzh="">CLI</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <span aria-current="page" data-astro-cid-qaanghzh="">Frontend Framework Support</span>  </li> </ol> </nav> <!-- JSON-LD構造化データ --> <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://docs.vivliostyle.org/en/"},{"@type":"ListItem","position":2,"name":"CLI","item":"https://docs.vivliostyle.org/en/cli/"},{"@type":"ListItem","position":3,"name":"Frontend Framework Support","item":"https://docs.vivliostyle.org/en/cli/frontend-framework-support/"}]}</script>  <article class="prose" data-astro-cid-mw7aashj="">    <article data-astro-cid-tdaouxoz="">
-
-  
-    <meta charset="utf-8">
-    <title>Frontend Framework Support</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-  
-  
-    <section class="level1">
-      <h1 id="frontend-framework-support">Frontend Framework Support</h1>
-      <p>Vivliostyle CLI creates publications using web technologies. By combining it with other web frontend frameworks, you can leverage powerful features. For example, you can export the same manuscript as both a web page and a publication.</p>
-      <section class="level2">
-        <h2 id="referencing-statically-built-html-files">Referencing Statically Built HTML Files</h2>
-        <p>If your framework has a static site build feature, you can reference the built HTML files using the <code>static</code> option in Vivliostyle CLI. This allows you to load those files as entries.</p>
-        <p>For example, consider a case where HTML files are built in the <code>dist</code> directory. This directory contains <code>index.html</code> and, within the <code>blog</code> directory, <code>my-first-post.html</code> and <code>another-post.html</code>. To create a publication from these three HTML files, configure it as follows:</p>
-        <pre class="language-js"><code class="language-js"><span class="token punctuation">{</span>
+<section class="level1">
+  <h1 id="frontend-framework-support">Frontend Framework Support</h1>
+  <p>Vivliostyle CLI creates publications using web technologies. By combining it with other web frontend frameworks, you can leverage powerful features. For example, you can export the same manuscript as both a web page and a publication.</p>
+  <section class="level2">
+    <h2 id="referencing-statically-built-html-files">Referencing Statically Built HTML Files</h2>
+    <p>If your framework has a static site build feature, you can reference the built HTML files using the <code>static</code> option in Vivliostyle CLI. This allows you to load those files as entries.</p>
+    <p>For example, consider a case where HTML files are built in the <code>dist</code> directory. This directory contains <code>index.html</code> and, within the <code>blog</code> directory, <code>my-first-post.html</code> and <code>another-post.html</code>. To create a publication from these three HTML files, configure it as follows:</p>
+    <pre class="language-js"><code class="language-js"><span class="token punctuation">{</span>
   <span class="token keyword">static</span><span class="token operator">:</span> <span class="token punctuation">{</span>
     <span class="token string-property property">'/'</span><span class="token operator">:</span> <span class="token string">'dist'</span><span class="token punctuation">,</span>
   <span class="token punctuation">}</span><span class="token punctuation">,</span>
@@ -242,50 +240,50 @@ const lang = "en";
     <span class="token string">'/blog/another-post.html'</span><span class="token punctuation">,</span>
   <span class="token punctuation">]</span><span class="token punctuation">,</span>
 <span class="token punctuation">}</span><span class="token punctuation">;</span></code></pre>
-        <blockquote>
-          <p>
-            [!IMPORTANT]
-            Entries hosted with <code>static</code> must be referenced using absolute paths (paths starting with <code>/</code>). Otherwise, the HTML files will be loaded relative to <code>vivliostyle.config.js</code> instead of the directory specified in <code>static</code>.
-          </p>
-        </blockquote>
-        <blockquote>
-          <p>
-            [!NOTE]
-            While it is also possible to specify HTML files directly in <code>entry</code> using relative paths, using the <code>static</code> option is more convenient. For example, directly specifying files does not allow external files (such as images) referenced by the HTML to be loaded, but using the <code>static</code> option ensures that all files under the directory are referenced and displayed correctly.
-          </p>
-        </blockquote>
-      </section>
-      <section class="level2">
-        <h2 id="using-frameworks-based-on-vite">Using Frameworks Based on Vite</h2>
-        <p>Vivliostyle CLI is developed based on Vite, a web frontend development tool. Therefore, it can be used in combination with frameworks based on Vite.</p>
-        <p>Vivliostyle CLI provides the following two usage methods depending on the type of framework.</p>
-        <section class="level3">
-          <h3 id="1-using-vite-plugins">1. Using Vite Plugins</h3>
-          <p>Vivliostyle CLI allows you to use Vite or Rollup plugins. You can configure plugins and Vite settings in the <code>vite</code> option.</p>
-          <pre class="language-js"><code class="language-js"><span class="token punctuation">{</span>
+    <blockquote>
+      <p>
+        [!IMPORTANT]
+        Entries hosted with <code>static</code> must be referenced using absolute paths (paths starting with <code>/</code>). Otherwise, the HTML files will be loaded relative to <code>vivliostyle.config.js</code> instead of the directory specified in <code>static</code>.
+      </p>
+    </blockquote>
+    <blockquote>
+      <p>
+        [!NOTE]
+        While it is also possible to specify HTML files directly in <code>entry</code> using relative paths, using the <code>static</code> option is more convenient. For example, directly specifying files does not allow external files (such as images) referenced by the HTML to be loaded, but using the <code>static</code> option ensures that all files under the directory are referenced and displayed correctly.
+      </p>
+    </blockquote>
+  </section>
+  <section class="level2">
+    <h2 id="using-frameworks-based-on-vite">Using Frameworks Based on Vite</h2>
+    <p>Vivliostyle CLI is developed based on Vite, a web frontend development tool. Therefore, it can be used in combination with frameworks based on Vite.</p>
+    <p>Vivliostyle CLI provides the following two usage methods depending on the type of framework.</p>
+    <section class="level3">
+      <h3 id="1-using-vite-plugins">1. Using Vite Plugins</h3>
+      <p>Vivliostyle CLI allows you to use Vite or Rollup plugins. You can configure plugins and Vite settings in the <code>vite</code> option.</p>
+      <pre class="language-js"><code class="language-js"><span class="token punctuation">{</span>
   <span class="token literal-property property">vite</span><span class="token operator">:</span> <span class="token punctuation">{</span>
     <span class="token literal-property property">plugins</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token spread operator">...</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
   <span class="token punctuation">}</span><span class="token punctuation">,</span>
 <span class="token punctuation">}</span></code></pre>
-          <p>Vivliostyle Viewer differs from typical web applications in that it has restrictions on JavaScript execution. Please note the following points:</p>
-          <ul>
-            <li>
-              <p>Vivliostyle Viewer does not support client-side routing technologies (Single Page Applications; SPA), so each page must be statically rendered. If the environment does not work with <code>appType</code> set to <code>mpa</code>, this method cannot be used.</p>
-            </li>
-            <li>
-              <p>Vivliostyle Viewer cannot detect changes to HTML content on the client side. Therefore, the UI framework used must support server-side rendering (SSR). If client-side JavaScript is included, it may not function correctly.</p>
-            </li>
-          </ul>
-        </section>
-        <section class="level3">
-          <h3 id="2-using-vivliostyle-cli-as-a-vite-plugin">2. Using Vivliostyle CLI as a Vite Plugin</h3>
-          <ul>
-            <li><a href="https://github.com/vivliostyle/vivliostyle-cli/tree/main/examples/with-astro">Example: with-astro</a></li>
-            <li><a href="https://github.com/vivliostyle/vivliostyle-cli/tree/main/examples/with-eleventy">Example: with-eleventy</a></li>
-          </ul>
-          <p>Some frameworks (e.g., <a href="https://astro.build/">Astro</a>) can accept external Vite plugins but cannot be used as Vite plugins themselves. In such cases, Vivliostyle CLI is used as a Vite plugin.</p>
-          <p>For example, in Astro, you can pass the Vite plugin of Vivliostyle CLI to the <code>vite.plugins</code> option in <code>astro.config.js</code> to use Astro and Vivliostyle CLI simultaneously. In the example below, the <code>openViewer: true</code> option is specified to automatically open the Vivliostyle Viewer when the Astro dev server starts.</p>
-          <pre class="language-js"><code class="language-js"><span class="token keyword module">import</span> <span class="token imports"><span class="token punctuation">{</span> createVitePlugin <span class="token punctuation">}</span></span> <span class="token keyword module">from</span> <span class="token string">'@vivliostyle/cli'</span><span class="token punctuation">;</span>
+      <p>Vivliostyle Viewer differs from typical web applications in that it has restrictions on JavaScript execution. Please note the following points:</p>
+      <ul>
+        <li>
+          <p>Vivliostyle Viewer does not support client-side routing technologies (Single Page Applications; SPA), so each page must be statically rendered. If the environment does not work with <code>appType</code> set to <code>mpa</code>, this method cannot be used.</p>
+        </li>
+        <li>
+          <p>Vivliostyle Viewer cannot detect changes to HTML content on the client side. Therefore, the UI framework used must support server-side rendering (SSR). If client-side JavaScript is included, it may not function correctly.</p>
+        </li>
+      </ul>
+    </section>
+    <section class="level3">
+      <h3 id="2-using-vivliostyle-cli-as-a-vite-plugin">2. Using Vivliostyle CLI as a Vite Plugin</h3>
+      <ul>
+        <li><a href="https://github.com/vivliostyle/vivliostyle-cli/tree/main/examples/with-astro">Example: with-astro</a></li>
+        <li><a href="https://github.com/vivliostyle/vivliostyle-cli/tree/main/examples/with-eleventy">Example: with-eleventy</a></li>
+      </ul>
+      <p>Some frameworks (e.g., <a href="https://astro.build/">Astro</a>) can accept external Vite plugins but cannot be used as Vite plugins themselves. In such cases, Vivliostyle CLI is used as a Vite plugin.</p>
+      <p>For example, in Astro, you can pass the Vite plugin of Vivliostyle CLI to the <code>vite.plugins</code> option in <code>astro.config.js</code> to use Astro and Vivliostyle CLI simultaneously. In the example below, the <code>openViewer: true</code> option is specified to automatically open the Vivliostyle Viewer when the Astro dev server starts.</p>
+      <pre class="language-js"><code class="language-js"><span class="token keyword module">import</span> <span class="token imports"><span class="token punctuation">{</span> createVitePlugin <span class="token punctuation">}</span></span> <span class="token keyword module">from</span> <span class="token string">'@vivliostyle/cli'</span><span class="token punctuation">;</span>
 <span class="token keyword module">import</span> <span class="token imports"><span class="token punctuation">{</span> defineConfig <span class="token punctuation">}</span></span> <span class="token keyword module">from</span> <span class="token string">'astro/config'</span><span class="token punctuation">;</span>
 
 <span class="token keyword module">export</span> <span class="token keyword module">default</span> <span class="token function">defineConfig</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
@@ -297,9 +295,7 @@ const lang = "en";
     <span class="token punctuation">]</span><span class="token punctuation">,</span>
   <span class="token punctuation">}</span><span class="token punctuation">,</span>
 <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
-        </section>
-      </section>
     </section>
-  
-
+  </section>
+</section>
 </article> <nav class="page-navigation" data-astro-cid-z7g34ql7=""> <div class="nav-links" data-astro-cid-z7g34ql7=""> <a href="/en/cli/special-output-settings/" class="nav-link nav-prev" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">← Previous</span> <span class="nav-title" data-astro-cid-z7g34ql7="">Special Output Settings</span> </a> <a href="/en/cli/config/" class="nav-link nav-next" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">Next →</span> <span class="nav-title" data-astro-cid-z7g34ql7="">Config Reference</span> </a> </div> </nav>   </article> </main> </div> <footer class="footer" data-astro-cid-mw7aashj=""> <p data-astro-cid-mw7aashj="">© 2026 Vivliostyle Foundation.</p> </footer> </div>  <script type="module">window.__bodyOverflowLockCount=0;window.lockBodyOverflow=function(){window.__bodyOverflowLockCount++,window.__bodyOverflowLockCount===1&&(document.body.style.overflow="hidden")};window.unlockBodyOverflow=function(){window.__bodyOverflowLockCount=Math.max(0,window.__bodyOverflowLockCount-1),window.__bodyOverflowLockCount===0&&(document.body.style.overflow="")};</script>  <script type="module">document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll(".accordion-toggle").forEach(t=>{t.addEventListener("click",d=>{d.preventDefault();const a=t.getAttribute("data-target"),e=document.getElementById(a),n=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",!n),e&&(e.style.display=n?"none":"block")})})});</script></body></html>
