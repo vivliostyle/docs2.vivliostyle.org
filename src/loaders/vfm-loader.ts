@@ -310,7 +310,34 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
             if (collectionName && collectionName.includes('themes-contributing')) {
               html = html.replace(/href="\.\/docs\/([^"]+)\.md"/g, `href="/${lang}/themes/$1/"`);
             }
-            
+
+            // 3.5. vivliostyle.js docs（viewer / reference 配下）のクロスプロダクト
+            // 参照を補正する。upstream では vivliostyle-viewer.md と
+            // supported-css-features.md / api.md / contribution-guide.md は
+            // 同じ docs/ 内の sibling だが、本サイトでは前者を /viewer/、
+            // 後者群を /reference/ に振り分けているため、`./X.md` 形式の
+            // 相対リンクを正しい絶対パスに書き換える。
+            if (
+              collectionName?.startsWith('vivliostyle-viewer-') ||
+              collectionName?.startsWith('vivliostyle-reference-')
+            ) {
+              const referenceFiles = [
+                'api',
+                'supported-css-features',
+                'contribution-guide',
+              ];
+              for (const f of referenceFiles) {
+                const re = new RegExp(`href="\\.\\/${f}\\.md"`, 'g');
+                html = html.replace(re, `href="/${lang}/reference/${f}/"`);
+              }
+              // Reference → Viewer の逆参照（reference 配下から
+              // ./vivliostyle-viewer.md と書かれた場合）
+              html = html.replace(
+                /href="\.\/vivliostyle-viewer\.md"/g,
+                `href="/${lang}/viewer/vivliostyle-viewer/"`,
+              );
+            }
+
             // 4. 相対リンクの.md拡張子を削除し、末尾スラッシュを追加
             // 例: ./getting-started.md -> ./getting-started/
             html = html.replace(/href="\.\/([^"]+)\.md"/g, 'href="./$1/"');
