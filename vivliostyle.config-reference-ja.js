@@ -18,6 +18,7 @@ export default {
   output: [
     { path: 'public/downloads/vivliostyle-reference-ja.pdf', format: 'pdf' },
     { path: 'public/downloads/vivliostyle-reference-ja.epub', format: 'epub' },
+    { path: 'public/publications/reference-ja', format: 'webpub' },
   ],
   workspaceDir: '.vivliostyle',
   toc: true,

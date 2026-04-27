@@ -21,6 +21,7 @@ export default {
   output: [
     { path: 'public/downloads/vivliostyle-cli-en.pdf', format: 'pdf' },
     { path: 'public/downloads/vivliostyle-cli-en.epub', format: 'epub' },
+    { path: 'public/publications/cli-en', format: 'webpub' },
   ],
   workspaceDir: '.vivliostyle',
   toc: true,

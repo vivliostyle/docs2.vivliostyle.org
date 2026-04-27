@@ -15,6 +15,7 @@ export default {
   output: [
     { path: 'public/downloads/vivliostyle-themes-en.pdf', format: 'pdf' },
     { path: 'public/downloads/vivliostyle-themes-en.epub', format: 'epub' },
+    { path: 'public/publications/themes-en', format: 'webpub' },
   ],
   workspaceDir: '.vivliostyle',
   toc: true,

@@ -10,6 +10,7 @@ export default {
   output: [
     { path: 'public/downloads/vivliostyle-viewer-ja.pdf', format: 'pdf' },
     { path: 'public/downloads/vivliostyle-viewer-ja.epub', format: 'epub' },
+    { path: 'public/publications/viewer-ja', format: 'webpub' },
   ],
   workspaceDir: '.vivliostyle',
   copyAsset: {

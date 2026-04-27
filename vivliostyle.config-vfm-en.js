@@ -14,6 +14,7 @@ export default {
   output: [
     { path: 'public/downloads/vfm-en.pdf', format: 'pdf' },
     { path: 'public/downloads/vfm-en.epub', format: 'epub' },
+    { path: 'public/publications/vfm-en', format: 'webpub' },
   ],
   workspaceDir: '.vivliostyle',
   toc: true,

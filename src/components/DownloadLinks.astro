@@ -3,6 +3,8 @@
  * ダウンロードリンクコンポーネント
  * 各プロダクトのドキュメントPDF/EPUBへのダウンロードリンクを表示
  */
+import LiveView from './LiveView.astro';
+
 interface Props {
   product: 'cli' | 'vfm' | 'themes' | 'viewer' | 'reference';
   lang: 'en' | 'ja';
@@ -50,6 +52,7 @@ const labels = lang === 'ja'
       </a>
     </li>
   </ul>
+  <LiveView product={product} lang={lang} />
 </section>
 
 <style>
