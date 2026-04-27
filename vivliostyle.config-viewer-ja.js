@@ -1,3 +1,5 @@
+import { getCopyAssetExcludes } from './vivliostyle.config-shared.js';
+
 export default {
   title: 'Vivliostyle Viewer ドキュメント',
   author: 'Vivliostyle Foundation',
@@ -10,4 +12,7 @@ export default {
     { path: 'public/downloads/vivliostyle-viewer-ja.epub', format: 'epub' },
   ],
   workspaceDir: '.vivliostyle',
+  copyAsset: {
+    excludes: getCopyAssetExcludes({ product: 'viewer', lang: 'ja' }),
+  },
 };

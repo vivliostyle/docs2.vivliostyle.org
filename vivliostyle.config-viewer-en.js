@@ -1,3 +1,5 @@
+import { getCopyAssetExcludes } from './vivliostyle.config-shared.js';
+
 export default {
   title: 'Vivliostyle Viewer Documentation',
   author: 'Vivliostyle Foundation',
@@ -13,4 +15,7 @@ export default {
   ],
   workspaceDir: '.vivliostyle',
   toc: true,
+  copyAsset: {
+    excludes: getCopyAssetExcludes({ product: 'viewer', lang: 'en' }),
+  },
 };

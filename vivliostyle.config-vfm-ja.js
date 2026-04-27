@@ -1,3 +1,5 @@
+import { getCopyAssetExcludes } from './vivliostyle.config-shared.js';
+
 export default {
   title: 'VFM (Vivliostyle Flavored Markdown) ドキュメント',
   author: 'Vivliostyle Foundation',
@@ -15,4 +17,7 @@ export default {
   ],
   workspaceDir: '.vivliostyle',
   toc: true,
+  copyAsset: {
+    excludes: getCopyAssetExcludes({ product: 'vfm', lang: 'ja' }),
+  },
 };

@@ -1,9 +1,11 @@
+import { getCopyAssetExcludes } from './vivliostyle.config-shared.js';
+
 export default {
   title: 'Vivliostyle Reference',
   author: 'Vivliostyle Foundation',
   language: 'en',
   size: 'A4',
-  theme: './packages/theme-docs',
+  theme: './packages/theme-PDF',
   entry: [
     'dist/en/reference/index.html',
     'dist/en/reference/contribution-guide/index.html',
@@ -19,4 +21,7 @@ export default {
   ],
   workspaceDir: '.vivliostyle',
   toc: true,
+  copyAsset: {
+    excludes: getCopyAssetExcludes({ product: 'reference', lang: 'en' }),
+  },
 };

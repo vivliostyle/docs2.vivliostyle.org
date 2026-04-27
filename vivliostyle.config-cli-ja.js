@@ -1,9 +1,11 @@
+import { getCopyAssetExcludes } from './vivliostyle.config-shared.js';
+
 export default {
   title: 'Vivliostyle CLI ドキュメント',
   author: 'Vivliostyle Foundation',
   language: 'ja',
   size: 'A4',
-  theme: './packages/theme-docs',
+  theme: './packages/theme-PDF',
   entry: [
     'dist/ja/cli/index.html',
     'dist/ja/cli/getting-started/index.html',
@@ -22,4 +24,7 @@ export default {
   ],
   workspaceDir: '.vivliostyle',
   toc: true,
+  copyAsset: {
+    excludes: getCopyAssetExcludes({ product: 'cli', lang: 'ja' }),
+  },
 };
