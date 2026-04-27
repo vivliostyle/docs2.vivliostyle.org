@@ -10,7 +10,10 @@ export default {
     'dist/en/themes/gallery/index.html',
     'dist/en/themes/spec/index.html',
   ],
-  output: 'public/downloads/vivliostyle-themes-en.pdf',
+  output: [
+    { path: 'public/downloads/vivliostyle-themes-en.pdf', format: 'pdf' },
+    { path: 'public/downloads/vivliostyle-themes-en.epub', format: 'epub' },
+  ],
   workspaceDir: '.vivliostyle',
   toc: true,
 };

@@ -13,7 +13,10 @@ export default {
     'dist/ja/reference/api/index.html',
     'dist/ja/reference/supported-css-features/index.html',
   ],
-  output: 'public/downloads/vivliostyle-reference-ja.pdf',
+  output: [
+    { path: 'public/downloads/vivliostyle-reference-ja.pdf', format: 'pdf' },
+    { path: 'public/downloads/vivliostyle-reference-ja.epub', format: 'epub' },
+  ],
   workspaceDir: '.vivliostyle',
   toc: true,
 };

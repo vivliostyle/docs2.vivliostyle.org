@@ -9,7 +9,10 @@ export default {
     'dist/en/vfm/vfm/index.html',
     'dist/en/vfm/hooks/index.html',
   ],
-  output: 'public/downloads/vfm-en.pdf',
+  output: [
+    { path: 'public/downloads/vfm-en.pdf', format: 'pdf' },
+    { path: 'public/downloads/vfm-en.epub', format: 'epub' },
+  ],
   workspaceDir: '.vivliostyle',
   toc: true,
 };

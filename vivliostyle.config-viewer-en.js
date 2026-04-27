@@ -7,7 +7,10 @@ export default {
   entry: [
     'dist/en/viewer/vivliostyle-viewer/index.html',
   ],
-  output: 'public/downloads/vivliostyle-viewer-en.pdf',
+  output: [
+    { path: 'public/downloads/vivliostyle-viewer-en.pdf', format: 'pdf' },
+    { path: 'public/downloads/vivliostyle-viewer-en.epub', format: 'epub' },
+  ],
   workspaceDir: '.vivliostyle',
   toc: true,
 };

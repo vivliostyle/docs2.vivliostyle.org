@@ -16,7 +16,10 @@ export default {
     'dist/ja/cli/frontend-framework-support/index.html',
     'dist/ja/cli/api-javascript/index.html',
   ],
-  output: 'public/downloads/vivliostyle-cli-ja.pdf',
+  output: [
+    { path: 'public/downloads/vivliostyle-cli-ja.pdf', format: 'pdf' },
+    { path: 'public/downloads/vivliostyle-cli-ja.epub', format: 'epub' },
+  ],
   workspaceDir: '.vivliostyle',
   toc: true,
 };

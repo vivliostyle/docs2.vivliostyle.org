@@ -5,6 +5,9 @@ export default {
   size: 'A4',
   theme: './packages/theme-PDF',
   entry: ['dist/ja/viewer/vivliostyle-viewer/index.html'],
-  output: 'public/downloads/vivliostyle-viewer-ja.pdf',
+  output: [
+    { path: 'public/downloads/vivliostyle-viewer-ja.pdf', format: 'pdf' },
+    { path: 'public/downloads/vivliostyle-viewer-ja.epub', format: 'epub' },
+  ],
   workspaceDir: '.vivliostyle',
 };
