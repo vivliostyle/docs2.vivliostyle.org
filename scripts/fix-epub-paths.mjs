@@ -81,13 +81,32 @@ function fixOne(epubPath) {
 
         const original = readFileSync(file, 'utf8');
         let count = 0;
-        const rewritten = original.replace(ATTR_RE, (_, attr, value) => {
-          // value は "/something..." 形式
-          // srcset は複数 URL があり得るが、root-absolute の場合は単純に同じ規則で置換
-          count++;
-          const rel = `${prefix}${value}`; // "../../" + "/foo.svg" -> "../..//foo.svg" → 後で `//` を `/` に
+        let pathRewrites = 0;
+
+        // 1) root-absolute 属性パス → XHTML 位置からの相対パスに書き換え
+        let rewritten = original.replace(ATTR_RE, (_, attr, value) => {
+          pathRewrites++;
+          const rel = `${prefix}${value}`;
           return `${attr}="${rel.replace(/\/+/g, '/')}"`;
         });
+        count += pathRewrites;
+
+        // 2) 外部リンク (http/https) から target / rel 属性を除去。
+        //    EPUB リーダー（Apple Books / Thorium 等）は target="_blank" を
+        //    そのまま解釈できず、リンクが反応しない事例があるため。
+        //    純粋な `<a href="https://...">` の形に統一する。
+        let externalLinkFixes = 0;
+        rewritten = rewritten.replace(
+          /<a\b([^>]*?)\shref="(https?:\/\/[^"]+)"([^>]*)>/gi,
+          (_, before, url, after) => {
+            const stripped = `${before}${after}`
+              .replace(/\s+target="[^"]*"/gi, '')
+              .replace(/\s+rel="[^"]*"/gi, '');
+            externalLinkFixes++;
+            return `<a${stripped} href="${url}">`;
+          },
+        );
+        count += externalLinkFixes;
 
         if (count > 0) {
           writeFileSync(file, rewritten);
@@ -98,7 +117,7 @@ function fixOne(epubPath) {
     }
 
     if (totalRewrites === 0) {
-      console.log(`  ${relative(ROOT, epubPath)}: no root-absolute paths found`);
+      console.log(`  ${relative(ROOT, epubPath)}: nothing to rewrite`);
       return;
     }
 
