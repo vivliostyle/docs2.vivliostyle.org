@@ -20,10 +20,13 @@
  */
 
 import { execFileSync } from 'node:child_process';
-import { mkdtempSync, readdirSync, statSync, readFileSync, writeFileSync, renameSync, rmSync } from 'node:fs';
+import { mkdtempSync, readdirSync, statSync, readFileSync, writeFileSync, renameSync, rmSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join, relative, dirname, sep } from 'node:path';
+import { join, relative, dirname, sep, resolve, posix } from 'node:path';
 import { glob } from 'node:fs/promises';
+
+// EPUB 内に存在しない相対リンクを書き換え先とするサイト URL
+const SITE_ORIGIN = 'https://docs.vivliostyle.org';
 
 const ROOT = new URL('..', import.meta.url).pathname;
 
@@ -91,7 +94,44 @@ function fixOne(epubPath) {
         });
         count += pathRewrites;
 
-        // 2) 外部リンク (http/https) から target / rel 属性を除去。
+        // 2) EPUB 内に存在しない相対リンクは本番サイトの URL に書き換える。
+        //    vivliostyle CLI は元の `/ja/reference/...` のような site-absolute
+        //    リンクを EPUB 内のパスとして相対化するが、EPUB は単一プロダクト
+        //    しか含まないため別プロダクトへのリンクが解決できない。それらを
+        //    https://docs.vivliostyle.org/ja/reference/... に戻すことで、
+        //    EPUB リーダーが外部リンクとして開けるようにする。
+        let crossProductFixes = 0;
+        const fileDir = dirname(file);
+        rewritten = rewritten.replace(
+          /<a\b([^>]*?)\shref="((?!https?:|#|mailto:|data:)[^"]+)"([^>]*)>/gi,
+          (full, before, href, after) => {
+            // フラグメント抽出
+            const [pathPart, fragment] = href.split('#', 2);
+            // EPUB 内で実際に解決されるパスを計算
+            const resolved = resolve(fileDir, pathPart);
+            if (existsSync(resolved) || existsSync(`${resolved}/index.xhtml`)) {
+              return full;
+            }
+            // 解決できない → contentRoot (= EPUB/) からの相対パスを取得し
+            // SITE_ORIGIN にぶら下げる
+            const fromContent = relative(contentRoot, resolved).split(sep).join('/');
+            if (fromContent.startsWith('..')) {
+              // EPUB の外に出る場合は対象外
+              return full;
+            }
+            // 元の path が `/` で終わるか、拡張子なしの場合のみ末尾スラッシュを付与
+            const hasExtension = /\.[a-z0-9]+$/i.test(pathPart);
+            const trailing = pathPart.endsWith('/') || !hasExtension ? '/' : '';
+            const newHref =
+              `${SITE_ORIGIN}/${fromContent}${trailing}` +
+              (fragment ? `#${fragment}` : '');
+            crossProductFixes++;
+            return `<a${before} href="${newHref}"${after}>`;
+          },
+        );
+        count += crossProductFixes;
+
+        // 3) 外部リンク (http/https) から target / rel 属性を除去。
         //    EPUB リーダー（Apple Books / Thorium 等）は target="_blank" を
         //    そのまま解釈できず、リンクが反応しない事例があるため。
         //    純粋な `<a href="https://...">` の形に統一する。
