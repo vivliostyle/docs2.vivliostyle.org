@@ -62,22 +62,16 @@ function fixOne(epubPath) {
   try {
     execFileSync('unzip', ['-q', epubPath, '-d', tmp]);
 
-    // EPUB レイアウトの確認：./EPUB/dist/ がコンテンツルートとして使われている前提
-    const contentBase = join(tmp, 'EPUB', 'dist');
+    // EPUB レイアウトの基本：./EPUB/ がコンテンツルート
+    const contentBase = join(tmp, 'EPUB');
     let totalRewrites = 0;
     let touchedFiles = 0;
 
     if (!safeStat(contentBase)?.isDirectory()) {
-      // 想定外レイアウトのときは EPUB/ 全体を歩く（より緩い fallback）
-      const epubRoot = join(tmp, 'EPUB');
-      if (!safeStat(epubRoot)?.isDirectory()) {
-        console.warn(`  skip ${epubPath}: unexpected EPUB layout`);
-        return;
-      }
-      processDir(epubRoot, epubRoot);
-    } else {
-      processDir(contentBase, contentBase);
+      console.warn(`  skip ${epubPath}: unexpected EPUB layout`);
+      return;
     }
+    processDir(contentBase, contentBase);
 
     function processDir(walkRoot, contentRoot) {
       for (const file of listXhtmlFiles(walkRoot)) {

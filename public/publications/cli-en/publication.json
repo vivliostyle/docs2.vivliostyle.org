@@ -8,7 +8,7 @@
   "name": "Vivliostyle CLI Documentation",
   "author": "Vivliostyle Foundation",
   "inLanguage": "en",
-  "dateModified": "2026-04-27T11:44:36.178Z",
+  "dateModified": "2026-04-27T12:43:52.692Z",
   "readingOrder": [
     {
       "url": "index.html",
@@ -17,55 +17,55 @@
       "type": "LinkedResource"
     },
     {
-      "url": "dist/en/cli/index.html",
+      "url": "en/cli/index.html",
       "name": "Vivliostyle CLI Documentation | Vivliostyle Documentation"
     },
     {
-      "url": "dist/en/cli/getting-started/index.html",
+      "url": "en/cli/getting-started/index.html",
       "name": "Getting Started | Vivliostyle Documentation"
     },
     {
-      "url": "dist/en/cli/using-config-file/index.html",
+      "url": "en/cli/using-config-file/index.html",
       "name": "Using Config File | Vivliostyle Documentation"
     },
     {
-      "url": "dist/en/cli/config/index.html",
+      "url": "en/cli/config/index.html",
       "name": "Config Reference | Vivliostyle Documentation"
     },
     {
-      "url": "dist/en/cli/themes-and-css/index.html",
+      "url": "en/cli/themes-and-css/index.html",
       "name": "Themes and CSS | Vivliostyle Documentation"
     },
     {
-      "url": "dist/en/cli/cover-page/index.html",
+      "url": "en/cli/cover-page/index.html",
       "name": "Creating Cover Page | Vivliostyle Documentation"
     },
     {
-      "url": "dist/en/cli/toc-page/index.html",
+      "url": "en/cli/toc-page/index.html",
       "name": "Creating Table of Contents Page | Vivliostyle Documentation"
     },
     {
-      "url": "dist/en/cli/special-output-settings/index.html",
+      "url": "en/cli/special-output-settings/index.html",
       "name": "Special Output Settings | Vivliostyle Documentation"
     },
     {
-      "url": "dist/en/cli/frontend-framework-support/index.html",
+      "url": "en/cli/frontend-framework-support/index.html",
       "name": "Frontend Framework Support | Vivliostyle Documentation"
     },
     {
-      "url": "dist/en/cli/api-javascript/index.html",
+      "url": "en/cli/api-javascript/index.html",
       "name": "JavaScript API | Vivliostyle Documentation"
     }
   ],
   "resources": [
-    "dist/favicon.png",
-    "dist/favicon.svg",
-    "dist/styles/global.css",
-    "dist/styles/pdf.css",
-    "dist/vivliostyle-docs.png",
-    "dist/vivliostyle-docs.svg",
-    "dist/vivliostyle-logo72.png",
-    "themes/node_modules/@vivliostyle/theme-PDF/theme.css"
+    "favicon.png",
+    "favicon.svg",
+    "styles/global.css",
+    "styles/pdf.css",
+    "themes/node_modules/@vivliostyle/theme-PDF/theme.css",
+    "vivliostyle-docs.png",
+    "vivliostyle-docs.svg",
+    "vivliostyle-logo72.png"
   ],
   "links": []
 }

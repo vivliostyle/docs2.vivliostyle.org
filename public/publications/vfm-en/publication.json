@@ -8,7 +8,7 @@
   "name": "VFM (Vivliostyle Flavored Markdown) Documentation",
   "author": "Vivliostyle Foundation",
   "inLanguage": "en",
-  "dateModified": "2026-04-27T11:44:48.721Z",
+  "dateModified": "2026-04-27T12:44:06.415Z",
   "readingOrder": [
     {
       "url": "index.html",
@@ -17,27 +17,23 @@
       "type": "LinkedResource"
     },
     {
-      "url": "dist/en/vfm/index.html",
+      "url": "en/vfm/index.html",
       "name": "Vivliostyle Flavored Markdown | Vivliostyle Documentation"
     },
     {
-      "url": "dist/en/vfm/vfm/index.html",
+      "url": "en/vfm/vfm/index.html",
       "name": "Vivliostyle Flavored Markdown | Vivliostyle Documentation"
     },
     {
-      "url": "dist/en/vfm/hooks/index.html",
+      "url": "en/vfm/hooks/index.html",
       "name": "Hooks | Vivliostyle Documentation"
     }
   ],
   "resources": [
-    "dist/favicon.png",
-    "dist/favicon.svg",
-    "dist/styles/global.css",
-    "dist/styles/pdf.css",
-    "dist/vfm/assets/ecosystem.drawio.svg",
-    "dist/vivliostyle-docs.png",
-    "dist/vivliostyle-docs.svg",
-    "dist/vivliostyle-logo72.png",
+    "favicon.png",
+    "favicon.svg",
+    "styles/global.css",
+    "styles/pdf.css",
     "themes/node_modules/@vivliostyle/theme-base/css/common/basic.css",
     "themes/node_modules/@vivliostyle/theme-base/css/common/meta-properties.css",
     "themes/node_modules/@vivliostyle/theme-base/css/common/reset.css",
@@ -54,7 +50,11 @@
     "themes/node_modules/@vivliostyle/theme-base/css/partial/utility-classes.css",
     "themes/node_modules/@vivliostyle/theme-base/theme-all.css",
     "themes/node_modules/@vivliostyle/theme-base/theme-basic.css",
-    "themes/node_modules/@vivliostyle/theme-techbook/theme.css"
+    "themes/node_modules/@vivliostyle/theme-techbook/theme.css",
+    "vfm/assets/ecosystem.drawio.svg",
+    "vivliostyle-docs.png",
+    "vivliostyle-docs.svg",
+    "vivliostyle-logo72.png"
   ],
   "links": []
 }

@@ -6,13 +6,14 @@ export default {
   language: 'ja',
   size: 'A4',
   theme: './packages/theme-PDF',
-  entry: ['dist/ja/viewer/vivliostyle-viewer/index.html'],
+  entryContext: 'dist',
+  entry: ['ja/viewer/vivliostyle-viewer/index.html'],
   output: [
     { path: 'public/downloads/vivliostyle-viewer-ja.pdf', format: 'pdf' },
     { path: 'public/downloads/vivliostyle-viewer-ja.epub', format: 'epub' },
     { path: 'public/publications/viewer-ja', format: 'webpub' },
   ],
-  workspaceDir: '.vivliostyle',
+  workspaceDir: '.vivliostyle/viewer-ja',
   copyAsset: {
     excludes: getCopyAssetExcludes({ product: 'viewer', lang: 'ja' }),
   },

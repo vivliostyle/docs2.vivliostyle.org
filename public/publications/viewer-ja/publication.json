@@ -8,25 +8,25 @@
   "name": "Vivliostyle Viewer ドキュメント",
   "author": "Vivliostyle Foundation",
   "inLanguage": "ja",
-  "dateModified": "2026-04-27T11:45:02.787Z",
+  "dateModified": "2026-04-27T12:44:20.796Z",
   "readingOrder": [
     {
-      "url": "dist/ja/viewer/vivliostyle-viewer/index.html",
+      "url": "ja/viewer/vivliostyle-viewer/index.html",
       "name": "Vivliostyle Viewer | Vivliostyle Documentation"
     }
   ],
   "resources": [
-    "dist/favicon.png",
-    "dist/favicon.svg",
-    "dist/styles/global.css",
-    "dist/styles/pdf.css",
-    "dist/viewer/assets/toc-icon.png",
-    "dist/viewer/assets/viewer-settings-panel.png",
-    "dist/viewer/assets/vivliostyle-icon.png",
-    "dist/vivliostyle-docs.png",
-    "dist/vivliostyle-docs.svg",
-    "dist/vivliostyle-logo72.png",
-    "themes/node_modules/@vivliostyle/theme-PDF/theme.css"
+    "favicon.png",
+    "favicon.svg",
+    "styles/global.css",
+    "styles/pdf.css",
+    "themes/node_modules/@vivliostyle/theme-PDF/theme.css",
+    "viewer/assets/toc-icon.png",
+    "viewer/assets/viewer-settings-panel.png",
+    "viewer/assets/vivliostyle-icon.png",
+    "vivliostyle-docs.png",
+    "vivliostyle-docs.svg",
+    "vivliostyle-logo72.png"
   ],
   "links": []
 }

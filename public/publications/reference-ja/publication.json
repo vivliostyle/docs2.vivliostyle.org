@@ -8,7 +8,7 @@
   "name": "Vivliostyle リファレンス",
   "author": "Vivliostyle Foundation",
   "inLanguage": "ja",
-  "dateModified": "2026-04-27T11:45:11.173Z",
+  "dateModified": "2026-04-27T12:44:29.113Z",
   "readingOrder": [
     {
       "url": "index.html",
@@ -17,43 +17,43 @@
       "type": "LinkedResource"
     },
     {
-      "url": "dist/ja/reference/index.html",
+      "url": "ja/reference/index.html",
       "name": "リファレンス | Vivliostyle Documentation"
     },
     {
-      "url": "dist/ja/reference/contribution-guide/index.html",
+      "url": "ja/reference/contribution-guide/index.html",
       "name": "Vivliostyle.js コントリビューションガイド | Vivliostyle Documentation"
     },
     {
-      "url": "dist/ja/reference/contributing-cli/index.html",
+      "url": "ja/reference/contributing-cli/index.html",
       "name": "Contribution Guide | Vivliostyle Documentation"
     },
     {
-      "url": "dist/ja/reference/contributing-vfm/index.html",
+      "url": "ja/reference/contributing-vfm/index.html",
       "name": "Contribution Guide | Vivliostyle Documentation"
     },
     {
-      "url": "dist/ja/reference/contributing-themes/index.html",
+      "url": "ja/reference/contributing-themes/index.html",
       "name": "Contribution Guidelines | Vivliostyle Documentation"
     },
     {
-      "url": "dist/ja/reference/api/index.html",
+      "url": "ja/reference/api/index.html",
       "name": "Core API リファレンス | Vivliostyle Documentation"
     },
     {
-      "url": "dist/ja/reference/supported-css-features/index.html",
+      "url": "ja/reference/supported-css-features/index.html",
       "name": "サポートする CSS 機能 | Vivliostyle Documentation"
     }
   ],
   "resources": [
-    "dist/favicon.png",
-    "dist/favicon.svg",
-    "dist/styles/global.css",
-    "dist/styles/pdf.css",
-    "dist/vivliostyle-docs.png",
-    "dist/vivliostyle-docs.svg",
-    "dist/vivliostyle-logo72.png",
-    "themes/node_modules/@vivliostyle/theme-PDF/theme.css"
+    "favicon.png",
+    "favicon.svg",
+    "styles/global.css",
+    "styles/pdf.css",
+    "themes/node_modules/@vivliostyle/theme-PDF/theme.css",
+    "vivliostyle-docs.png",
+    "vivliostyle-docs.svg",
+    "vivliostyle-logo72.png"
   ],
   "links": []
 }

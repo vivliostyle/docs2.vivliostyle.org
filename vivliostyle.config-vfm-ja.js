@@ -6,17 +6,18 @@ export default {
   language: 'ja',
   size: 'A4',
   theme: '@vivliostyle/theme-techbook',
+  entryContext: 'dist',
   entry: [
-    'dist/ja/vfm/index.html',
-    'dist/ja/vfm/vfm/index.html',
-    'dist/ja/vfm/hooks/index.html',
+    'ja/vfm/index.html',
+    'ja/vfm/vfm/index.html',
+    'ja/vfm/hooks/index.html',
   ],
   output: [
     { path: 'public/downloads/vfm-ja.pdf', format: 'pdf' },
     { path: 'public/downloads/vfm-ja.epub', format: 'epub' },
     { path: 'public/publications/vfm-ja', format: 'webpub' },
   ],
-  workspaceDir: '.vivliostyle',
+  workspaceDir: '.vivliostyle/vfm-ja',
   toc: true,
   copyAsset: {
     excludes: getCopyAssetExcludes({ product: 'vfm', lang: 'ja' }),

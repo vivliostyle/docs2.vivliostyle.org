@@ -1,0 +1,267 @@
+<!DOCTYPE html><html lang="en" data-astro-cid-mw7aashj=""><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="description" content=""><title>Contribution Guidelines | Vivliostyle Documentation</title><link rel="icon" type="image/png" href="/favicon.png"><link rel="canonical" href="https://docs.vivliostyle.org/en/reference/contributing-themes/"><link rel="alternate" hreflang="en" href="https://docs.vivliostyle.org/en/reference/contributing-themes/"><link rel="alternate" hreflang="ja" href="https://docs.vivliostyle.org/ja/reference/contributing-themes/"><link rel="sitemap" href="/sitemap-index.xml"><link rel="stylesheet" href="/styles/global.css"><!-- Prism.js syntax highlighting --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" media="(prefers-color-scheme: light)"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" media="(prefers-color-scheme: dark)"><link rel="stylesheet" href="/_astro/_slug_.Bdb4UDSE.css">
+<style>.page-navigation[data-astro-cid-z7g34ql7]{margin-top:3rem;padding-top:2rem;border-top:1px solid var(--color-border, #e5e7eb)}.nav-links[data-astro-cid-z7g34ql7]{display:grid;grid-template-columns:1fr 1fr;gap:1rem}.nav-link[data-astro-cid-z7g34ql7]{display:flex;flex-direction:column;padding:1rem;border:1px solid var(--color-border, #e5e7eb);border-radius:8px;text-decoration:none;color:var(--color-text, #1f2937);transition:border-color .2s,background-color .2s}.nav-link[data-astro-cid-z7g34ql7]:not(.nav-disabled):hover{border-color:var(--color-primary, #0066cc);background-color:var(--color-bg-hover, #f9fafb);color:var(--color-text-light, #808080)}.nav-link[data-astro-cid-z7g34ql7].nav-disabled{border:none}.nav-prev[data-astro-cid-z7g34ql7]{text-align:left}.nav-next[data-astro-cid-z7g34ql7]{text-align:right}.nav-label[data-astro-cid-z7g34ql7]{font-size:.875rem;color:var(--color-primary, #0066cc);font-weight:600;margin-bottom:.25rem}.nav-title[data-astro-cid-z7g34ql7]{font-weight:500}@media(max-width:640px){.nav-links[data-astro-cid-z7g34ql7]{grid-template-columns:1fr}}
+</style>
+<link rel="stylesheet" href="/_astro/_slug_.CaJONiar.css">
+<style>.docs-content[data-astro-cid-xjylzsq4]{max-width:800px;margin:0 auto;padding:2rem}.docs-content[data-astro-cid-xjylzsq4] h1[data-astro-cid-xjylzsq4]{font-size:2.5rem;font-weight:700;margin-bottom:1.5rem;color:var(--color-text);border-bottom:2px solid var(--color-border);padding-bottom:.5rem}.toc[data-astro-cid-xjylzsq4]{background:var(--color-background-secondary);border:1px solid var(--color-border);border-radius:.5rem;padding:1.5rem;margin:2rem 0}.toc-title[data-astro-cid-xjylzsq4]{margin:0 0 1rem;font-size:1.2rem;font-weight:600}.toc[data-astro-cid-xjylzsq4] ul{list-style:none;padding-left:0}.toc[data-astro-cid-xjylzsq4] li{margin:.5rem 0}.toc[data-astro-cid-xjylzsq4] a{color:var(--color-primary);text-decoration:none}.toc[data-astro-cid-xjylzsq4] a:hover{text-decoration:underline}.toc-headings[data-astro-cid-xjylzsq4]{font-size:.875rem}.toc-h2[data-astro-cid-xjylzsq4]{margin:.5rem 0}.toc-h2-link[data-astro-cid-xjylzsq4]{color:var(--color-text);text-decoration:none;display:block;padding:.25rem 0}.toc-h2-link[data-astro-cid-xjylzsq4]:hover{color:var(--color-primary)}.toc-toggle[data-astro-cid-xjylzsq4]{display:flex;align-items:flex-start;width:100%;background:none;border:none;padding:0;text-align:left;cursor:pointer;gap:0}.toggle-icon[data-astro-cid-xjylzsq4]{display:inline-block;transition:transform .2s;font-size:.7rem;padding-top:.2rem}.toc-toggle[data-astro-cid-xjylzsq4][aria-expanded=true] .toggle-icon[data-astro-cid-xjylzsq4]{transform:rotate(90deg)}.toc-toggle[data-astro-cid-xjylzsq4] a[data-astro-cid-xjylzsq4]{color:var(--color-text);text-decoration:none}.toc-toggle[data-astro-cid-xjylzsq4] a[data-astro-cid-xjylzsq4]:hover{color:var(--color-primary)}.toc-h3-list[data-astro-cid-xjylzsq4]{margin-top:.25rem}.toc-h3[data-astro-cid-xjylzsq4]{margin:.25rem 0}.toc-h3[data-astro-cid-xjylzsq4] a[data-astro-cid-xjylzsq4]{color:var(--color-text-muted);text-decoration:none;font-size:1rem}.toc-h3[data-astro-cid-xjylzsq4] a[data-astro-cid-xjylzsq4]:hover{color:var(--color-primary)}@media(max-width:768px){.docs-content[data-astro-cid-xjylzsq4]{padding:1rem}.docs-content[data-astro-cid-xjylzsq4] h1[data-astro-cid-xjylzsq4]{font-size:2rem}}.sidebar-accordion[data-astro-cid-xjylzsq4]{margin-top:.5rem}.accordion-section[data-astro-cid-xjylzsq4]{margin-bottom:.5rem}.accordion-toggle[data-astro-cid-xjylzsq4]{display:flex;align-items:center;width:100%;background:none;border:none;padding:.25rem 0;text-align:left;cursor:pointer;font-size:1rem;font-weight:500;color:var(--color-text)}.accordion-toggle[data-astro-cid-xjylzsq4]:hover{color:var(--color-primary)}.accordion-toggle[data-astro-cid-xjylzsq4] .toggle-icon[data-astro-cid-xjylzsq4]{margin-right:.5rem}.accordion-toggle[data-astro-cid-xjylzsq4][aria-expanded=true] .toggle-icon[data-astro-cid-xjylzsq4]{transform:rotate(90deg)}.accordion-content[data-astro-cid-xjylzsq4] li[data-astro-cid-xjylzsq4]{margin:.25rem 0}.accordion-content[data-astro-cid-xjylzsq4] a[data-astro-cid-xjylzsq4]{color:var(--color-text);text-decoration:none;font-size:1rem}.accordion-content[data-astro-cid-xjylzsq4] a[data-astro-cid-xjylzsq4]:hover{color:var(--color-primary)}
+</style><link rel="stylesheet" type="text/css" href="../../../themes/node_modules/@vivliostyle/theme-PDF/theme.css"></head> <body data-astro-cid-mw7aashj=""> <script type="module">const s=()=>{const n=document.querySelector(".mobile-menu-toggle"),o=document.querySelector(".sidebar"),e=document.querySelector(".sidebar-close"),t=document.querySelector(".sidebar-overlay");if(!n||!o||!t)return;const d=()=>{o.classList.add("active"),t.classList.add("active"),n.setAttribute("aria-expanded","true"),window.lockBodyOverflow()},c=()=>{o.classList.remove("active"),t.classList.remove("active"),n.setAttribute("aria-expanded","false"),window.unlockBodyOverflow()};n.onclick=d,t.onclick=c,e&&(e.onclick=i=>{i.preventDefault(),i.stopPropagation(),c()}),o.querySelectorAll("a").forEach(i=>{i.dataset.clickListenerAdded||(i.addEventListener("click",()=>{window.innerWidth<=1024&&c()}),i.dataset.clickListenerAdded="true")}),document.addEventListener("keydown",i=>{i.key==="Escape"&&o.classList.contains("active")&&c()});let r;window.addEventListener("resize",()=>{clearTimeout(r),r=window.setTimeout(()=>{window.innerWidth>1024&&o.classList.contains("active")&&c()},250)})},a=()=>{const n=Array.from(document.querySelectorAll(".nav-accordion"));if(!n.length)return;const o=()=>{n.forEach(e=>{e.open&&e.removeAttribute("open")})};n.forEach(e=>{e.addEventListener("toggle",()=>{e.open&&n.forEach(t=>{t!==e&&t.removeAttribute("open")})})}),document.addEventListener("click",e=>{const t=e.target;t instanceof Node&&(t.closest(".nav-accordion")||o())}),document.addEventListener("keydown",e=>{e.key==="Escape"&&o()})};document.readyState==="loading"?document.addEventListener("DOMContentLoaded",()=>{s(),a()}):(s(),a());</script> <div class="layout" data-astro-cid-mw7aashj=""> <header class="header" data-astro-cid-mw7aashj=""> <div class="header-content" data-astro-cid-mw7aashj=""> <button class="mobile-menu-toggle" aria-label="Toggle menu" aria-expanded="false" data-astro-cid-mw7aashj=""> <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" data-astro-cid-mw7aashj=""> <line x1="3" y1="12" x2="21" y2="12" data-astro-cid-mw7aashj=""></line> <line x1="3" y1="6" x2="21" y2="6" data-astro-cid-mw7aashj=""></line> <line x1="3" y1="18" x2="21" y2="18" data-astro-cid-mw7aashj=""></line> </svg> </button> <a href="/en/" class="logo" data-astro-cid-mw7aashj=""> <img src="/vivliostyle-docs.svg" alt="Vivliostyle Docs" class="logo-image" data-astro-cid-mw7aashj=""> </a> <nav class="header-nav" aria-label="Global navigation" data-astro-cid-mw7aashj=""> <details class="nav-accordion" data-astro-cid-mw7aashj=""> <summary data-astro-cid-mw7aashj="">Product</summary> <div class="nav-panel" data-astro-cid-mw7aashj=""> <a href="/en/viewer/" data-astro-cid-mw7aashj="">Vivliostyle Viewer</a><a href="/en/cli/" data-astro-cid-mw7aashj="">Vivliostyle CLI</a><a href="/en/vfm/" data-astro-cid-mw7aashj="">VFM</a><a href="/en/themes/" data-astro-cid-mw7aashj="">Vivliostyle Themes</a> </div> </details> <a href="https://vivliostyle.org/en/tutorials/" target="_blank" rel="noopener noreferrer" data-astro-cid-mw7aashj=""> Tutorials </a> <details class="nav-accordion" data-astro-cid-mw7aashj=""> <summary data-astro-cid-mw7aashj="">Reference</summary> <div class="nav-panel" data-astro-cid-mw7aashj=""> <div class="nav-group" data-astro-cid-mw7aashj=""> <h3 class="nav-group-title" data-astro-cid-mw7aashj="">Documentation</h3> <a href="/en/reference/awesome-vivliostyle/" data-astro-cid-mw7aashj="">Awesome Vivliostyle</a><a href="/en/reference/supported-css-features/" data-astro-cid-mw7aashj="">Supported CSS Features</a><a href="/en/reference/api/" data-astro-cid-mw7aashj="">Core API Reference</a> </div> <div class="nav-group" data-astro-cid-mw7aashj=""> <h3 class="nav-group-title" data-astro-cid-mw7aashj="">Contribution Guides</h3> <a href="/en/reference/contribution-guide/" data-astro-cid-mw7aashj="">Vivliostyle.js</a><a href="/en/reference/contributing-cli/" data-astro-cid-mw7aashj="">Vivliostyle CLI</a><a href="/en/reference/contributing-vfm/" data-astro-cid-mw7aashj="">VFM</a><a href="/en/reference/contributing-themes/" data-astro-cid-mw7aashj="">Vivliostyle Themes</a> </div> </div> </details> <a href="https://vivliostyle.org/en/faq/" target="_blank" rel="noopener noreferrer" data-astro-cid-mw7aashj=""> FAQ </a> <div class="nav-icon-links" data-astro-cid-mw7aashj=""> <a href="https://github.com/vivliostyle" class="github-link" aria-label="GitHub" target="_blank" rel="noopener noreferrer" data-astro-cid-mw7aashj=""> <svg viewBox="0 0 16 16" width="24" height="24" fill="currentColor" data-astro-cid-mw7aashj=""> <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" data-astro-cid-mw7aashj=""></path> </svg> </a> <a href="https://vivliostyle.org/" class="vivliostyle-link" aria-label="Vivliostyle" target="_blank" rel="noopener noreferrer" data-astro-cid-mw7aashj=""> <img src="/vivliostyle-logo72.png" alt="Vivliostyle" class="vivliostyle-icon" data-astro-cid-mw7aashj=""> </a> </div> </nav> <div class="header-actions" data-astro-cid-mw7aashj=""> <div class="search-container" data-astro-cid-z3bpxo4i=""><div id="search-wrapper" data-astro-cid-z3bpxo4i=""><div id="search" data-astro-cid-z3bpxo4i=""></div></div></div><!-- Pagefind UI CSS (本番環境のみ) - カスタムスタイルより先に読み込む --><link href="/_pagefind/pagefind-ui.css" rel="stylesheet"><style>
+  /* Pagefind UI CSSの後に読み込まれるカスタムスタイル */
+  
+  /* デフォルト（ライトモード）: 明るい色を設定 */
+  :root:not([data-theme="dark"]) {
+    --pagefind-ui-primary: #2563eb !important;
+    --pagefind-ui-text: #1f2937 !important;
+    --pagefind-ui-background: #ffffff !important;
+    --pagefind-ui-border: #e5e7eb !important;
+    --pagefind-ui-tag: #f3f4f6 !important;
+  }
+
+  /* ダークモード（システム設定） */
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --pagefind-ui-primary: #60a5fa !important;
+      --pagefind-ui-text: #e5e7eb !important;
+      --pagefind-ui-background: #1f2937 !important;
+      --pagefind-ui-border: #374151 !important;
+      --pagefind-ui-tag: #6b7280 !important;
+    }
+  }
+
+  /* ダークモード（手動設定） */
+  :root[data-theme="dark"] {
+    --pagefind-ui-primary: #60a5fa !important;
+    --pagefind-ui-text: #e5e7eb !important;
+    --pagefind-ui-background: #1f2937 !important;
+    --pagefind-ui-border: #374151 !important;
+    --pagefind-ui-tag: #6b7280 !important;
+  }
+  
+  /* ライトモード（手動設定） */
+  :root[data-theme="light"] {
+    --pagefind-ui-primary: #2563eb !important;
+    --pagefind-ui-text: #1f2937 !important;
+    --pagefind-ui-background: #ffffff !important;
+    --pagefind-ui-border: #e5e7eb !important;
+    --pagefind-ui-tag: #f3f4f6 !important;
+  }
+
+  /* ホバー時の黒いオブジェクト(擬似要素)を削除（結果項目のホバー時のみに限定） */
+  .pagefind-ui__result:hover::before,
+  .pagefind-ui__result:hover::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  /* マークされたハイライトテキストのみクリック不可に（クリックをリンクに通過させる） */
+  .pagefind-ui__result mark {
+    pointer-events: none !important;
+  }
+
+  /* 検索結果が空でない時のみドロワーを表示 */
+  .pagefind-ui__drawer:empty {
+    display: none !important;
+  }
+
+  /* 検索結果のリンクをクリック可能に（親項目・子項目両方） */
+  .pagefind-ui__result-link,
+  .pagefind-ui__result-nested .pagefind-ui__result-link,
+  .pagefind-ui__result-title a,
+  .pagefind-ui__result a {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+    color: var(--pagefind-ui-text) !important;
+    text-decoration: none !important;
+  }
+
+  /* リンクのホバー効果 */
+  .pagefind-ui__result-link:hover,
+  .pagefind-ui__result-nested .pagefind-ui__result-link:hover,
+  .pagefind-ui__result-title a:hover,
+  .pagefind-ui__result a:hover {
+    text-decoration: underline !important;
+    color: var(--pagefind-ui-primary) !important;
+  }
+  
+  /* 検索結果アイテム全体をクリック可能に */
+  .pagefind-ui__result {
+    cursor: pointer !important;
+    pointer-events: auto !important;
+  }
+
+  /* 検索ボックスの表示崩れ修正: プレースホルダーとアイコンの重なり防止 */
+  /* 詳細度を高めて確実に適用 */
+  :root .pagefind-ui__search-input {
+    padding-left: 3.5rem !important; /* アイコンスペースを確保 */
+    box-sizing: border-box !important;
+  }
+
+  :root .pagefind-ui__form::before {
+    left: 14px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    z-index: 5 !important;
+  }
+
+
+  /* 検索結果アイテムのホバー効果（ユーザビリティのため背景色を保持） */
+  .pagefind-ui__result:hover {
+    background-color: var(--pagefind-ui-border) !important;
+    border-radius: 4px !important;
+  }
+
+  /* 子項目（ネストされた結果）のスタイル */
+  .pagefind-ui__result-nested {
+    pointer-events: auto !important;
+    cursor: pointer !important;
+  }
+
+  .pagefind-ui__result-nested:hover {
+    background-color: var(--pagefind-ui-border) !important;
+    border-radius: 4px !important;
+  }
+
+  /* 検索ボックスの修正 - プレースホルダーが切れないように右側のみ調整 */
+  .pagefind-ui__search-input {
+    padding-right: 2rem !important;
+  }
+
+  .pagefind-ui__search-clear {
+    right: 0.5rem !important;
+  }
+
+  /* 検索フォームの位置調整 - アイコンと検索窓を中央揃え */
+  .pagefind-ui__form {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  /* Pagefind UIの検索コンテナ全体を中央揃え */
+  .pagefind-ui__search,
+  .pagefind-ui {
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  /* Pagefind UIの幅が親要素を超えないように制限 */
+  .pagefind-ui__search,
+  .pagefind-ui__form,
+  .pagefind-ui__search-input {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  /* 検索アイコン（虫眼鏡）を垂直中央揃え */
+  .pagefind-ui__form::before,
+  .pagefind-ui__form svg {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    position: absolute !important;
+    left: 0.5rem !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+  }
+</style><script type="module" src="/_astro/SearchBox.astro_astro_type_script_index_0_lang.DcWGF7zs.js"></script> <button class="theme-toggle" data-theme-mode="auto" aria-label="テーマ切り替え" title="テーマ切り替え" data-astro-cid-x3pjskd3=""> <svg class="theme-icon sun" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" data-astro-cid-x3pjskd3=""> <circle cx="12" cy="12" r="5" data-astro-cid-x3pjskd3=""></circle> <line x1="12" y1="1" x2="12" y2="3" data-astro-cid-x3pjskd3=""></line> <line x1="12" y1="21" x2="12" y2="23" data-astro-cid-x3pjskd3=""></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" data-astro-cid-x3pjskd3=""></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" data-astro-cid-x3pjskd3=""></line> <line x1="1" y1="12" x2="3" y2="12" data-astro-cid-x3pjskd3=""></line> <line x1="21" y1="12" x2="23" y2="12" data-astro-cid-x3pjskd3=""></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" data-astro-cid-x3pjskd3=""></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" data-astro-cid-x3pjskd3=""></line> </svg> <svg class="theme-icon moon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" data-astro-cid-x3pjskd3=""> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" data-astro-cid-x3pjskd3=""></path> </svg> <svg class="theme-icon auto" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" data-astro-cid-x3pjskd3=""> <path d="M0 0h24v24H0z" fill="none" data-astro-cid-x3pjskd3=""></path> <path d="M10.85 12.65h2.3L12 11l-1.15 1.65zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69zM14.3 16l-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9h-1.9z" data-astro-cid-x3pjskd3=""></path> </svg> </button>  <script type="module">const i="theme-preference";function n(){const t=localStorage.getItem(i);return t==="light"||t==="dark"||t==="auto"?t:"auto"}function f(){return window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}function d(t){return t==="auto"?f():t}function s(t){const e=document.documentElement;t==="dark"?e.setAttribute("data-theme","dark"):e.setAttribute("data-theme","light")}function a(){document.documentElement.removeAttribute("data-theme")}function g(){const t=n();let e;t==="light"?e="dark":t==="dark"?e="auto":e="light",localStorage.setItem(i,e),e==="auto"?a():s(d(e)),h(e),m(e)}function m(t){document.querySelectorAll(".theme-toggle").forEach(o=>{o.setAttribute("data-theme-mode",t)})}function h(t){const e=document.querySelectorAll(".theme-toggle"),o=document.documentElement.lang||"ja",r={ja:{light:"ダークモードに切り替え",dark:"システム設定に従う",auto:"ライトモードに切り替え"},en:{light:"Switch to dark mode",dark:"Follow system settings",auto:"Switch to light mode"}},c=r[o]||r.en;e.forEach(u=>{u.setAttribute("aria-label",c[t]),u.setAttribute("title",c[t])})}function b(){const t=n();h(t),m(t),t==="auto"?a():s(d(t)),window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change",e=>{n()==="auto"&&a()})}function l(){document.querySelectorAll(".theme-toggle").forEach(e=>{e.addEventListener("click",g)})}b();document.readyState==="loading"?document.addEventListener("DOMContentLoaded",l):l();</script> <div class="lang-switcher" data-astro-cid-mw7aashj=""> <div data-astro-cid-xjylzsq4=""> <div class="language-switcher" data-astro-cid-a2mxz4y6=""> <span class="current-lang" aria-current="true" data-astro-cid-a2mxz4y6=""> English </span>  <span class="separator" data-astro-cid-a2mxz4y6="">|</span> <a href="/ja/reference/contributing-themes/" hreflang="ja" class="lang-link" data-astro-cid-a2mxz4y6=""> 日本語 </a>  </div>  </div> </div> </div> </div> </header> <div class="sidebar-overlay" data-astro-cid-mw7aashj=""></div> <div class="main-container" data-astro-cid-mw7aashj=""> <aside class="sidebar" data-astro-cid-mw7aashj=""> <div class="sidebar-header" data-astro-cid-mw7aashj=""> <button class="sidebar-close" aria-label="Close menu" data-astro-cid-mw7aashj=""> <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" data-astro-cid-mw7aashj=""> <line x1="18" y1="6" x2="6" y2="18" data-astro-cid-mw7aashj=""></line> <line x1="6" y1="6" x2="18" y2="18" data-astro-cid-mw7aashj=""></line> </svg> </button> </div> <div class="sidebar-mobile-controls" data-astro-cid-mw7aashj=""> <div class="mobile-controls-row" data-astro-cid-mw7aashj=""> <button class="theme-toggle" data-theme-mode="auto" aria-label="テーマ切り替え" title="テーマ切り替え" data-astro-cid-x3pjskd3=""> <svg class="theme-icon sun" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" data-astro-cid-x3pjskd3=""> <circle cx="12" cy="12" r="5" data-astro-cid-x3pjskd3=""></circle> <line x1="12" y1="1" x2="12" y2="3" data-astro-cid-x3pjskd3=""></line> <line x1="12" y1="21" x2="12" y2="23" data-astro-cid-x3pjskd3=""></line> <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" data-astro-cid-x3pjskd3=""></line> <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" data-astro-cid-x3pjskd3=""></line> <line x1="1" y1="12" x2="3" y2="12" data-astro-cid-x3pjskd3=""></line> <line x1="21" y1="12" x2="23" y2="12" data-astro-cid-x3pjskd3=""></line> <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" data-astro-cid-x3pjskd3=""></line> <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" data-astro-cid-x3pjskd3=""></line> </svg> <svg class="theme-icon moon" viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" data-astro-cid-x3pjskd3=""> <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" data-astro-cid-x3pjskd3=""></path> </svg> <svg class="theme-icon auto" viewBox="0 0 24 24" width="20" height="20" fill="currentColor" data-astro-cid-x3pjskd3=""> <path d="M0 0h24v24H0z" fill="none" data-astro-cid-x3pjskd3=""></path> <path d="M10.85 12.65h2.3L12 11l-1.15 1.65zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12 20 8.69zM14.3 16l-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9h-1.9z" data-astro-cid-x3pjskd3=""></path> </svg> </button>   <div class="lang-switcher-mobile" data-astro-cid-mw7aashj=""> <div data-astro-cid-xjylzsq4=""> <div class="language-switcher" data-astro-cid-a2mxz4y6=""> <span class="current-lang" aria-current="true" data-astro-cid-a2mxz4y6=""> English </span>  <span class="separator" data-astro-cid-a2mxz4y6="">|</span> <a href="/ja/reference/contributing-themes/" hreflang="ja" class="lang-link" data-astro-cid-a2mxz4y6=""> 日本語 </a>  </div>  </div> </div> </div> <div class="mobile-controls-row" data-astro-cid-mw7aashj=""> <a href="https://github.com/vivliostyle" class="sidebar-github-link" aria-label="GitHub" target="_blank" rel="noopener noreferrer" data-astro-cid-mw7aashj=""> <svg viewBox="0 0 16 16" width="24" height="24" fill="currentColor" data-astro-cid-mw7aashj=""> <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" data-astro-cid-mw7aashj=""></path> </svg> </a> <a href="https://vivliostyle.org/" class="sidebar-vivliostyle-link" aria-label="Vivliostyle" target="_blank" rel="noopener noreferrer" data-astro-cid-mw7aashj=""> <img src="/vivliostyle-logo72.png" alt="Vivliostyle" class="vivliostyle-icon" data-astro-cid-mw7aashj=""> </a> </div> </div> <nav id="sidebar-nav" data-astro-cid-xjylzsq4=""> <h3 data-astro-cid-xjylzsq4=""><a href="/en/reference/" style="color: inherit; text-decoration: none;" data-astro-cid-xjylzsq4="">Reference</a></h3> <!-- Show heading list only for specific pages -->  <ul style="list-style: none; padding-left: 0; margin-bottom: 1rem;" data-astro-cid-xjylzsq4=""> <li data-astro-cid-xjylzsq4=""><a href="/en/" data-astro-cid-xjylzsq4="">← Back to Home</a></li> </ul> <div class="sidebar-accordion" data-astro-cid-xjylzsq4=""> <div class="accordion-section" data-astro-cid-xjylzsq4=""> <button class="accordion-toggle" data-target="docs-group" aria-expanded="true" data-astro-cid-xjylzsq4=""> <span class="toggle-icon" data-astro-cid-xjylzsq4="">▶</span>Documentation
+</button> <ul class="accordion-content" id="docs-group" style="display: block; list-style: none; padding-left: 1.5rem; margin: 0.25rem 0 0 0;" data-astro-cid-xjylzsq4=""> <li data-astro-cid-xjylzsq4=""> <a href="/en/reference/awesome-vivliostyle/" data-astro-cid-xjylzsq4="">Awesome Vivliostyle</a> </li> <li data-astro-cid-xjylzsq4=""> <a href="/en/reference/supported-css-features/" data-astro-cid-xjylzsq4="">Supported CSS Features</a> </li> <li data-astro-cid-xjylzsq4=""> <a href="/en/reference/api/" data-astro-cid-xjylzsq4="">Core API Reference</a> </li> </ul> </div> <div class="accordion-section" data-astro-cid-xjylzsq4=""> <button class="accordion-toggle" data-target="contrib-group" aria-expanded="true" data-astro-cid-xjylzsq4=""> <span class="toggle-icon" data-astro-cid-xjylzsq4="">▶</span>Contribution Guides
+</button> <ul class="accordion-content" id="contrib-group" style="display: block; list-style: none; padding-left: 1.5rem; margin: 0.25rem 0 0 0;" data-astro-cid-xjylzsq4=""> <li data-astro-cid-xjylzsq4=""> <a href="/en/reference/contribution-guide/" data-astro-cid-xjylzsq4="">Vivliostyle Viewer</a> </li> <li data-astro-cid-xjylzsq4=""> <a href="/en/reference/contributing-cli/" data-astro-cid-xjylzsq4="">Vivliostyle CLI</a> </li> <li data-astro-cid-xjylzsq4=""> <a href="/en/reference/contributing-vfm/" data-astro-cid-xjylzsq4="">VFM</a> </li> <li class="active" data-astro-cid-xjylzsq4=""> <a href="/en/reference/contributing-themes/" aria-current="page" data-astro-cid-xjylzsq4="">Vivliostyle Themes</a> </li> </ul> </div> </div>  <section class="downloads" aria-label="Downloads (built by Vivliostyle CLI)" data-astro-cid-imnz6jfw=""> <h3 class="downloads-heading" data-astro-cid-imnz6jfw="">Downloads (built by Vivliostyle CLI)</h3> <ul class="downloads-list" data-astro-cid-imnz6jfw=""> <li data-astro-cid-imnz6jfw=""> <a href="/downloads/vivliostyle-reference-en.pdf" download="" class="download-link" data-astro-cid-imnz6jfw=""> <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" aria-hidden="true" data-astro-cid-imnz6jfw=""> <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" data-astro-cid-imnz6jfw=""></path> <polyline points="7 10 12 15 17 10" data-astro-cid-imnz6jfw=""></polyline> <line x1="12" y1="15" x2="12" y2="3" data-astro-cid-imnz6jfw=""></line> </svg> <span data-astro-cid-imnz6jfw="">PDF</span> </a> </li> <li data-astro-cid-imnz6jfw=""> <a href="/downloads/vivliostyle-reference-en.epub" download="" class="download-link" data-astro-cid-imnz6jfw=""> <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" aria-hidden="true" data-astro-cid-imnz6jfw=""> <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" data-astro-cid-imnz6jfw=""></path> <polyline points="7 10 12 15 17 10" data-astro-cid-imnz6jfw=""></polyline> <line x1="12" y1="15" x2="12" y2="3" data-astro-cid-imnz6jfw=""></line> </svg> <span data-astro-cid-imnz6jfw="">EPUB</span> </a> </li> </ul> <button type="button" id="liveview-open-reference-en" class="liveview-trigger" data-product="reference" data-lang="en" aria-haspopup="dialog" aria-controls="liveview-modal-reference-en" data-astro-cid-ubvjlnpp=""> <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2" fill="none" aria-hidden="true" data-astro-cid-ubvjlnpp=""> <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" data-astro-cid-ubvjlnpp=""></path> <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" data-astro-cid-ubvjlnpp=""></path> </svg> <span data-astro-cid-ubvjlnpp="">Live with Vivliostyle.js</span> </button> <div id="liveview-modal-reference-en" class="liveview-modal" role="dialog" aria-modal="true" aria-labelledby="liveview-modal-reference-en-title" hidden="" data-astro-cid-ubvjlnpp=""> <div class="liveview-backdrop" data-close="" data-astro-cid-ubvjlnpp=""></div> <div class="liveview-dialog" data-astro-cid-ubvjlnpp=""> <header class="liveview-header" data-astro-cid-ubvjlnpp=""> <h2 id="liveview-modal-reference-en-title" class="liveview-title" data-astro-cid-ubvjlnpp="">Live typesetting by Vivliostyle.js</h2> <button type="button" class="liveview-close" data-close="" aria-label="Close" data-astro-cid-ubvjlnpp=""> <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" data-astro-cid-ubvjlnpp=""> <line x1="18" y1="6" x2="6" y2="18" data-astro-cid-ubvjlnpp=""></line> <line x1="6" y1="6" x2="18" y2="18" data-astro-cid-ubvjlnpp=""></line> </svg> </button> </header> <p class="liveview-explanation" data-astro-cid-ubvjlnpp=""> You are looking at a <a href="https://docs.vivliostyle.org/en/cli/special-output-settings/#output-in-web-publication-webpub-format" target="_blank" rel="noopener noreferrer" class="liveview-explanation-link" data-astro-cid-ubvjlnpp="">WebPub</a> generated by Vivliostyle CLI, now being paginated live by Vivliostyle.js. You can also save it as PDF by clicking the printer icon in this window. </p> <div class="liveview-frame-wrapper" data-astro-cid-ubvjlnpp=""> <div class="liveview-loading" data-loading="" data-astro-cid-ubvjlnpp=""> <div class="liveview-spinner" aria-hidden="true" data-astro-cid-ubvjlnpp=""></div> <span data-astro-cid-ubvjlnpp="">Loading Vivliostyle Viewer…</span> </div> <iframe class="liveview-frame" title="Vivliostyle Viewer" data-iframe="" loading="lazy" allow="fullscreen" data-astro-cid-ubvjlnpp=""></iframe> <div class="liveview-preview-warning" data-preview-warning="" hidden="" data-astro-cid-ubvjlnpp=""> Live view requires the manifests and pages to be reachable from the public internet, so it activates after the site is deployed to production. </div> </div> <footer class="liveview-footer" data-astro-cid-ubvjlnpp=""> <a href="https://vivliostyle.org/" target="_blank" rel="noopener noreferrer" class="liveview-powered-by" data-astro-cid-ubvjlnpp=""> Powered by Vivliostyle.js </a> </footer> </div> </div>  <script>(function(){const buttonId = "liveview-open-reference-en";
+const modalId = "liveview-modal-reference-en";
+const product = "reference";
+const lang = "en";
+
+  const button = document.getElementById(buttonId);
+  const modal = document.getElementById(modalId);
+  if (button && modal) {
+    const iframe = modal.querySelector('[data-iframe]');
+    const previewWarning = modal.querySelector('[data-preview-warning]');
+    let lastFocus = null;
+
+    const open = () => {
+      lastFocus = document.activeElement;
+
+      // 本番URL固定でマニフェストを参照する。
+      // localhost / preview からは Vivliostyle Viewer が manifest を取りに行けないので、
+      // その場合は警告を表示する。
+      const isProductionHost = window.location.hostname === 'docs2.vivliostyle.org' ||
+                               window.location.hostname === 'docs.vivliostyle.org';
+      const manifestUrl = `https://docs2.vivliostyle.org/publications/${product}-${lang}/publication.json`;
+      const viewerUrl = `https://vivliostyle.org/viewer/?src=${encodeURIComponent(manifestUrl)}&bookMode=true&lng=${lang}`;
+
+      iframe.src = viewerUrl;
+      modal.hidden = false;
+      window.lockBodyOverflow?.();
+
+      if (!isProductionHost && previewWarning) {
+        previewWarning.hidden = false;
+      } else if (previewWarning) {
+        previewWarning.hidden = true;
+      }
+
+      modal.querySelector('.liveview-close')?.focus();
+    };
+
+    const close = () => {
+      modal.hidden = true;
+      iframe.src = 'about:blank';
+      window.unlockBodyOverflow?.();
+      lastFocus?.focus?.();
+    };
+
+    button.addEventListener('click', open);
+    modal.querySelectorAll('[data-close]').forEach((el) =>
+      el.addEventListener('click', close),
+    );
+    modal.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') close();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (!modal.hidden && e.key === 'Escape') close();
+    });
+  }
+})();</script> </section>  </nav> </aside> <main class="content" data-astro-cid-mw7aashj=""> <nav aria-label="Breadcrumb" class="breadcrumb" data-astro-cid-qaanghzh=""> <ol data-astro-cid-qaanghzh=""> <li data-astro-cid-qaanghzh=""> <a href="/en/" data-astro-cid-qaanghzh="">Home</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <a href="/en/reference/" data-astro-cid-qaanghzh="">Reference</a> <span class="separator" aria-hidden="true" data-astro-cid-qaanghzh="">›</span> </li><li data-astro-cid-qaanghzh=""> <span aria-current="page" data-astro-cid-qaanghzh="">Contribution Guidelines</span>  </li> </ol> </nav> <!-- JSON-LD構造化データ --> <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://docs.vivliostyle.org/en/"},{"@type":"ListItem","position":2,"name":"Reference","item":"https://docs.vivliostyle.org/en/reference/"},{"@type":"ListItem","position":3,"name":"Contribution Guidelines","item":"https://docs.vivliostyle.org/en/reference/contributing-themes/"}]}</script>  <article class="prose" data-astro-cid-mw7aashj="">      <article class="docs-content" data-astro-cid-xjylzsq4=""> <!-- Display extracted TOC if exists -->  <div data-astro-cid-xjylzsq4="">
+
+  
+    <meta charset="utf-8">
+    <title>Contribution Guidelines</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  
+    <section class="level1">
+      <h1 id="contribution-guidelines">Contribution Guidelines</h1>
+      <section class="level2">
+        <h2 id="developing-theme">Developing theme</h2>
+        <ul>
+          <li>See <a href="/en/themes/spec/">Theme Spec</a>.</li>
+        </ul>
+      </section>
+      <section class="level2">
+        <h2 id="donating-your-theme">Donating your theme</h2>
+        <p>We appreciate your donation to the list of our official themes!</p>
+        <section class="level3">
+          <h3 id="merging-criteria">Merging criteria</h3>
+          <ul>
+            <li>The design and type of your theme should be reasonably distinct from all other existing official themes. This is to avoid duplication.</li>
+            <li>Your theme has to meet our <a href="/en/themes/spec/">Theme Spec</a>.</li>
+            <li>You have to sign the Contributor License Agreement.</li>
+            <li>You must follow <a href="CODE_OF_CONDUCT.md">Code of Conduct</a>.</li>
+          </ul>
+        </section>
+        <section class="level3">
+          <h3 id="perks">Perks</h3>
+          <ul>
+            <li>You will become a member of <a href="https://github.com/vivliostyle">Vivliostyle</a> as well as a maintainer of <code>vivliostyle/theme</code> as a part of @vivliostyle/theme team.</li>
+            <li>You will be given permissions to manage <code>vivliostyle/themes</code> and all the other theme-related repositories which enables you to:
+              <ul>
+                <li>Push to the repository</li>
+                <li>Triage issues</li>
+                <li>Review and merge pull-requests</li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+      </section>
+    </section>
+  
+
+</div> </article>  <nav class="page-navigation" data-astro-cid-z7g34ql7=""> <div class="nav-links" data-astro-cid-z7g34ql7=""> <a href="/en/reference/contributing-vfm/" class="nav-link nav-prev" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">← Previous</span> <span class="nav-title" data-astro-cid-z7g34ql7="">VFM</span> </a> <div class="nav-link nav-next nav-disabled" data-astro-cid-z7g34ql7=""></div> </div> </nav>   </article> </main> </div> <footer class="footer" data-astro-cid-mw7aashj=""> <p data-astro-cid-mw7aashj="">© 2026 Vivliostyle Foundation.</p> </footer> </div>  <script type="module">window.__bodyOverflowLockCount=0;window.lockBodyOverflow=function(){window.__bodyOverflowLockCount++,window.__bodyOverflowLockCount===1&&(document.body.style.overflow="hidden")};window.unlockBodyOverflow=function(){window.__bodyOverflowLockCount=Math.max(0,window.__bodyOverflowLockCount-1),window.__bodyOverflowLockCount===0&&(document.body.style.overflow="")};</script>  <script type="module">document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll(".accordion-toggle").forEach(t=>{t.addEventListener("click",a=>{a.preventDefault();const d=t.getAttribute("data-target"),e=document.getElementById(d),n=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",String(!n)),e&&(e.style.display=n?"none":"block")})}),document.querySelectorAll(".toc-toggle").forEach(t=>{t.addEventListener("click",a=>{if(a.target.tagName==="A")return;a.preventDefault();const d=t.getAttribute("data-target"),e=document.getElementById(d),n=t.getAttribute("aria-expanded")==="true";e&&(t.setAttribute("aria-expanded",String(!n)),e.style.display=n?"none":"block")})})});</script></body></html>
