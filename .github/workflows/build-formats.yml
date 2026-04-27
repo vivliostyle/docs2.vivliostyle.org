@@ -1,0 +1,42 @@
+# PDF/EPUB 生成ワークフロー
+# 手動トリガー（workflow_dispatch）でのみ実行され、各プロダクトの PDF と EPUB を
+# 生成してアーティファクトとしてアップロードする。
+name: Build PDF/EPUB
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-formats:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Astro site
+        run: npm run build
+
+      - name: Build PDF and EPUB for all products
+        run: npm run build:pdf
+
+      - name: Upload generated PDFs and EPUBs
+        uses: actions/upload-artifact@v4
+        with:
+          name: vivliostyle-docs-formats
+          path: public/downloads/
+          if-no-files-found: error
