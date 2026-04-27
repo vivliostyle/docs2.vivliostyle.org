@@ -1,0 +1,71 @@
+{
+  "@context": [
+    "https://schema.org",
+    "https://www.w3.org/ns/pub-context"
+  ],
+  "type": "Book",
+  "conformsTo": "https://github.com/vivliostyle/vivliostyle-cli",
+  "name": "Vivliostyle CLI ドキュメント",
+  "author": "Vivliostyle Foundation",
+  "inLanguage": "ja",
+  "dateModified": "2026-04-27T11:44:26.642Z",
+  "readingOrder": [
+    {
+      "url": "index.html",
+      "name": "Table of Contents",
+      "rel": "contents",
+      "type": "LinkedResource"
+    },
+    {
+      "url": "dist/ja/cli/index.html",
+      "name": "Vivliostyle CLI ドキュメント | Vivliostyle Documentation"
+    },
+    {
+      "url": "dist/ja/cli/getting-started/index.html",
+      "name": "はじめに | Vivliostyle Documentation"
+    },
+    {
+      "url": "dist/ja/cli/using-config-file/index.html",
+      "name": "構成ファイル | Vivliostyle Documentation"
+    },
+    {
+      "url": "dist/ja/cli/config/index.html",
+      "name": "Config Reference | Vivliostyle Documentation"
+    },
+    {
+      "url": "dist/ja/cli/themes-and-css/index.html",
+      "name": "テーマと CSS | Vivliostyle Documentation"
+    },
+    {
+      "url": "dist/ja/cli/cover-page/index.html",
+      "name": "表紙ページの作成 | Vivliostyle Documentation"
+    },
+    {
+      "url": "dist/ja/cli/toc-page/index.html",
+      "name": "目次の作成 | Vivliostyle Documentation"
+    },
+    {
+      "url": "dist/ja/cli/special-output-settings/index.html",
+      "name": "特別な出力設定 | Vivliostyle Documentation"
+    },
+    {
+      "url": "dist/ja/cli/frontend-framework-support/index.html",
+      "name": "フロントエンドフレームワークのサポート | Vivliostyle Documentation"
+    },
+    {
+      "url": "dist/ja/cli/api-javascript/index.html",
+      "name": "JavaScript API | Vivliostyle Documentation"
+    }
+  ],
+  "resources": [
+    "dist/favicon.png",
+    "dist/favicon.svg",
+    "dist/styles/global.css",
+    "dist/styles/pdf.css",
+    "dist/vivliostyle-docs.png",
+    "dist/vivliostyle-docs.svg",
+    "dist/vivliostyle-logo72.png",
+    "themes/node_modules/@vivliostyle/theme-PDF/theme.css"
+  ],
+  "links": []
+}

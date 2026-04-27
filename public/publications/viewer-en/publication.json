@@ -1,0 +1,54 @@
+{
+  "@context": [
+    "https://schema.org",
+    "https://www.w3.org/ns/pub-context"
+  ],
+  "type": "Book",
+  "conformsTo": "https://github.com/vivliostyle/vivliostyle-cli",
+  "name": "Vivliostyle Viewer Documentation",
+  "author": "Vivliostyle Foundation",
+  "inLanguage": "en",
+  "dateModified": "2026-04-27T11:45:07.303Z",
+  "readingOrder": [
+    {
+      "url": "index.html",
+      "name": "Table of Contents",
+      "rel": "contents",
+      "type": "LinkedResource"
+    },
+    {
+      "url": "dist/en/viewer/vivliostyle-viewer/index.html",
+      "name": "Vivliostyle Viewer | Vivliostyle Documentation"
+    }
+  ],
+  "resources": [
+    "dist/favicon.png",
+    "dist/favicon.svg",
+    "dist/styles/global.css",
+    "dist/styles/pdf.css",
+    "dist/viewer/assets/toc-icon.png",
+    "dist/viewer/assets/viewer-settings-panel.png",
+    "dist/viewer/assets/vivliostyle-icon.png",
+    "dist/vivliostyle-docs.png",
+    "dist/vivliostyle-docs.svg",
+    "dist/vivliostyle-logo72.png",
+    "themes/node_modules/@vivliostyle/theme-base/css/common/basic.css",
+    "themes/node_modules/@vivliostyle/theme-base/css/common/meta-properties.css",
+    "themes/node_modules/@vivliostyle/theme-base/css/common/reset.css",
+    "themes/node_modules/@vivliostyle/theme-base/css/lib/prism/base.css",
+    "themes/node_modules/@vivliostyle/theme-base/css/lib/prism/theme-okaidia.css",
+    "themes/node_modules/@vivliostyle/theme-base/css/lib/prism/theme-prism.css",
+    "themes/node_modules/@vivliostyle/theme-base/css/partial/crossref.css",
+    "themes/node_modules/@vivliostyle/theme-base/css/partial/endnote.css",
+    "themes/node_modules/@vivliostyle/theme-base/css/partial/footnote-external-link.css",
+    "themes/node_modules/@vivliostyle/theme-base/css/partial/footnote.css",
+    "themes/node_modules/@vivliostyle/theme-base/css/partial/page.css",
+    "themes/node_modules/@vivliostyle/theme-base/css/partial/section.css",
+    "themes/node_modules/@vivliostyle/theme-base/css/partial/toc.css",
+    "themes/node_modules/@vivliostyle/theme-base/css/partial/utility-classes.css",
+    "themes/node_modules/@vivliostyle/theme-base/theme-all.css",
+    "themes/node_modules/@vivliostyle/theme-base/theme-basic.css",
+    "themes/node_modules/@vivliostyle/theme-techbook/theme.css"
+  ],
+  "links": []
+}
