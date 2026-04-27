@@ -7,6 +7,7 @@
     "build": "astro build && npx pagefind --site dist --output-subdir _pagefind",
     "preview": "astro preview",
     "astro": "astro",
+    "optimize:images": "node scripts/optimize-images.mjs",
     "build:pdf": "npm run build:pdf:cli-ja && npm run build:pdf:cli-en && npm run build:pdf:vfm-ja && npm run build:pdf:vfm-en && npm run build:pdf:themes-ja && npm run build:pdf:themes-en && npm run build:pdf:viewer-ja && npm run build:pdf:viewer-en && npm run build:pdf:reference-ja && npm run build:pdf:reference-en",
     "build:pdf:cli-ja": "vivliostyle build -c vivliostyle.config-cli-ja.js",
     "build:pdf:cli-en": "vivliostyle build -c vivliostyle.config-cli-en.js",
