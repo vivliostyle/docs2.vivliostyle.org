@@ -343,7 +343,7 @@ const buttonId = `liveview-open-${product}-${lang}`;
       const isProductionHost = window.location.hostname === 'docs2.vivliostyle.org' ||
                                window.location.hostname === 'docs.vivliostyle.org';
       const manifestUrl = `https://docs2.vivliostyle.org/publications/${product}-${lang}/publication.json`;
-      const viewerUrl = `https://vivliostyle.org/viewer/?src=${encodeURIComponent(manifestUrl)}&bookMode=true`;
+      const viewerUrl = `https://vivliostyle.org/viewer/?src=${encodeURIComponent(manifestUrl)}&bookMode=true&lng=${lang}`;
 
       iframe.src = viewerUrl;
       modal.hidden = false;
