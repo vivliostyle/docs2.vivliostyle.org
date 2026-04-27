@@ -7,9 +7,58 @@
 
 import type { Loader, LoaderContext } from 'astro/loaders';
 import { stringify } from '@vivliostyle/vfm';
+import GithubSlugger from 'github-slugger';
 import matter from 'gray-matter';
 import { readFile, readdir, stat } from 'fs/promises';
 import { join, relative, basename, dirname } from 'path';
+
+/**
+ * HTML 内のフラグメントリンク（`<a href="#...">`）が、
+ * 本文中の見出しに付与された ID と大文字小文字や括弧などで
+ * 食い違っている場合に、github-slugger 互換の正規化を介して
+ * 解決し、書き換える。
+ *
+ * 例：[Web出版物](#Web出版物（複数HTML文書）) と書かれた markdown が
+ * `id="web出版物複数html文書"` の見出しに対応する場合、
+ * href を `#web出版物複数html文書` に書き換える。
+ */
+function rewriteFragmentLinks(html: string): string {
+  // 既存の ID を収集
+  const existingIds = new Set<string>();
+  const idMatches = html.matchAll(/\sid="([^"]+)"/g);
+  for (const m of idMatches) {
+    existingIds.add(m[1]);
+  }
+  if (existingIds.size === 0) return html;
+
+  return html.replace(
+    /href="#([^"]+)"/g,
+    (full, encodedFragment: string) => {
+      // すでに対応 ID が存在する場合はそのまま
+      if (existingIds.has(encodedFragment)) return full;
+
+      // URL デコードを試みる（失敗しても続行）
+      let decoded: string;
+      try {
+        decoded = decodeURIComponent(encodedFragment);
+      } catch {
+        decoded = encodedFragment;
+      }
+      if (existingIds.has(decoded)) {
+        return `href="#${decoded}"`;
+      }
+
+      // github-slugger で正規化して見出し ID と突合
+      const slugger = new GithubSlugger();
+      const candidate = slugger.slug(decoded);
+      if (existingIds.has(candidate)) {
+        return `href="#${candidate}"`;
+      }
+      // 見つからなければ元のまま（外部 URL や無関係なフラグメントの可能性）
+      return full;
+    },
+  );
+}
 
 export interface VFMLoaderOptions {
   /** ベースディレクトリのパス（絶対パスまたはプロジェクトルートからの相対パス） */
@@ -284,6 +333,11 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
               // 英語版は親ディレクトリ参照を維持（.md拡張子削除と末尾スラッシュ追加）
               html = html.replace(/href="\.\.\/([^"]+)\.md"/g, 'href="../$1/"');
             }
+
+            // フラグメントリンクの正規化：見出しの自動 slug と
+            // markdown 中のリンク先（原文ママの大文字・括弧入り）の
+            // 食い違いを解消する。
+            html = rewriteFragmentLinks(html);
 
             // HTMLから見出しを抽出（h2, h3）
             const headings: Array<{ depth: number; slug: string; text: string }> = [];

@@ -14,6 +14,7 @@ export default {
     { path: 'public/publications/viewer-ja', format: 'webpub' },
   ],
   workspaceDir: '.vivliostyle/viewer-ja',
+  toc: true,
   copyAsset: {
     excludes: getCopyAssetExcludes({ product: 'viewer', lang: 'ja' }),
   },

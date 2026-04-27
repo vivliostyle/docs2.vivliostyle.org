@@ -8,8 +8,14 @@
   "name": "Vivliostyle Viewer ドキュメント",
   "author": "Vivliostyle Foundation",
   "inLanguage": "ja",
-  "dateModified": "2026-04-27T12:44:20.796Z",
+  "dateModified": "2026-04-27T13:10:43.476Z",
   "readingOrder": [
+    {
+      "url": "index.html",
+      "name": "Table of Contents",
+      "rel": "contents",
+      "type": "LinkedResource"
+    },
     {
       "url": "ja/viewer/vivliostyle-viewer/index.html",
       "name": "Vivliostyle Viewer | Vivliostyle Documentation"
