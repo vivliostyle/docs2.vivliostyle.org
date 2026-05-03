@@ -76,6 +76,42 @@ function fixOne(epubPath) {
     }
     processDir(contentBase, contentBase);
 
+    // 防御線：書き換え後に「内部リンクであるべきなのに .md 拡張子が残っている
+    // リンク」が一つでも見つかったら異常としてビルドを失敗させる（再発防止用
+    // grep ガード）。検知パターン：
+    //   - href="https?://docs.vivliostyle.org/.../*.md"
+    //     → 主バグ（vfm-loader が .md を取り逃して fix-epub-paths が外部 URL
+    //        として書き換えてしまった結果）
+    //   - href="（http/mailto/data/# で始まらない）...*.md(#|")
+    //     → 相対リンクで .md が残っている（vfm-loader の regex 漏れ）
+    // GitHub 等への正当な外部リンク（config.md／README.md 等）は除外する。
+    const guardOffenders = [];
+    for (const file of listXhtmlFiles(contentBase)) {
+      const content = readFileSync(file, 'utf8');
+      const lines = content.split('\n');
+      lines.forEach((line, idx) => {
+        const m =
+          line.match(/href="https?:\/\/docs\.vivliostyle\.org\/[^"]*\.md/) ||
+          line.match(/href="(?!https?:|mailto:|data:|#)[^"]*\.md(?:#|")/);
+        if (m) {
+          guardOffenders.push(
+            `  ${relative(contentBase, file)}:${idx + 1}: ${m[0]}`,
+          );
+        }
+      });
+    }
+    if (guardOffenders.length > 0) {
+      console.error(
+        `\n[fix-epub-paths] FAIL: .md 拡張子付きリンクが ${guardOffenders.length} 件残っています:`,
+      );
+      for (const o of guardOffenders.slice(0, 20)) console.error(o);
+      if (guardOffenders.length > 20) {
+        console.error(`  ... and ${guardOffenders.length - 20} more`);
+      }
+      console.error(`  in ${relative(ROOT, epubPath)}`);
+      process.exit(1);
+    }
+
     function processDir(walkRoot, contentRoot) {
       for (const file of listXhtmlFiles(walkRoot)) {
         // この XHTML から「contentRoot（dist/相当）」までの相対プレフィクスを計算
@@ -147,6 +183,25 @@ function fixOne(epubPath) {
           },
         );
         count += externalLinkFixes;
+
+        // 4) EPUB 用 override CSS（epub.css）を <head> に注入する。
+        //    global.css の @media print ブロック内のルール
+        //      .prose a[href^="http"]::after { content: " (" attr(href) ")"; ... }
+        //    が EPUB リーダー（Apple Books 等）でも発火し、外部リンクの後ろに
+        //    URL を本文表示してしまうのを抑止するため、同セレクタを
+        //    !important で打ち消す epub.css をここで読み込ませる。
+        //    PDF・Web ビルドには epub.css は読み込ませないので、それらの挙動は
+        //    変わらない（PDF は引き続き URL を本文に表示する）。
+        let cssInjections = 0;
+        if (
+          rewritten.includes('</head>') &&
+          !rewritten.includes('styles/epub.css')
+        ) {
+          const epubCssLink = `<link rel="stylesheet" type="text/css" href="${prefix}/styles/epub.css" />`;
+          rewritten = rewritten.replace('</head>', `${epubCssLink}</head>`);
+          cssInjections = 1;
+        }
+        count += cssInjections;
 
         if (count > 0) {
           writeFileSync(file, rewritten);

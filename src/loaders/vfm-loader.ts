@@ -60,6 +60,130 @@ function rewriteFragmentLinks(html: string): string {
   );
 }
 
+export interface RewriteRelativeLinksOptions {
+  lang?: string;
+  collectionName?: string;
+  /**
+   * ソース MD が index ページ（index.md）か否か。
+   * Astro はすべてのページを `dist/{lang}/{product}/{slug}/index.html` に
+   * flat 展開するため、非 index ページから兄弟ページへの相対リンクは
+   * `./X/` ではなく `../X/` を生成する必要がある（前者だと
+   * `/{lang}/{product}/{slug}/X/` という存在しない URL に解決されてしまう）。
+   * 既定は false（非 index）。
+   */
+  isIndexPage?: boolean;
+}
+
+/**
+ * VFM が生成した HTML に対して、相対リンクを Astro/EPUB ルーティングに合うよう
+ * 書き換える。各正規表現は `./X.md`／`./X.md#anchor` のどちらにもマッチするよう
+ * 末尾フラグメントを optional capture でつかみ、新 URL に引き継ぐ。
+ * 兄弟参照については `.md` の有無を問わず統一的に処理する。
+ *
+ * 純粋関数（同じ入力に対して同じ出力）にしてあるのは Vitest 等から
+ * 単体テストできるようにするため。
+ */
+export function rewriteRelativeLinks(
+  html: string,
+  options: RewriteRelativeLinksOptions = {},
+): string {
+  const { lang, collectionName, isIndexPage = false } = options;
+
+  // 1. ./ja/index.md のような言語ディレクトリへのリンクを削除（言語スイッチャーで対応）
+  html = html.replace(/<li>\s*<a href="\.\/ja\/index[^"]*"[^>]*>.*?<\/a>\s*<\/li>/gi, '');
+
+  // 1.5. 空の li 要素を削除（Markdown の構造による空箇条書き項目を削除）
+  html = html.replace(/<li>\s*<\/li>/gi, '');
+
+  // 2. Themes Contributing 専用: ./docs/X.md(#a)? -> /[lang]/themes/X/(#a)?
+  if (collectionName?.includes('themes-contributing')) {
+    html = html.replace(
+      /href="\.\/docs\/([^"#]+?)\.md(#[^"]*)?"/g,
+      (_m, p: string, frag = '') => `href="/${lang}/themes/${p}/${frag}"`,
+    );
+  }
+
+  // 3. vivliostyle.js docs（viewer / reference 配下）のクロスプロダクト
+  // 参照を補正する。upstream では vivliostyle-viewer.md と
+  // supported-css-features.md / api.md / contribution-guide.md は
+  // 同じ docs/ 内の sibling だが、本サイトでは前者を /viewer/、
+  // 後者群を /reference/ に振り分けているため、`./X.md` 形式の
+  // 相対リンクを正しい絶対パスに書き換える。
+  if (
+    collectionName?.startsWith('vivliostyle-viewer-') ||
+    collectionName?.startsWith('vivliostyle-reference-')
+  ) {
+    const referenceFiles = ['api', 'supported-css-features', 'contribution-guide'];
+    for (const f of referenceFiles) {
+      const re = new RegExp(`href="\\.\\/${f}\\.md(#[^"]*)?"`, 'g');
+      html = html.replace(re, (_m, frag = '') => `href="/${lang}/reference/${f}/${frag}"`);
+    }
+    // Reference → Viewer の逆参照
+    html = html.replace(
+      /href="\.\/vivliostyle-viewer\.md(#[^"]*)?"/g,
+      (_m, frag = '') => `href="/${lang}/viewer/vivliostyle-viewer/${frag}"`,
+    );
+  }
+
+  // 3.7. upstream submodule のタイポ・文法エラーを応急処置で補正
+  // （upstream に PR を出すのが本筋。それまでの暫定対応）
+  html = html
+    .replace(/frotnend-framework-support/g, 'frontend-framework-support')
+    .replace(
+      /pnpm:&gt;=10 is installed in your machine/g,
+      'pnpm:&gt;=10 is installed on your machine',
+    );
+
+  // 4. 同一ディレクトリの兄弟参照 ./X(.md)?(#a)? を書き換え。
+  //    - パスの文字クラスから '.' '/' '#' を除外することで、画像（./foo.png 等）や
+  //      サブディレクトリ（./docs/spec.md は themes-contributing 特例で先に処理済）
+  //      には誤マッチさせない。
+  //    - .md の有無を `(?:\.md)?` で吸収するので、ソース MD が `./X.md` でも `./X` でも
+  //      同じ出力になる。
+  //    - 出力プレフィクスは isIndexPage で分岐：
+  //        index ページ（URL が /lang/product/）→ ./X/
+  //        非 index ページ（URL が /lang/product/{slug}/）→ ../X/
+  const siblingPrefix = isIndexPage ? './' : '../';
+  html = html.replace(
+    /href="\.\/([^"#./]+)(?:\.md)?(#[^"]*)?"/g,
+    (_m, p: string, frag = '') => `href="${siblingPrefix}${p}/${frag}"`,
+  );
+
+  // Awesome Vivliostyle: CONTRIBUTING.md を GitHub にリンク
+  if (collectionName?.includes('awesome-vivliostyle')) {
+    html = html.replace(
+      /href="CONTRIBUTING\.md"/g,
+      'href="https://github.com/vivliostyle/awesome-vivliostyle/blob/master/CONTRIBUTING.md"',
+    );
+  }
+
+  // Themes Contributing: CODE_OF_CONDUCT.md を GitHub にリンク
+  // upstream の submodules/themes/CONTRIBUTING.md:16 が
+  // `[Code of Conduct](CODE_OF_CONDUCT.md)` と `./` プレフィックス無しの
+  // 相対リンクを使っているため、汎用 ./X.md 規則では拾えない。
+  if (collectionName?.includes('themes-contributing')) {
+    html = html.replace(
+      /href="CODE_OF_CONDUCT\.md"/g,
+      'href="https://github.com/vivliostyle/themes/blob/main/CODE_OF_CONDUCT.md"',
+    );
+  }
+
+  // 5. ../X.md(#a)? の処理（言語コンテキストを維持）
+  if (lang === 'ja') {
+    html = html.replace(
+      /href="\.\.\/([^"#]+?)\.md(#[^"]*)?"/g,
+      (_m, p: string, frag = '') => `href="/ja/cli/${p}/${frag}"`,
+    );
+  } else {
+    html = html.replace(
+      /href="\.\.\/([^"#]+?)\.md(#[^"]*)?"/g,
+      (_m, p: string, frag = '') => `href="../${p}/${frag}"`,
+    );
+  }
+
+  return html;
+}
+
 export interface VFMLoaderOptions {
   /** ベースディレクトリのパス（絶対パスまたはプロジェクトルートからの相対パス） */
   base: string;
@@ -307,82 +431,16 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
               }
             }
             
-            // 2. ./ja/index.md のような言語ディレクトリへのリンクを削除（言語スイッチャーで対応）
-            html = html.replace(/<li>\s*<a href="\.\/ja\/index[^"]*"[^>]*>.*?<\/a>\s*<\/li>/gi, '');
-            
-            // 2.5. 空のli要素を削除（Markdownの構造による空箇条書き項目を削除）
-            html = html.replace(/<li>\s*<\/li>/gi, '');
-            
-            // 3. Themes Contributing専用: ./docs/spec.md -> /[lang]/themes/spec/
-            if (collectionName && collectionName.includes('themes-contributing')) {
-              html = html.replace(/href="\.\/docs\/([^"]+)\.md"/g, `href="/${lang}/themes/$1/"`);
-            }
+            // 2. href 系の相対リンク書き換えを一括適用（rewriteRelativeLinks 内で
+            // .md → / 変換、cross-product 補正、親ディレクトリ参照、upstream タイポ
+            // 補正、CONTRIBUTING.md などをまとめて処理する。各 regex は `.md#anchor`
+            // 形式にもマッチし、フラグメントを保持する）。
+            // 兄弟参照 ./X(.md)? の出力プレフィクスは「ソース MD が index.md か否か」で
+            // 分岐するため、ファイル名から isIndexPage を計算して渡す。
+            const isIndexPage = basename(filePath, '.md') === 'index';
+            html = rewriteRelativeLinks(html, { lang, collectionName, isIndexPage });
 
-            // 3.5. vivliostyle.js docs（viewer / reference 配下）のクロスプロダクト
-            // 参照を補正する。upstream では vivliostyle-viewer.md と
-            // supported-css-features.md / api.md / contribution-guide.md は
-            // 同じ docs/ 内の sibling だが、本サイトでは前者を /viewer/、
-            // 後者群を /reference/ に振り分けているため、`./X.md` 形式の
-            // 相対リンクを正しい絶対パスに書き換える。
-            if (
-              collectionName?.startsWith('vivliostyle-viewer-') ||
-              collectionName?.startsWith('vivliostyle-reference-')
-            ) {
-              const referenceFiles = [
-                'api',
-                'supported-css-features',
-                'contribution-guide',
-              ];
-              for (const f of referenceFiles) {
-                const re = new RegExp(`href="\\.\\/${f}\\.md"`, 'g');
-                html = html.replace(re, `href="/${lang}/reference/${f}/"`);
-              }
-              // Reference → Viewer の逆参照（reference 配下から
-              // ./vivliostyle-viewer.md と書かれた場合）
-              html = html.replace(
-                /href="\.\/vivliostyle-viewer\.md"/g,
-                `href="/${lang}/viewer/vivliostyle-viewer/"`,
-              );
-            }
-
-            // 3.7. upstream submodule のタイポ・文法エラーを応急処置で補正
-            // （upstream に PR を出すのが本筋。それまでの暫定対応）
-            html = html
-              // submodules/vivliostyle-cli/docs/index.md:18 のリンク先タイポ
-              .replace(/frotnend-framework-support/g, 'frontend-framework-support')
-              // submodules/vivliostyle-cli/CONTRIBUTING.md の冠詞ミス
-              .replace(
-                /pnpm:&gt;=10 is installed in your machine/g,
-                'pnpm:&gt;=10 is installed on your machine',
-              );
-
-            // 4. 相対リンクの.md拡張子を削除し、末尾スラッシュを追加
-            // 例: ./getting-started.md -> ./getting-started/
-            html = html.replace(/href="\.\/([^"]+)\.md"/g, 'href="./$1/"');
-
-            // Awesome Vivliostyle: link CONTRIBUTING.md to GitHub
-            if (collectionName?.includes('awesome-vivliostyle')) {
-              html = html.replace(
-                /href="CONTRIBUTING\.md"/g,
-                'href="https://github.com/vivliostyle/awesome-vivliostyle/blob/master/CONTRIBUTING.md"',
-              );
-            }
-            
-            // 5. ../で始まるリンク（親ディレクトリ）の処理
-            // docs/ja/index.md から docs/config.md / docs/api-javascript.md
-            // への参照を適切に変換する。
-            // upstream の `docs/config.md` などは英語版しか存在しないが、
-            // 本サイトでは `/ja/cli/config/` でも英語コンテンツとして
-            // ルーティングしているため、ja ページからのリンクも `/ja/cli/`
-            // に揃える（言語コンテキストを維持）。
-            if (lang === 'ja') {
-              html = html.replace(/href="\.\.\/([^"]+)\.md"/g, 'href="/ja/cli/$1/"');
-            } else {
-              // 英語版は親ディレクトリ参照を維持（.md拡張子削除と末尾スラッシュ追加）
-              html = html.replace(/href="\.\.\/([^"]+)\.md"/g, 'href="../$1/"');
-            }
-
-            // フラグメントリンクの正規化：見出しの自動 slug と
+            // 3. フラグメントリンクの正規化：見出しの自動 slug と
             // markdown 中のリンク先（原文ママの大文字・括弧入り）の
             // 食い違いを解消する。
             html = rewriteFragmentLinks(html);

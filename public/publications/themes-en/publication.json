@@ -8,7 +8,7 @@
   "name": "Vivliostyle Themes Documentation",
   "author": "Vivliostyle Foundation",
   "inLanguage": "en",
-  "dateModified": "2026-04-27T14:21:07.172Z",
+  "dateModified": "2026-05-03T13:35:46.347Z",
   "readingOrder": [
     {
       "url": "index.html",
@@ -36,8 +36,8 @@
   "resources": [
     "favicon.png",
     "favicon.svg",
+    "styles/epub.css",
     "styles/global.css",
-    "styles/pdf.css",
     "themes/assets/captures/theme-academic.webp",
     "themes/assets/captures/theme-base.webp",
     "themes/assets/captures/theme-bunko.webp",

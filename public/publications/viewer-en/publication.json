@@ -8,7 +8,7 @@
   "name": "Vivliostyle Viewer Documentation",
   "author": "Vivliostyle Foundation",
   "inLanguage": "en",
-  "dateModified": "2026-04-27T14:21:15.536Z",
+  "dateModified": "2026-05-03T13:35:54.146Z",
   "readingOrder": [
     {
       "url": "index.html",
@@ -24,8 +24,8 @@
   "resources": [
     "favicon.png",
     "favicon.svg",
+    "styles/epub.css",
     "styles/global.css",
-    "styles/pdf.css",
     "themes/node_modules/@vivliostyle/theme-base/css/common/basic.css",
     "themes/node_modules/@vivliostyle/theme-base/css/common/meta-properties.css",
     "themes/node_modules/@vivliostyle/theme-base/css/common/reset.css",

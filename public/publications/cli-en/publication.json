@@ -8,7 +8,7 @@
   "name": "Vivliostyle CLI Documentation",
   "author": "Vivliostyle Foundation",
   "inLanguage": "en",
-  "dateModified": "2026-04-27T14:20:43.199Z",
+  "dateModified": "2026-05-03T13:35:24.255Z",
   "readingOrder": [
     {
       "url": "index.html",
@@ -60,8 +60,8 @@
   "resources": [
     "favicon.png",
     "favicon.svg",
+    "styles/epub.css",
     "styles/global.css",
-    "styles/pdf.css",
     "themes/node_modules/@vivliostyle/theme-PDF/theme.css",
     "vivliostyle-docs.png",
     "vivliostyle-docs.svg",

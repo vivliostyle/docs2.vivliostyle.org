@@ -249,8 +249,8 @@ const lang = "ja";
       <li><strong>title</strong>: 出版物のタイトル（例: <code>title: 'Principia'</code>）</li>
       <li><strong>author</strong>: 著者名（例: <code>author: 'Isaac Newton'</code>）</li>
       <li><strong>language</strong>: 言語（例: <code>language: 'en'</code>）。この指定があると HTML の <code>lang</code> 属性に反映されます。</li>
-      <li><strong>size</strong>: ページサイズ（例: <code>size: 'A4'</code>）。指定方法は <a href="./themes-and-css.md#%E3%83%9A%E3%83%BC%E3%82%B8%E3%82%B5%E3%82%A4%E3%82%BA%E3%81%AE%E6%8C%87%E5%AE%9A">ページサイズの指定</a> を参照してください。</li>
-      <li><strong>theme</strong>: ドキュメント全体に適用する <a href="./themes-and-css.md#vivliostyle-themes-%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6">Vivliostyle Themes</a> のパッケージ名、または CSS ファイルのパスを指定します。以下の値を指定することができ、複数のテーマを配列形式で指定することもできます。
+      <li><strong>size</strong>: ページサイズ（例: <code>size: 'A4'</code>）。指定方法は <a href="../themes-and-css/#%E3%83%9A%E3%83%BC%E3%82%B8%E3%82%B5%E3%82%A4%E3%82%BA%E3%81%AE%E6%8C%87%E5%AE%9A">ページサイズの指定</a> を参照してください。</li>
+      <li><strong>theme</strong>: ドキュメント全体に適用する <a href="../themes-and-css/#vivliostyle-themes-%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6">Vivliostyle Themes</a> のパッケージ名、または CSS ファイルのパスを指定します。以下の値を指定することができ、複数のテーマを配列形式で指定することもできます。
         <ul>
           <li>npm スタイルのパッケージ名（例: <code>@vivliostyle/theme-techbook</code>, <code>./local-pkg</code>）</li>
           <li>単一の CSS を指定する URL やローカルファイルのパス（例: <code>./style.css</code>, <code>https://example.com/style.css</code>）</li>
@@ -262,8 +262,8 @@ const lang = "ja";
         <ul>
           <li><code>path</code>: エントリーのパスを指定します。このプロパティは必須ですが、<code>rel: 'contents'</code> または <code>rel: 'cover'</code> を指定するときのみ不要です。この指定については、以下の項目を参照してください
             <ul>
-              <li><a href="./toc-page.md#%E7%9B%AE%E6%AC%A1%E3%82%92%E5%87%BA%E7%89%88%E7%89%A9%E3%81%AE%E5%85%88%E9%A0%AD%E4%BB%A5%E5%A4%96%E3%81%AE%E5%A0%B4%E6%89%80%E3%81%AB%E5%87%BA%E5%8A%9B%E3%81%99%E3%82%8B%E3%81%AB%E3%81%AF">目次を出版物の先頭以外の場所に出力するには</a></li>
-              <li><a href="./cover-page.md#%E8%A1%A8%E7%B4%99%E3%83%9A%E3%83%BC%E3%82%B8%E3%82%92%E5%87%BA%E7%89%88%E7%89%A9%E3%81%AE%E5%85%88%E9%A0%AD%E4%BB%A5%E5%A4%96%E3%81%AE%E5%A0%B4%E6%89%80%E3%81%AB%E5%87%BA%E5%8A%9B%E3%81%99%E3%82%8B%E3%81%AB%E3%81%AF">表紙ページを出版物の先頭以外の場所に出力するには</a></li>
+              <li><a href="../toc-page/#%E7%9B%AE%E6%AC%A1%E3%82%92%E5%87%BA%E7%89%88%E7%89%A9%E3%81%AE%E5%85%88%E9%A0%AD%E4%BB%A5%E5%A4%96%E3%81%AE%E5%A0%B4%E6%89%80%E3%81%AB%E5%87%BA%E5%8A%9B%E3%81%99%E3%82%8B%E3%81%AB%E3%81%AF">目次を出版物の先頭以外の場所に出力するには</a></li>
+              <li><a href="../cover-page/#%E8%A1%A8%E7%B4%99%E3%83%9A%E3%83%BC%E3%82%B8%E3%82%92%E5%87%BA%E7%89%88%E7%89%A9%E3%81%AE%E5%85%88%E9%A0%AD%E4%BB%A5%E5%A4%96%E3%81%AE%E5%A0%B4%E6%89%80%E3%81%AB%E5%87%BA%E5%8A%9B%E3%81%99%E3%82%8B%E3%81%AB%E3%81%AF">表紙ページを出版物の先頭以外の場所に出力するには</a></li>
             </ul>
           </li>
           <li><code>title</code>: エントリーのタイトルを指定します。このプロパティを設定しない場合、エントリーの内容からタイトルが取得されます。</li>
@@ -275,13 +275,13 @@ const lang = "ja";
         <code>js output: [ './output.pdf', { path: './book', format: 'webpub', }, ], </code>output には文字列またはオブジェクト形式で出力の指定ができます。オブジェクト形式の場合、以下のプロパティを追加できます。
         <ul>
           <li><code>path</code>: 出力先のパスを指定します。このプロパティは必須です。</li>
-          <li><code>format</code>: 出力するフォーマットを指定します（指定可能なオプション: <code>pdf</code>, <code>epub</code>, <code>webpub</code>）EPUB出力については <a href="./special-output-settings.md#epub-%E5%BD%A2%E5%BC%8F%E3%81%AE%E5%87%BA%E5%8A%9B">EPUB 形式の出力</a> を、WebPub 出力については <a href="./special-output-settings.md#web-%E5%87%BA%E7%89%88%E7%89%A9webpub%E3%81%AE%E5%87%BA%E5%8A%9B">Web 出版物（WebPub）の出力</a> を参照してください。</li>
+          <li><code>format</code>: 出力するフォーマットを指定します（指定可能なオプション: <code>pdf</code>, <code>epub</code>, <code>webpub</code>）EPUB出力については <a href="../special-output-settings/#epub-%E5%BD%A2%E5%BC%8F%E3%81%AE%E5%87%BA%E5%8A%9B">EPUB 形式の出力</a> を、WebPub 出力については <a href="../special-output-settings/#web-%E5%87%BA%E7%89%88%E7%89%A9webpub%E3%81%AE%E5%87%BA%E5%8A%9B">Web 出版物（WebPub）の出力</a> を参照してください。</li>
         </ul>
       </li>
       <li><strong>workspaceDir</strong>: 中間ファイルを保存するディレクトリを指定。この指定がない場合のデフォルトはカレントディレクトリであり、Markdown から変換された HTML ファイルは Markdown ファイルと同じ場所に保存されます。例: <code>workspaceDir: '.vivliostyle'</code></li>
-      <li><strong>toc</strong>: このプロパティを指定すると、目次を含む HTML ファイル <code>index.html</code> が出力されます。詳しくは <a href="./toc-page/">目次の作成</a> を参照してください。</li>
-      <li><strong>cover</strong>: このプロパティを指定すると、表紙ページ用の HTML ファイル <code>cover.html</code> が出力されます。詳しくは <a href="./cover-page/">表紙ページの作成</a> を参照してください。</li>
-      <li><strong>image</strong>: 使用する Docker のイメージを変更します。詳細は <a href="./special-output-settings#docker-%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%9F%E7%94%9F%E6%88%90">Dockerを利用した生成</a> を参照してください。</li>
+      <li><strong>toc</strong>: このプロパティを指定すると、目次を含む HTML ファイル <code>index.html</code> が出力されます。詳しくは <a href="../toc-page/">目次の作成</a> を参照してください。</li>
+      <li><strong>cover</strong>: このプロパティを指定すると、表紙ページ用の HTML ファイル <code>cover.html</code> が出力されます。詳しくは <a href="../cover-page/">表紙ページの作成</a> を参照してください。</li>
+      <li><strong>image</strong>: 使用する Docker のイメージを変更します。詳細は <a href="../special-output-settings/#docker-%E3%82%92%E5%88%A9%E7%94%A8%E3%81%97%E3%81%9F%E7%94%9F%E6%88%90">Dockerを利用した生成</a> を参照してください。</li>
     </ul>
   </section>
   <section class="level2">

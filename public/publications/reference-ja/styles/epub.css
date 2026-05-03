@@ -1,0 +1,22 @@
+/**
+ * EPUB ビルド専用 override CSS
+ *
+ * global.css の @media print ブロックには
+ *   .prose a[href^="http"]::after { content: " (" attr(href) ")"; ... }
+ * という指定があり、PDF 印刷時に外部リンクの後ろに URL を本文表示する
+ * （紙ではクリックできないので URL を見せるため）。
+ *
+ * しかし EPUB リーダー（Apple Books / Thorium 等）は自身を print メディアと
+ * 解釈するため、クリック可能な EPUB でもこのルールが発火し、本文中に長大な
+ * URL が表示されてしまう。
+ *
+ * このファイルは EPUB ビルド時にのみ scripts/fix-epub-paths.mjs によって
+ * 各 XHTML の <head> へ <link> として注入される。同じ @media print ブロック
+ * 内・同じセレクタを !important 付きで打ち消すことで、EPUB だけで URL 表示を
+ * 抑止する。PDF や Web には読み込まれないので、それらの挙動は変わらない。
+ */
+@media print {
+  .prose a[href^="http"]::after {
+    content: none !important;
+  }
+}

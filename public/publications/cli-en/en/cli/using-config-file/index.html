@@ -244,13 +244,13 @@ const lang = "en";
   </section>
   <section class="level2">
     <h2 id="configuration-file-settings">Configuration File Settings</h2>
-    <p>The settings in the configuration file are explained in the comments within the file (starting with <code>//</code>). Here are the main settings for each item. For all settings, refer to the <a href="./config/">Config Reference</a>.</p>
+    <p>The settings in the configuration file are explained in the comments within the file (starting with <code>//</code>). Here are the main settings for each item. For all settings, refer to the <a href="../config/">Config Reference</a>.</p>
     <ul>
       <li><strong>title</strong>: The title of the publication (e.g., <code>title: 'Principia'</code>).</li>
       <li><strong>author</strong>: The author's name (e.g., <code>author: 'Isaac Newton'</code>).</li>
       <li><strong>language</strong>: The language (e.g., <code>language: 'en'</code>). This will be reflected in the <code>lang</code> attribute of the HTML.</li>
-      <li><strong>size</strong>: The page size (e.g., <code>size: 'A4'</code>). For how to specify, refer to <a href="./themes-and-css.md#specifying-page-size">Specifying Page Size</a>.</li>
-      <li><strong>theme</strong>: The package name of the <a href="./themes-and-css.md#about-vivliostyle-themes">Vivliostyle Themes</a> to apply to the entire document, or the path to a CSS file. You can specify the following values and also specify multiple themes in an array format:
+      <li><strong>size</strong>: The page size (e.g., <code>size: 'A4'</code>). For how to specify, refer to <a href="../themes-and-css/#specifying-page-size">Specifying Page Size</a>.</li>
+      <li><strong>theme</strong>: The package name of the <a href="../themes-and-css/#about-vivliostyle-themes">Vivliostyle Themes</a> to apply to the entire document, or the path to a CSS file. You can specify the following values and also specify multiple themes in an array format:
         <ul>
           <li>npm-style package name (e.g., <code>@vivliostyle/theme-techbook</code>, <code>./local-pkg</code>)</li>
           <li>URL or local file path specifying a single CSS (e.g., <code>./style.css</code>, <code>https://example.com/style.css</code>)</li>
@@ -262,8 +262,8 @@ const lang = "en";
         <ul>
           <li><code>path</code>: Specify the path of the entry. This property is required, but not needed when specifying <code>rel: 'contents'</code> or <code>rel: 'cover'</code>. Refer to the following items for these specifications:
             <ul>
-              <li><a href="./toc-page.md#to-output-the-table-of-contents-in-a-location-other-than-the-beginning-of-the-publication">To output the table of contents in a location other than the beginning of the publication</a></li>
-              <li><a href="./cover-page.md#to-output-the-cover-page-to-a-location-other-than-the-beginning-of-the-publication">To output the cover page to a location other than the beginning of the publication</a></li>
+              <li><a href="../toc-page/#to-output-the-table-of-contents-in-a-location-other-than-the-beginning-of-the-publication">To output the table of contents in a location other than the beginning of the publication</a></li>
+              <li><a href="../cover-page/#to-output-the-cover-page-to-a-location-other-than-the-beginning-of-the-publication">To output the cover page to a location other than the beginning of the publication</a></li>
             </ul>
           </li>
           <li><code>title</code>: Specify the title of the entry. If this property is not set, the title will be obtained from the content of the entry.</li>
@@ -275,13 +275,13 @@ const lang = "en";
         <code>js output: [ './output.pdf', { path: './book', format: 'webpub', }, ], </code>You can specify the output as a string or in object format. In the case of object format, you can add the following properties:
         <ul>
           <li><code>path</code>: Specify the path of the output destination. This property is required.</li>
-          <li><code>format</code>: Specify the format to output (available options: <code>pdf</code>, <code>epub</code>, <code>webpub</code>). For EPUB output, refer to <a href="./special-output-settings.md#output-in-epub-format">Output in EPUB Format</a>, and for WebPub output, refer to <a href="./special-output-settings.md#output-in-web-publication-webpub-format">Output in Web Publication (WebPub) Format</a>.</li>
+          <li><code>format</code>: Specify the format to output (available options: <code>pdf</code>, <code>epub</code>, <code>webpub</code>). For EPUB output, refer to <a href="../special-output-settings/#output-in-epub-format">Output in EPUB Format</a>, and for WebPub output, refer to <a href="../special-output-settings/#output-in-web-publication-webpub-format">Output in Web Publication (WebPub) Format</a>.</li>
         </ul>
       </li>
       <li><strong>workspaceDir</strong>: Specify the directory to save intermediate files. If not specified, the default is the current directory, and the HTML files converted from Markdown will be saved in the same location as the Markdown files. Example: <code>workspaceDir: '.vivliostyle'</code></li>
-      <li><strong>toc</strong>: If this property is specified, an HTML file <code>index.html</code> containing the table of contents will be output. For details, refer to <a href="./toc-page/">Creating Table of Contents Page</a>.</li>
-      <li><strong>cover</strong>: If this property is specified, an HTML file <code>cover.html</code> for the cover page will be output. For details, refer to <a href="./cover-page/">Creating Cover Page</a>.</li>
-      <li><strong>image</strong>: Change the Docker image to use. For details, refer to <a href="./special-output-settings.md#generating-with-docker">Generating with Docker</a>.</li>
+      <li><strong>toc</strong>: If this property is specified, an HTML file <code>index.html</code> containing the table of contents will be output. For details, refer to <a href="../toc-page/">Creating Table of Contents Page</a>.</li>
+      <li><strong>cover</strong>: If this property is specified, an HTML file <code>cover.html</code> for the cover page will be output. For details, refer to <a href="../cover-page/">Creating Cover Page</a>.</li>
+      <li><strong>image</strong>: Change the Docker image to use. For details, refer to <a href="../special-output-settings/#generating-with-docker">Generating with Docker</a>.</li>
     </ul>
   </section>
   <section class="level2">

@@ -228,7 +228,7 @@ const lang = "ja";
   <section class="level2">
     <h2 id="epub-形式の出力">EPUB 形式の出力</h2>
     <p><code>vivliostyle build</code> コマンドに <code>-f</code> (<code>--format</code>）オプションで <code>epub</code> を指定する、または <code>-o</code>（<code>--output</code>）オプションで <code>.epub</code> 拡張子をつけて指定するとEPUBを出力します。</p>
-    <p>EPUB 形式で出力する場合、目次を設定した状態で出力することが推奨されます。<a href="./toc-page/">目次の作成</a> を参考にして、構成ファイルに <code>toc</code> を設定した上で、以下のように出力オプションで EPUB を設定します。</p>
+    <p>EPUB 形式で出力する場合、目次を設定した状態で出力することが推奨されます。<a href="../toc-page/">目次の作成</a> を参考にして、構成ファイルに <code>toc</code> を設定した上で、以下のように出力オプションで EPUB を設定します。</p>
     <pre class="language-text"><code class="language-text">vivliostyle build -o output.epub</code></pre>
     <p>また、次のように1回の <code>vivliostyle build</code> コマンドで PDF と EPUB の両方を生成することもできます（他の出力形式も同様です）。</p>
     <pre class="language-text"><code class="language-text">vivliostyle build -o pdfbook.pdf -o epubbook.epub</code></pre>
@@ -247,7 +247,7 @@ const lang = "ja";
     <ul>
       <li><a href="https://github.com/vivliostyle/vivliostyle-cli/tree/main/examples/preflight">Example: preflight</a></li>
     </ul>
-    <p><code>vivliostyle build</code> コマンドの <code>--preflight press-ready</code> オプション、または <a href="./using-config-file/">構成ファイル</a> で <code>preflight: 'press-ready'</code> を指定すると印刷入稿に適した PDF/X-1a 形式で出力することができます。この機能を使うためには、事前に <a href="https://docs.docker.jp/get-docker.html">Docker</a> のインストールが必要です。</p>
+    <p><code>vivliostyle build</code> コマンドの <code>--preflight press-ready</code> オプション、または <a href="../using-config-file/">構成ファイル</a> で <code>preflight: 'press-ready'</code> を指定すると印刷入稿に適した PDF/X-1a 形式で出力することができます。この機能を使うためには、事前に <a href="https://docs.docker.jp/get-docker.html">Docker</a> のインストールが必要です。</p>
     <p><code>--preflight-option</code> オプションを指定すると、この処理を実行する <a href="https://github.com/vibranthq/press-ready">press-ready</a> に対してオプションを追加できます。</p>
     <pre class="language-text"><code class="language-text"># グレースケール化して出力
 vivliostyle build manuscript.md --preflight press-ready --preflight-option gray-scale
@@ -270,7 +270,7 @@ vivliostyle build manuscript.md --preflight press-ready --preflight-option enfor
   <section class="level2">
     <h2 id="pdf-のしおりbookmarks-の生成">PDF の「しおり」(Bookmarks) の生成</h2>
     <p><code>vivliostyle build</code> コマンドで出力される PDF には、目次の内容が「しおり」(PDF Bookmarks) として生成されます。PDF の「しおり」は、Adobe Acrobat のような PDF 閲覧ソフトで目次ナビゲーションに利用できます。</p>
-    <p>この「しおり」生成機能は、出版物に目次が含まれるときに有効になります。<a href="./getting-started.md#%E4%BB%96%E3%81%AE%E5%BD%A2%E5%BC%8F%E3%81%8B%E3%82%89-pdf-%E3%82%92%E7%94%9F%E6%88%90">EPUB から PDF を生成</a> する場合には、EPUB に含まれる目次が使われます。それ以外については <a href="./toc-page/">目次の作成</a> を参照してください。</p>
+    <p>この「しおり」生成機能は、出版物に目次が含まれるときに有効になります。<a href="../getting-started/#%E4%BB%96%E3%81%AE%E5%BD%A2%E5%BC%8F%E3%81%8B%E3%82%89-pdf-%E3%82%92%E7%94%9F%E6%88%90">EPUB から PDF を生成</a> する場合には、EPUB に含まれる目次が使われます。それ以外については <a href="../toc-page/">目次の作成</a> を参照してください。</p>
   </section>
 </section>
 </article> <nav class="page-navigation" data-astro-cid-z7g34ql7=""> <div class="nav-links" data-astro-cid-z7g34ql7=""> <a href="/ja/cli/cover-page/" class="nav-link nav-prev" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">← 前へ</span> <span class="nav-title" data-astro-cid-z7g34ql7="">表紙ページの作成</span> </a> <a href="/ja/cli/frontend-framework-support/" class="nav-link nav-next" data-astro-cid-z7g34ql7=""> <span class="nav-label" data-astro-cid-z7g34ql7="">次へ →</span> <span class="nav-title" data-astro-cid-z7g34ql7="">フロントエンドフレームワークのサポート</span> </a> </div> </nav>   </article> </main> </div> <footer class="footer" data-astro-cid-mw7aashj=""> <p data-astro-cid-mw7aashj="">© 2026 Vivliostyle Foundation.</p> </footer> </div>  <script type="module">window.__bodyOverflowLockCount=0;window.lockBodyOverflow=function(){window.__bodyOverflowLockCount++,window.__bodyOverflowLockCount===1&&(document.body.style.overflow="hidden")};window.unlockBodyOverflow=function(){window.__bodyOverflowLockCount=Math.max(0,window.__bodyOverflowLockCount-1),window.__bodyOverflowLockCount===0&&(document.body.style.overflow="")};</script>  <script type="module">document.addEventListener("DOMContentLoaded",()=>{document.querySelectorAll(".accordion-toggle").forEach(t=>{t.addEventListener("click",d=>{d.preventDefault();const a=t.getAttribute("data-target"),e=document.getElementById(a),n=t.getAttribute("aria-expanded")==="true";t.setAttribute("aria-expanded",!n),e&&(e.style.display=n?"none":"block")})})});</script></body></html>

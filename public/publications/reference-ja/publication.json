@@ -8,7 +8,7 @@
   "name": "Vivliostyle リファレンス",
   "author": "Vivliostyle Foundation",
   "inLanguage": "ja",
-  "dateModified": "2026-04-27T14:21:19.434Z",
+  "dateModified": "2026-05-03T13:35:58.113Z",
   "readingOrder": [
     {
       "url": "index.html",
@@ -48,8 +48,8 @@
   "resources": [
     "favicon.png",
     "favicon.svg",
+    "styles/epub.css",
     "styles/global.css",
-    "styles/pdf.css",
     "themes/node_modules/@vivliostyle/theme-PDF/theme.css",
     "vivliostyle-docs.png",
     "vivliostyle-docs.svg",

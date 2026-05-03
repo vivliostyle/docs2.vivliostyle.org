@@ -8,7 +8,7 @@
   "name": "VFM (Vivliostyle Flavored Markdown) ドキュメント",
   "author": "Vivliostyle Foundation",
   "inLanguage": "ja",
-  "dateModified": "2026-04-27T14:20:51.925Z",
+  "dateModified": "2026-05-03T13:35:30.977Z",
   "readingOrder": [
     {
       "url": "index.html",
@@ -32,8 +32,8 @@
   "resources": [
     "favicon.png",
     "favicon.svg",
+    "styles/epub.css",
     "styles/global.css",
-    "styles/pdf.css",
     "themes/node_modules/@vivliostyle/theme-base/css/common/basic.css",
     "themes/node_modules/@vivliostyle/theme-base/css/common/meta-properties.css",
     "themes/node_modules/@vivliostyle/theme-base/css/common/reset.css",
