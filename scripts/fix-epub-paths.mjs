@@ -137,6 +137,7 @@ function fixOne(epubPath) {
         //    https://docs.vivliostyle.org/ja/reference/... に戻すことで、
         //    EPUB リーダーが外部リンクとして開けるようにする。
         let crossProductFixes = 0;
+        let indexXhtmlAppends = 0;
         const fileDir = dirname(file);
         rewritten = rewritten.replace(
           /<a\b([^>]*?)\shref="((?!https?:|#|mailto:|data:)[^"]+)"([^>]*)>/gi,
@@ -145,8 +146,21 @@ function fixOne(epubPath) {
             const [pathPart, fragment] = href.split('#', 2);
             // EPUB 内で実際に解決されるパスを計算
             const resolved = resolve(fileDir, pathPart);
-            if (existsSync(resolved) || existsSync(`${resolved}/index.xhtml`)) {
+
+            // 既存ファイル（拡張子付き .xhtml 等）として存在するならそのまま
+            if (existsSync(resolved) && !safeStat(resolved)?.isDirectory()) {
               return full;
+            }
+            // ディレクトリ + index.xhtml が存在する場合、Apple Books 等は
+            // ディレクトリ参照を自動的に index.xhtml に解決してくれないため、
+            // href 側に明示的に `/index.xhtml` を付加する。
+            // 例：href="../themes-and-css#a" → href="../themes-and-css/index.xhtml#a"
+            if (existsSync(`${resolved}/index.xhtml`)) {
+              const trailing = pathPart.endsWith('/') ? '' : '/';
+              const newPath = `${pathPart}${trailing}index.xhtml`;
+              const newHref = newPath + (fragment ? `#${fragment}` : '');
+              indexXhtmlAppends++;
+              return `<a${before} href="${newHref}"${after}>`;
             }
             // 解決できない → contentRoot (= EPUB/) からの相対パスを取得し
             // SITE_ORIGIN にぶら下げる
@@ -165,7 +179,7 @@ function fixOne(epubPath) {
             return `<a${before} href="${newHref}"${after}>`;
           },
         );
-        count += crossProductFixes;
+        count += crossProductFixes + indexXhtmlAppends;
 
         // 3) 外部リンク (http/https) から target / rel 属性を除去。
         //    EPUB リーダー（Apple Books / Thorium 等）は target="_blank" を
