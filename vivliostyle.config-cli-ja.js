@@ -8,7 +8,8 @@ export default {
   theme: './packages/theme-PDF',
   entryContext: 'dist',
   entry: [
-    'ja/cli/index.html',
+    // ja/cli/index.html は内容が論理目次と完全に重複するため、PDF/EPUB では
+    // toc: true で生成される目次ページに任せて省略する（Web では引き続き表示）。
     'ja/cli/getting-started/index.html',
     'ja/cli/using-config-file/index.html',
     'ja/cli/config/index.html',

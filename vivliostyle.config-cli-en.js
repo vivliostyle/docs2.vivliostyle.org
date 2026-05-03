@@ -8,7 +8,9 @@ export default {
   theme: './packages/theme-PDF',
   entryContext: 'dist',
   entry: [
-    'en/cli/index.html',
+    // en/cli/index.html is omitted from PDF/EPUB because its content
+    // duplicates the auto-generated table of contents (toc: true).
+    // The page remains available on the Web build.
     'en/cli/getting-started/index.html',
     'en/cli/using-config-file/index.html',
     'en/cli/config/index.html',

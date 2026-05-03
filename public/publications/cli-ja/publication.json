@@ -8,17 +8,13 @@
   "name": "Vivliostyle CLI ドキュメント",
   "author": "Vivliostyle Foundation",
   "inLanguage": "ja",
-  "dateModified": "2026-05-03T14:20:55.443Z",
+  "dateModified": "2026-05-03T14:36:31.440Z",
   "readingOrder": [
     {
       "url": "index.html",
       "name": "Table of Contents",
       "rel": "contents",
       "type": "LinkedResource"
-    },
-    {
-      "url": "ja/cli/index.html",
-      "name": "Vivliostyle CLI ドキュメント | Vivliostyle Documentation"
     },
     {
       "url": "ja/cli/getting-started/index.html",
