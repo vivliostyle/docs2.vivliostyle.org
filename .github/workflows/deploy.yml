@@ -34,14 +34,18 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build Astro site
-        run: npm run build
-
-      # PDF / EPUB / WebPub をビルド時に生成して dist/ に同梱する。
-      # 成果物はリポジトリにはコミットせず（.gitignore で除外）、
-      # 毎回のデプロイでこのステップが組版し直す。
+      # PDF / EPUB / WebPub をビルド時に生成する。成果物はリポジトリには
+      # コミットせず（.gitignore で除外）、毎回のデプロイで CI 側が組版する。
+      # 重要：このステップは `npm run build`（Astro）より「前」で実行する。
+      # Astro は build 中に public/ ディレクトリの中身を dist/ へコピーするため、
+      # build:formats による public/downloads/ public/publications/ の生成は
+      # その前に終わっている必要がある（順序を逆にすると dist/ に同梱されず、
+      # GitHub Pages 公開後にダウンロードリンクが 404 になる）。
       - name: Build PDF / EPUB / WebPub formats
         run: npm run build:formats
+
+      - name: Build Astro site
+        run: npm run build
 
       # ===== 生成物の検証 =====
       # CI 一発勝負を避けるため、生成された EPUB / PDF を複数の観点で検証する。
