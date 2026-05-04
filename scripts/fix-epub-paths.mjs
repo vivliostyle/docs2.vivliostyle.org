@@ -75,33 +75,72 @@ function fixOne(epubPath) {
       return;
     }
 
-    // EPUB 内 CSS から「外部リンクの直後に URL を本文表示するルール」を物理削除する。
-    // 元のルールは PDF 印刷向けに有用（紙ではクリックできないため URL を本文に出す）
-    // だが、クリック可能な EPUB では冗長で見栄えを損なう。
-    // <link> 注入による override は Apple Books で確実に効かなかったため、
-    // CSS テキスト自体から該当ルールを取り除く方式に切り替えた。
-    // 対象ルールの形：
-    //   [optional .prefix ]a[href^="http"]::after { content: " (" attr(href) ")"; ... }
-    // 配置場所：global.css の @media print 内、theme-PDF/theme.css の無条件版、など。
+    // EPUB 内 CSS のサニタイズ：
+    //   (1) 外部リンクの直後に URL を本文表示するルールを削除
+    //   (2) ダークモード関連ルール（@media (prefers-color-scheme: dark) と
+    //       :root[data-theme="dark"] 系）を削除
+    //
+    // (1) は PDF 印刷向けには有用だが EPUB では冗長で見栄えを損なう。
+    //     <link> 注入での override は Apple Books で確実に効かなかったため
+    //     CSS テキスト自体から該当ルールを取り除く方式に切り替えた。
+    //
+    // (2) は EPUB リーダー（Apple Books / Thorium）が自前のダークモードを
+    //     持っているため、EPUB 内で勝手にダークテーマを当てるとリーダーの
+    //     chrome（白）と body（黒）でちぐはぐになる（特に Thorium で顕著）。
+    //     EPUB 側は light のままにして、リーダーの dark テーマに任せるのが定石。
     const cssUrlDisplayRe =
       /(?:\.[\w-]+\s+)?a\s*\[href\^="https?"\]\s*::after\s*\{[^{}]*attr\(href\)[^{}]*\}/g;
+
+    // ブレース対応版の dark-mode ブロック除去：ネストした { } を正しく数えながら
+    // `@media (prefers-color-scheme: dark) { ... }` と
+    // `:root[data-theme="dark"]...{ ... }` を丸ごと取り除く。
+    function stripDarkModeBlocks(css) {
+      const result = [];
+      let i = 0;
+      while (i < css.length) {
+        const tail = css.slice(i);
+        const mediaMatch = tail.match(
+          /^@media\s*\(\s*prefers-color-scheme:\s*dark\s*\)\s*\{/,
+        );
+        const dataThemeMatch = tail.match(
+          /^:root\[data-theme="dark"\][^{]*\{/,
+        );
+        const startMatch = mediaMatch || dataThemeMatch;
+        if (startMatch) {
+          let depth = 1;
+          let j = i + startMatch[0].length;
+          while (j < css.length && depth > 0) {
+            if (css[j] === '{') depth++;
+            else if (css[j] === '}') depth--;
+            j++;
+          }
+          i = j;
+        } else {
+          result.push(css[i]);
+          i++;
+        }
+      }
+      return result.join('');
+    }
+
     let cssStrips = 0;
-    const stripUrlRulesInCss = (dir) => {
+    const sanitizeCss = (dir) => {
       for (const entry of readdirSync(dir, { withFileTypes: true })) {
         const p = join(dir, entry.name);
         if (entry.isDirectory()) {
-          stripUrlRulesInCss(p);
+          sanitizeCss(p);
         } else if (entry.name.endsWith('.css')) {
           const original = readFileSync(p, 'utf8');
-          const stripped = original.replace(cssUrlDisplayRe, '');
-          if (stripped !== original) {
-            writeFileSync(p, stripped);
+          let modified = original.replace(cssUrlDisplayRe, '');
+          modified = stripDarkModeBlocks(modified);
+          if (modified !== original) {
+            writeFileSync(p, modified);
             cssStrips++;
           }
         }
       }
     };
-    stripUrlRulesInCss(contentBase);
+    sanitizeCss(contentBase);
 
     processDir(contentBase, contentBase);
 
