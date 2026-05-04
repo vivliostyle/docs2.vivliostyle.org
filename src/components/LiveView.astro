@@ -332,10 +332,20 @@ const buttonId = `liveview-open-${product}-${lang}`;
   if (button && modal) {
     const iframe = modal.querySelector('[data-iframe]');
     const previewWarning = modal.querySelector('[data-preview-warning]');
+    const loading = modal.querySelector('[data-loading]');
     let lastFocus = null;
+
+    // iframe のロードが完了したら loading オーバーレイを隠す。
+    // about:blank（close 時）でも load イベントは飛ぶが、その時 modal は
+    // 既に hidden のためユーザーには見えず、副作用は無い。次回 open 時に
+    // loading.hidden を false に戻して再びスピナーを見せる。
+    iframe?.addEventListener('load', () => {
+      if (loading) loading.hidden = true;
+    });
 
     const open = () => {
       lastFocus = document.activeElement;
+      if (loading) loading.hidden = false;
 
       // production host (docs.vivliostyle.org / docs2.vivliostyle.org) では
       // 自身のホスト上のマニフェストを参照する。それ以外（localhost や
