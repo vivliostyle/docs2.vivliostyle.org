@@ -93,7 +93,9 @@ jobs:
               fail=1
             fi
           done
-          # 各 EPUB: サイズ 50KB 以上、unzip して spine itemref 5 個以上
+          # 各 EPUB: サイズ 50KB 以上、unzip して spine itemref 2 個以上
+          # （閾値 2 は最小構成：論理目次 1 + 本文 1。viewer は本文 1 章しか
+          #  ないため 2、vfm は 4、cli/themes/reference は 5 以上）
           for f in public/downloads/*.epub; do
             size=$(stat -c%s "$f")
             spine=$(unzip -p "$f" EPUB/content.opf 2>/dev/null | grep -c '<itemref')
@@ -102,8 +104,8 @@ jobs:
               echo "::error::$f is $size bytes (expected >=50KB)"
               fail=1
             fi
-            if [ "$spine" -lt 5 ]; then
-              echo "::error::$f spine has $spine itemref (expected >=5)"
+            if [ "$spine" -lt 2 ]; then
+              echo "::error::$f spine has $spine itemref (expected >=2)"
               fail=1
             fi
           done
