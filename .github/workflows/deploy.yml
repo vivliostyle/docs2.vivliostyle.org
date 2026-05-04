@@ -105,6 +105,21 @@ jobs:
           done
           exit $fail
 
+      # PR / 非 main ブランチでも生成済の PDF / EPUB を Actions の Artifact
+      # としてダウンロード可能にする。レビュアーは PR ページの "Checks" タブ
+      # から zip を取得し、ローカルの Books / Thorium 等で実機確認できる。
+      # main へのマージ後は GitHub Pages 側に同じ成果物が配信されるので、
+      # 重複を避けて main では Artifact 化しない。
+      - name: Upload PDF / EPUB / WebPub artifact (for PR review)
+        if: github.ref != 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: vivliostyle-docs-formats
+          path: |
+            public/downloads/
+            public/publications/
+          if-no-files-found: error
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
