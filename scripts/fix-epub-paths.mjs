@@ -23,7 +23,6 @@ import { execFileSync } from 'node:child_process';
 import { mkdtempSync, readdirSync, statSync, readFileSync, writeFileSync, renameSync, rmSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, relative, dirname, sep, resolve, posix } from 'node:path';
-import { glob } from 'node:fs/promises';
 
 // EPUB 内に存在しない相対リンクを書き換え先とするサイト URL
 const SITE_ORIGIN = 'https://docs.vivliostyle.org';
