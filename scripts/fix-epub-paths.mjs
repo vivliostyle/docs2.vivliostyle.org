@@ -179,6 +179,59 @@ function fixOne(epubPath) {
       process.exit(1);
     }
 
+    // 拡張防御線（画像参照・アンカー ID 整合性）：
+    //   (a) <img src="..."> の参照先が EPUB 内に存在しなければ FAIL
+    //       （Web URL／data: URI は対象外）
+    //   (b) <a href="#anchor"> のアンカーが同 XHTML 内の id="..." と一致しなければ FAIL
+    //       （URL エンコード／デコードの両形式で照合する）
+    const validationOffenders = [];
+    for (const file of listXhtmlFiles(contentBase)) {
+      const fileDir = dirname(file);
+      const content = readFileSync(file, 'utf8');
+
+      // (a) 画像参照
+      for (const m of content.matchAll(/<img\b[^>]*\bsrc="((?!https?:|data:)[^"]+)"/gi)) {
+        const src = m[1];
+        const resolved = resolve(fileDir, src);
+        if (!existsSync(resolved)) {
+          validationOffenders.push(
+            `${relative(contentBase, file)}: missing image: ${src}`,
+          );
+        }
+      }
+
+      // (b) アンカー ID 整合性
+      const ids = new Set();
+      for (const m of content.matchAll(/\sid="([^"]+)"/g)) {
+        ids.add(m[1]);
+      }
+      for (const m of content.matchAll(/<a\b[^>]*\bhref="#([^"]+)"/gi)) {
+        const fragment = m[1];
+        let decoded = fragment;
+        try {
+          decoded = decodeURIComponent(fragment);
+        } catch {
+          /* fragment is not URL-encoded; use as-is */
+        }
+        if (!ids.has(fragment) && !ids.has(decoded)) {
+          validationOffenders.push(
+            `${relative(contentBase, file)}: dangling anchor: #${fragment}`,
+          );
+        }
+      }
+    }
+    if (validationOffenders.length > 0) {
+      console.error(
+        `\n[fix-epub-paths] FAIL: ${validationOffenders.length} 件の参照整合性エラー:`,
+      );
+      for (const o of validationOffenders.slice(0, 30)) console.error(`  ${o}`);
+      if (validationOffenders.length > 30) {
+        console.error(`  ... and ${validationOffenders.length - 30} more`);
+      }
+      console.error(`  in ${relative(ROOT, epubPath)}`);
+      process.exit(1);
+    }
+
     function processDir(walkRoot, contentRoot) {
       for (const file of listXhtmlFiles(walkRoot)) {
         // この XHTML から「contentRoot（dist/相当）」までの相対プレフィクスを計算
