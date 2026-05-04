@@ -29,6 +29,8 @@ pnpm-debug.log*
 # Vivliostyle temporary files
 .vivliostyle/
 
-# Vivliostyle CLI が生成する webpub パッケージは公開成果物なので
-# dist/ や node_modules/ パターンに引っかかっても含める
-!public/publications/**
+# ビルド成果物（PDF / EPUB / WebPub）はリポジトリに含めない。
+# .github/workflows/deploy.yml が CI 側で `npm run build:formats` を実行して
+# dist/ に組み込み、GitHub Pages 配信時に同梱する。
+public/downloads/
+public/publications/
