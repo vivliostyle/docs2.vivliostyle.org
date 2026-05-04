@@ -176,14 +176,6 @@ describe('rewriteRelativeLinks', () => {
     });
   });
 
-  describe('upstream タイポ補正（既存挙動）', () => {
-    it('frotnend-framework-support → frontend-framework-support', () => {
-      const html = '<a href="./frotnend-framework-support.md">x</a>';
-      expect(rewriteRelativeLinks(html, { lang: 'en' }))
-        .toBe('<a href="../frontend-framework-support/">x</a>');
-    });
-  });
-
   describe('Awesome Vivliostyle: CONTRIBUTING.md → GitHub URL', () => {
     it('CONTRIBUTING.md リンクが GitHub URL に書き換わる', () => {
       const html = '<a href="CONTRIBUTING.md">x</a>';

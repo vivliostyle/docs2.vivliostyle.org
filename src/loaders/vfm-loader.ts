@@ -125,15 +125,6 @@ export function rewriteRelativeLinks(
     );
   }
 
-  // 3.7. upstream submodule のタイポ・文法エラーを応急処置で補正
-  // （upstream に PR を出すのが本筋。それまでの暫定対応）
-  html = html
-    .replace(/frotnend-framework-support/g, 'frontend-framework-support')
-    .replace(
-      /pnpm:&gt;=10 is installed in your machine/g,
-      'pnpm:&gt;=10 is installed on your machine',
-    );
-
   // 4. 同一ディレクトリの兄弟参照 ./X(.md)?(#a)? を書き換え。
   //    - パスの文字クラスから '.' '/' '#' を除外することで、画像（./foo.png 等）や
   //      サブディレクトリ（./docs/spec.md は themes-contributing 特例で先に処理済）
