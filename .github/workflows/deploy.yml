@@ -43,6 +43,68 @@ jobs:
       - name: Build PDF / EPUB / WebPub formats
         run: npm run build:formats
 
+      # ===== 生成物の検証 =====
+      # CI 一発勝負を避けるため、生成された EPUB / PDF を複数の観点で検証する。
+      # いずれか一つでも失敗すれば、壊れた成果物がそのまま GitHub Pages に上がる
+      # ことを防げる。
+
+      - name: Setup Java for epubcheck
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install epubcheck
+        run: |
+          curl -sL https://github.com/w3c/epubcheck/releases/download/v5.2.1/epubcheck-5.2.1.zip -o /tmp/epubcheck.zip
+          unzip -q /tmp/epubcheck.zip -d /tmp
+
+      - name: Validate all EPUBs with epubcheck
+        run: |
+          fail=0
+          for f in public/downloads/*.epub; do
+            echo "::group::epubcheck $(basename "$f")"
+            java -jar /tmp/epubcheck-5.2.1/epubcheck.jar "$f" || fail=1
+            echo "::endgroup::"
+          done
+          exit $fail
+
+      - name: Install poppler-utils (pdfinfo)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+
+      - name: PDF / EPUB sanity check
+        run: |
+          fail=0
+          # 各 PDF: ページ数 5 以上、サイズ 100KB 以上
+          for f in public/downloads/*.pdf; do
+            pages=$(pdfinfo "$f" 2>/dev/null | awk '/^Pages:/ {print $2}')
+            size=$(stat -c%s "$f")
+            printf "  %-50s pages=%-5s size=%s bytes\n" "$(basename "$f")" "$pages" "$size"
+            if [ -z "$pages" ] || [ "$pages" -lt 5 ]; then
+              echo "::error::$f has $pages pages (expected >=5)"
+              fail=1
+            fi
+            if [ "$size" -lt 100000 ]; then
+              echo "::error::$f is $size bytes (expected >=100KB)"
+              fail=1
+            fi
+          done
+          # 各 EPUB: サイズ 50KB 以上、unzip して spine itemref 5 個以上
+          for f in public/downloads/*.epub; do
+            size=$(stat -c%s "$f")
+            spine=$(unzip -p "$f" EPUB/content.opf 2>/dev/null | grep -c '<itemref')
+            printf "  %-50s spine=%-5s size=%s bytes\n" "$(basename "$f")" "$spine" "$size"
+            if [ "$size" -lt 50000 ]; then
+              echo "::error::$f is $size bytes (expected >=50KB)"
+              fail=1
+            fi
+            if [ "$spine" -lt 5 ]; then
+              echo "::error::$f spine has $spine itemref (expected >=5)"
+              fail=1
+            fi
+          done
+          exit $fail
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
