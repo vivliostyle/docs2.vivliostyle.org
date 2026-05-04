@@ -34,18 +34,28 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Astro が dist/ にサイトを書き出す。vivliostyle CLI が
+      # entryContext: 'dist' で HTML を読むため、format ビルドより前で
+      # 走らせる必要がある。
+      - name: Build Astro site
+        run: npm run build
+
       # PDF / EPUB / WebPub をビルド時に生成する。成果物はリポジトリには
       # コミットせず（.gitignore で除外）、毎回のデプロイで CI 側が組版する。
-      # 重要：このステップは `npm run build`（Astro）より「前」で実行する。
-      # Astro は build 中に public/ ディレクトリの中身を dist/ へコピーするため、
-      # build:formats による public/downloads/ public/publications/ の生成は
-      # その前に終わっている必要がある（順序を逆にすると dist/ に同梱されず、
-      # GitHub Pages 公開後にダウンロードリンクが 404 になる）。
+      # vivliostyle.config-*.js の output は public/downloads/ と
+      # public/publications/ を指しているので、続くステップで dist/ に
+      # 同梱する必要がある。
       - name: Build PDF / EPUB / WebPub formats
         run: npm run build:formats
 
-      - name: Build Astro site
-        run: npm run build
+      # Astro の public/ → dist/ コピーは build 時のみ走るため、その後に
+      # 生成された PDF/EPUB/WebPub は手動で dist/ にコピーする。
+      # ここを忘れると GitHub Pages 上で /downloads/...epub などが 404 になる。
+      - name: Copy generated formats into dist/
+        run: |
+          mkdir -p dist/downloads dist/publications
+          cp -r public/downloads/. dist/downloads/
+          cp -r public/publications/. dist/publications/
 
       # ===== 生成物の検証 =====
       # CI 一発勝負を避けるため、生成された EPUB / PDF を複数の観点で検証する。

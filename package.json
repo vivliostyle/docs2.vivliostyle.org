@@ -23,7 +23,8 @@
     "build:pdf:viewer-en": "vivliostyle build -c vivliostyle.config-viewer-en.js",
     "build:pdf:reference-ja": "vivliostyle build -c vivliostyle.config-reference-ja.js",
     "build:pdf:reference-en": "vivliostyle build -c vivliostyle.config-reference-en.js",
-    "build:all": "npm run build && npm run build:formats"
+    "build:all": "npm run build && npm run build:formats && npm run copy:formats-to-dist",
+    "copy:formats-to-dist": "mkdir -p dist/downloads dist/publications && cp -R public/downloads/. dist/downloads/ && cp -R public/publications/. dist/publications/"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.0",
