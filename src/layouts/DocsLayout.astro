@@ -177,6 +177,7 @@ const navLinks = {
             </div>
           </details>
           <a
+            class="nav-faq"
             href={navLinks.faq.href}
             target={navLinks.faq.external ? '_blank' : undefined}
             rel={navLinks.faq.external ? 'noopener noreferrer' : undefined}
@@ -303,6 +304,12 @@ const navLinks = {
     text-decoration: none;
     font-weight: 500;
     font-size: 1.1rem;
+  }
+
+  /* 日本語ページでは Latin の "FAQ" が CJK と並ぶと一回り小さく見えるため
+     視覚的にサイズを揃える */
+  :global(html[lang="ja"]) .header-nav .nav-faq {
+    font-size: 1.2rem;
   }
 
   .header-nav summary {
