@@ -11,7 +11,7 @@ order: 2
 > **Published**: 2026-05-05
 > **Last updated**: 2026-05-05
 
-This guide explains how to produce footnotes with Vivliostyle, structured around **what was already supported** and **what's new in v2.41.0**.
+This guide explains how to produce footnotes with **Vivliostyle.js** (and VFM), structured around **what was already supported in Vivliostyle.js** and **what's new in Vivliostyle.js v2.41.0**.
 
 ## Part 1 · Overview
 
@@ -48,7 +48,7 @@ The terminology in this guide follows the W3C [Requirements for Japanese Text La
 
 - **Footnotes** — notes placed at the foot of a page (the spine-bottom of the type area in horizontal writing) ([JLReq §4.2.5](https://www.w3.org/TR/jlreq/#processing_of_footnotes_in_horizontal_writing_mode))
 - **Endnotes** — notes placed after a paragraph, section, chapter, or the entire main text ([JLReq §4.2.4](https://www.w3.org/TR/jlreq/#processing_of_endnotes_in_vertical_writing_mode_or_horizontal_writing_mode))
-- **Sidenotes** — notes placed in the fore-edge margin ([JLReq §4.2.6](https://www.w3.org/TR/jlreq/#processing_of_sidenotes_in_vertical_writing_mode))
+- **Sidenotes** — notes placed in the fore-edge margin ([JLReq §4.2.6](https://www.w3.org/TR/jlreq/#processing_of_sidenote_in_vertical_writing_mode))
 
 **VFM footnote modes and sidenotes**: None of the three VFM modes (`pandoc` / `gcpm` / `dpub`) directly support sidenotes. The `dpub` mode generates `<aside role="doc-footnote">`, but Vivliostyle.js's built-in UA stylesheet automatically applies `float: footnote`, so the result is rendered as a **page footnote**.
 

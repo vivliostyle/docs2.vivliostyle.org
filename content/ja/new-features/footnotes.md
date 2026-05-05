@@ -11,7 +11,7 @@ order: 2
 > **公開日**: 2026-05-05
 > **最終更新日**: 2026-05-05
 
-このガイドでは、Vivliostyleで脚注を扱う方法を**「従来できたこと」と「v2.41.0で新たにできるようになったこと」**に分けて解説します。
+このガイドでは、Vivliostyle.js（および VFM）で脚注を扱う方法を、**Vivliostyle.js v2.41.0 以前から提供されていた機能**と**v2.41.0 で新たに加わった機能**に分けて解説します。
 
 ## Part 1 · 概要
 
@@ -48,7 +48,7 @@ Vivliostyle.js v2.41.0で追加された脚注関連の新機能:
 
 - **脚注**（footnotes）: ページ下部（横組では版面の地側）に配置される注（[JLReq §4.2.5](https://www.w3.org/TR/jlreq/#processing_of_footnotes_in_horizontal_writing_mode)）
 - **後注**（endnotes）: 段落・節・章・本文全体の後ろに配置される注（[JLReq §4.2.4](https://www.w3.org/TR/jlreq/#processing_of_endnotes_in_vertical_writing_mode_or_horizontal_writing_mode)）
-- **傍注**（sidenotes）: 小口側に配置される注（[JLReq §4.2.6](https://www.w3.org/TR/jlreq/#processing_of_sidenotes_in_vertical_writing_mode)）
+- **傍注**（sidenotes）: 小口側に配置される注（[JLReq §4.2.6](https://www.w3.org/TR/jlreq/#processing_of_sidenote_in_vertical_writing_mode)）
 
 **VFMの脚注モードと傍注**: VFMの3つのモード（`pandoc` / `gcpm` / `dpub`）はいずれも傍注（sidenotes）を直接サポートしません。`dpub` モードは `<aside role="doc-footnote">` を生成しますが、Vivliostyle.jsのビルトインUAスタイルにより `float: footnote` が自動適用されるため、結果として**ページ脚注**として表示されます。
 
