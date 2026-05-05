@@ -36,6 +36,14 @@ Vivliostyleの最大のメリットは**SSMO（Single Source Multi Output）**�
 - [VFM](/ja/vfm/) - Markdownでドキュメントを書く
 - [Vivliostyle Themes](/ja/themes/) - ドキュメントをスタイリング
 
+## [新機能ガイド](/ja/new-features/)
+
+Vivliostyle.jsとCLIの最近の新機能を実践的に解説:
+
+- [脚注（フットノート）](/ja/new-features/footnotes/) — DPUB-ARIA脚注、標準 `@page { @footnote { } }` ルール、VFMの新しい `footnote` モード（v2.41.0+）
+- [CMYK 変換](/ja/new-features/cmyk/) — `device-cmyk()` とCLIによるCMYK PDF出力（v2.40.0+）
+- [ページグループ](/ja/new-features/page-groups/) — 名前付きページと `:nth(An+B of C)` ページセレクタ（v2.39.0+）
+
 ## VFM機能デモ
 
 ### ルビ

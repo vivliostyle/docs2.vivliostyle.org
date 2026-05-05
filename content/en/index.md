@@ -36,6 +36,14 @@ Choose a product to get started:
 - [VFM](/en/vfm/) - For writing documents in Markdown
 - [Vivliostyle Themes](/en/themes/) - For styling your documents
 
+## [New Features](/en/new-features/)
+
+Practical guides to recent Vivliostyle.js and CLI features:
+
+- [Footnotes](/en/new-features/footnotes/) — DPUB-ARIA footnotes, the standard `@page { @footnote { } }` rule, and the new VFM `footnote` modes (v2.41.0+)
+- [CMYK Conversion](/en/new-features/cmyk/) — `device-cmyk()` and CLI PDF CMYK output (v2.40.0+)
+- [Page Groups](/en/new-features/page-groups/) — Named pages and the `:nth(An+B of C)` page selector (v2.39.0+)
+
 ## VFM Features Demo
 
 ### Ruby Text
