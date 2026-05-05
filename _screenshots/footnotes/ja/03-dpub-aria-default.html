@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="utf-8">
-<title>例 3: DPUB-ARIA 脚注（テーマ CSS なし）</title>
+<title>例 3: DPUB-ARIA 脚注（テーマ CSS なし、マーカー表示は最小限）</title>
 <style>
   @page { size: 140mm 90mm; margin: 12mm 14mm; }
   body {
@@ -13,8 +13,10 @@
   }
   p { margin: 0 0 0.5em; }
   code { font-size: 0.92em; }
-  /* テーマ CSS や @footnote ルールは一切書かない。
-     Vivliostyle.js v2.41.0+ のビルトイン UA スタイルだけで脚注になることを確認するため。 */
+  /* テーマ CSS や @footnote ルールは書かない。Vivliostyle.js v2.41.0+ の
+     ビルトイン UA スタイルだけで脚注エリアへ自動 float することを確認する。
+     マーカーの content は UA で空のため、表示用に最小限の 1 行のみ指定。 */
+  ::footnote-marker { content: counter(footnote) ".  "; }
 </style>
 </head>
 <body>

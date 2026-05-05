@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Example 3: DPUB-ARIA footnote (no theme CSS)</title>
+<title>Example 3: DPUB-ARIA footnote (no theme CSS, minimal marker styling)</title>
 <style>
   @page { size: 140mm 90mm; margin: 12mm 14mm; }
   body {
@@ -13,9 +13,12 @@
   }
   p { margin: 0 0 0.5em; }
   code { font-size: 0.92em; }
-  /* No theme CSS, no @footnote rule.
-     This file demonstrates that Vivliostyle.js v2.41.0+ recognises
-     DPUB-ARIA footnotes via its built-in UA stylesheet alone. */
+  /* No theme CSS and no @footnote rule. The point is that the UA
+     stylesheet in Vivliostyle.js v2.41.0+ alone is enough to float
+     [role="doc-footnote"] asides into the @footnote area.
+     The UA leaves ::footnote-marker content empty for DPUB-ARIA, so
+     a single rule below restores numerals for screenshot legibility. */
+  ::footnote-marker { content: counter(footnote) ".  "; }
 </style>
 </head>
 <body>
