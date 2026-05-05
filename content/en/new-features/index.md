@@ -1,13 +1,13 @@
 ---
 title: New Features
-description: Practical guides to recent Vivliostyle.js and CLI features
+description: Practical, feature-oriented guides to recent additions across Vivliostyle
 lang: en
 order: 1
 ---
 
 # New Features
 
-Practical guides to recent Vivliostyle.js and Vivliostyle CLI features. Each article focuses on **what you can do** and **how to use it** in real publishing workflows, rather than spec-level reference.
+Practical, feature-oriented guides to recent additions across the Vivliostyle ecosystem. Each article focuses on **what you can do** and **how to use it** in real publishing workflows, rather than spec-level reference.
 
 Each guide states the minimum version required at the top, so you can tell at a glance whether the feature is available in your environment.
 
@@ -24,6 +24,6 @@ Each guide states the minimum version required at the top, so you can tell at a 
 
 ## How this section is organised
 
-These features cut across Vivliostyle.js core CSS and CLI configuration, so they don't fit neatly into the per-product sections. The "New Features" section organises them by **feature**, not by product.
+These features typically cut across multiple Vivliostyle products — core CSS, CLI, VFM, and themes — so they don't fit neatly into any single per-product section. The "New Features" section organises them by **feature**, not by product.
 
 For canonical specification references, see [Supported CSS Features](/en/reference/supported-css-features/) and the [Core API Reference](/en/reference/api/).
