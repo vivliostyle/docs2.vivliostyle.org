@@ -130,77 +130,80 @@ return null;
 ## Issue 草案
 
 タイトル候補:
-> `footnote-display: inline` does not visually flow DPUB-ARIA footnote
-> bodies on the same line in v2.41.0
+> v2.41.0 で `footnote-display: inline` が DPUB-ARIA 脚注の本文を視覚的に
+> 1 行に流し込まない
 
-本文（英語、起票時に確認・調整）:
+本文（日本語、起票時に確認・調整）:
 
 ```
-### Description
+### 概要
 
-When `footnote-display: inline` is set on `<aside role="doc-footnote">`
-footnote elements (or their `.footnote` class), the resulting
-@footnote area still renders each footnote body on its own line
-visually, with no observable difference from the default
-`footnote-display: block`.
+`<aside role="doc-footnote">`（または `.footnote` クラス）に対して
+`footnote-display: inline` を指定しても、脚注エリアでは各脚注本文が
+それぞれ別の行にブロック積みされ、デフォルトの
+`footnote-display: block` と視覚的に区別がつきません。
 
-The same is observed when running the in-tree test file
-`packages/core/test/files/footnotes/dpub-footnote-display.html` —
-the "footnote-display: inline" section renders identically to the
-"footnote-display: block" section.
+同じ現象がリポジトリ内蔵のテストファイル
+`packages/core/test/files/footnotes/dpub-footnote-display.html` でも
+観察され、「footnote-display: inline」セクションは
+「footnote-display: block」セクションと同じ見た目になります。
 
-### Environment
+### 環境
 
 - `@vivliostyle/cli` 10.5.0
 - `@vivliostyle/viewer` 2.41.0
 - `@vivliostyle/core` 2.42.0
-- macOS / Chromium-based browser via `vivliostyle preview`
+- macOS、`vivliostyle preview` 経由（Chromium 系ブラウザ）
 
-### Reproduction
+### 再現方法
 
-A minimal HTML reproducer is at
+最小再現の HTML を以下に置いています（参照リンク参照）:
 `docs2.vivliostyle.org/_screenshots/footnotes/{en,ja}/05-footnote-display-inline.html`
-(see Refs).
 
-Quick repro:
+簡略な再現コード:
 
-(Insert a small inline HTML similar to ja/05.)
+(ja/05 を縮めたインライン HTML を貼る)
 
-### Expected
+### 期待される挙動
 
-Per CSS GCPM 3 §2.4 footnote-display and the docs site
-[Footnotes guide](https://docs.vivliostyle.org/en/new-features/footnotes/)
-(target Vivliostyle.js v2.41.0+), the three short footnote bodies
-should flow inline on a single line (or wrap as one inline run).
+CSS GCPM 3 §2.4 footnote-display およびドキュメントサイトの
+[脚注ガイド](https://docs.vivliostyle.org/ja/new-features/footnotes/)
+（対象バージョン Vivliostyle.js v2.41.0+）に従えば、3 件の短い脚注本文は
+脚注エリアで 1 行（または 1 つの inline run として折り返しを含むひとつの
+連続）に流れるはずです。
 
-### Actual
+### 実際の挙動
 
-Three footnotes render block-stacked, identical to
-`footnote-display: block`. Screenshot attached.
+3 件の脚注が縦積みされ、`footnote-display: block` と区別がつきません。
+スクリーンショット添付。
 
-### Patterns tried
+### 試したパターン
 
 - `.footnote { footnote-display: inline }`
 - `.footnote-display-inline .footnote { footnote-display: inline }`
-  (matches `dpub-footnote-display.html` test)
+  （`dpub-footnote-display.html` テストと同じ書き方）
 - `aside[role="doc-footnote"] { footnote-display: inline }`
-- adding `display: inline` as a fallback (this leaks the aside into
-  the body flow but does not change the @footnote area)
-- larger page sizes (148×210, 180×110)
+- フォールバックとして `display: inline` を併記
+  → `display: inline` 自体は反映され aside が本文中にもインライン表示
+  されてしまった（UA の `display: none` を上書き）。脚注エリア側は
+  依然として block 表示のまま。
+- ページサイズの拡大（148×210 / 180×110）
 
-### Notes
+### 補足
 
-- `getFootnoteDisplayOverride` in `semantic-footnote.ts` does pick up
-  `footnote-display: inline` per the source, so the cascade works,
-  but the resulting layout is unchanged.
-- This was discovered while preparing screenshots for the
-  Vivliostyle docs site Footnotes guide for v2.41.0.
+- `semantic-footnote.ts` の `getFootnoteDisplayOverride` は
+  `footnote-display: inline` をソースから読み取るコードになっており、
+  cascade の段階では正しく拾われています。にもかかわらず最終的な
+  レイアウトに変化が見えないため、後段のレイアウト処理側で適用が
+  落ちている可能性があります。
+- この問題は、Vivliostyle ドキュメントサイト v2.41.0 向け脚注ガイドの
+  スクリーンショット撮影中に発見しました。
 
-### Refs
+### 関連リンク
 
 - docs2.vivliostyle.org Issue #15
-- docs2.vivliostyle.org branch `feat/issue-15-new-features-section`
-- Sample HTML files: `_screenshots/footnotes/{en,ja}/05-footnote-display-inline.html`
+- docs2.vivliostyle.org ブランチ `feat/issue-15-new-features-section`
+- 再現用 HTML: `_screenshots/footnotes/{en,ja}/05-footnote-display-inline.html`
 ```
 
 ## 次のステップ
