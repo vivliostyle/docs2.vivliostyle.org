@@ -97,7 +97,19 @@ Vivliostyle.js v2.41.0 recognises footnotes from DPUB-ARIA roles directly:
 <aside id="fn1" role="doc-footnote">A note.</aside>
 ```
 
-The built-in UA stylesheet applies `float: footnote` to `[role="doc-footnote"]`, so this works **without any theme CSS**. The note appears at the foot of the page with a reference number generated automatically.
+The built-in UA stylesheet applies `float: footnote` to `[role="doc-footnote"]`, so this works **without any theme CSS**. The note appears at the foot of the page, and the in-text reference marker (`::footnote-call`) is generated automatically.
+
+> **About the footnote-area marker**: The UA stylesheet leaves the `::footnote-marker` content empty for DPUB-ARIA asides. To author a visible numeral in the footnote area, Vivliostyle's DPUB-ARIA implementation requires the `::footnote-marker` `content` property to be paired with **`list-style-position: outside`** — the author's `content` is not rendered unless `outside` is set:
+>
+> ```css
+> aside[role="doc-footnote"] {
+>   margin-inline-start: 1.5em;  /* room for the marker */
+> }
+> aside[role="doc-footnote"]::footnote-marker {
+>   content: counter(footnote) ". ";
+>   list-style-position: outside;  /* required for DPUB-ARIA */
+> }
+> ```
 
 ### 6. Comparison of the three recognition mechanisms
 
@@ -160,6 +172,8 @@ The footnote marker now respects `list-style-position`, so the marker can sit ou
   list-style-position: outside;
 }
 ```
+
+In particular, **for DPUB-ARIA footnotes (`<aside role="doc-footnote">`), `outside` is a hard requirement for the author's `::footnote-marker` content to render at all** — under the GCPM class-based form (`<span class="footnote">`) either `inside` or `outside` works. See the "About the footnote-area marker" callout in §5 for details.
 
 ### 10. Page-scoped reset and cross-scope counters
 

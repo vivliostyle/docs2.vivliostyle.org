@@ -97,7 +97,19 @@ Vivliostyle.js v2.41.0は、DPUB-ARIAロールから直接脚注を認識しま�
 <aside id="fn1" role="doc-footnote">注の本文。</aside>
 ```
 
-ビルトインUAスタイルが `[role="doc-footnote"]` に対して `float: footnote` を適用するため、これは**テーマCSSなしで**動作します。注はページ下部に表示され、参照番号も自動生成されます。
+ビルトインUAスタイルが `[role="doc-footnote"]` に対して `float: footnote` を適用するため、これは**テーマCSSなしで**動作します。注はページ下部に表示され、本文中の参照番号（`::footnote-call`）も自動生成されます。
+
+> **マーカー表示について**: 脚注エリア側のマーカー（`::footnote-marker`）は、UA スタイルでは content を空のままにしています。author CSS で番号を表示したい場合、Vivliostyle の DPUB-ARIA 実装では `::footnote-marker` の `content` プロパティを **`list-style-position: outside`** とセットで指定する必要があります（`outside` でなければ author の `content` は描画されません）:
+>
+> ```css
+> aside[role="doc-footnote"] {
+>   margin-inline-start: 1.5em;  /* マーカー領域の確保 */
+> }
+> aside[role="doc-footnote"]::footnote-marker {
+>   content: counter(footnote) ". ";
+>   list-style-position: outside;  /* DPUB-ARIA で必須 */
+> }
+> ```
 
 ### 6. 3つの認識メカニズムの比較
 
@@ -160,6 +172,8 @@ Vivliostyle.js v2.41.0は、DPUB-ARIAロールから直接脚注を認識しま�
   list-style-position: outside;
 }
 ```
+
+特に**DPUB-ARIA 由来の脚注（`<aside role="doc-footnote">`）では、author の `::footnote-marker` content を実際に描画させるための必須条件**となっています（GCPM の class 方式 `<span class="footnote">` では `inside` / `outside` どちらでも描画されます）。詳細は §5 の「マーカー表示について」を参照。
 
 ### 10. ページスコープリセットとクロススコープカウンタ
 

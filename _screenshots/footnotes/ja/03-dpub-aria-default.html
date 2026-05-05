@@ -15,8 +15,15 @@
   code { font-size: 0.92em; }
   /* テーマ CSS や @footnote ルールは書かない。Vivliostyle.js v2.41.0+ の
      ビルトイン UA スタイルだけで脚注エリアへ自動 float することを確認する。
-     マーカーの content は UA で空のため、表示用に最小限の 1 行のみ指定。 */
-  ::footnote-marker { content: counter(footnote) ".  "; }
+     ただし UA は DPUB-ARIA aside の ::footnote-marker content を空にして
+     いるため、表示用に下記の 2 行のみ author で補う。Vivliostyle 仕様上、
+     DPUB-ARIA のマーカー content は list-style-position: outside と組み
+     合わせたときに描画される。 */
+  aside[role="doc-footnote"] { margin-inline-start: 1.5em; }
+  aside[role="doc-footnote"]::footnote-marker {
+    content: counter(footnote) ".  ";
+    list-style-position: outside;
+  }
 </style>
 </head>
 <body>

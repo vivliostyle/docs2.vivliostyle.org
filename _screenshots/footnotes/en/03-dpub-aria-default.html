@@ -16,9 +16,15 @@
   /* No theme CSS and no @footnote rule. The point is that the UA
      stylesheet in Vivliostyle.js v2.41.0+ alone is enough to float
      [role="doc-footnote"] asides into the @footnote area.
-     The UA leaves ::footnote-marker content empty for DPUB-ARIA, so
-     a single rule below restores numerals for screenshot legibility. */
-  ::footnote-marker { content: counter(footnote) ".  "; }
+     The UA leaves the ::footnote-marker content empty for DPUB-ARIA
+     asides; per Vivliostyle's semantic-footnote logic, the author's
+     marker content is rendered only when paired with
+     list-style-position: outside. The two rules below add that. */
+  aside[role="doc-footnote"] { margin-inline-start: 1.5em; }
+  aside[role="doc-footnote"]::footnote-marker {
+    content: counter(footnote) ".  ";
+    list-style-position: outside;
+  }
 </style>
 </head>
 <body>
