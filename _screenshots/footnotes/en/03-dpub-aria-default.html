@@ -13,24 +13,19 @@
   }
   p { margin: 0 0 0.5em; }
   code { font-size: 0.92em; }
-  /* No theme CSS and no @footnote rule. The point is that the UA
-     stylesheet in Vivliostyle.js v2.41.0+ alone is enough to float
-     [role="doc-footnote"] asides into the @footnote area.
-     The UA leaves the ::footnote-marker content empty for DPUB-ARIA
-     asides; per Vivliostyle's semantic-footnote logic, the author's
-     marker content is rendered only when paired with
-     list-style-position: outside. The two rules below add that. */
-  aside[role="doc-footnote"] { margin-inline-start: 1.5em; }
-  aside[role="doc-footnote"]::footnote-marker {
-    content: counter(footnote) ".  ";
-    list-style-position: outside;
-  }
+  /* No theme CSS and no @footnote rule. The UA stylesheet in
+     Vivliostyle.js v2.41.0+ floats [role="doc-footnote"] asides
+     into the @footnote area on its own.
+     The footnote-area marker is provided as plain HTML
+     (<sup>n</sup> inside each aside) rather than via author
+     CSS pseudo-elements, so the file truly has zero stylesheet
+     rules beyond page geometry and body typography. */
 </style>
 </head>
 <body>
 <p>Place an inline reference using <code>&lt;a role="doc-noteref"&gt;</code><a role="doc-noteref" href="#fn1">1</a> and the corresponding <code>&lt;aside role="doc-footnote"&gt;</code> elsewhere in the flow.</p>
-<aside id="fn1" role="doc-footnote">The footnote body. No CSS has been written for this rendering.</aside>
+<aside id="fn1" role="doc-footnote"><sup>1</sup> The footnote body. No CSS has been written for this rendering.</aside>
 <p>Vivliostyle.js v2.41.0+ applies <code>float: footnote</code> automatically through its built-in UA stylesheet, so the note is placed in the page-bottom area without any theme CSS<a role="doc-noteref" href="#fn2">2</a>.</p>
-<aside id="fn2" role="doc-footnote">A second note. Numbering is automatic.</aside>
+<aside id="fn2" role="doc-footnote"><sup>2</sup> A second note. Numbering is automatic.</aside>
 </body>
 </html>

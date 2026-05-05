@@ -16,7 +16,10 @@
       line-height: 1.5;
       color: #333;
     }
-    @footnote::before {
+    /* The correct syntax is `@footnote ::before` (with a space).
+       Without the space, the @page block is invalid and silently
+       drops; the asides then stay in the body flow. */
+    @footnote ::before {
       content: "Notes";
       display: block;
       font-weight: 600;
@@ -36,8 +39,8 @@
 </head>
 <body>
 <p>This example styles the footnote area with <code>@page { @footnote { … } }</code><a role="doc-noteref" href="#fn1">1</a>, applying a top border, padding, and a generated "Notes" heading via <code>::before</code>.</p>
-<aside id="fn1" role="doc-footnote">A styled footnote.</aside>
+<aside id="fn1" role="doc-footnote"><sup>1</sup> A styled footnote.</aside>
 <p>With multiple notes<a role="doc-noteref" href="#fn2">2</a>, the heading appears once for the entire footnote area, not per note.</p>
-<aside id="fn2" role="doc-footnote">A second styled footnote.</aside>
+<aside id="fn2" role="doc-footnote"><sup>2</sup> A second styled footnote.</aside>
 </body>
 </html>

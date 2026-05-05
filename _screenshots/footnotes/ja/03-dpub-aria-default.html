@@ -15,21 +15,15 @@
   code { font-size: 0.92em; }
   /* テーマ CSS や @footnote ルールは書かない。Vivliostyle.js v2.41.0+ の
      ビルトイン UA スタイルだけで脚注エリアへ自動 float することを確認する。
-     ただし UA は DPUB-ARIA aside の ::footnote-marker content を空にして
-     いるため、表示用に下記の 2 行のみ author で補う。Vivliostyle 仕様上、
-     DPUB-ARIA のマーカー content は list-style-position: outside と組み
-     合わせたときに描画される。 */
-  aside[role="doc-footnote"] { margin-inline-start: 1.5em; }
-  aside[role="doc-footnote"]::footnote-marker {
-    content: counter(footnote) ".  ";
-    list-style-position: outside;
-  }
+     脚注エリアのマーカー番号は author CSS の ::footnote-marker ではなく、
+     aside 内に直接 <sup>n</sup> を埋め込んで HTML で表現する。
+     こうすると CSS は完全にゼロで、「テーマ CSS なし」の主張が保たれる。 */
 </style>
 </head>
 <body>
 <p>本文中に <code>&lt;a role="doc-noteref"&gt;</code> で参照<a role="doc-noteref" href="#fn1">1</a>を入れ、別の場所に <code>&lt;aside role="doc-footnote"&gt;</code> を置く。</p>
-<aside id="fn1" role="doc-footnote">脚注の本文。CSS は何も書いていない。</aside>
+<aside id="fn1" role="doc-footnote"><sup>1</sup> 脚注の本文。CSS は何も書いていない。</aside>
 <p>Vivliostyle.js v2.41.0+ のビルトイン UA スタイルが <code>float: footnote</code> を自動で適用するため、テーマ CSS なしでもページ下部の脚注エリアに配置される<a role="doc-noteref" href="#fn2">2</a>。</p>
-<aside id="fn2" role="doc-footnote">もう一つの注。連番は自動。</aside>
+<aside id="fn2" role="doc-footnote"><sup>2</sup> もう一つの注。連番は自動。</aside>
 </body>
 </html>
