@@ -22,12 +22,12 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.0",
-    "@vivliostyle/vfm": "^2.5.0",
+    "@vivliostyle/vfm": "^2.6.0",
     "astro": "^5.16.6",
     "gray-matter": "^4.0.3"
   },
   "devDependencies": {
-    "@vivliostyle/cli": "^10.3.0",
+    "@vivliostyle/cli": "^10.5.0",
     "@vivliostyle/theme-techbook": "^2.0.1",
     "pagefind": "^1.4.0"
   }
