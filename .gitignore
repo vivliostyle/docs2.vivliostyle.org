@@ -25,3 +25,6 @@ pnpm-debug.log*
 
 # Vivliostyle temporary files
 .vivliostyle/
+
+# Vivliostyle preview (vite) cache
+.vite/
