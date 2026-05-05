@@ -21,7 +21,6 @@
 
 import { execFileSync } from 'node:child_process';
 import { mkdtempSync, readdirSync, statSync, readFileSync, writeFileSync, renameSync, rmSync, existsSync } from 'node:fs';
-import { tmpdir } from 'node:os';
 import { join, relative, dirname, sep, resolve, posix } from 'node:path';
 
 // EPUB 内に存在しない相対リンクを書き換え先とするサイト URL
@@ -60,7 +59,12 @@ function listXhtmlFiles(rootDir) {
 }
 
 function fixOne(epubPath) {
-  const tmp = mkdtempSync(join(tmpdir(), 'epub-fix-'));
+  // tmp dir は EPUB と同じディレクトリ（=同じボリューム）に作成する。
+  // OS の tmpdir() を使うと、作業ディレクトリが別ボリュームの場合
+  // 後段の renameSync(...) が EXDEV (cross-device link not permitted)
+  // で失敗するため。`.` プレフィクスで通常 ls から隠し、try/finally で
+  // 必ず cleanup する。
+  const tmp = mkdtempSync(join(dirname(epubPath), '.epub-fix-'));
   try {
     execFileSync('unzip', ['-q', epubPath, '-d', tmp]);
 
