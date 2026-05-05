@@ -195,12 +195,22 @@ const description = indexDoc?.data?.description || 'Official documentation for V
     margin-bottom: 0.25rem;
   }
 
-  .subgroup-title {
+  /* L3: 各ナビ項目（アコーディオン配下）。L1 のトグル / トップレベルリンクより一段小さく */
+  .accordion-content a {
     font-size: 0.85rem;
-    font-weight: 600;
+    font-weight: 400;
+  }
+
+  /* L2: サブグループ見出し。
+     - L1 と同じウエイト・muted カラーで「ラベル」として機能
+     - margin-left: -0.75rem で accordion-content の padding-left（1.5rem）を半分戻し、
+       L3 項目（1.5rem）よりも内側に配置することで親子関係を明示 */
+  .subgroup-title {
+    font-size: 0.9rem;
+    font-weight: 500;
     color: var(--color-text-muted);
-    margin: 0.5rem 0 0.25rem;
-    letter-spacing: 0.02em;
+    margin: 0.4rem 0 0.15rem -0.75rem;
+    letter-spacing: 0;
   }
 
   /* 外部リンクには「↗」を末尾に付与し、新しいタブで開くことを示す */

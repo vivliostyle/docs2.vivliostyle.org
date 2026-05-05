@@ -186,8 +186,9 @@ const description = indexDoc?.data?.description || 'Vivliostyle公式ドキュ�
     transform: rotate(90deg);
   }
 
+  /* L3 項目を含むコンテナ。1.75rem の padding-left により L3 を全アコーディオンで揃える */
   .accordion-content {
-    padding-left: 1.5rem;
+    padding-left: 1.75rem;
     margin: 0.25rem 0 0;
   }
 
@@ -195,12 +196,22 @@ const description = indexDoc?.data?.description || 'Vivliostyle公式ドキュ�
     margin-bottom: 0.25rem;
   }
 
-  .subgroup-title {
+  /* L3: 各ナビ項目（アコーディオン配下）。L1 のトグル / トップレベルリンクより一段小さく */
+  .accordion-content a {
     font-size: 0.85rem;
-    font-weight: 600;
+    font-weight: 400;
+  }
+
+  /* L2: サブグループ見出し。
+     - L1 と同じウエイト・muted カラーで「ラベル」として機能
+     - margin-left: -1rem で accordion-content の padding-left（1.75rem）を 1rem 戻し、
+       L2（0.75rem）と L3（1.75rem）の差をちょうど 1em（1 文字分）にする */
+  .subgroup-title {
+    font-size: 0.9rem;
+    font-weight: 500;
     color: var(--color-text-muted);
-    margin: 0.5rem 0 0.25rem;
-    letter-spacing: 0.02em;
+    margin: 0.4rem 0 0.15rem -1rem;
+    letter-spacing: 0;
   }
 
   /* 外部リンクには「↗」を末尾に付与し、新しいタブで開くことを示す */
