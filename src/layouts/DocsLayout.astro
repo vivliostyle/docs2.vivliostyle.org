@@ -23,6 +23,7 @@ const navLabels = isJa
   ? {
       product: 'プロダクト',
       tutorial: 'チュートリアル',
+      newFeatures: '新機能ガイド',
       reference: 'リファレンス',
       faq: 'FAQ',
       docs: 'ドキュメント',
@@ -31,6 +32,7 @@ const navLabels = isJa
   : {
       product: 'Product',
       tutorial: 'Tutorials',
+      newFeatures: 'New Features',
       reference: 'Reference',
       faq: 'FAQ',
       docs: 'Documentation',
@@ -48,6 +50,10 @@ const navLinks = {
     label: navLabels.tutorial,
     href: isJa ? 'https://vivliostyle.org/ja/tutorials/' : 'https://vivliostyle.org/tutorials/',
     external: true,
+  },
+  newFeatures: {
+    label: navLabels.newFeatures,
+    href: `/${lang}/new-features/`,
   },
   reference: {
     docs: [
@@ -152,6 +158,7 @@ const navLinks = {
           >
             {navLinks.tutorial.label}
           </a>
+          <a href={navLinks.newFeatures.href}>{navLinks.newFeatures.label}</a>
           <details class="nav-accordion">
             <summary>{navLabels.reference}</summary>
             <div class="nav-panel">
@@ -295,7 +302,7 @@ const navLinks = {
     color: var(--color-text);
     text-decoration: none;
     font-weight: 500;
-    font-size: 0.95rem;
+    font-size: 1.1rem;
   }
 
   .header-nav summary {
