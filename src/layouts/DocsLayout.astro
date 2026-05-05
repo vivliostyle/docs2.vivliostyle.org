@@ -143,6 +143,7 @@ const navLinks = {
           <img src="/vivliostyle-docs.svg" alt="Vivliostyle Docs" class="logo-image" />
         </a>
         <nav class="header-nav" aria-label={isJa ? 'グローバルナビゲーション' : 'Global navigation'}>
+          <a href={navLinks.newFeatures.href}>{navLinks.newFeatures.label}</a>
           <details class="nav-accordion">
             <summary>{navLabels.product}</summary>
             <div class="nav-panel">
@@ -158,7 +159,6 @@ const navLinks = {
           >
             {navLinks.tutorial.label}
           </a>
-          <a href={navLinks.newFeatures.href}>{navLinks.newFeatures.label}</a>
           <details class="nav-accordion">
             <summary>{navLabels.reference}</summary>
             <div class="nav-panel">
