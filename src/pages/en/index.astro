@@ -12,21 +12,9 @@ let htmlContent = '';
 
 try {
   const docs = await getCollection('docs-en');
-  console.log('docs-en collection:', docs.length, 'documents');
-  
-  // デバッグ: すべてのドキュメントIDを表示
-  docs.forEach(doc => {
-    console.log('Doc ID:', doc.id);
-  });
-  
   indexDoc = docs.find(doc => doc.id === 'en/index' || doc.id.endsWith('/index') || doc.id === 'index');
-  
-  if (indexDoc) {
-    console.log('Found index doc:', indexDoc.id);
-    if (indexDoc.rendered) {
-      htmlContent = indexDoc.rendered.html;
-      console.log('HTML content length:', htmlContent.length);
-    }
+  if (indexDoc?.rendered) {
+    htmlContent = indexDoc.rendered.html;
   }
 } catch (error) {
   console.error('Failed to load docs:', error);
@@ -43,15 +31,71 @@ const description = indexDoc?.data?.description || 'Official documentation for V
   availableLanguages={['en', 'ja']}
 >
   <LanguageSwitcher slot="header" currentLang="en" pagePath="/" hasTranslation={true} />
-  <nav slot="sidebar">
+  <nav slot="sidebar" class="home-sidebar">
     <h3>Documentation</h3>
-    <ul style="list-style: none; padding-left: 0;">
-      <li><a href="/en/">Home</a></li>
-      <li><a href="/en/viewer/">Vivliostyle Viewer</a></li>
-      <li><a href="/en/cli/">Vivliostyle CLI</a></li>
-      <li><a href="/en/vfm/">VFM</a></li>
-      <li><a href="/en/themes/">Vivliostyle Themes</a></li>
-      <li><a href="/en/reference/">Reference</a></li>
+    <ul class="sidebar-top">
+      <li class="active"><a href="/en/" aria-current="page">Home</a></li>
+    </ul>
+
+    <div class="sidebar-accordion">
+      <div class="accordion-section">
+        <button class="accordion-toggle" data-target="new-features-group" aria-expanded="true">
+          <span class="toggle-icon">▶</span>New Features
+        </button>
+        <ul class="accordion-content" id="new-features-group">
+          <li><a href="/en/new-features/">Overview</a></li>
+          <li><a href="/en/new-features/footnotes/">Footnotes</a></li>
+          <li><a href="/en/new-features/cmyk/">CMYK Conversion</a></li>
+          <li><a href="/en/new-features/page-groups/">Page Groups</a></li>
+        </ul>
+      </div>
+
+      <div class="accordion-section">
+        <button class="accordion-toggle" data-target="product-group" aria-expanded="true">
+          <span class="toggle-icon">▶</span>Product
+        </button>
+        <ul class="accordion-content" id="product-group">
+          <li><a href="/en/viewer/">Vivliostyle Viewer</a></li>
+          <li><a href="/en/cli/">Vivliostyle CLI</a></li>
+          <li><a href="/en/vfm/">VFM</a></li>
+          <li><a href="/en/themes/">Vivliostyle Themes</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <ul class="sidebar-flat">
+      <li>
+        <a href="https://vivliostyle.org/tutorials/" target="_blank" rel="noopener noreferrer">Tutorials</a>
+      </li>
+    </ul>
+
+    <div class="sidebar-accordion">
+      <div class="accordion-section">
+        <button class="accordion-toggle" data-target="reference-group" aria-expanded="true">
+          <span class="toggle-icon">▶</span>Reference
+        </button>
+        <div class="accordion-content accordion-content-grouped" id="reference-group">
+          <h4 class="subgroup-title">Documentation</h4>
+          <ul>
+            <li><a href="/en/reference/awesome-vivliostyle/">Awesome Vivliostyle</a></li>
+            <li><a href="/en/reference/supported-css-features/">Supported CSS Features</a></li>
+            <li><a href="/en/reference/api/">Core API Reference</a></li>
+          </ul>
+          <h4 class="subgroup-title">Contribution Guides</h4>
+          <ul>
+            <li><a href="/en/reference/contribution-guide/">Vivliostyle.js</a></li>
+            <li><a href="/en/reference/contributing-cli/">Vivliostyle CLI</a></li>
+            <li><a href="/en/reference/contributing-vfm/">VFM</a></li>
+            <li><a href="/en/reference/contributing-themes/">Vivliostyle Themes</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <ul class="sidebar-flat">
+      <li>
+        <a href="https://vivliostyle.org/faq/" target="_blank" rel="noopener noreferrer">FAQ</a>
+      </li>
     </ul>
   </nav>
 
@@ -67,16 +111,121 @@ const description = indexDoc?.data?.description || 'Official documentation for V
 </DocsLayout>
 
 <style>
-  nav h3 {
+  .home-sidebar h3 {
     color: var(--color-text);
+    font-size: 1rem;
+    margin: 0 0 0.5rem;
   }
 
-  nav ul li a {
+  .home-sidebar ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  }
+
+  .home-sidebar li {
+    margin: 0.25rem 0;
+  }
+
+  .home-sidebar a {
     color: var(--color-text);
     text-decoration: none;
   }
 
-  nav ul li a:hover {
+  .home-sidebar a:hover {
     color: var(--color-primary);
   }
+
+  .sidebar-top {
+    margin-bottom: 0.75rem;
+  }
+
+  .sidebar-top li.active a {
+    font-weight: bold;
+    color: var(--color-primary);
+  }
+
+  .sidebar-flat {
+    margin: 0.25rem 0 0.5rem;
+  }
+
+  .sidebar-accordion {
+    margin: 0 0 0.25rem;
+  }
+
+  .accordion-section {
+    margin-bottom: 0.25rem;
+  }
+
+  .accordion-toggle {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0.25rem 0;
+    text-align: left;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-text);
+  }
+
+  .accordion-toggle:hover {
+    color: var(--color-primary);
+  }
+
+  .toggle-icon {
+    display: inline-block;
+    transition: transform 0.2s;
+    margin-right: 0.5rem;
+    font-size: 0.7rem;
+  }
+
+  .accordion-toggle[aria-expanded="true"] .toggle-icon {
+    transform: rotate(90deg);
+  }
+
+  .accordion-content {
+    padding-left: 1.5rem;
+    margin: 0.25rem 0 0;
+  }
+
+  .accordion-content-grouped > ul {
+    margin-bottom: 0.25rem;
+  }
+
+  .subgroup-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    margin: 0.5rem 0 0.25rem;
+    letter-spacing: 0.02em;
+  }
+
+  /* 外部リンクには「↗」を末尾に付与し、新しいタブで開くことを示す */
+  .home-sidebar a[target="_blank"]::after {
+    content: " ↗";
+    font-size: 0.85em;
+    opacity: 0.7;
+    margin-left: 0.15em;
+  }
 </style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggleButtons = document.querySelectorAll('.home-sidebar .accordion-toggle');
+    toggleButtons.forEach((button) => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = button.getAttribute('data-target');
+        const content = targetId ? document.getElementById(targetId) : null;
+        const isExpanded = button.getAttribute('aria-expanded') === 'true';
+        button.setAttribute('aria-expanded', String(!isExpanded));
+        if (content) {
+          (content as HTMLElement).style.display = isExpanded ? 'none' : 'block';
+        }
+      });
+    });
+  });
+</script>
