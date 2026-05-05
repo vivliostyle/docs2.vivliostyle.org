@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>例 3: DPUB-ARIA 脚注（テーマ CSS なし）</title>
+<style>
+  @page { size: 140mm 90mm; margin: 12mm 14mm; }
+  body {
+    font-family: "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", serif;
+    font-size: 10pt;
+    line-height: 1.65;
+    text-align: justify;
+  }
+  p { margin: 0 0 0.5em; }
+  code { font-size: 0.92em; }
+  /* テーマ CSS や @footnote ルールは一切書かない。
+     Vivliostyle.js v2.41.0+ のビルトイン UA スタイルだけで脚注になることを確認するため。 */
+</style>
+</head>
+<body>
+<p>本文中に <code>&lt;a role="doc-noteref"&gt;</code> で参照<a role="doc-noteref" href="#fn1">1</a>を入れ、別の場所に <code>&lt;aside role="doc-footnote"&gt;</code> を置く。</p>
+<aside id="fn1" role="doc-footnote">脚注の本文。CSS は何も書いていない。</aside>
+<p>Vivliostyle.js v2.41.0+ のビルトイン UA スタイルが <code>float: footnote</code> を自動で適用するため、テーマ CSS なしでもページ下部の脚注エリアに配置される<a role="doc-noteref" href="#fn2">2</a>。</p>
+<aside id="fn2" role="doc-footnote">2 つめの注。連番は自動。</aside>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Example 6: footnote-display: compact</title>
+<style>
+  @page {
+    size: 140mm 90mm;
+    margin: 12mm 14mm;
+
+    @footnote {
+      footnote-display: compact;
+      border-top: 0.4pt solid currentColor;
+      padding-top: 4pt;
+      font-size: 8.5pt;
+      line-height: 1.5;
+    }
+  }
+  body {
+    font-family: "Source Serif Pro", "Georgia", serif;
+    font-size: 10pt;
+    line-height: 1.55;
+    text-align: justify;
+  }
+  p { margin: 0 0 0.5em; }
+  code { font-size: 0.92em; }
+  ::footnote-marker { content: counter(footnote) ".  "; }
+</style>
+</head>
+<body>
+<p><code>footnote-display: compact</code> mixes inline and block automatically: short notes flow inline<a role="doc-noteref" href="#fn1">1</a>, long ones break to their own line<a role="doc-noteref" href="#fn2">2</a>.</p>
+<aside id="fn1" role="doc-footnote">A short note.</aside>
+<aside id="fn2" role="doc-footnote">A longer note that contains several sentences. When a long note appears next to a short one, it breaks to its own block line so the longer body remains readable.</aside>
+<p>A third short reference<a role="doc-noteref" href="#fn3">3</a> joins the first inline.</p>
+<aside id="fn3" role="doc-footnote">Short note.</aside>
+</body>
+</html>

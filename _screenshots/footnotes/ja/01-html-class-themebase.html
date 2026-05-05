@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>例 1: HTML 直書き脚注（GCPM クラス方式）</title>
+<style>
+  @page { size: 140mm 90mm; margin: 12mm 14mm; }
+  body {
+    font-family: "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", serif;
+    font-size: 10pt;
+    line-height: 1.65;
+    text-align: justify;
+  }
+  p { margin: 0 0 0.5em; }
+  code { font-size: 0.92em; }
+
+  /* GCPM クラス方式（theme-base が提供する内容と同等） */
+  .footnote { float: footnote; }
+  ::footnote-call {
+    content: counter(footnote);
+    font-size: 0.7em;
+    vertical-align: super;
+    line-height: 0;
+  }
+  ::footnote-marker { content: counter(footnote) "  "; }
+  @page {
+    @footnote {
+      border-top: 0.4pt solid currentColor;
+      padding-top: 4pt;
+      font-size: 8.5pt;
+      line-height: 1.5;
+    }
+  }
+</style>
+</head>
+<body>
+<p>HTML 中に <code>&lt;span class="footnote"&gt;</code> として記述した脚注<span class="footnote">脚注の本文。<code>float: footnote</code> によりレイアウト時にページ下部に移動される。</span>は、テーマ CSS（theme-base / theme-techbook など）の <code>.footnote { float: footnote }</code> によってページ下部の脚注エリアに送られる。</p>
+<p>本文中に複数の参照を入れた場合<span class="footnote">2 つめの注。連番は自動的に振られる。</span>でも、マーカーは <code>::footnote-call</code> と <code>::footnote-marker</code> 擬似要素で連番つきに生成される。</p>
+</body>
+</html>
