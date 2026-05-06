@@ -39,8 +39,8 @@ const description = indexDoc?.data?.description || 'Official documentation for V
 
     <div class="sidebar-accordion">
       <div class="accordion-section">
-        <button class="accordion-toggle" data-target="new-features-group" aria-expanded="true">
-          <span class="toggle-icon">▶</span>New Features
+        <button class="accordion-toggle" aria-controls="new-features-group" aria-expanded="true">
+          <span class="toggle-icon" aria-hidden="true">▶</span>New Features
         </button>
         <ul class="accordion-content" id="new-features-group">
           <li><a href="/en/new-features/">Overview</a></li>
@@ -51,8 +51,8 @@ const description = indexDoc?.data?.description || 'Official documentation for V
       </div>
 
       <div class="accordion-section">
-        <button class="accordion-toggle" data-target="product-group" aria-expanded="true">
-          <span class="toggle-icon">▶</span>Product
+        <button class="accordion-toggle" aria-controls="product-group" aria-expanded="true">
+          <span class="toggle-icon" aria-hidden="true">▶</span>Product
         </button>
         <ul class="accordion-content" id="product-group">
           <li><a href="/en/viewer/">Vivliostyle Viewer</a></li>
@@ -71,8 +71,8 @@ const description = indexDoc?.data?.description || 'Official documentation for V
 
     <div class="sidebar-accordion">
       <div class="accordion-section">
-        <button class="accordion-toggle" data-target="reference-group" aria-expanded="true">
-          <span class="toggle-icon">▶</span>Reference
+        <button class="accordion-toggle" aria-controls="reference-group" aria-expanded="true">
+          <span class="toggle-icon" aria-hidden="true">▶</span>Reference
         </button>
         <div class="accordion-content accordion-content-grouped" id="reference-group">
           <h4 class="subgroup-title">Documentation</h4>
@@ -228,12 +228,16 @@ const description = indexDoc?.data?.description || 'Official documentation for V
     toggleButtons.forEach((button) => {
       button.addEventListener('click', (e) => {
         e.preventDefault();
-        const targetId = button.getAttribute('data-target');
+        const targetId = button.getAttribute('aria-controls');
         const content = targetId ? document.getElementById(targetId) : null;
         const isExpanded = button.getAttribute('aria-expanded') === 'true';
         button.setAttribute('aria-expanded', String(!isExpanded));
         if (content) {
-          (content as HTMLElement).style.display = isExpanded ? 'none' : 'block';
+          if (isExpanded) {
+            content.setAttribute('hidden', '');
+          } else {
+            content.removeAttribute('hidden');
+          }
         }
       });
     });
