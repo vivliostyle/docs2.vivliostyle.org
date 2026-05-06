@@ -31,7 +31,7 @@ Together, they make it possible to author and produce print-ready PDFs entirely 
 ### Basic syntax
 
 ```css
-color: device-cmyk(0 1 1 0);            /* pure magenta? — see below */
+color: device-cmyk(0 1 1 0);            /* process red (M=Y=100%) */
 color: device-cmyk(100% 0% 0% 0%);      /* pure cyan, percentage form */
 color: device-cmyk(0 0 0 1);            /* pure black */
 ```
