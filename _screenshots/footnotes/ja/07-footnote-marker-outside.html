@@ -4,36 +4,47 @@
 <meta charset="utf-8">
 <title>例 7: ::footnote-marker の list-style-position: outside</title>
 <style>
+  /* Viewer 2.42.0+ で DPUB-ARIA 脚注の ::footnote-marker の content と
+     list-style-position が author CSS から有効になる。
+     outside を指定すると本文の左にマーカーがぶら下がるハンギング
+     インデントになるため、複数行注の継続行が本文左端に揃って
+     読みやすくなる */
   @page {
-    size: 140mm 90mm;
-    margin: 12mm 14mm;
-
-    @footnote {
-      border-top: 0.4pt solid currentColor;
-      padding-top: 4pt;
-      padding-left: 1.5em;
-      font-size: 8.5pt;
-      line-height: 1.5;
-    }
+    size: 180mm 110mm;
+    margin: 14mm 16mm;
   }
   body {
     font-family: "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", serif;
     font-size: 10pt;
-    line-height: 1.65;
-    text-align: justify;
+    line-height: 1.55;
   }
   p { margin: 0 0 0.5em; }
   code { font-size: 0.92em; }
-  ::footnote-marker {
+  /* テストファイル dpub-footnote-call-marker-outside.html と同パターン:
+     - :root でカウンタ初期化
+     - 本文中の参照は <sup> を隠して ::footnote-call で番号を生成
+     - aside 内のバックリンク <sup> も隠して、::footnote-marker で
+       番号を生成（CSS 番号と <sup> の二重表示を避ける）
+     - aside に margin-inline-start でぶら下げ用余白を確保 */
+  :root { counter-reset: footnote; }
+  a.footnote-ref > sup { display: none; }
+  a.footnote-ref::footnote-call {
+    content: counter(footnote);
+    font-size: 0.7em;
+    vertical-align: super;
+    line-height: 0;
+  }
+  aside.footnote { margin-inline-start: 1.5em; }
+  aside.footnote > a.footnote-back { display: none; }
+  aside.footnote::footnote-marker {
     content: counter(footnote) ". ";
     list-style-position: outside;
   }
 </style>
 </head>
 <body>
-<p><code>::footnote-marker</code> に <code>list-style-position: outside</code> を指定すると、マーカーが本文の外側に置かれる<a role="doc-noteref" href="#fn1">1</a>。</p>
-<aside id="fn1" role="doc-footnote">この注の番号は、ぶら下げインデントで本文の左側に張り出して表示される。複数行に渡る場合の継続行は番号の下ではなく本文の左端に揃う。</aside>
-<p>長い脚注の継続行が読みやすくなる<a role="doc-noteref" href="#fn2">2</a>のが利点。</p>
-<aside id="fn2" role="doc-footnote">もう一つの注。同じくぶら下げインデント。</aside>
+<p><code>::footnote-marker</code> に <code>list-style-position: outside</code> を指定すると、マーカーが本文の外側にぶら下がる<a id="ref1" href="#fn1" class="footnote-ref" role="doc-noteref"><sup>1</sup></a>。複数行にわたる脚注の継続行が、番号の下ではなく本文の左端に揃って読みやすくなる<a id="ref2" href="#fn2" class="footnote-ref" role="doc-noteref"><sup>2</sup></a>のが利点。</p>
+<aside id="fn1" class="footnote" role="doc-footnote"><a href="#ref1" class="footnote-back" role="doc-backlink"><sup>1</sup></a>この注の番号はぶら下げインデントで本文の左側に張り出し、複数行に渡る場合の継続行は番号の下ではなく本文の左端に揃う。</aside>
+<aside id="fn2" class="footnote" role="doc-footnote"><a href="#ref2" class="footnote-back" role="doc-backlink"><sup>2</sup></a>もう一つの注。同じくぶら下げインデントが適用される。</aside>
 </body>
 </html>
