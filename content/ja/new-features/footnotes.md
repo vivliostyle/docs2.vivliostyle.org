@@ -7,11 +7,16 @@ order: 2
 
 # 脚注ガイド
 
-> **対象バージョン**: Vivliostyle.js v2.41.0+（2026-04-11リリース）、Vivliostyle CLI v10.5.0+
+> **対象バージョン**: Vivliostyle.js v2.41.0+（2026-04-11 リリース）／v2.42.0+（2026-04-25 リリース、機能による）、Vivliostyle CLI v10.5.0+
 > **公開日**: 2026-05-05
-> **最終更新日**: 2026-05-05
+> **最終更新日**: 2026-05-06
+>
+> - **v2.41.0 で追加**: DPUB-ARIA 脚注の自動認識（`float: footnote` のビルトイン適用）、`@page { @footnote { … } }` ルールと `@footnote ::before` コンテンツ
+> - **v2.42.0 で追加**: DPUB-ARIA 由来の脚注に対する CSS footnote プロパティ／擬似要素（`footnote-display`、`::footnote-call`、`::footnote-marker` の content/list-style-position など、[#1884](https://github.com/vivliostyle/vivliostyle.js/issues/1884)）
+>
+> なお Vivliostyle CLI 10.5.0 は Viewer 2.41.0 を同梱しているため、`vivliostyle preview` で v2.42.0 機能を試すには `package.json` の `overrides` に `"@vivliostyle/viewer": "^2.42.0"` を加えるなどして Viewer の最新版を強制する必要があります。
 
-このガイドでは、Vivliostyle.js（および VFM）で脚注を扱う方法を、**Vivliostyle.js v2.41.0 以前から提供されていた機能**と**v2.41.0 で新たに加わった機能**に分けて解説します。
+このガイドでは、Vivliostyle.js（および VFM）で脚注を扱う方法を、**v2.41.0 以前から提供されていた機能**と **v2.41.0 / v2.42.0 で新たに加わった機能** に分けて解説します。
 
 ## Part 1 · 概要
 
@@ -70,6 +75,8 @@ Vivliostyle.js v2.41.0で追加された脚注関連の新機能:
 
 `.footnote { float: footnote }` を含むテーマ（theme-base / theme-techbook など）を使うと、`<span class="footnote">` の内容がレイアウト時にページ下部の脚注エリアに移動されます。本文中の参照番号と脚注エリアのマーカーは、`::footnote-call` および `::footnote-marker` 擬似要素を介して生成されます。
 
+![GCPM クラス方式の脚注。本文中の上付き番号と、ページ下部の脚注エリアにマーカー番号付きで自動配置される](/new-features/footnotes/ja/01-html-class-themebase.png)
+
 ### 3. VFMのPandoc形式後注（従来のデフォルト）
 
 VFM v2.5.x以前では、Markdownの `[^1]` 記法はPandoc出力スタイルの**後注**を生成しました:
@@ -81,6 +88,8 @@ VFM v2.5.x以前では、Markdownの `[^1]` 記法はPandoc出力スタイルの
 ```
 
 VFMはこれを `<section role="doc-endnotes">` に変換し、**ドキュメント本文の末尾**に配置します。後注は本文と同じフローに置かれるため、**`float: footnote` の対象にはなりません**。組み込みの `@footnote` スタイリングも後注には影響しません。
+
+![VFM Pandoc 形式の後注。本文末尾に `<section role="doc-endnotes">` がフローし、各注に戻るリンクが付く](/new-features/footnotes/ja/02-vfm-pandoc-endnotes.png)
 
 ### 4. theme-techbookの画面表示と印刷表示
 
@@ -99,17 +108,19 @@ Vivliostyle.js v2.41.0は、DPUB-ARIAロールから直接脚注を認識しま�
 
 ビルトインUAスタイルが `[role="doc-footnote"]` に対して `float: footnote` を適用するため、これは**テーマCSSなしで**動作します。注はページ下部に表示され、本文中の参照番号（`::footnote-call`）も自動生成されます。
 
-> **マーカー表示について**: 脚注エリア側のマーカー（`::footnote-marker`）は、UA スタイルでは content を空のままにしています。author CSS で番号を表示したい場合、Vivliostyle の DPUB-ARIA 実装では `::footnote-marker` の `content` プロパティを **`list-style-position: outside`** とセットで指定する必要があります（`outside` でなければ author の `content` は描画されません）:
+![DPUB-ARIA 脚注。テーマ CSS を一切書かなくてもページ下部の脚注エリアに自動配置される](/new-features/footnotes/ja/03-dpub-aria-default.png)
+
+> **マーカー表示について（v2.42.0+）**: 脚注エリア側のマーカー（`::footnote-marker`）の content を author CSS から指定して番号を出すには、**Vivliostyle.js v2.42.0+** が必要です（[#1884](https://github.com/vivliostyle/vivliostyle.js/issues/1884) で追加）。さらに Vivliostyle の DPUB-ARIA 実装では、`::footnote-marker` の `content` プロパティを **`list-style-position: outside`** とセットで指定したときに描画されます（`outside` でなければ author の `content` は描画されません）:
 >
 > ```css
-> aside[role="doc-footnote"] {
->   margin-inline-start: 1.5em;  /* マーカー領域の確保 */
-> }
-> aside[role="doc-footnote"]::footnote-marker {
+> aside.footnote { margin-inline-start: 1.5em; }  /* マーカー領域の確保 */
+> aside.footnote::footnote-marker {
 >   content: counter(footnote) ". ";
 >   list-style-position: outside;  /* DPUB-ARIA で必須 */
 > }
 > ```
+>
+> v2.41.0 環境で同等の見た目にしたい場合は、aside の中に `<sup>n</sup>` を直接書くなど HTML 側で番号を持たせる方法でも代用できます。
 
 ### 6. 3つの認識メカニズムの比較
 
@@ -135,11 +146,11 @@ Vivliostyle.js v2.41.0は、DPUB-ARIAロールから直接脚注を認識しま�
 }
 ```
 
-`::before` コンテンツも描画されるので、ラベルを前置できます:
+`::before` コンテンツも描画されるので、ラベルを前置できます。**正しい構文はスペース 1 つを挟む `@footnote ::before`**（スペースなしでは `@page` ブロック全体が無効化されるので注意）:
 
 ```css
 @page {
-  @footnote::before {
+  @footnote ::before {
     content: "Notes:";
     display: block;
     font-weight: bold;
@@ -147,33 +158,47 @@ Vivliostyle.js v2.41.0は、DPUB-ARIAロールから直接脚注を認識しま�
 }
 ```
 
+![`@page { @footnote { ... } @footnote ::before { ... } }` で脚注エリアに上罫線・「Notes」見出しを与えた例](/new-features/footnotes/ja/04-page-footnote-styled.png)
+
 ### 8. `footnote-display` プロパティ（[#1825](https://github.com/vivliostyle/vivliostyle.js/issues/1825)）
 
-脚注本体のレイアウト方式を切り替えます:
+> **DPUB-ARIA 脚注に適用するには Vivliostyle.js v2.42.0+ が必要**（[#1884](https://github.com/vivliostyle/vivliostyle.js/issues/1884) で追加）。GCPM の class 方式 `<span class="footnote">` には v2.41.0 以前から適用可能です。
+
+脚注本体のレイアウト方式を切り替えます。指定先は `@footnote` ルールの中ではなく**脚注要素自身**です:
 
 - `block`（デフォルト）— 各脚注を改行
 - `inline` — 複数の脚注を同じ行にフロー
-- `compact` — 短い脚注はインライン、長い脚注は改行
+- `compact` — 短い脚注はインライン、長い脚注は自動的にブロックへフォールバック
 
 ```css
-@page {
-  @footnote {
-    footnote-display: compact;
-  }
-}
+.footnote { footnote-display: inline; }
 ```
 
+`inline` の表示例:
+
+![`footnote-display: inline` で 3 件の短い脚注が同じ行に流れ込む](/new-features/footnotes/ja/05-footnote-display-inline.png)
+
+`compact` の表示例（短い注はインライン、長い注はブロックフォールバック）:
+
+![`footnote-display: compact` で短い注 3 件がインラインに、長い注がブロックにフォールバック](/new-features/footnotes/ja/06-footnote-display-compact.png)
+
 ### 9. `::footnote-marker` の `list-style-position: outside`（[#1702](https://github.com/vivliostyle/vivliostyle.js/issues/1702)）
+
+> **DPUB-ARIA 脚注に対して author CSS の `::footnote-marker` を適用するには Vivliostyle.js v2.42.0+ が必要**（[#1884](https://github.com/vivliostyle/vivliostyle.js/issues/1884)）。GCPM の class 方式では v2.41.0 以前から適用可能です。
 
 脚注マーカーが `list-style-position` を尊重するようになりました。マーカーを脚注本体の外側に配置することで、ぶら下げインデントの体裁が作れます:
 
 ```css
-::footnote-marker {
+aside.footnote { margin-inline-start: 1.5em; }
+aside.footnote::footnote-marker {
+  content: counter(footnote) ". ";
   list-style-position: outside;
 }
 ```
 
-特に**DPUB-ARIA 由来の脚注（`<aside role="doc-footnote">`）では、author の `::footnote-marker` content を実際に描画させるための必須条件**となっています（GCPM の class 方式 `<span class="footnote">` では `inside` / `outside` どちらでも描画されます）。詳細は §5 の「マーカー表示について」を参照。
+![`::footnote-marker` の `list-style-position: outside` でマーカーが本文左にぶら下がり、継続行が本文左端に揃うハンギングインデント](/new-features/footnotes/ja/07-footnote-marker-outside.png)
+
+なお Vivliostyle の DPUB-ARIA 実装では、`::footnote-marker` の content を **`list-style-position: outside`** とセットで指定したときに描画されます。`inside`（CSS のデフォルト）では author の content が描画されないので注意してください（GCPM の class 方式 `<span class="footnote">` ではどちらでも描画されます）。詳細は §5 の「マーカー表示について」を参照。
 
 ### 10. ページスコープリセットとクロススコープカウンタ
 

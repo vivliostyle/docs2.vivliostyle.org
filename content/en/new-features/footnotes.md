@@ -7,11 +7,16 @@ order: 2
 
 # Footnotes Guide
 
-> **Target versions**: Vivliostyle.js v2.41.0+ (released 2026-04-11), Vivliostyle CLI v10.5.0+
+> **Target versions**: Vivliostyle.js v2.41.0+ (released 2026-04-11) / v2.42.0+ (released 2026-04-25, by feature), Vivliostyle CLI v10.5.0+
 > **Published**: 2026-05-05
-> **Last updated**: 2026-05-05
+> **Last updated**: 2026-05-06
+>
+> - **Added in v2.41.0**: DPUB-ARIA footnote auto-recognition (built-in `float: footnote`), the `@page { @footnote { … } }` rule, and `@footnote ::before` content.
+> - **Added in v2.42.0**: CSS footnote properties / pseudo-elements applied to DPUB-ARIA footnotes (`footnote-display`, `::footnote-call`, author-supplied `::footnote-marker` content / list-style-position, etc. — see [#1884](https://github.com/vivliostyle/vivliostyle.js/issues/1884)).
+>
+> Note: Vivliostyle CLI 10.5.0 bundles Viewer 2.41.0, so to exercise v2.42.0 features through `vivliostyle preview` you need to force the latest viewer, e.g. by adding `"@vivliostyle/viewer": "^2.42.0"` to `overrides` in `package.json`.
 
-This guide explains how to produce footnotes with **Vivliostyle.js** (and VFM), structured around **what was already supported in Vivliostyle.js** and **what's new in Vivliostyle.js v2.41.0**.
+This guide explains how to produce footnotes with **Vivliostyle.js** (and VFM), structured around **what was already supported** and **what's new in v2.41.0 / v2.42.0**.
 
 ## Part 1 · Overview
 
@@ -70,6 +75,8 @@ The most direct way to author footnotes is to mark them in HTML:
 
 With a theme that includes `.footnote { float: footnote }` (such as theme-base or theme-techbook), the contents of `<span class="footnote">` is moved to the page-bottom footnote area at layout time. The reference number and the marker in the footnote area are generated through the `::footnote-call` and `::footnote-marker` pseudo-elements.
 
+![GCPM class-based footnote: in-body superscript reference plus an automatically numbered marker in the page-bottom footnote area](/new-features/footnotes/en/01-html-class-themebase.png)
+
 ### 3. Pandoc-style endnotes in VFM (the legacy default)
 
 Up to and including VFM v2.5.x, `[^1]` notation in Markdown produced **endnotes** in Pandoc's output style:
@@ -81,6 +88,8 @@ Some text.[^1]
 ```
 
 VFM converts this into a `<section role="doc-endnotes">` block placed at the **end of the document body**. Because endnotes flow inline with the main text, **`float: footnote` does not apply**, and the built-in `@footnote` styling has no effect on them.
+
+![VFM Pandoc-style endnotes: a `<section role="doc-endnotes">` is appended at the end of the body, each note carrying a back-link](/new-features/footnotes/en/02-vfm-pandoc-endnotes.png)
 
 ### 4. Screen vs print presentation in theme-techbook
 
@@ -99,17 +108,19 @@ Vivliostyle.js v2.41.0 recognises footnotes from DPUB-ARIA roles directly:
 
 The built-in UA stylesheet applies `float: footnote` to `[role="doc-footnote"]`, so this works **without any theme CSS**. The note appears at the foot of the page, and the in-text reference marker (`::footnote-call`) is generated automatically.
 
-> **About the footnote-area marker**: The UA stylesheet leaves the `::footnote-marker` content empty for DPUB-ARIA asides. To author a visible numeral in the footnote area, Vivliostyle's DPUB-ARIA implementation requires the `::footnote-marker` `content` property to be paired with **`list-style-position: outside`** — the author's `content` is not rendered unless `outside` is set:
+![DPUB-ARIA footnotes auto-floated to the page-bottom area without any theme CSS](/new-features/footnotes/en/03-dpub-aria-default.png)
+
+> **About the footnote-area marker (v2.42.0+)**: Authoring `::footnote-marker` content for DPUB-ARIA asides via author CSS requires **Vivliostyle.js v2.42.0+** (added in [#1884](https://github.com/vivliostyle/vivliostyle.js/issues/1884)). On top of that, Vivliostyle's DPUB-ARIA implementation only renders the author's `content` when paired with **`list-style-position: outside`** — `inside` (the CSS default) drops the author content silently:
 >
 > ```css
-> aside[role="doc-footnote"] {
->   margin-inline-start: 1.5em;  /* room for the marker */
-> }
-> aside[role="doc-footnote"]::footnote-marker {
+> aside.footnote { margin-inline-start: 1.5em; }  /* room for the marker */
+> aside.footnote::footnote-marker {
 >   content: counter(footnote) ". ";
 >   list-style-position: outside;  /* required for DPUB-ARIA */
 > }
 > ```
+>
+> On v2.41.0 (or older Viewer bundles) you can get an equivalent look by writing the marker as inline HTML inside the aside (e.g. `<aside><sup>1</sup>…</aside>`).
 
 ### 6. Comparison of the three recognition mechanisms
 
@@ -135,11 +146,11 @@ Vivliostyle previously used a vendor-specific `@-adapt-footnote-area` at-rule. v
 }
 ```
 
-`::before` content is also rendered, so you can prepend custom labels:
+`::before` content is also rendered, so you can prepend custom labels. **The correct syntax is `@footnote ::before` with a single space** — without the space the entire `@page` block is invalid and silently dropped:
 
 ```css
 @page {
-  @footnote::before {
+  @footnote ::before {
     content: "Notes:";
     display: block;
     font-weight: bold;
@@ -147,33 +158,47 @@ Vivliostyle previously used a vendor-specific `@-adapt-footnote-area` at-rule. v
 }
 ```
 
+![`@page { @footnote { ... } @footnote ::before { ... } }` styling: top border and a generated "Notes" heading on the footnote area](/new-features/footnotes/en/04-page-footnote-styled.png)
+
 ### 8. The `footnote-display` property ([#1825](https://github.com/vivliostyle/vivliostyle.js/issues/1825))
 
-Lays out footnote bodies in different ways:
+> **Applying this to DPUB-ARIA footnotes requires Vivliostyle.js v2.42.0+** (added in [#1884](https://github.com/vivliostyle/vivliostyle.js/issues/1884)). The GCPM class form (`<span class="footnote">`) accepts it from v2.41.0 and earlier.
+
+Lays out footnote bodies in different ways. The property goes on the **footnote element itself** (not inside `@footnote`):
 
 - `block` (default) — each footnote on its own line
-- `inline` — multiple footnotes flowed on the same line
-- `compact` — short footnotes packed inline, long ones on their own line
+- `inline` — multiple footnotes flow on the same line
+- `compact` — short footnotes flow inline as unbreakable units; notes that don't fit on one line fall back to block
 
 ```css
-@page {
-  @footnote {
-    footnote-display: compact;
-  }
-}
+.footnote { footnote-display: inline; }
 ```
 
+`inline`:
+
+![`footnote-display: inline` flows three short footnote bodies on the same line](/new-features/footnotes/en/05-footnote-display-inline.png)
+
+`compact` (short notes inline, long ones break to block):
+
+![`footnote-display: compact` keeps three short notes inline while a long fourth note falls back to block](/new-features/footnotes/en/06-footnote-display-compact.png)
+
 ### 9. `list-style-position: outside` for `::footnote-marker` ([#1702](https://github.com/vivliostyle/vivliostyle.js/issues/1702))
+
+> **Applying author `::footnote-marker` styles to DPUB-ARIA footnotes requires Vivliostyle.js v2.42.0+** ([#1884](https://github.com/vivliostyle/vivliostyle.js/issues/1884)). The GCPM class form has accepted these styles since earlier releases.
 
 The footnote marker now respects `list-style-position`, so the marker can sit outside the footnote body to produce a hanging-indent presentation:
 
 ```css
-::footnote-marker {
+aside.footnote { margin-inline-start: 1.5em; }
+aside.footnote::footnote-marker {
+  content: counter(footnote) ". ";
   list-style-position: outside;
 }
 ```
 
-In particular, **for DPUB-ARIA footnotes (`<aside role="doc-footnote">`), `outside` is a hard requirement for the author's `::footnote-marker` content to render at all** — under the GCPM class-based form (`<span class="footnote">`) either `inside` or `outside` works. See the "About the footnote-area marker" callout in §5 for details.
+![`::footnote-marker` with `list-style-position: outside` hangs the marker to the left of the body; continuation lines align with the body's left edge](/new-features/footnotes/en/07-footnote-marker-outside.png)
+
+Note that under Vivliostyle's DPUB-ARIA implementation the author's `::footnote-marker` `content` is rendered only when paired with **`list-style-position: outside`**. With `inside` (the CSS default) the author content is silently dropped — but the GCPM class form (`<span class="footnote">`) renders with either value. See the "About the footnote-area marker" callout in §5 for the underlying reason.
 
 ### 10. Page-scoped reset and cross-scope counters
 
