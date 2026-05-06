@@ -139,7 +139,7 @@ section.glossary { page: narrow; }
 @page cover {
   size: A4;
   margin: 0;
-  background: device-cmyk(0 0 0 1);
+  background: black;  /* For a CMYK-mastered cover use device-cmyk(0 0 0 1) — requires v2.40.0+ (see CMYK Conversion guide) */
 }
 ```
 

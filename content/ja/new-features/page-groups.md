@@ -138,7 +138,7 @@ section.glossary { page: narrow; }
 @page cover {
   size: A4;
   margin: 0;
-  background: device-cmyk(0 0 0 1);
+  background: black;  /* CMYK 入稿用には device-cmyk(0 0 0 1) — v2.40.0+ が必要（CMYK 変換ガイド参照）*/
 }
 ```
 
