@@ -1,6 +1,6 @@
 ---
 /**
- * CLI ドキュメントページ（日本語版）
+ * CLIドキュメントページ（日本語版）
  * 動的ルーティング: /ja/cli/* にマッチ
  */
 import DocsLayout from '../../../layouts/DocsLayout.astro';
@@ -64,7 +64,7 @@ export async function getStaticPaths() {
 
 const { doc, docId, cliDocs, hasEnTranslation } = Astro.props;
 const htmlContent = doc.rendered?.html || '';
-const title = doc.data?.title || 'CLI ドキュメント';
+const title = doc.data?.title || 'CLIドキュメント';
 const description = doc.data?.description || '';
 // 見出しから目次を生成（vfm-loader が doc.data.headings に注入する）
 const headings = ((doc.data as unknown) as { headings?: Array<{ depth: number; slug: string; text: string }> })?.headings || [];
@@ -130,7 +130,7 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
     <LanguageSwitcher currentLang="ja" pagePath={pagePath} hasTranslation={hasEnTranslation} />
   </div>
   <nav slot="sidebar">
-    <h3>CLI ドキュメント</h3>
+    <h3>CLIドキュメント</h3>
     <ul style="list-style: none; padding-left: 0;">
       <li><a href="/ja/">← ホームに戻る</a></li>
       {sortedDocs.map(item => {

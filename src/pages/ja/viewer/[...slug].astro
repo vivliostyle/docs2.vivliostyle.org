@@ -1,6 +1,6 @@
 ---
 /**
- * Vivliostyle.js ドキュメントページ（日本語版）
+ * Vivliostyle.jsドキュメントページ（日本語版）
  * 動的ルーティング: /ja/viewer/* にマッチ
  */
 import DocsLayout from '../../../layouts/DocsLayout.astro';
@@ -35,7 +35,7 @@ export async function getStaticPaths() {
 
 const { doc, viewerDocs, hasEnTranslation } = Astro.props;
 const htmlContent = doc.rendered?.html || '';
-const title = doc.data?.title || 'Vivliostyle.js ドキュメント';
+const title = doc.data?.title || 'Vivliostyle.jsドキュメント';
 const description = doc.data?.description || '';
 const extractedToc = doc.data?.extractedToc; // 抽出したTOC（存在する場合）
 
@@ -89,7 +89,7 @@ const currentPath = `/ja/viewer/${doc.id}/`;
 
   <!-- サイドバーにナビゲーションと目次を表示 -->
   <nav slot="sidebar">
-    <h3>Vivliostyle Viewer ドキュメント</h3>
+    <h3>Vivliostyle Viewerドキュメント</h3>
     <ul style="list-style: none; padding-left: 0;">
       <li><a href="/ja/">← ホームに戻る</a></li>
       {sortedDocs.map(item => {

@@ -1,6 +1,6 @@
 ---
 /**
- * Themes ドキュメントページ（日本語版）
+ * Themesドキュメントページ（日本語版）
  * 動的ルーティング: /ja/themes/* にマッチ
  */
 import DocsLayout from '../../../layouts/DocsLayout.astro';
@@ -36,7 +36,7 @@ export async function getStaticPaths() {
 
 const { doc, themesDocs, hasEnTranslation } = Astro.props;
 const htmlContent = doc.rendered?.html || '';
-const title = doc.data?.title || 'Themes ドキュメント';
+const title = doc.data?.title || 'Themesドキュメント';
 const description = doc.data?.description || '';
 const headings = ((doc.data as unknown) as { headings?: Array<{ depth: number; slug: string; text: string }> })?.headings || [];
 
@@ -78,7 +78,7 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
     <LanguageSwitcher currentLang="ja" pagePath={pagePath} hasTranslation={hasEnTranslation} />
   </div>
   <nav slot="sidebar">
-    <h3>Themes ドキュメント</h3>
+    <h3>Themesドキュメント</h3>
     <ul style="list-style: none; padding-left: 0;">
       <li><a href="/ja/">← ホームに戻る</a></li>
           {sortedDocs.map(item => {
