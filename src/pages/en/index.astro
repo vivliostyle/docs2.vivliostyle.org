@@ -45,13 +45,13 @@ const description = indexDoc?.data?.description || 'Official documentation for V
   <LanguageSwitcher slot="header" currentLang="en" pagePath="/" hasTranslation={true} />
   <nav slot="sidebar">
     <h3>Documentation</h3>
-    <ul style="list-style: none; padding-left: 0; margin-bottom: 0.5rem;">
+    <ul class="top-links" style="list-style: none; padding-left: 0; margin-bottom: 0.5rem;">
       <li><a href="/en/">Home</a></li>
     </ul>
     <div class="sidebar-accordion">
       <div class="accordion-section">
         <button class="accordion-toggle" data-target="products-group" aria-expanded="true">
-          <span class="toggle-icon">▶</span>Products
+          <span class="toggle-icon" aria-hidden="true"></span>Products
         </button>
         <ul class="accordion-content" id="products-group" style="display: block; list-style: none; padding-left: 1.5rem; margin: 0.25rem 0 0 0;">
           <li><a href="/en/viewer/">Vivliostyle Viewer</a></li>
@@ -60,14 +60,14 @@ const description = indexDoc?.data?.description || 'Official documentation for V
           <li><a href="/en/themes/">Vivliostyle Themes</a></li>
         </ul>
       </div>
-      <div class="accordion-section">
-        <button class="accordion-toggle" data-target="tutorial-group" aria-expanded="true">
-          <span class="toggle-icon">▶</span><a href="https://vivliostyle.org/en/tutorials/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none;">Tutorials</a>
-        </button>
-      </div>
+    </div>
+    <ul class="top-links" style="list-style: none; padding-left: 0; margin: 0.5rem 0;">
+      <li><a href="https://vivliostyle.org/en/tutorials/" target="_blank" rel="noopener noreferrer">Tutorials</a></li>
+    </ul>
+    <div class="sidebar-accordion">
       <div class="accordion-section">
         <button class="accordion-toggle" data-target="reference-group" aria-expanded="true">
-          <span class="toggle-icon">▶</span><a href="/en/reference/" style="color: inherit; text-decoration: none;">Reference</a>
+          <span class="toggle-icon" aria-hidden="true"></span><a href="/en/reference/" style="color: inherit; text-decoration: none;">Reference</a>
         </button>
         <ul class="accordion-content" id="reference-group" style="display: block; list-style: none; padding-left: 1.5rem; margin: 0.25rem 0 0 0;">
           <li><a href="/en/reference/supported-css-features/">Supported CSS Features</a></li>
@@ -76,12 +76,10 @@ const description = indexDoc?.data?.description || 'Official documentation for V
           <li><a href="/en/reference/contribution-guide/">Contribution Guides</a></li>
         </ul>
       </div>
-      <div class="accordion-section">
-        <button class="accordion-toggle" data-target="faq-group" aria-expanded="true">
-          <span class="toggle-icon">▶</span><a href="https://vivliostyle.org/en/faq/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none;">FAQ</a>
-        </button>
-      </div>
     </div>
+    <ul class="top-links" style="list-style: none; padding-left: 0; margin: 0.5rem 0;">
+      <li><a href="https://vivliostyle.org/en/faq/" target="_blank" rel="noopener noreferrer">FAQ</a></li>
+    </ul>
   </nav>
 
   {htmlContent ? (
@@ -108,4 +106,82 @@ const description = indexDoc?.data?.description || 'Official documentation for V
   nav ul li a:hover {
     color: var(--color-primary);
   }
+
+  .sidebar-accordion {
+    margin-top: 0.5rem;
+  }
+
+  .accordion-section {
+    margin-bottom: 0.5rem;
+  }
+
+  .accordion-toggle {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 0.25rem 0;
+    text-align: left;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-text);
+  }
+
+  .accordion-toggle:hover {
+    color: var(--color-primary);
+  }
+
+  .toggle-icon {
+    display: inline-block;
+    width: 1em;
+    margin-right: 0.4rem;
+    font-size: 0.7rem;
+  }
+
+  /* Show ▼ when expanded, ▶ when collapsed via ::before content swap.
+   * Rotation-based approaches don't always render visually as ▼ across
+   * environments, so swap the actual character. */
+  .accordion-toggle .toggle-icon::before {
+    content: '▶';
+  }
+  .accordion-toggle[aria-expanded="true"] .toggle-icon::before {
+    content: '▼';
+  }
+
+  .accordion-content li {
+    margin: 0.25rem 0;
+  }
+
+  .accordion-content a {
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: 1rem;
+  }
+
+  .accordion-content a:hover {
+    color: var(--color-primary);
+  }
 </style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggleButtons = document.querySelectorAll('.accordion-toggle');
+    toggleButtons.forEach((button) => {
+      button.addEventListener('click', (e) => {
+        // Allow inner <a> (clickable section label for Tutorials/Reference/FAQ)
+        // to navigate normally instead of toggling.
+        if ((e.target as HTMLElement).tagName === 'A') return;
+        e.preventDefault();
+        const targetId = button.getAttribute('data-target');
+        const isExpanded = button.getAttribute('aria-expanded') === 'true';
+        button.setAttribute('aria-expanded', String(!isExpanded));
+        if (targetId) {
+          const content = document.getElementById(targetId);
+          if (content) content.style.display = isExpanded ? 'none' : 'block';
+        }
+      });
+    });
+  });
+</script>
