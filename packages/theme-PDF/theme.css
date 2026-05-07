@@ -283,6 +283,29 @@ li {
   margin: 0.3em 0;
 }
 
+/* 本文中のリストは途中で改ページせず、できるだけ同じページに収める。
+ * （nav#toc / nav[role="doc-toc"] 配下の auto TOC は別ルールで分割可能。
+ * 巨大なリストは収まらず仕方なく分割されるが、4-5 項目程度の短い箇条書きが
+ * 末尾の 1 項目だけ次ページに送られる widows 状態を抑える。） */
+article ul, article ol,
+main ul, main ol {
+  break-inside: avoid;
+}
+/* TOC の各 <ol> は break-inside: auto を再宣言して上記を打ち消す */
+nav[role="doc-toc"] ol,
+nav#toc ol {
+  break-inside: auto;
+}
+
+/* リストの直前にあるリード段落は、後続のリストと一緒に動かしたい。
+ * 見出し → 段落 → リスト の流れでリストを次ページに送るとき、リードだけ
+ * 前ページに取り残されると見出し・リードが list と分離して読みにくい。
+ * `p:has(+ ul)` 等で直接にリストが続く段落に break-after: avoid を入れる。 */
+p:has(+ ul),
+p:has(+ ol) {
+  break-after: avoid;
+}
+
 /* コードブロック */
 pre {
   background: var(--color-bg-code);
