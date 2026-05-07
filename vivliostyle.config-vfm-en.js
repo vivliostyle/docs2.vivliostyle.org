@@ -1,4 +1,4 @@
-import { getCopyAssetExcludes } from './vivliostyle.config-shared.js';
+import { getCopyAssetExcludes, transformSectionList } from './vivliostyle.config-shared.js';
 
 export default {
   title: 'VFM (Vivliostyle Flavored Markdown) Documentation',
@@ -18,7 +18,7 @@ export default {
     { path: 'public/publications/vfm-en', format: 'webpub' },
   ],
   workspaceDir: '.vivliostyle/vfm-en',
-  toc: true,
+  toc: { sectionDepth: 3, transformSectionList },
   copyAsset: {
     excludes: getCopyAssetExcludes({ product: 'vfm', lang: 'en' }),
   },

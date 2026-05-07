@@ -1,4 +1,4 @@
-import { getCopyAssetExcludes } from './vivliostyle.config-shared.js';
+import { getCopyAssetExcludes, transformSectionList } from './vivliostyle.config-shared.js';
 
 export default {
   title: 'Vivliostyle Themes Documentation',
@@ -19,7 +19,7 @@ export default {
     { path: 'public/publications/themes-en', format: 'webpub' },
   ],
   workspaceDir: '.vivliostyle/themes-en',
-  toc: true,
+  toc: { sectionDepth: 3, transformSectionList },
   copyAsset: {
     excludes: getCopyAssetExcludes({ product: 'themes', lang: 'en' }),
   },

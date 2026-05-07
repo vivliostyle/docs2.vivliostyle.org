@@ -1,4 +1,4 @@
-import { getCopyAssetExcludes } from './vivliostyle.config-shared.js';
+import { getCopyAssetExcludes, transformSectionList } from './vivliostyle.config-shared.js';
 
 export default {
   title: 'Vivliostyle Viewer ドキュメント',
@@ -14,7 +14,7 @@ export default {
     { path: 'public/publications/viewer-ja', format: 'webpub' },
   ],
   workspaceDir: '.vivliostyle/viewer-ja',
-  toc: true,
+  toc: { sectionDepth: 3, transformSectionList },
   copyAsset: {
     excludes: getCopyAssetExcludes({ product: 'viewer', lang: 'ja' }),
   },

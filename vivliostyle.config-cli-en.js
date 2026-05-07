@@ -1,4 +1,4 @@
-import { getCopyAssetExcludes } from './vivliostyle.config-shared.js';
+import { getCopyAssetExcludes, transformSectionList } from './vivliostyle.config-shared.js';
 
 export default {
   title: 'Vivliostyle CLI Documentation',
@@ -27,7 +27,7 @@ export default {
     { path: 'public/publications/cli-en', format: 'webpub' },
   ],
   workspaceDir: '.vivliostyle/cli-en',
-  toc: true,
+  toc: { sectionDepth: 3, transformSectionList },
   copyAsset: {
     excludes: getCopyAssetExcludes({ product: 'cli', lang: 'en' }),
   },

@@ -5,6 +5,11 @@
  * 全アセット拡張子（png/jpg/svg/ttf/woff2 等）を再帰的にワークスペースへ
  * コピーする。各ビルドの entryContextDir は `dist/` に設定しているため、
  * このヘルパーが返す excludes パターンも `dist/` を基準とする。
+ *
+ * もう 1 つの export `transformSectionList` は toc.sectionDepth で本文中の
+ * h2/h3 等を TOC に取り込むときに、Astro レイアウトのヘッダー・サイドバー・
+ * モーダル由来の見出しを除外して、本物のコンテンツ見出しだけを残すための
+ * Vivliostyle CLI コールバック。
  */
 
 const PRODUCTS = ['cli', 'vfm', 'themes', 'viewer', 'reference'];
@@ -40,4 +45,59 @@ export function getCopyAssetExcludes({ product, lang }) {
     // 他プロダクトの言語別 HTML を除外
     ...otherProducts.map((p) => `${lang}/${p}/**/*`),
   ];
+}
+
+/**
+ * toc.sectionDepth で本文の h2/h3 を取り込むとき、Astro レイアウトの
+ * 非コンテンツ見出し（グローバルナビの "Documentation"/"Contribution Guides"、
+ * サイドバーの "<product> Documentation" / "Downloads ..."、LiveView モーダル
+ * の "Vivliostyle.js でライブ組版" など）も拾われてしまう。これらを除外する
+ * 共通フィルタ。
+ *
+ * 判定ルール:
+ *   - id が無い見出しは除外（VFM/Markdown 由来のコンテンツ見出しは Astro が
+ *     自動で id を付ける。Astro レイアウト内で手書きされた h2/h3 には id が
+ *     無いので、このルールでナビ/サイドバー由来を一掃できる）
+ *   - id が "liveview-modal-" で始まる見出しは除外（LiveView モーダルの
+ *     <h2 class="liveview-title"> は id を持つので別途対応）
+ */
+export function transformSectionList(nodeList) {
+  return (propsList) => {
+    const isContentHeading = (node) => {
+      if (!node.id) return false;
+      if (node.id.startsWith('liveview-modal-')) return false;
+      return true;
+    };
+    const filtered = nodeList
+      .map((node, i) => ({ node, props: propsList[i] }))
+      .filter(({ node }) => isContentHeading(node));
+    return {
+      type: 'element',
+      tagName: 'ol',
+      properties: {},
+      children: filtered.map(({ node, props }) => {
+        const { children, ...otherProps } = props;
+        const headingContent = { type: 'raw', value: node.headingHtml };
+        const inner = node.href
+          ? {
+              type: 'element',
+              tagName: 'a',
+              properties: { href: node.href },
+              children: [headingContent],
+            }
+          : { type: 'element', tagName: 'span', children: [headingContent] };
+        const liChildren = [inner];
+        if (children) {
+          const c = Array.isArray(children) ? children : [children];
+          liChildren.push(...c);
+        }
+        return {
+          type: 'element',
+          tagName: 'li',
+          properties: { ...otherProps, 'data-section-level': node.level },
+          children: liChildren,
+        };
+      }),
+    };
+  };
 }

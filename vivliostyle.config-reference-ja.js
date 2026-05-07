@@ -1,4 +1,4 @@
-import { getCopyAssetExcludes } from './vivliostyle.config-shared.js';
+import { getCopyAssetExcludes, transformSectionList } from './vivliostyle.config-shared.js';
 
 export default {
   title: 'Vivliostyle リファレンス',
@@ -23,7 +23,7 @@ export default {
     { path: 'public/publications/reference-ja', format: 'webpub' },
   ],
   workspaceDir: '.vivliostyle/reference-ja',
-  toc: true,
+  toc: { sectionDepth: 3, transformSectionList },
   copyAsset: {
     excludes: getCopyAssetExcludes({ product: 'reference', lang: 'ja' }),
   },
