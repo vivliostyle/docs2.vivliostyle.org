@@ -1,0 +1,168 @@
+---
+/**
+ * 現在ページの H2/H3 をサイドバーに展開するコンポーネント。
+ *
+ * - H3 を持つ H2 はトグルボタンとして折りたたみ式（既定: 閉）
+ * - H3 を持たない H2 は単純なリンク
+ * - スタイルは Reference / 新機能ガイドのサイドバーと同形
+ *
+ * 各ページの sidebar 内、現在ページの <li> の中に置く想定。
+ * 同一ページ内の他の `<details>` 等とぶつからないよう
+ * `idPrefix` で toggle target ID を切り替えられる。
+ */
+
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings?: Heading[];
+  idPrefix?: string;
+}
+
+const { headings = [], idPrefix = 'toc-group' } = Astro.props;
+
+const filtered = headings.filter((h) => h && h.slug && (h.depth === 2 || h.depth === 3));
+
+function getPlainText(html: string): string {
+  return html.replace(/<[^>]*>/g, '').replace(/&amp;|&#x26;/g, '&');
+}
+---
+
+{filtered.length > 0 && (
+  <ul class="toc-headings">
+    {filtered.map((heading, index, arr) => {
+      if (heading.depth !== 2) return null;
+
+      const nextH2RelativeIndex = arr.slice(index + 1).findIndex((h) => h.depth === 2);
+      const h3List = arr
+        .slice(index + 1, nextH2RelativeIndex === -1 ? undefined : index + 1 + nextH2RelativeIndex)
+        .filter((h) => h.depth === 3);
+
+      return (
+        <li class="toc-h2">
+          {h3List.length > 0 ? (
+            <button class="toc-toggle" data-target={`${idPrefix}-${index}`} aria-expanded="false">
+              <span class="toggle-icon">▶</span><a href={`#${heading.slug}`}>{getPlainText(heading.text)}</a>
+            </button>
+          ) : (
+            <a href={`#${heading.slug}`} class="toc-h2-link">{getPlainText(heading.text)}</a>
+          )}
+          {h3List.length > 0 && (
+            <ul id={`${idPrefix}-${index}`} class="toc-h3-list">
+              {h3List.map((h3) => (
+                <li class="toc-h3">
+                  <a href={`#${h3.slug}`}>{getPlainText(h3.text)}</a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </li>
+      );
+    })}
+  </ul>
+)}
+
+<style>
+  .toc-headings {
+    list-style: none;
+    padding-left: 0.75rem;
+    margin: 0.35rem 0 0;
+    font-size: 0.95rem;
+  }
+
+  .toc-h2 {
+    margin: 0.25rem 0;
+  }
+
+  .toc-h2-link {
+    color: var(--color-text);
+    text-decoration: none;
+    display: block;
+    padding: 0.2rem 0;
+  }
+
+  .toc-h2-link:hover {
+    color: var(--color-primary);
+  }
+
+  /* <button> の UA 既定スタイルを完全に剥がす（ナイトモードでの背景色潰れ対策）*/
+  .toc-toggle {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+    background: transparent;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    text-align: left;
+    cursor: pointer;
+    gap: 0;
+    color: var(--color-text);
+    font: inherit;
+  }
+
+  .toc-toggle .toggle-icon {
+    display: inline-block;
+    transition: transform 0.2s;
+    font-size: 0.7rem;
+    padding-top: 0.2rem;
+    margin-right: 0.35rem;
+  }
+
+  .toc-toggle[aria-expanded="true"] .toggle-icon {
+    transform: rotate(90deg);
+  }
+
+  .toc-toggle a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .toc-toggle a:hover {
+    color: var(--color-primary);
+  }
+
+  .toc-h3-list {
+    list-style: none;
+    padding-left: 1.5rem;
+    margin: 0.25rem 0 0;
+    display: none;
+  }
+
+  .toc-h3 {
+    margin: 0.2rem 0;
+  }
+
+  .toc-h3 a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+  }
+
+  .toc-h3 a:hover {
+    color: var(--color-primary);
+  }
+</style>
+
+<script>
+  // 同じページ内に複数のサイドバーがあっても全 toc-toggle に効くよう document スコープで聴取
+  document.addEventListener('DOMContentLoaded', () => {
+    const toggleButtons = document.querySelectorAll('.toc-toggle');
+    toggleButtons.forEach((button) => {
+      button.addEventListener('click', (e) => {
+        if ((e.target as HTMLElement).tagName === 'A') return;
+        e.preventDefault();
+        const targetId = button.getAttribute('data-target');
+        const targetList = targetId ? document.getElementById(targetId) : null;
+        const isExpanded = button.getAttribute('aria-expanded') === 'true';
+        button.setAttribute('aria-expanded', String(!isExpanded));
+        if (targetList) targetList.style.display = isExpanded ? 'none' : 'block';
+      });
+    });
+  });
+</script>

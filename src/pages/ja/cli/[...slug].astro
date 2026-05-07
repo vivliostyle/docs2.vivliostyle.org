@@ -7,6 +7,7 @@ import DocsLayout from '../../../layouts/DocsLayout.astro';
 import LanguageSwitcher from '../../../components/LanguageSwitcher.astro';
 import PageNavigation from '../../../components/PageNavigation.astro';
 import TableOfContents from '../../../components/TableOfContents.astro';
+import SidebarTocHeadings from '../../../components/SidebarTocHeadings.astro';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -65,10 +66,8 @@ const { doc, docId, cliDocs, hasEnTranslation } = Astro.props;
 const htmlContent = doc.rendered?.html || '';
 const title = doc.data?.title || 'CLI ドキュメント';
 const description = doc.data?.description || '';
-const extractedToc = doc.data?.extractedToc; // 抽出したTOC（存在する場合）
-
-// 見出しから目次を生成
-const headings = doc.data?.headings || [];
+// 見出しから目次を生成（vfm-loader が doc.data.headings に注入する）
+const headings = ((doc.data as unknown) as { headings?: Array<{ depth: number; slug: string; text: string }> })?.headings || [];
 
 // index.mdに記載されている順番でソート
 const pageOrder = [
@@ -143,6 +142,7 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
             <a href={itemPath} aria-current={isActive ? 'page' : undefined}>
               {item.data.title || itemId}
             </a>
+            {isActive && <SidebarTocHeadings headings={headings} />}
           </li>
         );
       })}

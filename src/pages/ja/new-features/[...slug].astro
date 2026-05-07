@@ -6,6 +6,7 @@
 import DocsLayout from '../../../layouts/DocsLayout.astro';
 import LanguageSwitcher from '../../../components/LanguageSwitcher.astro';
 import PageNavigation from '../../../components/PageNavigation.astro';
+import SidebarTocHeadings from '../../../components/SidebarTocHeadings.astro';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -31,7 +32,7 @@ const { doc, docs, hasEnTranslation } = Astro.props;
 const htmlContent = doc.rendered?.html || '';
 const title = doc.data?.title || '新機能ガイド';
 const description = doc.data?.description || '';
-const headings = (doc.data as { headings?: Array<{ depth: number; slug: string; text: string }> })?.headings || [];
+const headings = ((doc.data as unknown) as { headings?: Array<{ depth: number; slug: string; text: string }> })?.headings || [];
 
 const pageOrder = ['index', 'footnotes', 'cmyk', 'page-groups'];
 
@@ -67,49 +68,12 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
       {sortedDocs.map((item) => {
         const itemPath = item.id === 'index' ? '/ja/new-features/' : `/ja/new-features/${item.id}/`;
         const isActive = itemPath === currentPath;
-        const filteredHeadings = headings.filter(h => h.depth === 2 || h.depth === 3);
         return (
           <li class:list={[{ active: isActive }]}>
             <a href={itemPath} aria-current={isActive ? 'page' : undefined}>
               {item.data.title || item.id}
             </a>
-            {isActive && filteredHeadings.length > 0 && (
-              <ul class="toc-headings" style="list-style: none; padding-left: 0.75rem; margin: 0.35rem 0 0;">
-                {filteredHeadings.map((heading, index, arr) => {
-                  if (heading.depth !== 2) return null;
-
-                  const nextH2RelativeIndex = arr.slice(index + 1).findIndex(h => h.depth === 2);
-                  const h3List = arr
-                    .slice(index + 1, nextH2RelativeIndex === -1 ? undefined : index + 1 + nextH2RelativeIndex)
-                    .filter(h => h.depth === 3);
-
-                  const getPlainText = (html: string) => html
-                    .replace(/<[^>]*>/g, '')
-                    .replace(/&amp;|&#x26;/g, '&');
-
-                  return (
-                    <li class="toc-h2">
-                      {h3List.length > 0 ? (
-                        <button class="toc-toggle" data-target={`toc-group-${index}`} aria-expanded="false">
-                          <span class="toggle-icon">▶</span><a href={`#${heading.slug}`}>{getPlainText(heading.text)}</a>
-                        </button>
-                      ) : (
-                        <a href={`#${heading.slug}`} class="toc-h2-link">{getPlainText(heading.text)}</a>
-                      )}
-                      {h3List.length > 0 && (
-                        <ul id={`toc-group-${index}`} class="toc-h3-list" style="display: none; list-style: none; padding-left: 1.5rem;">
-                          {h3List.map(h3 => (
-                            <li class="toc-h3">
-                              <a href={`#${h3.slug}`}>{getPlainText(h3.text)}</a>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
+            {isActive && <SidebarTocHeadings headings={headings} />}
           </li>
         );
       })}
@@ -149,97 +113,4 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
     color: var(--color-primary);
   }
 
-  /* サイドバー見出しリスト (Reference セクションと同じスタイル) */
-  .toc-headings {
-    font-size: 0.95rem;
-  }
-
-  .toc-h2 {
-    margin: 0.25rem 0;
-  }
-
-  .toc-h2-link {
-    color: var(--color-text);
-    text-decoration: none;
-    display: block;
-    padding: 0.2rem 0;
-  }
-
-  .toc-h2-link:hover {
-    color: var(--color-primary);
-  }
-
-  /* <button> の UA 既定スタイルを完全に除去（ナイトモードでの背景色潰れ対策）*/
-  .toc-toggle {
-    display: flex;
-    align-items: flex-start;
-    width: 100%;
-    appearance: none;
-    -webkit-appearance: none;
-    background: transparent;
-    border: 0;
-    padding: 0;
-    margin: 0;
-    text-align: left;
-    cursor: pointer;
-    gap: 0;
-    color: var(--color-text);
-    font: inherit;
-  }
-
-  .toc-toggle .toggle-icon {
-    display: inline-block;
-    transition: transform 0.2s;
-    font-size: 0.7rem;
-    padding-top: 0.2rem;
-    margin-right: 0.35rem;
-  }
-
-  .toc-toggle[aria-expanded="true"] .toggle-icon {
-    transform: rotate(90deg);
-  }
-
-  .toc-toggle a {
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .toc-toggle a:hover {
-    color: var(--color-primary);
-  }
-
-  .toc-h3-list {
-    margin-top: 0.25rem;
-  }
-
-  .toc-h3 {
-    margin: 0.2rem 0;
-  }
-
-  .toc-h3 a {
-    color: var(--color-text-muted);
-    text-decoration: none;
-    font-size: 0.9rem;
-  }
-
-  .toc-h3 a:hover {
-    color: var(--color-primary);
-  }
 </style>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const toggleButtons = document.querySelectorAll('.toc-toggle');
-    toggleButtons.forEach((button) => {
-      button.addEventListener('click', (e) => {
-        if ((e.target as HTMLElement).tagName === 'A') return;
-        e.preventDefault();
-        const targetId = button.getAttribute('data-target');
-        const targetList = targetId ? document.getElementById(targetId) : null;
-        const isExpanded = button.getAttribute('aria-expanded') === 'true';
-        button.setAttribute('aria-expanded', String(!isExpanded));
-        if (targetList) targetList.style.display = isExpanded ? 'none' : 'block';
-      });
-    });
-  });
-</script>

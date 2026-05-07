@@ -7,6 +7,7 @@ import DocsLayout from '../../../layouts/DocsLayout.astro';
 import LanguageSwitcher from '../../../components/LanguageSwitcher.astro';
 import PageNavigation from '../../../components/PageNavigation.astro';
 import TableOfContents from '../../../components/TableOfContents.astro';
+import SidebarTocHeadings from '../../../components/SidebarTocHeadings.astro';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -37,8 +38,7 @@ const { doc, themesDocs, hasJaTranslation } = Astro.props;
 const htmlContent = doc.rendered?.html || '';
 const title = doc.data?.title || 'Themes Documentation';
 const description = doc.data?.description || '';
-const extractedToc = doc.data?.extractedToc; // extracted TOC (if exists)
-const headings = doc.data?.headings || [];
+const headings = ((doc.data as unknown) as { headings?: Array<{ depth: number; slug: string; text: string }> })?.headings || [];
 
 // ページの順序を定義
 const pageOrder = [
@@ -85,7 +85,8 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
             const isActive = itemPath === currentPath;
             return (
               <li class:list={[{ active: isActive }]}>
-                <a href={itemPath}>{item.data.title || item.id}</a>
+                <a href={itemPath} aria-current={isActive ? 'page' : undefined}>{item.data.title || item.id}</a>
+                {isActive && <SidebarTocHeadings headings={headings} />}
               </li>
             );
           })}
