@@ -203,7 +203,9 @@ h1 {
   page: chapter-opener;
   font-size: 24pt;
   font-weight: bold;
-  margin: 30mm 0 1.5em 0;
+  /* 章扉の H1 は版面上端から約 1/4 下げて配置。版面高さ ≒ 253mm
+   * (A4 297mm − 上下マージン 22mm × 2)、その 1/4 ≈ 63mm を margin-top に。 */
+  margin: 63mm 0 1.5em 0;
   page-break-after: avoid;
 }
 
@@ -435,6 +437,48 @@ nav#toc ul {
 nav[role="doc-toc"] li,
 nav#toc li {
   margin: 0.55em 0;
+}
+
+/* 階層別のインデント: H3 (data-section-level="3") は H2 から 1.5em インデント、
+ * H4 はさらに深く。同階層では文字の太さでなく字下げで区別できるようにする。 */
+nav[role="doc-toc"] li[data-section-level="2"],
+nav#toc li[data-section-level="2"] {
+  padding-left: 0;
+}
+nav[role="doc-toc"] li[data-section-level="3"],
+nav#toc li[data-section-level="3"] {
+  padding-left: 1.5em;
+}
+nav[role="doc-toc"] li[data-section-level="4"],
+nav#toc li[data-section-level="4"] {
+  padding-left: 3em;
+}
+nav[role="doc-toc"] li[data-section-level="5"],
+nav#toc li[data-section-level="5"] {
+  padding-left: 4.5em;
+}
+nav[role="doc-toc"] li[data-section-level="6"],
+nav#toc li[data-section-level="6"] {
+  padding-left: 6em;
+}
+
+/* 改ページ制御:
+ *   - 個々の項目（テキスト 1 行＋リーダー＋ページ番号）は途中で割らない
+ *   - H2 章見出しの直後で改ページしない（最低でも 1 件目の子と同居）
+ *   - H2 が抱える子リスト全体（h3 group）はできるだけ同一ページに収める
+ *   - 親 li 全体で break-inside: avoid をかけると、子が多くて 1 ページに
+ *     収まらない章で「収められないので途中で切る」結果になり、子リストが
+ *     不自然な箇所で割れる。なので親 li には avoid をかけない。 */
+nav[role="doc-toc"] li > a,
+nav#toc li > a {
+  break-inside: avoid;
+}
+nav[role="doc-toc"] > ol > li > a,
+nav#toc > ol > li > a {
+  break-after: avoid;
+}
+nav[role="doc-toc"] > ol > li > ol,
+nav#toc > ol > li > ol {
   break-inside: avoid;
 }
 
