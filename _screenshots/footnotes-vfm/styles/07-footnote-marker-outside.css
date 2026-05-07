@@ -1,0 +1,23 @@
+/*例7: ::footnote-markerのlist-style-position: outside
+   Viewer 2.42.0+でDPUB-ARIA脚注の::footnote-markerのcontentと
+   list-style-positionがauthor CSSから有効になる。
+   outsideでハンギングインデントを作る。*/
+
+:root { counter-reset: footnote; }
+
+/*本文中の参照: VFMが出す<sup>n</sup>を隠して::footnote-callに置き換える*/
+a.footnote-ref > sup { display: none; }
+a.footnote-ref::footnote-call {
+  content: counter(footnote);
+  font-size: 0.7em;
+  vertical-align: super;
+  line-height: 0;
+}
+
+/* aside内のバックリンク<sup>も隠して、::footnote-markerで番号を生成*/
+aside.footnote { margin-inline-start: 1.5em; }
+aside.footnote > a.footnote-back { display: none; }
+aside.footnote::footnote-marker {
+  content: counter(footnote) ". ";
+  list-style-position: outside;
+}

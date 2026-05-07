@@ -1,0 +1,10 @@
+/*例3: DPUB-ARIA（テーマCSSなし）
+   ビルトインUAスタイルが[role="doc-footnote"]にfloat: footnoteを
+   適用するため、author CSSは不要。
+   VFM dpubモードの出力は
+     <a class="footnote-ref" role="doc-noteref"><sup>1</sup></a>
+     <aside class="footnote" role="doc-footnote">
+       <a class="footnote-back" role="doc-backlink"><sup>1</sup></a>本文
+     </aside>
+   で、aside内のバックリンク<sup>がそのまま「マーカー番号」に
+   見える（v2.41.0互換）。author CSSは意図的に空のままにする。*/

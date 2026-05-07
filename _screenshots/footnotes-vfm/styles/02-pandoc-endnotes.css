@@ -1,0 +1,25 @@
+/*例2: VFM Pandoc形式の後注
+   VFM pandocモードは
+     <section class="footnotes" role="doc-endnotes">
+       <hr>
+       <ol><li id="fn1" role="doc-endnote">…<a class="footnote-back">↩</a></li></ol>
+     </section>
+   を出力する。<hr>はCSSで隠してborder-topで代替。*/
+
+.footnote-ref > sup { font-size: 0.75em; vertical-align: super; line-height: 0; }
+.footnote-ref { text-decoration: none; }
+
+section[role="doc-endnotes"] hr { display: none; }
+
+section[role="doc-endnotes"] {
+  border-top: 0.4pt solid currentColor;
+  margin-top: 1.2em;
+  padding-top: 0.4em;
+  font-size: 8.5pt;
+  line-height: 1.5;
+}
+
+section[role="doc-endnotes"] ol { padding-left: 1.5em; margin: 0; }
+section[role="doc-endnotes"] li { margin: 0.1em 0; }
+
+.footnote-back { text-decoration: none; }
