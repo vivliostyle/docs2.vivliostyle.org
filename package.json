@@ -24,7 +24,8 @@
     "build:vivliostyle:reference-ja": "vivliostyle build -c vivliostyle.config-reference-ja.js",
     "build:vivliostyle:reference-en": "vivliostyle build -c vivliostyle.config-reference-en.js",
     "build:all": "npm run build && npm run build:formats && npm run copy:formats-to-dist",
-    "copy:formats-to-dist": "mkdir -p dist/downloads dist/publications && cp -R public/downloads/. dist/downloads/ && cp -R public/publications/. dist/publications/"
+    "copy:formats-to-dist": "mkdir -p dist/downloads dist/publications && cp -R public/downloads/. dist/downloads/ && cp -R public/publications/. dist/publications/",
+    "regenerate:symbol-fonts": "python3 scripts/regenerate-symbol-fonts.py"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.0",

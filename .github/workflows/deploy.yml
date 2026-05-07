@@ -90,6 +90,34 @@ jobs:
       - name: Install poppler-utils (pdfinfo)
         run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
 
+      - name: Check for unexpected Type 3 fonts in PDFs
+        run: |
+          # PDF に意図せず Type 3 で埋め込まれたフォントが混じっていないか確認。
+          # Type 3 は Adobe Reader 等で正しく描画されないことがある（特に
+          # Hiragino 系の .otf がローカルにある環境で local() フォールバックが
+          # 起きると発生する）。許容する Type 3 は次の 2 つだけ:
+          #   - TwemojiMozilla: COLR 絵文字。Chrome の PDF パイプラインが COLR
+          #     を必ず Type 3 化するので避けられない。
+          #   - AppleColorEmoji: 念のため許容（CI runner には来ないはず）。
+          # 上記以外の Type 3 が検出されたら deploy を止める。新しく PDF に
+          # 入った文字が theme-PDF/fonts に未収録だと Hiragino にフォール
+          # バックして検出される想定。.symbol-chars.txt に文字を足して
+          # `npm run regenerate:symbol-fonts` で再生成すれば直る。
+          fail=0
+          for f in public/downloads/*.pdf; do
+            bad=$(pdffonts "$f" 2>/dev/null | awk '/Type 3/ {print $1}' | grep -vE 'TwemojiMozilla|AppleColorEmoji' || true)
+            if [ -n "$bad" ]; then
+              echo "::error::$(basename "$f") contains unexpected Type 3 font(s):"
+              echo "$bad" | sed 's/^/    /'
+              fail=1
+            fi
+          done
+          if [ "$fail" = "1" ]; then
+            echo ""
+            echo "Hint: see packages/theme-PDF/fonts/README.md for adding glyphs."
+          fi
+          exit $fail
+
       - name: PDF / EPUB sanity check
         run: |
           fail=0
