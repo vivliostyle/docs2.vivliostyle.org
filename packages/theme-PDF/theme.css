@@ -493,6 +493,21 @@ nav#toc > ol > li > ol {
   break-inside: avoid;
 }
 
+/* Reference の TOC で「コントリビューションガイド」ハブ entry が単独で
+ * ページ末尾に残り、その下にぶら下がる 4 つのプロダクト contribution
+ * guide が次ページに送られる widows 状態を回避する。プロダクト entry に
+ * break-before: avoid を付け、ハブごと次ページに送る挙動を誘導。 */
+nav[role="doc-toc"] > ol > li:has(> a[href*="/contribution-guide/js/"]),
+nav[role="doc-toc"] > ol > li:has(> a[href*="/contribution-guide/cli/"]),
+nav[role="doc-toc"] > ol > li:has(> a[href*="/contribution-guide/vfm/"]),
+nav[role="doc-toc"] > ol > li:has(> a[href*="/contribution-guide/themes/"]),
+nav#toc > ol > li:has(> a[href*="/contribution-guide/js/"]),
+nav#toc > ol > li:has(> a[href*="/contribution-guide/cli/"]),
+nav#toc > ol > li:has(> a[href*="/contribution-guide/vfm/"]),
+nav#toc > ol > li:has(> a[href*="/contribution-guide/themes/"]) {
+  break-before: avoid;
+}
+
 /* 各エントリ: テキスト ‥‥‥‥ ページ番号 のレイアウト */
 nav[role="doc-toc"] li a,
 nav#toc li a {
