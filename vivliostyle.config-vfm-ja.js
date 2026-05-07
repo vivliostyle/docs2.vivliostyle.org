@@ -5,7 +5,7 @@ export default {
   author: 'Vivliostyle Foundation',
   language: 'ja',
   size: 'A4',
-  theme: '@vivliostyle/theme-techbook',
+  theme: './packages/theme-PDF',
   entryContext: 'dist',
   entry: [
     'ja/vfm/index.html',
