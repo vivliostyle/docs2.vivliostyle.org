@@ -46,14 +46,64 @@
   src: url('./fonts/NotoSansJP-Bold.woff2') format('woff2');
 }
 
+/* fontsource の Noto Sans JP japanese subset には U+2776-277F (❶❿) や
+ * U+25B6 (▶), U+25C9 (◉) などの記号が含まれていない。これらは Google Fonts の
+ * text= API で必要な 12 文字だけを Noto Sans JP のグリフから抽出した極小
+ * woff2 を別途バンドルし、独立したファミリ名で適用する。
+ *
+ * 同じファミリ名 'NotoSansJP PDF' に unicode-range 違いで複数 @font-face を
+ * 宣言すると、Chrome の cascade 解決で意図せず先に宣言された主 subset の方
+ * が選ばれて symbols subset が無視されることがある（実測確認）。そのため
+ * 別ファミリ名 'NotoSansJP PDF Symbols' にして body font-family の末尾に
+ * フォールバック候補として並べる。
+ *
+ * weight 400 と 700 の両方を用意するのは viewer-ja の HTML 中に
+ * <strong>❶Page Spread View</strong> のように太字化された記号が含まれるため。
+ * weight 違いの宣言が無いと Chrome は system Hiragino W6 にフォールバックして
+ * Type 3 化する。 */
+@font-face {
+  font-family: 'NotoSansJP PDF Symbols';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('./fonts/NotoSansJP-Symbols.woff2') format('woff2');
+  unicode-range: U+25B6, U+25C9, U+2776-277F;
+}
+@font-face {
+  font-family: 'NotoSansJP PDF Symbols';
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+  src: url('./fonts/NotoSansJP-Symbols-Bold.woff2') format('woff2');
+  unicode-range: U+25B6, U+25C9, U+2776-277F;
+}
+
+/* 絵文字: Apple Color Emoji は Chrome の PDF 出力で Type 3 化されてしまい
+ * Adobe Reader で表示が崩れる。Mozilla 配布の Twemoji COLR (TrueType) を
+ * バンドルして CID TrueType として埋め込ませる。COLRv0 はモノクロ outline
+ * を含むので Adobe Reader でも形は描画される（色は出ない）。 */
+@font-face {
+  font-family: 'Twemoji Mozilla';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('./fonts/Twemoji.Mozilla.ttf') format('truetype');
+}
+
 /* ページ設定 */
 @page {
   size: A4;
   margin: 22mm 20mm 22mm 20mm;
 
+  /* @page と margin boxes は body の font-family を継承しないため、ここで
+   * 明示しないと Chrome のシステムデフォルト (macOS では Hiragino) にフォール
+   * バックして数字 0-9 ・章タイトル・ページ番号が Type 3 化する。 */
+  font-family: Verdana, Arial, 'Helvetica Neue', 'NotoSansJP PDF', 'NotoSansJP PDF Symbols', 'Twemoji Mozilla', sans-serif;
+
   /* 柱: 直近の H1（章タイトル）を string-set で取得して上部中央に表示 */
   @top-center {
     content: string(doc-title);
+    font-family: Verdana, Arial, 'Helvetica Neue', 'NotoSansJP PDF', 'NotoSansJP PDF Symbols', 'Twemoji Mozilla', sans-serif;
     font-size: 9pt;
     color: #555;
     padding-bottom: 4pt;
@@ -63,6 +113,7 @@
 
   @bottom-center {
     content: counter(page);
+    font-family: Verdana, Arial, 'Helvetica Neue', 'NotoSansJP PDF', 'NotoSansJP PDF Symbols', 'Twemoji Mozilla', sans-serif;
     font-size: 9.5pt;
     color: #333;
   }
@@ -99,7 +150,7 @@ body {
    * 効率よく埋め込める）、日本語文字のみ Noto Sans JP にフォールバック
    * させる。逆順だと Latin 文字まで Noto Sans JP（Type 3 埋め込み）に
    * なって PDF が大幅に肥大化する。 */
-  font-family: Verdana, Arial, 'Helvetica Neue', 'NotoSansJP PDF', sans-serif;
+  font-family: Verdana, Arial, 'Helvetica Neue', 'NotoSansJP PDF', 'NotoSansJP PDF Symbols', 'Twemoji Mozilla', sans-serif;
   font-size: var(--font-size-base);
   line-height: 1.7;
   color: var(--color-text);
