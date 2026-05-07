@@ -8,15 +8,15 @@ lang: en
 
 ### Documentation
 
-- [Awesome Vivliostyle](/en/reference/awesome-vivliostyle/)
 - [Supported CSS Features](/en/reference/supported-css-features/)
 - [Core API Reference](/en/reference/api/)
+- [Awesome Vivliostyle](/en/reference/awesome-vivliostyle/)
 
-### Contribution Guides
+### [Contribution Guides](/en/reference/contribution-guide/)
 
 Learn how to contribute to each Vivliostyle product.
 
-- [Vivliostyle.js](/en/reference/contribution-guide/)
-- [Vivliostyle CLI](/en/reference/contributing-cli/)
-- [VFM](/en/reference/contributing-vfm/)
-- [Vivliostyle Themes](/en/reference/contributing-themes/)
+- [Vivliostyle.js](/en/reference/contribution-guide/js/)
+- [Vivliostyle CLI](/en/reference/contribution-guide/cli/)
+- [VFM](/en/reference/contribution-guide/vfm/)
+- [Vivliostyle Themes](/en/reference/contribution-guide/themes/)

@@ -9,12 +9,13 @@ export default {
   entryContext: 'dist',
   entry: [
     'en/reference/index.html',
-    'en/reference/contribution-guide/index.html',
-    'en/reference/contributing-cli/index.html',
-    'en/reference/contributing-vfm/index.html',
-    'en/reference/contributing-themes/index.html',
-    'en/reference/api/index.html',
     'en/reference/supported-css-features/index.html',
+    'en/reference/api/index.html',
+    'en/reference/contribution-guide/index.html',
+    'en/reference/contribution-guide/js/index.html',
+    'en/reference/contribution-guide/cli/index.html',
+    'en/reference/contribution-guide/vfm/index.html',
+    'en/reference/contribution-guide/themes/index.html',
   ],
   output: [
     { path: 'public/downloads/vivliostyle-reference-en.pdf', format: 'pdf' },

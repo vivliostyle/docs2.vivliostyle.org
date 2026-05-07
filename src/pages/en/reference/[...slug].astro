@@ -11,16 +11,42 @@ import DownloadLinks from '../../../components/DownloadLinks.astro';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
+  // Upstream CONTRIBUTING.md files use generic H1s like "Contribution Guide" /
+  // "Contribution Guidelines" that are indistinguishable across products. We
+  // rewrite the first H1 (and the matching headings entry) to a product-scoped
+  // title so the in-page heading, breadcrumb, sidebar, and PDF chapter heading /
+  // running header all agree.
+  const withOverriddenH1 = <T extends { rendered?: { html?: string }; data?: Record<string, unknown> }>(
+    doc: T,
+    newTitle: string,
+  ): T => {
+    const html = doc.rendered?.html ?? '';
+    const newHtml = html.replace(
+      /(<h1\b[^>]*>)[\s\S]*?(<\/h1>)/i,
+      (_match, open: string, close: string) => `${open}${newTitle}${close}`,
+    );
+    const oldHeadings =
+      (doc.data?.headings as Array<{ depth: number; slug: string; text: string }> | undefined) ?? [];
+    const newHeadings = oldHeadings.map((h, i) =>
+      i === 0 && h.depth === 1 ? { ...h, text: newTitle } : h,
+    );
+    return {
+      ...doc,
+      data: { ...doc.data, headings: newHeadings },
+      rendered: { ...(doc.rendered ?? {}), html: newHtml },
+    };
+  };
+
   const referenceDocs = await getCollection('vivliostyle-reference-en');
   const referenceDocsJa = await getCollection('vivliostyle-reference-ja');
   const awesomeDocs = await getCollection('awesome-vivliostyle-en');
   const awesomeDocsJa = await getCollection('awesome-vivliostyle-ja');
-  
+
   // CLI、Themes、VFMのContributingドキュメントも取得
   const cliContributing = await getCollection('vivliostyle-cli-contributing-en');
   const themesContributing = await getCollection('vivliostyle-themes-contributing-en');
   const vfmContributing = await getCollection('vivliostyle-vfm-contributing-en');
-  
+
   const awesomeDoc = awesomeDocs[0];
   const awesomeDocJa = awesomeDocsJa[0];
   const awesomeTitle = awesomeDoc?.data?.title || 'Awesome Vivliostyle';
@@ -45,16 +71,38 @@ export async function getStaticPaths() {
   ]);
 
   const paths = [];
-  
-  // 通常のリファレンスドキュメント
+
+  // Regular reference docs (api, supported-css-features) — slug unchanged.
+  // The Vivliostyle.js docs/contribution-guide.md is remapped to /contribution-guide/js/.
   referenceDocs.forEach(doc => {
+    if (doc.id === 'contribution-guide') {
+      paths.push({
+        params: { slug: 'contribution-guide/js' },
+        props: {
+          doc: {
+            ...doc,
+            id: 'contribution-guide/js',
+            data: {
+              ...doc.data,
+              title: 'Vivliostyle.js Contribution Guide',
+            },
+          },
+          referenceDocs: referenceDocsAll,
+          hasJaTranslation: jaIds.has('contribution-guide'),
+          isContributing: true,
+          isHub: false,
+        },
+      });
+      return;
+    }
     paths.push({
       params: { slug: doc.id },
-      props: { 
-        doc, 
+      props: {
+        doc,
         referenceDocs: referenceDocsAll,
         hasJaTranslation: jaIds.has(doc.id),
         isContributing: false,
+        isHub: false,
       },
     });
   });
@@ -67,66 +115,97 @@ export async function getStaticPaths() {
         referenceDocs: referenceDocsAll,
         hasJaTranslation: jaIds.has('awesome-vivliostyle'),
         isContributing: false,
+        isHub: false,
       },
     });
   }
-  
-  // CLI Contributing
+
+  // Contribution Guide hub (virtual page at /en/reference/contribution-guide/)
+  const hubHtml = `
+    <h1>Contribution Guides</h1>
+    <p>Learn how to contribute to each Vivliostyle product. Choose the project you'd like to contribute to:</p>
+    <ul>
+      <li><a href="/en/reference/contribution-guide/js/"><strong>Vivliostyle.js</strong></a> — the rendering engine</li>
+      <li><a href="/en/reference/contribution-guide/cli/"><strong>Vivliostyle CLI</strong></a> — the command-line tool</li>
+      <li><a href="/en/reference/contribution-guide/vfm/"><strong>VFM</strong></a> — Vivliostyle Flavored Markdown</li>
+      <li><a href="/en/reference/contribution-guide/themes/"><strong>Vivliostyle Themes</strong></a> — official themes package</li>
+    </ul>
+  `;
+  paths.push({
+    params: { slug: 'contribution-guide' },
+    props: {
+      doc: {
+        id: 'contribution-guide',
+        data: {
+          title: 'Contribution Guides',
+          description: 'Index of contribution guides for each Vivliostyle product',
+          headings: [],
+        },
+        rendered: { html: hubHtml },
+      },
+      referenceDocs: referenceDocsAll,
+      hasJaTranslation: true,
+      isContributing: false,
+      isHub: true,
+    },
+  });
+
+  // CLI Contributing → /en/reference/contribution-guide/cli/
   cliContributing.forEach(doc => {
+    const title = 'Vivliostyle CLI Contribution Guide';
+    const overridden = withOverriddenH1(doc, title);
     paths.push({
-      params: { slug: 'contributing-cli' },
+      params: { slug: 'contribution-guide/cli' },
       props: {
         doc: {
-          ...doc,
-          id: 'contributing-cli',
-          data: {
-            ...doc.data,
-            title: doc.data?.title || 'Vivliostyle CLI Contribution Guide',
-          },
+          ...overridden,
+          id: 'contribution-guide/cli',
+          data: { ...overridden.data, title },
         },
         referenceDocs: referenceDocsAll,
         hasJaTranslation: true,
         isContributing: true,
+        isHub: false,
       },
     });
   });
-  
-  // Themes Contributing
+
+  // Themes Contributing → /en/reference/contribution-guide/themes/
   themesContributing.forEach(doc => {
+    const title = 'Vivliostyle Themes Contribution Guide';
+    const overridden = withOverriddenH1(doc, title);
     paths.push({
-      params: { slug: 'contributing-themes' },
+      params: { slug: 'contribution-guide/themes' },
       props: {
         doc: {
-          ...doc,
-          id: 'contributing-themes',
-          data: {
-            ...doc.data,
-            title: doc.data?.title || 'Vivliostyle Themes Contribution Guide',
-          },
+          ...overridden,
+          id: 'contribution-guide/themes',
+          data: { ...overridden.data, title },
         },
         referenceDocs: referenceDocsAll,
         hasJaTranslation: true,
         isContributing: true,
+        isHub: false,
       },
     });
   });
-  
-  // VFM Contributing
+
+  // VFM Contributing → /en/reference/contribution-guide/vfm/
   vfmContributing.forEach(doc => {
+    const title = 'VFM Contribution Guide';
+    const overridden = withOverriddenH1(doc, title);
     paths.push({
-      params: { slug: 'contributing-vfm' },
+      params: { slug: 'contribution-guide/vfm' },
       props: {
         doc: {
-          ...doc,
-          id: 'contributing-vfm',
-          data: {
-            ...doc.data,
-            title: doc.data?.title || 'VFM Contribution Guide',
-          },
+          ...overridden,
+          id: 'contribution-guide/vfm',
+          data: { ...overridden.data, title },
         },
         referenceDocs: referenceDocsAll,
         hasJaTranslation: true,
         isContributing: true,
+        isHub: false,
       },
     });
   });
@@ -134,43 +213,48 @@ export async function getStaticPaths() {
   return paths;
 }
 
-const { doc, referenceDocs, hasJaTranslation, isContributing } = Astro.props;
+const { doc, referenceDocs, hasJaTranslation, isHub } = Astro.props;
 const htmlContent = doc.rendered?.html || '';
-const title = doc.data?.title || 'Vivliostyle Reference';
-const description = doc.data?.description || '';
-const extractedToc = doc.data?.extractedToc; // extracted TOC if exists
+const docData = doc.data as Record<string, unknown>;
+const title = (docData?.title as string) || 'Vivliostyle Reference';
+const description = (docData?.description as string) || '';
+const extractedToc = docData?.extractedToc as string | undefined; // extracted TOC if exists
 
 // Generate table of contents from headings
-const headings = doc.data?.headings || [];
+const headings = (docData?.headings as Array<{ depth: number; slug: string; text: string }>) || [];
 
-// Define page order (match index.md order)
+// Define page order (Murakami-san feedback: supported-css-features first;
+// contribution guides nested under contribution-guide/*)
 const pageOrder = [
-  'awesome-vivliostyle',
   'supported-css-features',
   'api',
-  'contribution-guide-heading',  // Heading only (for sidebar display)
-  'contribution-guide',  // Actual page (for page navigation, hidden in sidebar)
-  'contributing-viewer',  // Sidebar display (links to contribution-guide, skip in page navigation)
-  'contributing-cli',
-  'contributing-vfm',
-  'contributing-themes',
+  'awesome-vivliostyle',
+  'contribution-guide',          // hub
+  'contribution-guide/js',       // Vivliostyle.js
+  'contribution-guide/cli',      // CLI
+  'contribution-guide/vfm',      // VFM
+  'contribution-guide/themes',   // Themes
 ];
 
-// Combine all documents (regular reference + contributing pages)
+// Combine all documents available for sidebar/navigation.
+// referenceDocs still has the original 'contribution-guide' id (Vivliostyle.js doc); remap for navigation.
+const remappedReferenceDocs = referenceDocs.map(d => {
+  if (d.id === 'contribution-guide') {
+    return { ...d, id: 'contribution-guide/js', data: { ...d.data, title: 'Vivliostyle.js Contribution Guide' } };
+  }
+  return d;
+});
 const allDocs = [
-  ...referenceDocs,  // includes awesome-vivliostyle, contribution-guide
-  // Add virtual documents for sidebar display
-  { id: 'contribution-guide-heading', data: { title: 'Contribution Guidelines' } },  // Heading only
-  { id: 'contributing-viewer', data: { title: 'Vivliostyle Viewer' } },
-  { id: 'contributing-cli', data: { title: 'Vivliostyle CLI' } },
-  { id: 'contributing-vfm', data: { title: 'VFM' } },
-  { id: 'contributing-themes', data: { title: 'Vivliostyle Themes' } },
+  ...remappedReferenceDocs,  // includes awesome-vivliostyle, contribution-guide/js
+  { id: 'contribution-guide', data: { title: 'Contribution Guides' } },
+  { id: 'contribution-guide/cli', data: { title: 'Vivliostyle CLI Contribution Guide' } },
+  { id: 'contribution-guide/vfm', data: { title: 'VFM Contribution Guide' } },
+  { id: 'contribution-guide/themes', data: { title: 'Vivliostyle Themes Contribution Guide' } },
 ];
 
 const sortedDocs = allDocs.sort((a, b) => {
   const indexA = pageOrder.indexOf(a.id);
   const indexB = pageOrder.indexOf(b.id);
-  // Place items not in pageOrder at the end
   if (indexA === -1 && indexB === -1) return a.id.localeCompare(b.id);
   if (indexA === -1) return 1;
   if (indexB === -1) return -1;
@@ -180,11 +264,10 @@ const sortedDocs = allDocs.sort((a, b) => {
 // Get current page index
 const currentIndex = sortedDocs.findIndex(d => d.id === doc.id);
 
-// Calculate prevPage/nextPage (only pages in pageOrder, exclude headings and virtual docs)
+// Calculate prevPage/nextPage (only pages in pageOrder)
 let prevPage = null;
 for (let i = currentIndex - 1; i >= 0; i--) {
-  const itemId = sortedDocs[i].id;
-  if (pageOrder.includes(itemId) && itemId !== 'contribution-guide-heading' && itemId !== 'contributing-viewer') {
+  if (pageOrder.includes(sortedDocs[i].id)) {
     prevPage = sortedDocs[i];
     break;
   }
@@ -192,12 +275,23 @@ for (let i = currentIndex - 1; i >= 0; i--) {
 
 let nextPage = null;
 for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
-  const itemId = sortedDocs[i].id;
-  if (pageOrder.includes(itemId) && itemId !== 'contribution-guide-heading' && itemId !== 'contributing-viewer') {
+  if (pageOrder.includes(sortedDocs[i].id)) {
     nextPage = sortedDocs[i];
     break;
   }
 }
+
+// Pages that show in-page H2/H3 navigation in the sidebar (instead of accordion)
+const headingListPages = new Set([
+  'awesome-vivliostyle',
+  'supported-css-features',
+  'api',
+  'contribution-guide/js',
+  'contribution-guide/cli',
+  'contribution-guide/vfm',
+  'contribution-guide/themes',
+]);
+const showHeadingList = !isHub && headingListPages.has(doc.id);
 ---
 
 <DocsLayout
@@ -223,7 +317,7 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
     <h3><a href="/en/reference/" style="color: inherit; text-decoration: none;">Reference</a></h3>
     
     <!-- Show heading list only for specific pages -->
-    {(doc.id === 'awesome-vivliostyle' || doc.id === 'supported-css-features' || doc.id === 'api' || doc.id === 'vivliostyle-viewer' || doc.id === 'contribution-guide') ? (
+    {showHeadingList ? (
       <>
         <ul style="list-style: none; padding-left: 0; margin-bottom: 1rem;">
           <li><a href="/en/">← Back to Home</a></li>
@@ -286,33 +380,33 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
               <span class="toggle-icon">▶</span>Documentation
             </button>
             <ul class="accordion-content" id="docs-group" style="display: block; list-style: none; padding-left: 1.5rem; margin: 0.25rem 0 0 0;">
-              <li class:list={[{ active: doc.id === 'awesome-vivliostyle' }]}>
-                <a href="/en/reference/awesome-vivliostyle/" aria-current={doc.id === 'awesome-vivliostyle' ? 'page' : undefined}>Awesome Vivliostyle</a>
-              </li>
               <li class:list={[{ active: doc.id === 'supported-css-features' }]}>
                 <a href="/en/reference/supported-css-features/" aria-current={doc.id === 'supported-css-features' ? 'page' : undefined}>Supported CSS Features</a>
               </li>
               <li class:list={[{ active: doc.id === 'api' }]}>
                 <a href="/en/reference/api/" aria-current={doc.id === 'api' ? 'page' : undefined}>Core API Reference</a>
               </li>
+              <li class:list={[{ active: doc.id === 'awesome-vivliostyle' }]}>
+                <a href="/en/reference/awesome-vivliostyle/" aria-current={doc.id === 'awesome-vivliostyle' ? 'page' : undefined}>Awesome Vivliostyle</a>
+              </li>
             </ul>
           </div>
           <div class="accordion-section">
             <button class="accordion-toggle" data-target="contrib-group" aria-expanded="true">
-              <span class="toggle-icon">▶</span>Contribution Guides
+              <span class="toggle-icon">▶</span><a href="/en/reference/contribution-guide/" style="color: inherit; text-decoration: none;" aria-current={doc.id === 'contribution-guide' ? 'page' : undefined}>Contribution Guides</a>
             </button>
             <ul class="accordion-content" id="contrib-group" style="display: block; list-style: none; padding-left: 1.5rem; margin: 0.25rem 0 0 0;">
-              <li class:list={[{ active: doc.id === 'contribution-guide' }]}>
-                <a href="/en/reference/contribution-guide/" aria-current={doc.id === 'contribution-guide' ? 'page' : undefined}>Vivliostyle Viewer</a>
+              <li class:list={[{ active: doc.id === 'contribution-guide/js' }]}>
+                <a href="/en/reference/contribution-guide/js/" aria-current={doc.id === 'contribution-guide/js' ? 'page' : undefined}>Vivliostyle.js</a>
               </li>
-              <li class:list={[{ active: doc.id === 'contributing-cli' }]}>
-                <a href="/en/reference/contributing-cli/" aria-current={doc.id === 'contributing-cli' ? 'page' : undefined}>Vivliostyle CLI</a>
+              <li class:list={[{ active: doc.id === 'contribution-guide/cli' }]}>
+                <a href="/en/reference/contribution-guide/cli/" aria-current={doc.id === 'contribution-guide/cli' ? 'page' : undefined}>Vivliostyle CLI</a>
               </li>
-              <li class:list={[{ active: doc.id === 'contributing-vfm' }]}>
-                <a href="/en/reference/contributing-vfm/" aria-current={doc.id === 'contributing-vfm' ? 'page' : undefined}>VFM</a>
+              <li class:list={[{ active: doc.id === 'contribution-guide/vfm' }]}>
+                <a href="/en/reference/contribution-guide/vfm/" aria-current={doc.id === 'contribution-guide/vfm' ? 'page' : undefined}>VFM</a>
               </li>
-              <li class:list={[{ active: doc.id === 'contributing-themes' }]}>
-                <a href="/en/reference/contributing-themes/" aria-current={doc.id === 'contributing-themes' ? 'page' : undefined}>Vivliostyle Themes</a>
+              <li class:list={[{ active: doc.id === 'contribution-guide/themes' }]}>
+                <a href="/en/reference/contribution-guide/themes/" aria-current={doc.id === 'contribution-guide/themes' ? 'page' : undefined}>Vivliostyle Themes</a>
               </li>
             </ul>
           </div>
