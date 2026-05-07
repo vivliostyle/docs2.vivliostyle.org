@@ -45,14 +45,43 @@ const description = indexDoc?.data?.description || 'Official documentation for V
   <LanguageSwitcher slot="header" currentLang="en" pagePath="/" hasTranslation={true} />
   <nav slot="sidebar">
     <h3>Documentation</h3>
-    <ul style="list-style: none; padding-left: 0;">
+    <ul style="list-style: none; padding-left: 0; margin-bottom: 0.5rem;">
       <li><a href="/en/">Home</a></li>
-      <li><a href="/en/viewer/">Vivliostyle Viewer</a></li>
-      <li><a href="/en/cli/">Vivliostyle CLI</a></li>
-      <li><a href="/en/vfm/">VFM</a></li>
-      <li><a href="/en/themes/">Vivliostyle Themes</a></li>
-      <li><a href="/en/reference/">Reference</a></li>
     </ul>
+    <div class="sidebar-accordion">
+      <div class="accordion-section">
+        <button class="accordion-toggle" data-target="products-group" aria-expanded="true">
+          <span class="toggle-icon">▶</span>Products
+        </button>
+        <ul class="accordion-content" id="products-group" style="display: block; list-style: none; padding-left: 1.5rem; margin: 0.25rem 0 0 0;">
+          <li><a href="/en/viewer/">Vivliostyle Viewer</a></li>
+          <li><a href="/en/cli/">Vivliostyle CLI</a></li>
+          <li><a href="/en/vfm/">VFM</a></li>
+          <li><a href="/en/themes/">Vivliostyle Themes</a></li>
+        </ul>
+      </div>
+      <div class="accordion-section">
+        <button class="accordion-toggle" data-target="tutorial-group" aria-expanded="true">
+          <span class="toggle-icon">▶</span><a href="https://vivliostyle.org/en/tutorials/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none;">Tutorials</a>
+        </button>
+      </div>
+      <div class="accordion-section">
+        <button class="accordion-toggle" data-target="reference-group" aria-expanded="true">
+          <span class="toggle-icon">▶</span><a href="/en/reference/" style="color: inherit; text-decoration: none;">Reference</a>
+        </button>
+        <ul class="accordion-content" id="reference-group" style="display: block; list-style: none; padding-left: 1.5rem; margin: 0.25rem 0 0 0;">
+          <li><a href="/en/reference/supported-css-features/">Supported CSS Features</a></li>
+          <li><a href="/en/reference/api/">Core API Reference</a></li>
+          <li><a href="/en/reference/awesome-vivliostyle/">Awesome Vivliostyle</a></li>
+          <li><a href="/en/reference/contribution-guide/">Contribution Guides</a></li>
+        </ul>
+      </div>
+      <div class="accordion-section">
+        <button class="accordion-toggle" data-target="faq-group" aria-expanded="true">
+          <span class="toggle-icon">▶</span><a href="https://vivliostyle.org/en/faq/" target="_blank" rel="noopener noreferrer" style="color: inherit; text-decoration: none;">FAQ</a>
+        </button>
+      </div>
+    </div>
   </nav>
 
   {htmlContent ? (

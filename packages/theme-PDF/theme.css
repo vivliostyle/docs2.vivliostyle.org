@@ -120,8 +120,12 @@
 }
 
 /* 章扉ページ（H1 が来たページ）では柱を消す。本文の頭でいきなり柱が
- * 出ると重複感があるため。 */
+ * 出ると重複感があるため。
+ * またページのトップマージンを大きく取って章タイトルを版面上端から
+ * 約 1/4 下げる。h1 の margin-top では新規ページ先頭でマージン折り畳み
+ * の影響を受けるため、@page 側で margin-top を確保する。 */
 @page chapter-opener {
+  margin-top: 85mm;
   @top-center { content: none; }
   @bottom-center { content: counter(page); }
 }
@@ -203,9 +207,9 @@ h1 {
   page: chapter-opener;
   font-size: 24pt;
   font-weight: bold;
-  /* 章扉の H1 は版面上端から約 1/4 下げて配置。版面高さ ≒ 253mm
-   * (A4 297mm − 上下マージン 22mm × 2)、その 1/4 ≈ 63mm を margin-top に。 */
-  margin: 63mm 0 1.5em 0;
+  /* 章扉での下げは @page chapter-opener の margin-top 側で確保しているので、
+   * h1 自体の margin-top はゼロに。 */
+  margin: 0 0 1.5em 0;
   page-break-after: avoid;
 }
 
