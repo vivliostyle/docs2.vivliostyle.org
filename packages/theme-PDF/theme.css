@@ -36,44 +36,36 @@
 /* ページ設定 */
 @page {
   size: A4;
-  margin: 25mm 20mm;
-  
+  margin: 22mm 20mm 22mm 20mm;
+
+  /* 柱: 直近の H1（章タイトル）を string-set で取得して上部中央に表示 */
   @top-center {
-    content: none;
+    content: string(doc-title);
+    font-size: 9pt;
+    color: #555;
+    padding-bottom: 4pt;
+    border-bottom: 0.4pt solid #bbb;
+    vertical-align: bottom;
   }
-  
-  @top-left {
-    content: none;
-  }
-  
-  @top-right {
-    content: none;
-  }
-  
+
   @bottom-center {
     content: counter(page);
-    font-size: 9pt;
+    font-size: 9.5pt;
+    color: #333;
   }
-  
-  @bottom-left {
-    content: none;
-  }
-  
-  @bottom-right {
-    content: none;
-  }
+}
+
+/* 章扉ページ（H1 が来たページ）では柱を消す。本文の頭でいきなり柱が
+ * 出ると重複感があるため。 */
+@page chapter-opener {
+  @top-center { content: none; }
+  @bottom-center { content: counter(page); }
 }
 
 @page :first {
   margin-top: 50mm;
-  
-  @top-center {
-    content: none;
-  }
-  
-  @bottom-center {
-    content: none;
-  }
+  @top-center { content: none; }
+  @bottom-center { content: none; }
 }
 
 /* 基本スタイル */
@@ -140,11 +132,20 @@ nav.breadcrumb,
 
 /* 見出しスタイル */
 h1 {
+  /* 柱に表示するためタイトル文字列を string-set で確保 */
+  string-set: doc-title content();
+  /* 各章は右ページ起こし。最初の H1（本扉）は下の :first-of-type ルールで打ち消す。 */
+  break-before: right;
+  page: chapter-opener;
   font-size: 24pt;
   font-weight: bold;
-  margin-top: 0;
-  margin-bottom: 1.5em;
+  margin: 30mm 0 1.5em 0;
   page-break-after: avoid;
+}
+
+/* 書籍冒頭の最初の H1（本扉）は break-before しない */
+h1:first-of-type:first-child {
+  break-before: avoid;
 }
 
 h2 {
@@ -335,6 +336,85 @@ hr {
   border: none;
   border-top: 1px solid var(--color-border);
   margin: 2em 0;
+}
+
+/* =========================================================================
+   目次（Vivliostyle CLI が toc: true で自動生成する nav#toc / role="doc-toc"）
+   - 章タイトルとページ番号の間にリーダー線
+   - target-counter() で各エントリのページ番号を取得して右端に表示
+   ========================================================================= */
+nav[role="doc-toc"],
+nav#toc {
+  page: chapter-opener;
+  break-before: right;
+  break-after: page;
+}
+
+nav[role="doc-toc"] > h2,
+nav#toc > h2 {
+  font-size: 22pt;
+  font-weight: 700;
+  margin: 30mm 0 14mm 0;
+  border-bottom: none;
+  page-break-after: avoid;
+}
+
+nav[role="doc-toc"] ol,
+nav[role="doc-toc"] ul,
+nav#toc ol,
+nav#toc ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+nav[role="doc-toc"] li,
+nav#toc li {
+  margin: 0.55em 0;
+  break-inside: avoid;
+}
+
+/* 各エントリ: テキスト ‥‥‥‥ ページ番号 のレイアウト */
+nav[role="doc-toc"] li a,
+nav#toc li a {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+  text-decoration: none;
+  border-bottom: none;
+  color: var(--color-text);
+}
+
+/* 第 1 階層は太字で章扱い */
+nav[role="doc-toc"] > ol > li > a,
+nav#toc > ol > li > a {
+  font-weight: 700;
+  margin-top: 0.3em;
+}
+
+/* リーダー線（::before）と ページ番号（::after） */
+nav[role="doc-toc"] li a::before,
+nav#toc li a::before {
+  content: '';
+  flex-grow: 1;
+  border-bottom: 0.5pt dotted #999;
+  align-self: end;
+  margin-bottom: 3pt;
+  order: 1;
+}
+
+nav[role="doc-toc"] li a::after,
+nav#toc li a::after {
+  content: target-counter(attr(href url), page);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  order: 2;
+}
+
+/* TOC 内の外部リンク (a[href^="http"]) でも URL ではなくページ番号にする */
+nav[role="doc-toc"] li a[href^="http"]::after,
+nav#toc li a[href^="http"]::after {
+  content: target-counter(attr(href url), page);
 }
 
 /* ページブレーク制御 */
