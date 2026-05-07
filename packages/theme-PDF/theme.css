@@ -1,36 +1,49 @@
 /**
  * Vivliostyle PDF Theme
- * ドキュメントサイトからPDF生成するための専用テーマ
- * Web専用要素を自動的に除外し、印刷に適したレイアウトを提供
- */
-
-/* 日本語フォントを明示的に参照して埋め込めるようにする。
- * これがないと、英語ドキュメント中の日本語文字（書籍タイトル等）が
- * macOS 製 Hiragino Sans へフォールバックされ、Chrome がそれを
- * Type 3 フォントとして埋め込み、PDF が肥大化する。
+ * ドキュメントサイトから PDF / EPUB を生成するための専用テーマ。
  *
- * 外部ネットワーク（Google Fonts 等）への @import は CI / オフライン
- * 環境でビルドが不安定になるため、まずシステム/ユーザーがインストール
- * している Noto Sans JP を local() で参照する。フォントが手元にない
- * 環境では Hiragino Sans 等のシステム日本語フォントへフォールバック
- * する（Type 3 埋め込みになる可能性はあるが、ビルドは必ず通る）。 */
+ * 日本語フォント戦略:
+ * Noto Sans JP の **TrueType-flavored woff2**（subset=japanese 一括）を
+ * `./fonts/` に同梱し、url() で直接参照する。`font-display: block` で
+ * Chrome にフォントロード完了を待たせてから PDF レンダリングさせる。
+ *
+ * これにより以下の従来の問題を解消:
+ *  - local('Noto Sans JP') 経由でユーザ環境の Noto Sans JP Thin (.otf) /
+ *    Hiragino Sans (.ttc) が選ばれ、Chrome の PDF 出力で Type 3 として
+ *    埋め込まれて Adobe Reader で文字が表示できない（トーフ化）
+ *  - Google Fonts の `@import url('...css2?family=...')` は unicode-range で
+ *    多数の subset に分割されており、Vivliostyle CLI（Puppeteer）の PDF 化
+ *    タイミングと race condition を起こしてローカルフォントへフォールバック
+ *
+ * Latin 側は引き続き Verdana（システム TrueType）を使用。Web 用 global.css
+ * で導入されている Google Sans Flex は variable font であり、Chrome の PDF
+ * 出力で必ず Type 3 化されるため PDF テーマでは採用していない。
+ */
+/* 同梱した Noto Sans JP woff2 をユニークな family 名 'NotoSansJP PDF' で
+ * 登録する。実体は Noto Sans JP 日本語 subset (TrueType-flavored woff2) だが、
+ * Web 用 layout (DocsLayout.astro) が Japanese ページに
+ *   https://fonts.googleapis.com/css2?family=Noto+Sans+JP&...
+ * の <link> を出していて HTML レベルで多数の unicode-range subset 群が
+ * 'Noto Sans JP' family として先に登録されてしまう。同じ名前で @font-face を
+ * 後から書いても Chrome の font matching は Google Fonts subset 側を選んで
+ * しまい、その非同期ロード完了を待たずローカル 'Noto Sans JP Thin' (.otf)
+ * へフォールバックして Type 3 化する。
+ *
+ * 別名 'NotoSansJP PDF' にすれば Web 側スタックと衝突せず、Chrome は
+ * 必ず同梱 woff2 を解決して CID TrueType として埋め込む。 */
 @font-face {
-  font-family: 'Noto Sans JP';
+  font-family: 'NotoSansJP PDF';
   font-style: normal;
   font-weight: 400;
-  src: local('Noto Sans JP'), local('NotoSansJP-Regular');
+  font-display: block;
+  src: url('./fonts/NotoSansJP-Regular.woff2') format('woff2');
 }
 @font-face {
-  font-family: 'Noto Sans JP';
-  font-style: normal;
-  font-weight: 500;
-  src: local('Noto Sans JP Medium'), local('NotoSansJP-Medium');
-}
-@font-face {
-  font-family: 'Noto Sans JP';
+  font-family: 'NotoSansJP PDF';
   font-style: normal;
   font-weight: 700;
-  src: local('Noto Sans JP Bold'), local('NotoSansJP-Bold');
+  font-display: block;
+  src: url('./fonts/NotoSansJP-Bold.woff2') format('woff2');
 }
 
 /* ページ設定 */
@@ -86,7 +99,7 @@ body {
    * 効率よく埋め込める）、日本語文字のみ Noto Sans JP にフォールバック
    * させる。逆順だと Latin 文字まで Noto Sans JP（Type 3 埋め込み）に
    * なって PDF が大幅に肥大化する。 */
-  font-family: Verdana, Arial, 'Helvetica Neue', 'Noto Sans JP', sans-serif;
+  font-family: Verdana, Arial, 'Helvetica Neue', 'NotoSansJP PDF', sans-serif;
   font-size: var(--font-size-base);
   line-height: 1.7;
   color: var(--color-text);
