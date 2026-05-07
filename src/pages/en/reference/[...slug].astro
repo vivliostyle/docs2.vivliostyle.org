@@ -344,13 +344,18 @@ const showHeadingList = !isHub && headingListPages.has(doc.id);
               return (
                 <li class="toc-h2">
                   {h3List.length > 0 ? (
-                    <button 
-                      class="toc-toggle" 
-                      data-target={`toc-group-${index}`}
-                      aria-expanded="false"
-                    >
-                      <span class="toggle-icon">▶</span><a href={`#${heading.slug}`}>{getPlainText(heading.text)}</a>
-                    </button>
+                    <div class="toc-h2-row">
+                      <button
+                        class="toc-toggle"
+                        data-target={`toc-group-${index}`}
+                        aria-expanded="false"
+                        aria-controls={`toc-group-${index}`}
+                        aria-label={`Toggle ${getPlainText(heading.text)} sub-headings`}
+                      >
+                        <span class="toggle-icon" aria-hidden="true"></span>
+                      </button>
+                      <a href={`#${heading.slug}`} class="toc-h2-link">{getPlainText(heading.text)}</a>
+                    </div>
                   ) : (
                     <a href={`#${heading.slug}`} class="toc-h2-link">{getPlainText(heading.text)}</a>
                   )}
@@ -376,9 +381,12 @@ const showHeadingList = !isHub && headingListPages.has(doc.id);
         </ul>
         <div class="sidebar-accordion">
           <div class="accordion-section">
-            <button class="accordion-toggle" data-target="docs-group" aria-expanded="true">
-              <span class="toggle-icon">▶</span>Documentation
-            </button>
+            <div class="accordion-header">
+              <button class="accordion-toggle" data-target="docs-group" aria-expanded="true" aria-controls="docs-group" aria-label="Toggle Documentation section">
+                <span class="toggle-icon" aria-hidden="true"></span>
+              </button>
+              <span class="accordion-section-title">Documentation</span>
+            </div>
             <ul class="accordion-content" id="docs-group" style="display: block; list-style: none; padding-left: 1.5rem; margin: 0.25rem 0 0 0;">
               <li class:list={[{ active: doc.id === 'supported-css-features' }]}>
                 <a href="/en/reference/supported-css-features/" aria-current={doc.id === 'supported-css-features' ? 'page' : undefined}>Supported CSS Features</a>
@@ -392,9 +400,12 @@ const showHeadingList = !isHub && headingListPages.has(doc.id);
             </ul>
           </div>
           <div class="accordion-section">
-            <button class="accordion-toggle" data-target="contrib-group" aria-expanded="true">
-              <span class="toggle-icon">▶</span><a href="/en/reference/contribution-guide/" style="color: inherit; text-decoration: none;" aria-current={doc.id === 'contribution-guide' ? 'page' : undefined}>Contribution Guides</a>
-            </button>
+            <div class="accordion-header">
+              <button class="accordion-toggle" data-target="contrib-group" aria-expanded="true" aria-controls="contrib-group" aria-label="Toggle Contribution Guides section">
+                <span class="toggle-icon" aria-hidden="true"></span>
+              </button>
+              <a href="/en/reference/contribution-guide/" class="accordion-section-title" aria-current={doc.id === 'contribution-guide' ? 'page' : undefined}>Contribution Guides</a>
+            </div>
             <ul class="accordion-content" id="contrib-group" style="display: block; list-style: none; padding-left: 1.5rem; margin: 0.25rem 0 0 0;">
               <li class:list={[{ active: doc.id === 'contribution-guide/js' }]}>
                 <a href="/en/reference/contribution-guide/js/" aria-current={doc.id === 'contribution-guide/js' ? 'page' : undefined}>Vivliostyle.js</a>
@@ -510,36 +521,41 @@ const showHeadingList = !isHub && headingListPages.has(doc.id);
     color: var(--color-primary);
   }
   
-  .toc-toggle {
+  .toc-h2-row {
     display: flex;
     align-items: flex-start;
-    width: 100%;
+    gap: 0.4rem;
+  }
+
+  .toc-toggle {
     background: none;
     border: none;
     padding: 0;
-    text-align: left;
     cursor: pointer;
-    gap: 0;
-  }
-  
-  .toggle-icon {
-    display: inline-block;
-    transition: transform 0.2s;
-    font-size: 0.7rem;
+    color: var(--color-text);
+    display: inline-flex;
+    align-items: center;
     padding-top: 0.2rem;
   }
-  
-  .toc-toggle[aria-expanded="true"] .toggle-icon {
-    transform: rotate(90deg);
-  }
-  
-  .toc-toggle a {
-    color: var(--color-text);
-    text-decoration: none;
-  }
-  
-  .toc-toggle a:hover {
+
+  .toc-toggle:hover {
     color: var(--color-primary);
+  }
+
+  .toggle-icon {
+    display: inline-block;
+    width: 1em;
+    font-size: 0.7rem;
+  }
+
+  /* Show ▼ when expanded, ▶ when collapsed */
+  .toc-toggle .toggle-icon::before,
+  .accordion-toggle .toggle-icon::before {
+    content: '▶';
+  }
+  .toc-toggle[aria-expanded="true"] .toggle-icon::before,
+  .accordion-toggle[aria-expanded="true"] .toggle-icon::before {
+    content: '▼';
   }
   
   .toc-h3-list {
@@ -579,30 +595,36 @@ const showHeadingList = !isHub && headingListPages.has(doc.id);
     margin-bottom: 0.5rem;
   }
 
-  .accordion-toggle {
+  .accordion-header {
     display: flex;
     align-items: center;
-    width: 100%;
+    gap: 0.4rem;
+    padding: 0.25rem 0;
+  }
+
+  .accordion-toggle {
     background: none;
     border: none;
-    padding: 0.25rem 0;
-    text-align: left;
+    padding: 0;
     cursor: pointer;
-    font-size: 1rem;
-    font-weight: 500;
     color: var(--color-text);
+    display: inline-flex;
+    align-items: center;
   }
 
   .accordion-toggle:hover {
     color: var(--color-primary);
   }
 
-  .accordion-toggle .toggle-icon {
-    margin-right: 0.5rem;
+  .accordion-section-title {
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
   }
 
-  .accordion-toggle[aria-expanded="true"] .toggle-icon {
-    transform: rotate(90deg);
+  a.accordion-section-title:hover {
+    color: var(--color-primary);
   }
 
   .accordion-content li {
@@ -623,40 +645,15 @@ const showHeadingList = !isHub && headingListPages.has(doc.id);
 <script>
   // Accordion menu and TOC toggle handling
   document.addEventListener('DOMContentLoaded', () => {
-    // Accordion toggle
-    const accordionToggles = document.querySelectorAll('.accordion-toggle');
-    accordionToggles.forEach(toggle => {
-      toggle.addEventListener('click', (e) => {
-        e.preventDefault();
+    const allToggles = document.querySelectorAll('.accordion-toggle, .toc-toggle');
+    allToggles.forEach((toggle) => {
+      toggle.addEventListener('click', () => {
         const targetId = toggle.getAttribute('data-target');
-        const content = document.getElementById(targetId!);
         const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
-        
         toggle.setAttribute('aria-expanded', String(!isExpanded));
-        if (content) {
-          content.style.display = isExpanded ? 'none' : 'block';
-        }
-      });
-    });
-
-    // TOC toggle
-    const toggleButtons = document.querySelectorAll('.toc-toggle');
-    
-    toggleButtons.forEach(button => {
-      button.addEventListener('click', (e) => {
-        // Allow link default action
-        if ((e.target as HTMLElement).tagName === 'A') {
-          return;
-        }
-        
-        e.preventDefault();
-        const targetId = button.getAttribute('data-target');
-        const targetList = document.getElementById(targetId!);
-        const isExpanded = button.getAttribute('aria-expanded') === 'true';
-        
-        if (targetList) {
-          button.setAttribute('aria-expanded', String(!isExpanded));
-          targetList.style.display = isExpanded ? 'none' : 'block';
+        if (targetId) {
+          const content = document.getElementById(targetId);
+          if (content) content.style.display = isExpanded ? 'none' : 'block';
         }
       });
     });

@@ -50,9 +50,12 @@ const description = indexDoc?.data?.description || 'Official documentation for V
     </ul>
     <div class="sidebar-accordion">
       <div class="accordion-section">
-        <button class="accordion-toggle" data-target="products-group" aria-expanded="true">
-          <span class="toggle-icon" aria-hidden="true"></span>Products
-        </button>
+        <div class="accordion-header">
+          <button class="accordion-toggle" data-target="products-group" aria-expanded="true" aria-controls="products-group" aria-label="Toggle Products section">
+            <span class="toggle-icon" aria-hidden="true"></span>
+          </button>
+          <span class="accordion-section-title">Products</span>
+        </div>
         <ul class="accordion-content" id="products-group" style="display: block; list-style: none; padding-left: 1.5rem; margin: 0.25rem 0 0 0;">
           <li><a href="/en/viewer/">Vivliostyle Viewer</a></li>
           <li><a href="/en/cli/">Vivliostyle CLI</a></li>
@@ -66,9 +69,12 @@ const description = indexDoc?.data?.description || 'Official documentation for V
     </ul>
     <div class="sidebar-accordion">
       <div class="accordion-section">
-        <button class="accordion-toggle" data-target="reference-group" aria-expanded="true">
-          <span class="toggle-icon" aria-hidden="true"></span><a href="/en/reference/" style="color: inherit; text-decoration: none;">Reference</a>
-        </button>
+        <div class="accordion-header">
+          <button class="accordion-toggle" data-target="reference-group" aria-expanded="true" aria-controls="reference-group" aria-label="Toggle Reference section">
+            <span class="toggle-icon" aria-hidden="true"></span>
+          </button>
+          <a href="/en/reference/" class="accordion-section-title">Reference</a>
+        </div>
         <ul class="accordion-content" id="reference-group" style="display: block; list-style: none; padding-left: 1.5rem; margin: 0.25rem 0 0 0;">
           <li><a href="/en/reference/supported-css-features/">Supported CSS Features</a></li>
           <li><a href="/en/reference/api/">Core API Reference</a></li>
@@ -116,17 +122,13 @@ const description = indexDoc?.data?.description || 'Official documentation for V
   }
 
   .accordion-toggle {
-    display: flex;
-    align-items: center;
-    width: 100%;
     background: none;
     border: none;
-    padding: 0.25rem 0;
-    text-align: left;
+    padding: 0;
     cursor: pointer;
-    font-size: 1rem;
-    font-weight: 500;
     color: var(--color-text);
+    display: inline-flex;
+    align-items: center;
   }
 
   .accordion-toggle:hover {
@@ -136,7 +138,6 @@ const description = indexDoc?.data?.description || 'Official documentation for V
   .toggle-icon {
     display: inline-block;
     width: 1em;
-    margin-right: 0.4rem;
     font-size: 0.7rem;
   }
 
@@ -148,6 +149,23 @@ const description = indexDoc?.data?.description || 'Official documentation for V
   }
   .accordion-toggle[aria-expanded="true"] .toggle-icon::before {
     content: '▼';
+  }
+
+  .accordion-header {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .accordion-section-title {
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  a.accordion-section-title:hover {
+    color: var(--color-primary);
   }
 
   .accordion-content li {
@@ -169,11 +187,7 @@ const description = indexDoc?.data?.description || 'Official documentation for V
   document.addEventListener('DOMContentLoaded', () => {
     const toggleButtons = document.querySelectorAll('.accordion-toggle');
     toggleButtons.forEach((button) => {
-      button.addEventListener('click', (e) => {
-        // Allow inner <a> (clickable section label for Tutorials/Reference/FAQ)
-        // to navigate normally instead of toggling.
-        if ((e.target as HTMLElement).tagName === 'A') return;
-        e.preventDefault();
+      button.addEventListener('click', () => {
         const targetId = button.getAttribute('data-target');
         const isExpanded = button.getAttribute('aria-expanded') === 'true';
         button.setAttribute('aria-expanded', String(!isExpanded));
