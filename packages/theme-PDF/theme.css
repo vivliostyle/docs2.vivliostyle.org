@@ -130,6 +130,13 @@
   @bottom-center { content: counter(page); }
 }
 
+/* 目次ページ用。柱とノンブルの扱いは章扉と同じだが、目次見出しは下げず
+ * 通常のページ上端から組む。 */
+@page toc-page {
+  @top-center { content: none; }
+  @bottom-center { content: counter(page); }
+}
+
 @page :first {
   margin-top: 50mm;
   @top-center { content: none; }
@@ -415,7 +422,7 @@ hr {
    ========================================================================= */
 nav[role="doc-toc"],
 nav#toc {
-  page: chapter-opener;
+  page: toc-page;
   break-before: right;
   break-after: page;
 }
