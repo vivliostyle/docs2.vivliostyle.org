@@ -4,7 +4,7 @@
 撮影元を、**VFMが`[^1]` Markdown記法から実際に生成するHTML**に
 切り替えるための作業ディレクトリです。
 
-旧`_screenshots/footnotes/`は手書きのHTML（vivliostyle.jsテスト
+`_archive/footnotes-handwritten/`は手書きのHTML（vivliostyle.jsテスト
 フィクスチャ風）であり、記事本文に「VFMのMarkdownソース」を
 併記すると齟齬が出るため、**Markdownソース → VFM変換 → HTML →
 スクリーンショット**の一気通貫フローに改めます。
@@ -70,7 +70,7 @@ npx http-server _screenshots/footnotes-vfm/dist -p 8080
 # のURLをデプロイ後に叩いてもよい
 ```
 
-撮影解像度は旧`_screenshots/footnotes/`と同じ（短冊ページ全体を
+撮影解像度は`_archive/footnotes-handwritten/`と同じ（短冊ページ全体を
 1枚に収めてDPR 2x）。保存先は`public/new-features/footnotes/{ja,en}/`。
 
 ## サンプル一覧
@@ -89,7 +89,7 @@ npx http-server _screenshots/footnotes-vfm/dist -p 8080
 > で`@vivliostyle/viewer@^2.42.0`を強制済み。`npx vivliostyle preview`
 > はそれを参照するので追加設定は不要。
 
-## 旧`_screenshots/footnotes/`との違い
+## `_archive/footnotes-handwritten/`との違い
 
 |観点|旧（手書きHTML）|新（VFM生成）|
 |---|---|---|
@@ -114,7 +114,7 @@ npx http-server _screenshots/footnotes-vfm/dist -p 8080
    - 「生成されたHTML」(`.html`の中身)
    の**2つの`<details>`**に書き換え（または1つの`<details>`内に
    両方並べる）
-6. 旧`_screenshots/footnotes/`を削除（または`_archive/`に退避）
+6. (済) 旧手書きフィクスチャは `_archive/footnotes-handwritten/` に退避済み
 
 ## 残存する設計上のオープン項目
 

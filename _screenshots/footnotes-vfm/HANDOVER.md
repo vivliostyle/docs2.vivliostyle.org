@@ -3,7 +3,7 @@
 ## ここまでで完了している作業
 
 - `_screenshots/footnotes-vfm/`配下を整備
-  - `README.md`:設計方針・ディレクトリ構成・撮影手順・旧`_screenshots/footnotes/`との差分
+  - `README.md`:設計方針・ディレクトリ構成・撮影手順・`_archive/footnotes-handwritten/`との差分
   - `build.mjs`: VFM `stringify()`を使い`ja/`・`en/`の各`.md`を読んで`dist/{lang}/{N}-name.html`を生成（CSSは`<style>`インライン）
   - `styles/_base.css`:短冊ページ寸法(140mm × 90mm)と共通タイポグラフィ
   - `styles/{01-07}…css`:各例固有の脚注CSS
@@ -25,7 +25,7 @@ npx vivliostyle preview dist/ja/01-gcpm-class.html
 
 確認ポイント:
 
-- 旧`_screenshots/footnotes/{ja,en}/*`のスクリーンショットと比較
+- `_archive/footnotes-handwritten/{ja,en}/*`のスクリーンショットと比較
 - 各例の意図どおりに脚注が見えるか:
   - 01:ページ下部の脚注エリアに上罫線つきで番号付きで配置
   - 02:本文末尾に`<section role="doc-endnotes">`が境界線つきで表示
@@ -85,7 +85,7 @@ npx vivliostyle preview dist/ja/01-gcpm-class.html
 - HTML全文（`<style>`含む）を貼るか、`<body>`の中身だけ抽出して貼るか
 - CSSを別の`<details>`で分けるか
 
-### 4.旧`_screenshots/footnotes/`の処理
+### 4.`_archive/footnotes-handwritten/`の処理
 
 VFM版で齟齬なくスクリーンショット撮影が完了した時点で、旧ディレクトリは
 役目を終える。判断:

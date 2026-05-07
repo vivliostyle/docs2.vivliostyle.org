@@ -1,5 +1,5 @@
 /*共通ベース:短冊ページ寸法+タイポグラフィ
-   旧_screenshots/footnotes/と同じ140mm × 90mmの短冊サイズ。
+   _archive/footnotes-handwritten/と同じ140mm × 90mmの短冊サイズ。
    日本語/英語サンプル両方をカバーするfont-familyスタック。*/
 @page {
   size: 140mm 90mm;
