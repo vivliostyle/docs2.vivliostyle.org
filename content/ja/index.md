@@ -53,3 +53,16 @@ VFMの{漢字|かんじ}サポートをデモンストレーションしてい�
 ### セクション属性
 
 セクションはCSSスタイリング用の適切なIDで自動的にラップされます。
+
+## Vivliostyle CLI生成物のダウンロード
+
+このサイトの各プロダクトのドキュメントは、同じ Markdown ソースから Vivliostyle CLI で **PDF / EPUB** として生成しています（[Single Source, Multi Output](#ssmo)）。
+
+| プロダクト | PDF | EPUB |
+|---|---|---|
+| [Vivliostyle Viewer](/ja/viewer/) | [PDF](/downloads/vivliostyle-viewer-ja.pdf) | [EPUB](/downloads/vivliostyle-viewer-ja.epub) |
+| [Vivliostyle CLI](/ja/cli/) | [PDF](/downloads/vivliostyle-cli-ja.pdf) | [EPUB](/downloads/vivliostyle-cli-ja.epub) |
+| [VFM](/ja/vfm/) | [PDF](/downloads/vfm-ja.pdf) | [EPUB](/downloads/vfm-ja.epub) |
+| [Vivliostyle Themes](/ja/themes/) | [PDF](/downloads/vivliostyle-themes-ja.pdf) | [EPUB](/downloads/vivliostyle-themes-ja.epub) |
+| [リファレンス](/ja/reference/) | [PDF](/downloads/vivliostyle-reference-ja.pdf) | [EPUB](/downloads/vivliostyle-reference-ja.epub) |
+| [活用ガイド](/ja/cookbook/) | [PDF](/downloads/vivliostyle-cookbook-ja.pdf) | [EPUB](/downloads/vivliostyle-cookbook-ja.epub) |

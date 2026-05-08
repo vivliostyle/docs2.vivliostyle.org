@@ -53,3 +53,16 @@ This demonstrates VFM's {Ruby|ルビ} support.
 ### Section Attribution
 
 Sections are automatically wrapped with appropriate IDs for CSS styling.
+
+## Downloads (built by Vivliostyle CLI)
+
+Every product's documentation on this site is generated from the same Markdown source as **PDF / EPUB** with Vivliostyle CLI ([Single Source, Multi Output](#ssmo)).
+
+| Product | PDF | EPUB |
+|---|---|---|
+| [Vivliostyle Viewer](/en/viewer/) | [PDF](/downloads/vivliostyle-viewer-en.pdf) | [EPUB](/downloads/vivliostyle-viewer-en.epub) |
+| [Vivliostyle CLI](/en/cli/) | [PDF](/downloads/vivliostyle-cli-en.pdf) | [EPUB](/downloads/vivliostyle-cli-en.epub) |
+| [VFM](/en/vfm/) | [PDF](/downloads/vfm-en.pdf) | [EPUB](/downloads/vfm-en.epub) |
+| [Vivliostyle Themes](/en/themes/) | [PDF](/downloads/vivliostyle-themes-en.pdf) | [EPUB](/downloads/vivliostyle-themes-en.epub) |
+| [Reference](/en/reference/) | [PDF](/downloads/vivliostyle-reference-en.pdf) | [EPUB](/downloads/vivliostyle-reference-en.epub) |
+| [Cookbook](/en/cookbook/) | [PDF](/downloads/vivliostyle-cookbook-en.pdf) | [EPUB](/downloads/vivliostyle-cookbook-en.epub) |
