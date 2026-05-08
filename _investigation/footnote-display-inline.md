@@ -167,7 +167,7 @@ return null;
 ### 期待される挙動
 
 CSS GCPM 3 §2.4 footnote-display およびドキュメントサイトの
-[脚注ガイド](https://docs.vivliostyle.org/ja/new-features/footnotes/)
+[脚注ガイド](https://docs.vivliostyle.org/ja/cookbook/footnotes/)
 （対象バージョン Vivliostyle.js v2.41.0+）に従えば、3 件の短い脚注本文は
 脚注エリアで 1 行（または 1 つの inline run として折り返しを含むひとつの
 連続）に流れるはずです。
@@ -211,6 +211,6 @@ CSS GCPM 3 §2.4 footnote-display およびドキュメントサイトの
 1. **本ファイルをコミット**して投稿前のメモとして残す
 2. ユーザの確認のうえ、`gh issue create` で Vivliostyle.js リポジトリに
    起票（または手動投稿）
-3. 起票後、記事 `content/{en,ja}/new-features/footnotes.md` の §8
+3. 起票後、記事 `content/{en,ja}/cookbook/footnotes.md` の §8
    `footnote-display` 節に「v2.41.0 で視覚的に確認できない（[Issue
    #XXXX](URL)）」と注記を入れる

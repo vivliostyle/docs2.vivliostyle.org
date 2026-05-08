@@ -1,6 +1,6 @@
 # 脚注ガイド スクリーンショット撮影環境（VFM版）
 
-`content/{en,ja}/new-features/footnotes.md`に埋め込むスクリーンショットの
+`content/{en,ja}/cookbook/footnotes.md`に埋め込むスクリーンショットの
 撮影元を、**VFMが`[^1]` Markdown記法から実際に生成するHTML**に
 切り替えるための作業ディレクトリです。
 
@@ -71,7 +71,7 @@ npx http-server _screenshots/footnotes-vfm/dist -p 8080
 ```
 
 撮影解像度は`_archive/footnotes-handwritten/`と同じ（短冊ページ全体を
-1枚に収めてDPR 2x）。保存先は`public/new-features/footnotes/{ja,en}/`。
+1枚に収めてDPR 2x）。保存先は`public/cookbook/footnotes/{ja,en}/`。
 
 ## サンプル一覧
 
@@ -107,9 +107,9 @@ npx http-server _screenshots/footnotes-vfm/dist -p 8080
    - 旧スクリーンショットと比べて、想定どおり「VFM出力ベースの体裁」に
      なっているか、本文・脚注・マーカー・レイアウトを目視チェック
 3. 必要なら`.md` / `styles/*.css`を調整して再ビルド
-4. 14件のスクリーンショットを撮影し`public/new-features/footnotes/{ja,en}/`の
+4. 14件のスクリーンショットを撮影し`public/cookbook/footnotes/{ja,en}/`の
    PNGを**上書き**（同名で置換）
-5. 記事`content/{ja,en}/new-features/footnotes.md`の各`<details>`を:
+5. 記事`content/{ja,en}/cookbook/footnotes.md`の各`<details>`を:
    - 「VFM Markdownソース」(`.md`の中身)と
    - 「生成されたHTML」(`.html`の中身)
    の**2つの`<details>`**に書き換え（または1つの`<details>`内に

@@ -1,9 +1,9 @@
 /**
- * 記事 content/{ja,en}/new-features/footnotes.md の各セクションにある
+ * 記事 content/{ja,en}/cookbook/footnotes.md の各セクションにある
  * <details> ブロック対を、最新の VFM Markdown ソース + VFM 生成 HTML に
  * 書き換える。
  *
- * 各セクションは画像 (`/new-features/footnotes/{lang}/{N}-...png`) を
+ * 各セクションは画像 (`/cookbook/footnotes/{lang}/{N}-...png`) を
  * アンカーとして識別する。画像直後の連続する 2 つの <details>...</details>
  * を、サンプル N に対応する新しい 2 ブロックで置換する。
  *
@@ -11,7 +11,7 @@
  *   - _screenshots/footnotes-vfm/{lang}/{stem}.md (VFM Markdown ソース)
  *   - _screenshots/footnotes-vfm/dist/{lang}/{stem}.html (VFM 生成 HTML)
  * 出力:
- *   - content/{lang}/new-features/footnotes.md (in place 書き換え)
+ *   - content/{lang}/cookbook/footnotes.md (in place 書き換え)
  *
  * 何度実行しても結果は同じ (idempotent)。
  */
@@ -99,7 +99,7 @@ function rewriteArticle(lang) {
     repoRoot,
     'content',
     lang,
-    'new-features',
+    'cookbook',
     'footnotes.md',
   );
   let article = fs.readFileSync(articlePath, 'utf8');
@@ -107,7 +107,7 @@ function rewriteArticle(lang) {
   for (let i = 0; i < SAMPLES.length; i++) {
     const { img } = SAMPLES[i];
     // 画像参照行に含まれる一意なパス文字列をアンカーにする
-    const imgRef = `(/new-features/footnotes/${lang}/${img}.png)`;
+    const imgRef = `(/cookbook/footnotes/${lang}/${img}.png)`;
     const imgIdx = findIndex(article, imgRef);
     // 画像行直後にある 2 つの <details>…</details> ブロックを範囲特定
     const open1 = findIndex(article, '<details>', imgIdx);

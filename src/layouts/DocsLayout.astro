@@ -23,7 +23,7 @@ const navLabels = isJa
   ? {
       product: 'プロダクト',
       tutorial: 'チュートリアル',
-      newFeatures: '新機能ガイド',
+      cookbook: '活用ガイド',
       reference: 'リファレンス',
       faq: 'FAQ',
       docs: 'ドキュメント',
@@ -32,7 +32,7 @@ const navLabels = isJa
   : {
       product: 'Product',
       tutorial: 'Tutorials',
-      newFeatures: 'New Features',
+      cookbook: 'Cookbook',
       reference: 'Reference',
       faq: 'FAQ',
       docs: 'Documentation',
@@ -51,9 +51,9 @@ const navLinks = {
     href: isJa ? 'https://vivliostyle.org/ja/tutorials/' : 'https://vivliostyle.org/tutorials/',
     external: true,
   },
-  newFeatures: {
-    label: navLabels.newFeatures,
-    href: `/${lang}/new-features/`,
+  cookbook: {
+    label: navLabels.cookbook,
+    href: `/${lang}/cookbook/`,
   },
   reference: {
     docs: [
@@ -143,7 +143,7 @@ const navLinks = {
           <img src="/vivliostyle-docs.svg" alt="Vivliostyle Docs" class="logo-image" />
         </a>
         <nav class="header-nav" aria-label={isJa ? 'グローバルナビゲーション' : 'Global navigation'}>
-          <a href={navLinks.newFeatures.href}>{navLinks.newFeatures.label}</a>
+          <a href={navLinks.cookbook.href}>{navLinks.cookbook.label}</a>
           <details class="nav-accordion">
             <summary>{navLabels.product}</summary>
             <div class="nav-panel">

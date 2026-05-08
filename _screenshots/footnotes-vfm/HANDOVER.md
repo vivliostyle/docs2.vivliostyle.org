@@ -39,7 +39,7 @@ npx vivliostyle preview dist/ja/01-gcpm-class.html
 
 - ページ全体（短冊サイズ）を1枚に収める
 - 解像度: DPR 2x (Retina相当)
-- 保存先: `public/new-features/footnotes/{ja,en}/{N}-name.png`
+- 保存先: `public/cookbook/footnotes/{ja,en}/{N}-name.png`
   - **ファイル名は旧来と完全一致**（`01-html-class-themebase.png`等）にすると
     記事側の`![…](…)`を書き換えずに済む。VFM版に合わせて変えるなら
     記事側の参照も同時更新が必要
@@ -55,7 +55,7 @@ npx vivliostyle preview dist/ja/01-gcpm-class.html
 >
 > ファイル名はリネームしないほうが工数が小さいのでおすすめ。
 
-### 3.記事`content/{ja,en}/new-features/footnotes.md`の`<details>`書き換え
+### 3.記事`content/{ja,en}/cookbook/footnotes.md`の`<details>`書き換え
 
 現在は手書きHTML全文が入っている`<details>`を、以下の内容に置換:
 

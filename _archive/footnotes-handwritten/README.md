@@ -1,6 +1,6 @@
 # 脚注ガイド スクリーンショット撮影環境
 
-`content/{en,ja}/new-features/footnotes.md` に埋め込むスクリーンショットを
+`content/{en,ja}/cookbook/footnotes.md` に埋め込むスクリーンショットを
 撮影するためのソース HTML を置く作業ディレクトリです。
 
 ## 設計方針
@@ -63,7 +63,7 @@ https://vivliostyle.org/viewer/?src=http://localhost:8080/ja/01-html-class-theme
 ### 3. 保存先
 
 ```
-public/new-features/footnotes/
+public/cookbook/footnotes/
 ├── en/
 │   ├── 01-html-class-themebase.png
 │   ├── …
@@ -76,15 +76,15 @@ public/new-features/footnotes/
 
 ### 4. 記事への組み込み
 
-`content/{en,ja}/new-features/footnotes.md` の該当セクションに以下のように
+`content/{en,ja}/cookbook/footnotes.md` の該当セクションに以下のように
 追記:
 
 ```markdown
-![Footnote rendered with theme-base CSS](/new-features/footnotes/en/01-html-class-themebase.png)
+![Footnote rendered with theme-base CSS](/cookbook/footnotes/en/01-html-class-themebase.png)
 ```
 
 ```markdown
-![theme-base で描画された脚注](/new-features/footnotes/ja/01-html-class-themebase.png)
+![theme-base で描画された脚注](/cookbook/footnotes/ja/01-html-class-themebase.png)
 ```
 
 Markdown への画像挿入作業は別ステップとして依頼してください。

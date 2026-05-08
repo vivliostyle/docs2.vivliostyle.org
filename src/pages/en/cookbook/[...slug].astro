@@ -1,7 +1,7 @@
 ---
 /**
- * New Features ドキュメントページ（英語版）
- * 動的ルーティング: /en/new-features/* にマッチ
+ * Cookbook ドキュメントページ（英語版）
+ * 動的ルーティング: /en/cookbook/* にマッチ
  */
 import DocsLayout from '../../../layouts/DocsLayout.astro';
 import LanguageSwitcher from '../../../components/LanguageSwitcher.astro';
@@ -10,8 +10,8 @@ import SidebarTocHeadings from '../../../components/SidebarTocHeadings.astro';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
-  const docs = await getCollection('new-features-en');
-  const docsJa = await getCollection('new-features-ja');
+  const docs = await getCollection('cookbook-en');
+  const docsJa = await getCollection('cookbook-ja');
 
   // 日本語版に存在するIDのセット
   const jaIds = new Set(docsJa.map((d) => d.id));
@@ -31,7 +31,7 @@ export async function getStaticPaths() {
 
 const { doc, docs, hasJaTranslation } = Astro.props;
 const htmlContent = doc.rendered?.html || '';
-const title = doc.data?.title || 'New Features';
+const title = doc.data?.title || 'Cookbook';
 const description = doc.data?.description || '';
 const headings = ((doc.data as unknown) as { headings?: Array<{ depth: number; slug: string; text: string }> })?.headings || [];
 
@@ -46,8 +46,8 @@ const sortedDocs = [...docs].sort((a, b) => {
   return orderA - orderB;
 });
 
-const currentPath = doc.id === 'index' ? '/en/new-features/' : `/en/new-features/${doc.id}/`;
-const pagePath = doc.id === 'index' ? '/new-features/' : `/new-features/${doc.id}/`;
+const currentPath = doc.id === 'index' ? '/en/cookbook/' : `/en/cookbook/${doc.id}/`;
+const pagePath = doc.id === 'index' ? '/cookbook/' : `/cookbook/${doc.id}/`;
 
 const currentIndex = sortedDocs.findIndex((item) => item.id === doc.id);
 const prevPage = currentIndex > 0 ? sortedDocs[currentIndex - 1] : null;
@@ -64,11 +64,11 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
     <LanguageSwitcher currentLang="en" pagePath={pagePath} hasTranslation={hasJaTranslation} />
   </div>
   <nav slot="sidebar">
-    <h3>New Features</h3>
+    <h3>Cookbook</h3>
     <ul style="list-style: none; padding-left: 0;">
       <li><a href="/en/">← Back to Home</a></li>
       {sortedDocs.map((item) => {
-        const itemPath = item.id === 'index' ? '/en/new-features/' : `/en/new-features/${item.id}/`;
+        const itemPath = item.id === 'index' ? '/en/cookbook/' : `/en/cookbook/${item.id}/`;
         const isActive = itemPath === currentPath;
         return (
           <li class:list={[{ active: isActive }]}>
@@ -87,7 +87,7 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
   <PageNavigation
     prevPage={prevPage}
     nextPage={nextPage}
-    basePath="/en/new-features/"
+    basePath="/en/cookbook/"
     prevLabel="← Previous"
     nextLabel="Next →"
   />

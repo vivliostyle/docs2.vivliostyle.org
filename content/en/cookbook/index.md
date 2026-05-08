@@ -1,11 +1,11 @@
 ---
-title: New Features
+title: Cookbook
 description: Practical, feature-oriented guides to recent additions across Vivliostyle
 lang: en
 order: 1
 ---
 
-# New Features
+# Cookbook
 
 Practical, feature-oriented guides to recent additions across the Vivliostyle ecosystem. Each article focuses on **what you can do** and **how to use it** in real publishing workflows, rather than spec-level reference.
 
@@ -24,6 +24,6 @@ Each guide states the minimum version required at the top, so you can tell at a 
 
 ## How this section is organised
 
-These features typically cut across multiple Vivliostyle products — core CSS, CLI, VFM, and themes — so they don't fit neatly into any single per-product section. The "New Features" section organises them by **feature**, not by product.
+These features typically cut across multiple Vivliostyle products — core CSS, CLI, VFM, and themes — so they don't fit neatly into any single per-product section. The "Cookbook" section organises them by **feature**, not by product.
 
 For canonical specification references, see [Supported CSS Features](/en/reference/supported-css-features/) and the [Core API Reference](/en/reference/api/).

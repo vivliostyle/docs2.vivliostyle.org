@@ -75,7 +75,7 @@ Vivliostyle.js v2.41.0で追加された脚注関連の新機能:
 
 `.footnote { float: footnote }`を含むテーマ（theme-base / theme-techbookなど）を使うと、`<span class="footnote">`の内容がレイアウト時にページ下部の脚注エリアに移動されます。本文中の参照番号と脚注エリアのマーカーは、`::footnote-call`および`::footnote-marker`擬似要素を介して生成されます。
 
-![GCPMクラス方式の脚注。本文中の上付き番号と、ページ下部の脚注エリアにマーカー番号付きで自動配置される](/new-features/footnotes/ja/01-html-class-themebase.png)
+![GCPMクラス方式の脚注。本文中の上付き番号と、ページ下部の脚注エリアにマーカー番号付きで自動配置される](/cookbook/footnotes/ja/01-html-class-themebase.png)
 
 <details>
 <summary>VFM Markdownソース</summary>
@@ -120,7 +120,7 @@ VFM v2.5.x以前では、Markdownの`[^1]`記法はPandoc出力スタイルの**
 
 VFMはこれを`<section role="doc-endnotes">`に変換し、**ドキュメント本文の末尾**に配置します。後注は本文と同じフローに置かれるため、**`float: footnote`の対象にはなりません**。組み込みの`@footnote`スタイリングも後注には影響しません。
 
-![VFM Pandoc形式の後注。本文末尾に`<section role="doc-endnotes">`がフローし、各注に戻るリンクが付く](/new-features/footnotes/ja/02-vfm-pandoc-endnotes.png)
+![VFM Pandoc形式の後注。本文末尾に`<section role="doc-endnotes">`がフローし、各注に戻るリンクが付く](/cookbook/footnotes/ja/02-vfm-pandoc-endnotes.png)
 
 <details>
 <summary>VFM Markdownソース</summary>
@@ -177,7 +177,7 @@ Vivliostyle.js v2.41.0は、DPUB-ARIAロールから直接脚注を認識しま�
 
 ビルトインUAスタイルが`[role="doc-footnote"]`に対して`float: footnote`を適用するため、これは**テーマCSSなしで**動作します。注はページ下部に表示され、本文中の参照番号（`::footnote-call`）も自動生成されます。
 
-![DPUB-ARIA脚注。テーマCSSを一切書かなくてもページ下部の脚注エリアに自動配置される](/new-features/footnotes/ja/03-dpub-aria-default.png)
+![DPUB-ARIA脚注。テーマCSSを一切書かなくてもページ下部の脚注エリアに自動配置される](/cookbook/footnotes/ja/03-dpub-aria-default.png)
 
 <details>
 <summary>VFM Markdownソース</summary>
@@ -260,7 +260,7 @@ Vivliostyle.js v2.41.0+のビルトインUAスタイルが`float: footnote`を�
 }
 ```
 
-![`@page { @footnote { ... } @footnote ::before { ... } }`で脚注エリアに上罫線・「Notes」見出しを与えた例](/new-features/footnotes/ja/04-page-footnote-styled.png)
+![`@page { @footnote { ... } @footnote ::before { ... } }`で脚注エリアに上罫線・「Notes」見出しを与えた例](/cookbook/footnotes/ja/04-page-footnote-styled.png)
 
 <details>
 <summary>VFM Markdownソース</summary>
@@ -311,7 +311,7 @@ vfm:
 
 `inline`の表示例:
 
-![`footnote-display: inline`で3件の短い脚注が同じ行に流れ込む](/new-features/footnotes/ja/05-footnote-display-inline.png)
+![`footnote-display: inline`で3件の短い脚注が同じ行に流れ込む](/cookbook/footnotes/ja/05-footnote-display-inline.png)
 
 <details>
 <summary>VFM Markdownソース</summary>
@@ -348,7 +348,7 @@ vfm:
 
 `compact`の表示例（短い注はインライン、長い注はブロックフォールバック）:
 
-![`footnote-display: compact`で短い注3件がインラインに、長い注がブロックにフォールバック](/new-features/footnotes/ja/06-footnote-display-compact.png)
+![`footnote-display: compact`で短い注3件がインラインに、長い注がブロックにフォールバック](/cookbook/footnotes/ja/06-footnote-display-compact.png)
 
 <details>
 <summary>VFM Markdownソース</summary>
@@ -400,7 +400,7 @@ aside.footnote::footnote-marker {
 }
 ```
 
-![`::footnote-marker`の`list-style-position: outside`でマーカーが本文左にぶら下がり、継続行が本文左端に揃うハンギングインデント](/new-features/footnotes/ja/07-footnote-marker-outside.png)
+![`::footnote-marker`の`list-style-position: outside`でマーカーが本文左にぶら下がり、継続行が本文左端に揃うハンギングインデント](/cookbook/footnotes/ja/07-footnote-marker-outside.png)
 
 <details>
 <summary>VFM Markdownソース</summary>
