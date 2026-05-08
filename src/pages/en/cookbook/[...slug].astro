@@ -7,6 +7,7 @@ import DocsLayout from '../../../layouts/DocsLayout.astro';
 import LanguageSwitcher from '../../../components/LanguageSwitcher.astro';
 import PageNavigation from '../../../components/PageNavigation.astro';
 import SidebarTocHeadings from '../../../components/SidebarTocHeadings.astro';
+import DownloadLinks from '../../../components/DownloadLinks.astro';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -80,6 +81,7 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
         );
       })}
     </ul>
+    <DownloadLinks product="cookbook" lang="en" />
   </nav>
 
   <article set:html={htmlContent} />

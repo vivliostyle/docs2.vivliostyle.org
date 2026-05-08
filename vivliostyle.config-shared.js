@@ -12,14 +12,14 @@
  * Vivliostyle CLI コールバック。
  */
 
-const PRODUCTS = ['cli', 'vfm', 'themes', 'viewer', 'reference'];
+const PRODUCTS = ['cli', 'vfm', 'themes', 'viewer', 'reference', 'cookbook'];
 const ALL_LANGUAGES = ['en', 'ja'];
 
 /**
  * 指定したプロダクト・言語のビルドで copyAsset から除外すべきパスを返す。
  * パターンは entryContextDir (= `dist/`) からの相対 glob。
  *
- * @param {{ product: 'cli'|'vfm'|'themes'|'viewer'|'reference', lang: 'en'|'ja' }} options
+ * @param {{ product: 'cli'|'vfm'|'themes'|'viewer'|'reference'|'cookbook', lang: 'en'|'ja' }} options
  */
 export function getCopyAssetExcludes({ product, lang }) {
   const otherLanguages = ALL_LANGUAGES.filter((l) => l !== lang);

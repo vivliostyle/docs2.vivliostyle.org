@@ -6,7 +6,7 @@
 import LiveView from './LiveView.astro';
 
 interface Props {
-  product: 'cli' | 'vfm' | 'themes' | 'viewer' | 'reference';
+  product: 'cli' | 'vfm' | 'themes' | 'viewer' | 'reference' | 'cookbook';
   lang: 'en' | 'ja';
 }
 
@@ -18,6 +18,7 @@ const fileBase: Record<Props['product'], string> = {
   themes: 'vivliostyle-themes',
   viewer: 'vivliostyle-viewer',
   reference: 'vivliostyle-reference',
+  cookbook: 'vivliostyle-cookbook',
 };
 
 const pdfHref = `/downloads/${fileBase[product]}-${lang}.pdf`;
