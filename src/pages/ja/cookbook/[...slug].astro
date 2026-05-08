@@ -73,7 +73,7 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
             <a href={itemPath} aria-current={isActive ? 'page' : undefined}>
               {item.data.title || item.id}
             </a>
-            {isActive && <SidebarTocHeadings headings={headings} />}
+            {isActive && <SidebarTocHeadings headings={headings} lang="ja" />}
           </li>
         );
       })}
