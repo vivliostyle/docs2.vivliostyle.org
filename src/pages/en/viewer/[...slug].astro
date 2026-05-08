@@ -8,6 +8,7 @@ import LanguageSwitcher from '../../../components/LanguageSwitcher.astro';
 import PageNavigation from '../../../components/PageNavigation.astro';
 import TableOfContents from '../../../components/TableOfContents.astro';
 import SidebarTocHeadings from '../../../components/SidebarTocHeadings.astro';
+import DownloadLinks from '../../../components/DownloadLinks.astro';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -102,6 +103,7 @@ const currentPath = `/en/viewer/${doc.id}/`;
         );
       })}
     </ul>
+    <DownloadLinks product="viewer" lang="en" />
   </nav>
 
   <!-- メインコンテンツ -->

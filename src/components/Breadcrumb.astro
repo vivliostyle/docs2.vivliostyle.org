@@ -38,6 +38,16 @@ const sectionNames = {
   },
 };
 
+// 中間セグメント名のマッピング（reference 配下のネストルート用）
+const segmentLabels: Record<'en' | 'ja', Record<string, string>> = {
+  en: {
+    'contribution-guide': 'Contribution Guides',
+  },
+  ja: {
+    'contribution-guide': 'コントリビューションガイド',
+  },
+};
+
 // パスを解析してパンくずアイテムを生成
 function generateBreadcrumbs(path: string, language: 'en' | 'ja', title?: string): BreadcrumbItem[] {
   const homeLabel = language === 'ja' ? 'ホーム' : 'Home';
@@ -77,8 +87,9 @@ function generateBreadcrumbs(path: string, language: 'en' | 'ja', title?: string
       });
     } else {
       // 中間のセグメント
+      const label = segmentLabels[language][segment] || segment.replace(/-/g, ' ');
       items.push({
-        label: segment.replace(/-/g, ' '),
+        label,
         url: currentUrl + '/',
       });
     }

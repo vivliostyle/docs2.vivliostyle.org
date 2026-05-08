@@ -39,9 +39,12 @@ const description = indexDoc?.data?.description || 'Vivliostyle公式ドキュ�
 
     <div class="sidebar-accordion">
       <div class="accordion-section">
-        <button class="accordion-toggle" aria-controls="new-features-group" aria-expanded="true">
-          <span class="toggle-icon" aria-hidden="true">▶</span>新機能ガイド
-        </button>
+        <div class="accordion-header">
+          <button class="accordion-toggle" aria-controls="new-features-group" aria-expanded="true" aria-label="新機能ガイドの開閉">
+            <span class="toggle-icon" aria-hidden="true"></span>
+          </button>
+          <a href="/ja/new-features/" class="accordion-section-title">新機能ガイド</a>
+        </div>
         <ul class="accordion-content" id="new-features-group">
           <li><a href="/ja/new-features/">概要</a></li>
           <li><a href="/ja/new-features/footnotes/">脚注ガイド</a></li>
@@ -51,9 +54,12 @@ const description = indexDoc?.data?.description || 'Vivliostyle公式ドキュ�
       </div>
 
       <div class="accordion-section">
-        <button class="accordion-toggle" aria-controls="product-group" aria-expanded="true">
-          <span class="toggle-icon" aria-hidden="true">▶</span>プロダクト
-        </button>
+        <div class="accordion-header">
+          <button class="accordion-toggle" aria-controls="product-group" aria-expanded="true" aria-label="プロダクトの開閉">
+            <span class="toggle-icon" aria-hidden="true"></span>
+          </button>
+          <span class="accordion-section-title">プロダクト</span>
+        </div>
         <ul class="accordion-content" id="product-group">
           <li><a href="/ja/viewer/">Vivliostyle Viewer</a></li>
           <li><a href="/ja/cli/">Vivliostyle CLI</a></li>
@@ -62,7 +68,6 @@ const description = indexDoc?.data?.description || 'Vivliostyle公式ドキュ�
         </ul>
       </div>
     </div>
-
     <ul class="sidebar-flat">
       <li>
         <a href="https://vivliostyle.org/ja/tutorials/" target="_blank" rel="noopener noreferrer">チュートリアル</a>
@@ -71,22 +76,25 @@ const description = indexDoc?.data?.description || 'Vivliostyle公式ドキュ�
 
     <div class="sidebar-accordion">
       <div class="accordion-section">
-        <button class="accordion-toggle" aria-controls="reference-group" aria-expanded="true">
-          <span class="toggle-icon" aria-hidden="true">▶</span>リファレンス
-        </button>
+        <div class="accordion-header">
+          <button class="accordion-toggle" aria-controls="reference-group" aria-expanded="true" aria-label="リファレンスの開閉">
+            <span class="toggle-icon" aria-hidden="true"></span>
+          </button>
+          <a href="/ja/reference/" class="accordion-section-title">リファレンス</a>
+        </div>
         <div class="accordion-content accordion-content-grouped" id="reference-group">
           <h4 class="subgroup-title">ドキュメント</h4>
           <ul>
-            <li><a href="/ja/reference/awesome-vivliostyle/">Awesome Vivliostyle</a></li>
             <li><a href="/ja/reference/supported-css-features/">サポートするCSS機能</a></li>
             <li><a href="/ja/reference/api/">Core APIリファレンス</a></li>
+            <li><a href="/ja/reference/awesome-vivliostyle/">Awesome Vivliostyle</a></li>
           </ul>
           <h4 class="subgroup-title">コントリビューションガイド</h4>
           <ul>
-            <li><a href="/ja/reference/contribution-guide/">Vivliostyle.js</a></li>
-            <li><a href="/ja/reference/contributing-cli/">Vivliostyle CLI</a></li>
-            <li><a href="/ja/reference/contributing-vfm/">VFM</a></li>
-            <li><a href="/ja/reference/contributing-themes/">Vivliostyle Themes</a></li>
+            <li><a href="/ja/reference/contribution-guide/js/">Vivliostyle.js</a></li>
+            <li><a href="/ja/reference/contribution-guide/cli/">Vivliostyle CLI</a></li>
+            <li><a href="/ja/reference/contribution-guide/vfm/">VFM</a></li>
+            <li><a href="/ja/reference/contribution-guide/themes/">Vivliostyle Themes</a></li>
           </ul>
         </div>
       </div>
@@ -158,17 +166,13 @@ const description = indexDoc?.data?.description || 'Vivliostyle公式ドキュ�
   }
 
   .accordion-toggle {
-    display: flex;
-    align-items: center;
-    width: 100%;
     background: none;
     border: none;
-    padding: 0.25rem 0;
-    text-align: left;
+    padding: 0;
     cursor: pointer;
-    font-size: 1rem;
-    font-weight: 500;
     color: var(--color-text);
+    display: inline-flex;
+    align-items: center;
   }
 
   .accordion-toggle:hover {
@@ -177,13 +181,35 @@ const description = indexDoc?.data?.description || 'Vivliostyle公式ドキュ�
 
   .toggle-icon {
     display: inline-block;
-    transition: transform 0.2s;
-    margin-right: 0.5rem;
+    width: 1em;
     font-size: 0.7rem;
   }
 
-  .accordion-toggle[aria-expanded="true"] .toggle-icon {
-    transform: rotate(90deg);
+  /* 展開状態は ▼、折りたたみ状態は ▶ を ::before で描画。
+   * SVG/フォント依存の rotate 表現だと環境差で「▼」に見えないことがあるので
+   * 文字そのものを切り替える。 */
+  .accordion-toggle .toggle-icon::before {
+    content: '▶';
+  }
+  .accordion-toggle[aria-expanded="true"] .toggle-icon::before {
+    content: '▼';
+  }
+
+  .accordion-header {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .accordion-section-title {
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  a.accordion-section-title:hover {
+    color: var(--color-primary);
   }
 
   /* L3 項目を含むコンテナ。1.75rem の padding-left により L3 を全アコーディオンで揃える */
@@ -192,14 +218,24 @@ const description = indexDoc?.data?.description || 'Vivliostyle公式ドキュ�
     margin: 0.25rem 0 0;
   }
 
+  .accordion-content li {
+    margin: 0.25rem 0;
+  }
+
   .accordion-content-grouped > ul {
     margin-bottom: 0.25rem;
   }
 
   /* L3: 各ナビ項目（アコーディオン配下）。L1 のトグル / トップレベルリンクより一段小さく */
   .accordion-content a {
+    color: var(--color-text);
+    text-decoration: none;
     font-size: 0.85rem;
     font-weight: 400;
+  }
+
+  .accordion-content a:hover {
+    color: var(--color-primary);
   }
 
   /* L2: サブグループ見出し。

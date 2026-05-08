@@ -1,15 +1,25 @@
+import { getCopyAssetExcludes, transformSectionList, transformDocumentList } from './vivliostyle.config-shared.js';
+
 export default {
   title: 'VFM (Vivliostyle Flavored Markdown) Documentation',
   author: 'Vivliostyle Foundation',
   language: 'en',
   size: 'A4',
-  theme: '@vivliostyle/theme-techbook',
+  theme: './packages/theme-PDF',
+  entryContext: 'dist',
   entry: [
-    'dist/en/vfm/index.html',
-    'dist/en/vfm/vfm/index.html',
-    'dist/en/vfm/hooks/index.html',
+    'en/vfm/index.html',
+    'en/vfm/vfm/index.html',
+    'en/vfm/hooks/index.html',
   ],
-  output: 'public/downloads/vfm-en.pdf',
-  workspaceDir: '.vivliostyle',
-  toc: true,
+  output: [
+    { path: 'public/downloads/vfm-en.pdf', format: 'pdf' },
+    { path: 'public/downloads/vfm-en.epub', format: 'epub' },
+    { path: 'public/publications/vfm-en', format: 'webpub' },
+  ],
+  workspaceDir: '.vivliostyle/vfm-en',
+  toc: { sectionDepth: 3, transformSectionList, transformDocumentList },
+  copyAsset: {
+    excludes: getCopyAssetExcludes({ product: 'vfm', lang: 'en' }),
+  },
 };

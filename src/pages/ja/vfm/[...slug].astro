@@ -8,6 +8,7 @@ import LanguageSwitcher from '../../../components/LanguageSwitcher.astro';
 import PageNavigation from '../../../components/PageNavigation.astro';
 import TableOfContents from '../../../components/TableOfContents.astro';
 import SidebarTocHeadings from '../../../components/SidebarTocHeadings.astro';
+import DownloadLinks from '../../../components/DownloadLinks.astro';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -92,6 +93,7 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
         </ul>
       </div>
     </div>
+    <DownloadLinks product="vfm" lang="ja" />
   </nav>
 
   <article set:html={htmlContent} />

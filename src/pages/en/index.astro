@@ -39,9 +39,12 @@ const description = indexDoc?.data?.description || 'Official documentation for V
 
     <div class="sidebar-accordion">
       <div class="accordion-section">
-        <button class="accordion-toggle" aria-controls="new-features-group" aria-expanded="true">
-          <span class="toggle-icon" aria-hidden="true">▶</span>New Features
-        </button>
+        <div class="accordion-header">
+          <button class="accordion-toggle" aria-controls="new-features-group" aria-expanded="true" aria-label="Toggle New Features section">
+            <span class="toggle-icon" aria-hidden="true"></span>
+          </button>
+          <a href="/en/new-features/" class="accordion-section-title">New Features</a>
+        </div>
         <ul class="accordion-content" id="new-features-group">
           <li><a href="/en/new-features/">Overview</a></li>
           <li><a href="/en/new-features/footnotes/">Footnotes</a></li>
@@ -51,9 +54,12 @@ const description = indexDoc?.data?.description || 'Official documentation for V
       </div>
 
       <div class="accordion-section">
-        <button class="accordion-toggle" aria-controls="product-group" aria-expanded="true">
-          <span class="toggle-icon" aria-hidden="true">▶</span>Product
-        </button>
+        <div class="accordion-header">
+          <button class="accordion-toggle" aria-controls="product-group" aria-expanded="true" aria-label="Toggle Product section">
+            <span class="toggle-icon" aria-hidden="true"></span>
+          </button>
+          <span class="accordion-section-title">Product</span>
+        </div>
         <ul class="accordion-content" id="product-group">
           <li><a href="/en/viewer/">Vivliostyle Viewer</a></li>
           <li><a href="/en/cli/">Vivliostyle CLI</a></li>
@@ -62,31 +68,33 @@ const description = indexDoc?.data?.description || 'Official documentation for V
         </ul>
       </div>
     </div>
-
     <ul class="sidebar-flat">
       <li>
-        <a href="https://vivliostyle.org/tutorials/" target="_blank" rel="noopener noreferrer">Tutorials</a>
+        <a href="https://vivliostyle.org/en/tutorials/" target="_blank" rel="noopener noreferrer">Tutorials</a>
       </li>
     </ul>
 
     <div class="sidebar-accordion">
       <div class="accordion-section">
-        <button class="accordion-toggle" aria-controls="reference-group" aria-expanded="true">
-          <span class="toggle-icon" aria-hidden="true">▶</span>Reference
-        </button>
+        <div class="accordion-header">
+          <button class="accordion-toggle" aria-controls="reference-group" aria-expanded="true" aria-label="Toggle Reference section">
+            <span class="toggle-icon" aria-hidden="true"></span>
+          </button>
+          <a href="/en/reference/" class="accordion-section-title">Reference</a>
+        </div>
         <div class="accordion-content accordion-content-grouped" id="reference-group">
           <h4 class="subgroup-title">Documentation</h4>
           <ul>
-            <li><a href="/en/reference/awesome-vivliostyle/">Awesome Vivliostyle</a></li>
             <li><a href="/en/reference/supported-css-features/">Supported CSS Features</a></li>
             <li><a href="/en/reference/api/">Core API Reference</a></li>
+            <li><a href="/en/reference/awesome-vivliostyle/">Awesome Vivliostyle</a></li>
           </ul>
           <h4 class="subgroup-title">Contribution Guides</h4>
           <ul>
-            <li><a href="/en/reference/contribution-guide/">Vivliostyle.js</a></li>
-            <li><a href="/en/reference/contributing-cli/">Vivliostyle CLI</a></li>
-            <li><a href="/en/reference/contributing-vfm/">VFM</a></li>
-            <li><a href="/en/reference/contributing-themes/">Vivliostyle Themes</a></li>
+            <li><a href="/en/reference/contribution-guide/js/">Vivliostyle.js</a></li>
+            <li><a href="/en/reference/contribution-guide/cli/">Vivliostyle CLI</a></li>
+            <li><a href="/en/reference/contribution-guide/vfm/">VFM</a></li>
+            <li><a href="/en/reference/contribution-guide/themes/">Vivliostyle Themes</a></li>
           </ul>
         </div>
       </div>
@@ -94,7 +102,7 @@ const description = indexDoc?.data?.description || 'Official documentation for V
 
     <ul class="sidebar-flat">
       <li>
-        <a href="https://vivliostyle.org/faq/" target="_blank" rel="noopener noreferrer">FAQ</a>
+        <a href="https://vivliostyle.org/en/faq/" target="_blank" rel="noopener noreferrer">FAQ</a>
       </li>
     </ul>
   </nav>
@@ -158,17 +166,13 @@ const description = indexDoc?.data?.description || 'Official documentation for V
   }
 
   .accordion-toggle {
-    display: flex;
-    align-items: center;
-    width: 100%;
     background: none;
     border: none;
-    padding: 0.25rem 0;
-    text-align: left;
+    padding: 0;
     cursor: pointer;
-    font-size: 1rem;
-    font-weight: 500;
     color: var(--color-text);
+    display: inline-flex;
+    align-items: center;
   }
 
   .accordion-toggle:hover {
@@ -177,18 +181,44 @@ const description = indexDoc?.data?.description || 'Official documentation for V
 
   .toggle-icon {
     display: inline-block;
-    transition: transform 0.2s;
-    margin-right: 0.5rem;
+    width: 1em;
     font-size: 0.7rem;
   }
 
-  .accordion-toggle[aria-expanded="true"] .toggle-icon {
-    transform: rotate(90deg);
+  /* Show ▼ when expanded, ▶ when collapsed via ::before content swap.
+   * Rotation-based approaches don't always render visually as ▼ across
+   * environments, so swap the actual character. */
+  .accordion-toggle .toggle-icon::before {
+    content: '▶';
+  }
+  .accordion-toggle[aria-expanded="true"] .toggle-icon::before {
+    content: '▼';
+  }
+
+  .accordion-header {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .accordion-section-title {
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  a.accordion-section-title:hover {
+    color: var(--color-primary);
   }
 
   .accordion-content {
     padding-left: 1.5rem;
     margin: 0.25rem 0 0;
+  }
+
+  .accordion-content li {
+    margin: 0.25rem 0;
   }
 
   .accordion-content-grouped > ul {
@@ -197,8 +227,14 @@ const description = indexDoc?.data?.description || 'Official documentation for V
 
   /* L3: 各ナビ項目（アコーディオン配下）。L1 のトグル / トップレベルリンクより一段小さく */
   .accordion-content a {
+    color: var(--color-text);
+    text-decoration: none;
     font-size: 0.85rem;
     font-weight: 400;
+  }
+
+  .accordion-content a:hover {
+    color: var(--color-primary);
   }
 
   /* L2: サブグループ見出し。

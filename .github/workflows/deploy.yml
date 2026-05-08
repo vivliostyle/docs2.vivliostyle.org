@@ -18,6 +18,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 60
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -33,8 +34,139 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Astro が dist/ にサイトを書き出す。vivliostyle CLI が
+      # entryContext: 'dist' で HTML を読むため、format ビルドより前で
+      # 走らせる必要がある。
       - name: Build Astro site
         run: npm run build
+
+      # PDF / EPUB / WebPub をビルド時に生成する。成果物はリポジトリには
+      # コミットせず（.gitignore で除外）、毎回のデプロイで CI 側が組版する。
+      # vivliostyle.config-*.js の output は public/downloads/ と
+      # public/publications/ を指しているので、続くステップで dist/ に
+      # 同梱する必要がある。
+      - name: Build PDF / EPUB / WebPub formats
+        run: npm run build:formats
+
+      # Astro の public/ → dist/ コピーは build 時のみ走るため、その後に
+      # 生成された PDF/EPUB/WebPub は手動で dist/ にコピーする。
+      # ここを忘れると GitHub Pages 上で /downloads/...epub などが 404 になる。
+      - name: Copy generated formats into dist/
+        run: |
+          mkdir -p dist/downloads dist/publications
+          cp -r public/downloads/. dist/downloads/
+          cp -r public/publications/. dist/publications/
+
+      # ===== 生成物の検証 =====
+      # CI 一発勝負を避けるため、生成された EPUB / PDF を複数の観点で検証する。
+      # いずれか一つでも失敗すれば、壊れた成果物がそのまま GitHub Pages に上がる
+      # ことを防げる。
+
+      - name: Setup Java for epubcheck
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install epubcheck
+        run: |
+          curl -sL https://github.com/w3c/epubcheck/releases/download/v5.2.1/epubcheck-5.2.1.zip -o /tmp/epubcheck.zip
+          unzip -q /tmp/epubcheck.zip -d /tmp
+
+      # epubcheck は EPUB 3.3 の strict 準拠を検査する。現状は upstream 由来の
+      # 構造的問題（Astro が body 内に inline <style> を出力する／VFM が
+      # <th align="right"> 等の deprecated 属性を出力する 等）でエラーが出る
+      # ため、実行はするが deploy のブロックはしない。CI ログに残った内容は
+      # 後続の対処（Astro / VFM 側の改善）の判断材料として活用する。
+      # 真に致命的な構造破綻は後段の sanity check で別途検知する。
+      - name: Validate all EPUBs with epubcheck (informational)
+        run: |
+          for f in public/downloads/*.epub; do
+            echo "::group::epubcheck $(basename "$f")"
+            java -jar /tmp/epubcheck-5.2.1/epubcheck.jar "$f" || echo "::warning::epubcheck reported issues in $(basename "$f") (not blocking; see log)"
+            echo "::endgroup::"
+          done
+
+      - name: Install poppler-utils (pdfinfo)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq poppler-utils
+
+      - name: Check for unexpected Type 3 fonts in PDFs
+        run: |
+          # PDF に意図せず Type 3 で埋め込まれたフォントが混じっていないか確認。
+          # Type 3 は Adobe Reader 等で正しく描画されないことがある（特に
+          # Hiragino 系の .otf がローカルにある環境で local() フォールバックが
+          # 起きると発生する）。許容する Type 3 は次の 2 つだけ:
+          #   - TwemojiMozilla: COLR 絵文字。Chrome の PDF パイプラインが COLR
+          #     を必ず Type 3 化するので避けられない。
+          #   - AppleColorEmoji: 念のため許容（CI runner には来ないはず）。
+          # 上記以外の Type 3 が検出されたら deploy を止める。新しく PDF に
+          # 入った文字が theme-PDF/fonts に未収録だと Hiragino にフォール
+          # バックして検出される想定。.symbol-chars.txt に文字を足して
+          # `npm run regenerate:symbol-fonts` で再生成すれば直る。
+          fail=0
+          for f in public/downloads/*.pdf; do
+            bad=$(pdffonts "$f" 2>/dev/null | awk '/Type 3/ {print $1}' | grep -vE 'TwemojiMozilla|AppleColorEmoji' || true)
+            if [ -n "$bad" ]; then
+              echo "::error::$(basename "$f") contains unexpected Type 3 font(s):"
+              echo "$bad" | sed 's/^/    /'
+              fail=1
+            fi
+          done
+          if [ "$fail" = "1" ]; then
+            echo ""
+            echo "Hint: see packages/theme-PDF/fonts/README.md for adding glyphs."
+          fi
+          exit $fail
+
+      - name: PDF / EPUB sanity check
+        run: |
+          fail=0
+          # 各 PDF: ページ数 5 以上、サイズ 100KB 以上
+          for f in public/downloads/*.pdf; do
+            pages=$(pdfinfo "$f" 2>/dev/null | awk '/^Pages:/ {print $2}')
+            size=$(stat -c%s "$f")
+            printf "  %-50s pages=%-5s size=%s bytes\n" "$(basename "$f")" "$pages" "$size"
+            if [ -z "$pages" ] || [ "$pages" -lt 5 ]; then
+              echo "::error::$f has $pages pages (expected >=5)"
+              fail=1
+            fi
+            if [ "$size" -lt 100000 ]; then
+              echo "::error::$f is $size bytes (expected >=100KB)"
+              fail=1
+            fi
+          done
+          # 各 EPUB: サイズ 50KB 以上、unzip して spine itemref 2 個以上
+          # （閾値 2 は最小構成：論理目次 1 + 本文 1。viewer は本文 1 章しか
+          #  ないため 2、vfm は 4、cli/themes/reference は 5 以上）
+          for f in public/downloads/*.epub; do
+            size=$(stat -c%s "$f")
+            spine=$(unzip -p "$f" EPUB/content.opf 2>/dev/null | grep -c '<itemref')
+            printf "  %-50s spine=%-5s size=%s bytes\n" "$(basename "$f")" "$spine" "$size"
+            if [ "$size" -lt 50000 ]; then
+              echo "::error::$f is $size bytes (expected >=50KB)"
+              fail=1
+            fi
+            if [ "$spine" -lt 2 ]; then
+              echo "::error::$f spine has $spine itemref (expected >=2)"
+              fail=1
+            fi
+          done
+          exit $fail
+
+      # PR / 非 main ブランチでも生成済の PDF / EPUB を Actions の Artifact
+      # としてダウンロード可能にする。レビュアーは PR ページの "Checks" タブ
+      # から zip を取得し、ローカルの Books / Thorium 等で実機確認できる。
+      # main へのマージ後は GitHub Pages 側に同じ成果物が配信されるので、
+      # 重複を避けて main では Artifact 化しない。
+      - name: Upload PDF / EPUB / WebPub artifact (for PR review)
+        if: github.ref != 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: vivliostyle-docs-formats
+          path: |
+            public/downloads/
+            public/publications/
+          if-no-files-found: error
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

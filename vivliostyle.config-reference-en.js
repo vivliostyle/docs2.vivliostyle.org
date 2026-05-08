@@ -1,19 +1,30 @@
+import { getCopyAssetExcludes, transformSectionList, transformDocumentList } from './vivliostyle.config-shared.js';
+
 export default {
   title: 'Vivliostyle Reference',
   author: 'Vivliostyle Foundation',
   language: 'en',
   size: 'A4',
-  theme: './packages/theme-docs',
+  theme: './packages/theme-PDF',
+  entryContext: 'dist',
   entry: [
-    'dist/en/reference/index.html',
-    'dist/en/reference/contribution-guide/index.html',
-    'dist/en/reference/contributing-cli/index.html',
-    'dist/en/reference/contributing-vfm/index.html',
-    'dist/en/reference/contributing-themes/index.html',
-    'dist/en/reference/api/index.html',
-    'dist/en/reference/supported-css-features/index.html',
+    'en/reference/index.html',
+    'en/reference/supported-css-features/index.html',
+    'en/reference/api/index.html',
+    'en/reference/contribution-guide/index.html',
+    'en/reference/contribution-guide/js/index.html',
+    'en/reference/contribution-guide/cli/index.html',
+    'en/reference/contribution-guide/vfm/index.html',
+    'en/reference/contribution-guide/themes/index.html',
   ],
-  output: 'public/downloads/vivliostyle-reference-en.pdf',
-  workspaceDir: '.vivliostyle',
-  toc: true,
+  output: [
+    { path: 'public/downloads/vivliostyle-reference-en.pdf', format: 'pdf' },
+    { path: 'public/downloads/vivliostyle-reference-en.epub', format: 'epub' },
+    { path: 'public/publications/reference-en', format: 'webpub' },
+  ],
+  workspaceDir: '.vivliostyle/reference-en',
+  toc: { sectionDepth: 3, transformSectionList, transformDocumentList },
+  copyAsset: {
+    excludes: getCopyAssetExcludes({ product: 'reference', lang: 'en' }),
+  },
 };
