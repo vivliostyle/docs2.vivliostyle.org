@@ -38,7 +38,7 @@ Vivliostyleの最大のメリットは**SSMO（Single Source Multi Output）**�
 
 ## [活用ガイド](/ja/cookbook/)
 
-Vivliostyle.jsとCLIの最近の追加機能を実践的に解説:
+最近追加された機能を、プロダクトを横断して実践的に解説:
 
 - [脚注（フットノート）](/ja/cookbook/footnotes/) — DPUB-ARIA脚注、標準 `@page { @footnote { } }` ルール、VFMの新しい `footnote` モード（v2.41.0+）
 - [CMYK 変換](/ja/cookbook/cmyk/) — `device-cmyk()` とCLIによるCMYK PDF出力（v2.40.0+）

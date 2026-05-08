@@ -38,7 +38,7 @@ Choose a product to get started:
 
 ## [Cookbook](/en/cookbook/)
 
-Practical guides to recent Vivliostyle.js and CLI features:
+Practical, cross-product guides to recently added Vivliostyle features:
 
 - [Footnotes](/en/cookbook/footnotes/) — DPUB-ARIA footnotes, the standard `@page { @footnote { } }` rule, and the new VFM `footnote` modes (v2.41.0+)
 - [CMYK Conversion](/en/cookbook/cmyk/) — `device-cmyk()` and CLI PDF CMYK output (v2.40.0+)
