@@ -21,14 +21,21 @@ interface Heading {
 interface Props {
   headings?: Heading[];
   idPrefix?: string;
+  lang?: 'en' | 'ja';
 }
 
-const { headings = [], idPrefix = 'toc-group' } = Astro.props;
+const { headings = [], idPrefix = 'toc-group', lang = 'en' } = Astro.props;
 
 const filtered = headings.filter((h) => h && h.slug && (h.depth === 2 || h.depth === 3));
 
 function getPlainText(html: string): string {
   return html.replace(/<[^>]*>/g, '').replace(/&amp;|&#x26;/g, '&');
+}
+
+function toggleAriaLabel(headingText: string): string {
+  return lang === 'ja'
+    ? `${headingText} のサブセクションを開閉`
+    : `Toggle subsections of ${headingText}`;
 }
 ---
 
@@ -55,7 +62,7 @@ function getPlainText(html: string): string {
                 type="button"
                 aria-controls={groupId}
                 aria-expanded="false"
-                aria-label={`${plainText} のサブセクションを開閉`}
+                aria-label={toggleAriaLabel(plainText)}
               >
                 <span class="toggle-icon" aria-hidden="true">▶</span>
               </button>
@@ -165,7 +172,7 @@ function getPlainText(html: string): string {
 <script>
   // 同じページ内に複数のサイドバーがあっても全 toc-toggle に効くよう document スコープで聴取
   document.addEventListener('DOMContentLoaded', () => {
-    const toggleButtons = document.querySelectorAll<HTMLButtonElement>('.toc-toggle');
+    const toggleButtons = document.querySelectorAll('.toc-toggle');
     toggleButtons.forEach((button) => {
       button.addEventListener('click', () => {
         const targetId = button.getAttribute('aria-controls');

@@ -6,7 +6,6 @@
 import DocsLayout from '../../../layouts/DocsLayout.astro';
 import LanguageSwitcher from '../../../components/LanguageSwitcher.astro';
 import PageNavigation from '../../../components/PageNavigation.astro';
-import TableOfContents from '../../../components/TableOfContents.astro';
 import SidebarTocHeadings from '../../../components/SidebarTocHeadings.astro';
 import DownloadLinks from '../../../components/DownloadLinks.astro';
 import { getCollection } from 'astro:content';
@@ -88,7 +87,7 @@ const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex 
             return (
               <li class:list={[{ active: isActive }]}>
                 <a href={itemPath} aria-current={isActive ? 'page' : undefined}>{item.data.title || item.id}</a>
-                {isActive && <SidebarTocHeadings headings={headings} />}
+                {isActive && <SidebarTocHeadings headings={headings} lang="ja" />}
               </li>
             );
           })}

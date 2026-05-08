@@ -290,7 +290,7 @@ const PROSE_JA_RANGE = '\\u3040-\\u30FF\\u4E00-\\u9FFF\\u3000-\\u303F\\uFF00-\\u
 const PROSE_RE_JA_SPACE_ASCII = new RegExp(`([${PROSE_JA_RANGE}]) ([!-~])`, 'g');
 const PROSE_RE_ASCII_SPACE_JA = new RegExp(`([!-~]) ([${PROSE_JA_RANGE}])`, 'g');
 
-function cleanJaeuSpacesInHtml(html: string): string {
+export function cleanJaeuSpacesInHtml(html: string): string {
   if (!html) return html;
   // 保護対象タグの中身をセンチネルで隠す
   const SENTINEL = '\u0000';
