@@ -7,19 +7,45 @@ import DocsLayout from '../../../layouts/DocsLayout.astro';
 import LanguageSwitcher from '../../../components/LanguageSwitcher.astro';
 import PageNavigation from '../../../components/PageNavigation.astro';
 import TableOfContents from '../../../components/TableOfContents.astro';
+import DownloadLinks from '../../../components/DownloadLinks.astro';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
+  // アップストリームの CONTRIBUTING.md は "Contribution Guide" /
+  // "Contribution Guidelines" のように汎用的な H1 を持つため、プロダクト間で
+  // 区別がつかない。プロダクト名を含む見出しに書き換えて、ページ内見出し・
+  // パンくず・サイドバー・PDF 章扉/柱の表記を一致させる。
+  const withOverriddenH1 = <T extends { rendered?: { html?: string }; data?: Record<string, unknown> }>(
+    doc: T,
+    newTitle: string,
+  ): T => {
+    const html = doc.rendered?.html ?? '';
+    const newHtml = html.replace(
+      /(<h1\b[^>]*>)[\s\S]*?(<\/h1>)/i,
+      (_match, open: string, close: string) => `${open}${newTitle}${close}`,
+    );
+    const oldHeadings =
+      (doc.data?.headings as Array<{ depth: number; slug: string; text: string }> | undefined) ?? [];
+    const newHeadings = oldHeadings.map((h, i) =>
+      i === 0 && h.depth === 1 ? { ...h, text: newTitle } : h,
+    );
+    return {
+      ...doc,
+      data: { ...doc.data, headings: newHeadings },
+      rendered: { ...(doc.rendered ?? {}), html: newHtml },
+    };
+  };
+
   const referenceDocs = await getCollection('vivliostyle-reference-ja');
   const referenceDocsEn = await getCollection('vivliostyle-reference-en');
   const awesomeDocs = await getCollection('awesome-vivliostyle-ja');
   const awesomeDocsEn = await getCollection('awesome-vivliostyle-en');
-  
+
   // CLI、Themes、VFMのContributingドキュメントも取得
   const cliContributing = await getCollection('vivliostyle-cli-contributing-en');
   const themesContributing = await getCollection('vivliostyle-themes-contributing-en');
   const vfmContributing = await getCollection('vivliostyle-vfm-contributing-en');
-  
+
   const awesomeDoc = awesomeDocs[0];
   const awesomeDocEn = awesomeDocsEn[0];
   const awesomeTitle = awesomeDoc?.data?.title || 'Awesome Vivliostyle';
@@ -44,16 +70,38 @@ export async function getStaticPaths() {
   ]);
 
   const paths = [];
-  
-  // 通常のリファレンスドキュメント
+
+  // 通常のリファレンスドキュメント。
+  // Vivliostyle.js docs/contribution-guide.md は contribution-guide/js にネスト
   referenceDocs.forEach(doc => {
+    if (doc.id === 'contribution-guide') {
+      paths.push({
+        params: { slug: 'contribution-guide/js' },
+        props: {
+          doc: {
+            ...doc,
+            id: 'contribution-guide/js',
+            data: {
+              ...doc.data,
+              title: 'Vivliostyle.js コントリビューションガイド',
+            },
+          },
+          referenceDocs: referenceDocsAll,
+          hasEnTranslation: enIds.has('contribution-guide'),
+          isContributing: true,
+          isHub: false,
+        },
+      });
+      return;
+    }
     paths.push({
       params: { slug: doc.id },
-      props: { 
-        doc, 
+      props: {
+        doc,
         referenceDocs: referenceDocsAll,
         hasEnTranslation: enIds.has(doc.id),
         isContributing: false,
+        isHub: false,
       },
     });
   });
@@ -66,66 +114,97 @@ export async function getStaticPaths() {
         referenceDocs: referenceDocsAll,
         hasEnTranslation: enIds.has('awesome-vivliostyle'),
         isContributing: false,
+        isHub: false,
       },
     });
   }
-  
-  // CLI Contributing（CONTRIBUTING.mdをcontributing-cliとしてマップ）
+
+  // コントリビューションガイドのハブページ（仮想ページ /ja/reference/contribution-guide/）
+  const hubHtml = `
+    <h1 id="contribution-guides">コントリビューションガイド</h1>
+    <p>Vivliostyle の各プロダクトの開発に参加する方法を、プロダクトごとに案内します。</p>
+    <ul>
+      <li><a href="/ja/reference/contribution-guide/js/"><strong>Vivliostyle.js</strong></a> — 組版エンジン本体</li>
+      <li><a href="/ja/reference/contribution-guide/cli/"><strong>Vivliostyle CLI</strong></a> — コマンドラインツール</li>
+      <li><a href="/ja/reference/contribution-guide/vfm/"><strong>VFM</strong></a> — Vivliostyle Flavored Markdown</li>
+      <li><a href="/ja/reference/contribution-guide/themes/"><strong>Vivliostyle Themes</strong></a> — 公式テーマパッケージ</li>
+    </ul>
+  `;
+  paths.push({
+    params: { slug: 'contribution-guide' },
+    props: {
+      doc: {
+        id: 'contribution-guide',
+        data: {
+          title: 'コントリビューションガイド',
+          description: 'Vivliostyle 各プロダクトのコントリビューションガイドの索引',
+          headings: [],
+        },
+        rendered: { html: hubHtml },
+      },
+      referenceDocs: referenceDocsAll,
+      hasEnTranslation: true,
+      isContributing: false,
+      isHub: true,
+    },
+  });
+
+  // CLI Contributing → /ja/reference/contribution-guide/cli/
   cliContributing.forEach(doc => {
+    const title = 'Vivliostyle CLI コントリビューションガイド';
+    const overridden = withOverriddenH1(doc, title);
     paths.push({
-      params: { slug: 'contributing-cli' },
+      params: { slug: 'contribution-guide/cli' },
       props: {
         doc: {
-          ...doc,
-          id: 'contributing-cli',
-          data: {
-            ...doc.data,
-            title: doc.data?.title || 'Vivliostyle CLI コントリビューションガイド',
-          },
+          ...overridden,
+          id: 'contribution-guide/cli',
+          data: { ...overridden.data, title },
         },
         referenceDocs: referenceDocsAll,
         hasEnTranslation: true,
         isContributing: true,
+        isHub: false,
       },
     });
   });
-  
-  // Themes Contributing
+
+  // Themes Contributing → /ja/reference/contribution-guide/themes/
   themesContributing.forEach(doc => {
+    const title = 'Vivliostyle Themes コントリビューションガイド';
+    const overridden = withOverriddenH1(doc, title);
     paths.push({
-      params: { slug: 'contributing-themes' },
+      params: { slug: 'contribution-guide/themes' },
       props: {
         doc: {
-          ...doc,
-          id: 'contributing-themes',
-          data: {
-            ...doc.data,
-            title: doc.data?.title || 'Vivliostyle Themes コントリビューションガイド',
-          },
+          ...overridden,
+          id: 'contribution-guide/themes',
+          data: { ...overridden.data, title },
         },
         referenceDocs: referenceDocsAll,
         hasEnTranslation: true,
         isContributing: true,
+        isHub: false,
       },
     });
   });
-  
-  // VFM Contributing
+
+  // VFM Contributing → /ja/reference/contribution-guide/vfm/
   vfmContributing.forEach(doc => {
+    const title = 'VFM コントリビューションガイド';
+    const overridden = withOverriddenH1(doc, title);
     paths.push({
-      params: { slug: 'contributing-vfm' },
+      params: { slug: 'contribution-guide/vfm' },
       props: {
         doc: {
-          ...doc,
-          id: 'contributing-vfm',
-          data: {
-            ...doc.data,
-            title: doc.data?.title || 'VFM コントリビューションガイド',
-          },
+          ...overridden,
+          id: 'contribution-guide/vfm',
+          data: { ...overridden.data, title },
         },
         referenceDocs: referenceDocsAll,
         hasEnTranslation: true,
         isContributing: true,
+        isHub: false,
       },
     });
   });
@@ -133,57 +212,59 @@ export async function getStaticPaths() {
   return paths;
 }
 
-const { doc, referenceDocs, hasEnTranslation, isContributing } = Astro.props;
+const { doc, referenceDocs, hasEnTranslation, isHub } = Astro.props;
 const htmlContent = doc.rendered?.html || '';
-const title = doc.data?.title || 'Vivliostyle リファレンス';
-const description = doc.data?.description || '';
-const extractedToc = doc.data?.extractedToc; // 抽出したTOC（存在する場合）
+const docData = doc.data as Record<string, unknown>;
+const title = (docData?.title as string) || 'Vivliostyle リファレンス';
+const description = (docData?.description as string) || '';
+const extractedToc = docData?.extractedToc as string | undefined;
 
 // 見出しから目次を生成
-const headings = doc.data?.headings || [];
+const headings = (docData?.headings as Array<{ depth: number; slug: string; text: string }>) || [];
 
-// ページの順序を定義（index.mdの順番に合わせる）
+// ページの順序を定義（Murakami 氏フィードバック：CSS 機能を先頭、
+// コントリビューションガイドは contribution-guide/* 配下にネスト）
 const pageOrder = [
-  'awesome-vivliostyle',
   'supported-css-features',
   'api',
-  'contribution-guide-heading',  // 見出し専用（サイドバー表示用）
-  'contribution-guide',  // 実際のページ（ページナビゲーション用、サイドバーでは非表示）
-  'contributing-viewer',  // サイドバー表示用（contribution-guideへリンク、ページナビゲーションではスキップ）
-  'contributing-cli',
-  'contributing-vfm',
-  'contributing-themes',
+  'awesome-vivliostyle',
+  'contribution-guide',          // hub
+  'contribution-guide/js',       // Vivliostyle.js
+  'contribution-guide/cli',      // CLI
+  'contribution-guide/vfm',      // VFM
+  'contribution-guide/themes',   // Themes
 ];
 
-// 全てのドキュメント（通常のリファレンス + contributingページ）を統合
+// referenceDocs には元の 'contribution-guide' id（Vivliostyle.js docs）が
+// 残っているので、ナビゲーション用に id をリマップする
+const remappedReferenceDocs = referenceDocs.map(d => {
+  if (d.id === 'contribution-guide') {
+    return { ...d, id: 'contribution-guide/js', data: { ...d.data, title: 'Vivliostyle.js コントリビューションガイド' } };
+  }
+  return d;
+});
 const allDocs = [
-  ...referenceDocs,  // awesome-vivliostyle, contribution-guide含む
-  // サイドバー表示用の仮想ドキュメントを追加
-  { id: 'contribution-guide-heading', data: { title: 'コントリビューションガイド' } },  // 見出し専用
-  { id: 'contributing-viewer', data: { title: 'Vivliostyle Viewer' } },
-  { id: 'contributing-cli', data: { title: 'Vivliostyle CLI' } },
-  { id: 'contributing-vfm', data: { title: 'VFM' } },
-  { id: 'contributing-themes', data: { title: 'Vivliostyle Themes' } },
+  ...remappedReferenceDocs,  // awesome-vivliostyle, contribution-guide/js を含む
+  { id: 'contribution-guide', data: { title: 'コントリビューションガイド' } },
+  { id: 'contribution-guide/cli', data: { title: 'Vivliostyle CLI コントリビューションガイド' } },
+  { id: 'contribution-guide/vfm', data: { title: 'VFM コントリビューションガイド' } },
+  { id: 'contribution-guide/themes', data: { title: 'Vivliostyle Themes コントリビューションガイド' } },
 ];
 
 const sortedDocs = allDocs.sort((a, b) => {
   const indexA = pageOrder.indexOf(a.id);
   const indexB = pageOrder.indexOf(b.id);
-  // pageOrderにないものは最後に配置
   if (indexA === -1 && indexB === -1) return a.id.localeCompare(b.id);
   if (indexA === -1) return 1;
   if (indexB === -1) return -1;
   return indexA - indexB;
 });
 
-// 現在のページのインデックスを取得
 const currentIndex = sortedDocs.findIndex(d => d.id === doc.id);
 
-// prevPage/nextPageを計算（pageOrderに含まれるページのみ、見出しと仮想ドキュメントは除外）
 let prevPage = null;
 for (let i = currentIndex - 1; i >= 0; i--) {
-  const itemId = sortedDocs[i].id;
-  if (pageOrder.includes(itemId) && itemId !== 'contribution-guide-heading' && itemId !== 'contributing-viewer') {
+  if (pageOrder.includes(sortedDocs[i].id)) {
     prevPage = sortedDocs[i];
     break;
   }
@@ -191,12 +272,23 @@ for (let i = currentIndex - 1; i >= 0; i--) {
 
 let nextPage = null;
 for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
-  const itemId = sortedDocs[i].id;
-  if (pageOrder.includes(itemId) && itemId !== 'contribution-guide-heading' && itemId !== 'contributing-viewer') {
+  if (pageOrder.includes(sortedDocs[i].id)) {
     nextPage = sortedDocs[i];
     break;
   }
 }
+
+// サイドバーで H2/H3 見出しナビ（accordion ではない）を表示するページ
+const headingListPages = new Set([
+  'awesome-vivliostyle',
+  'supported-css-features',
+  'api',
+  'contribution-guide/js',
+  'contribution-guide/cli',
+  'contribution-guide/vfm',
+  'contribution-guide/themes',
+]);
+const showHeadingList = !isHub && headingListPages.has(doc.id);
 ---
 
 <DocsLayout
@@ -222,7 +314,7 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
     <h3><a href="/ja/reference/" style="color: inherit; text-decoration: none;">リファレンス</a></h3>
     
     <!-- 特定ページでのみ見出しリストを表示 -->
-    {(doc.id === 'awesome-vivliostyle' || doc.id === 'supported-css-features' || doc.id === 'api' || doc.id === 'vivliostyle-viewer' || doc.id === 'contribution-guide') ? (
+    {showHeadingList ? (
       <>
         <ul style="list-style: none; padding-left: 0; margin-bottom: 1rem;">
           <li><a href="/ja/">← ホームに戻る</a></li>
@@ -249,13 +341,18 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
               return (
                 <li class="toc-h2">
                   {h3List.length > 0 ? (
-                    <button 
-                      class="toc-toggle" 
-                      data-target={`toc-group-${index}`}
-                      aria-expanded="false"
-                    >
-                      <span class="toggle-icon">▶</span><a href={`#${heading.slug}`}>{getPlainText(heading.text)}</a>
-                    </button>
+                    <div class="toc-h2-row">
+                      <button
+                        class="toc-toggle"
+                        data-target={`toc-group-${index}`}
+                        aria-expanded="false"
+                        aria-controls={`toc-group-${index}`}
+                        aria-label={`${getPlainText(heading.text)} の小見出しを開閉`}
+                      >
+                        <span class="toggle-icon" aria-hidden="true"></span>
+                      </button>
+                      <a href={`#${heading.slug}`} class="toc-h2-link">{getPlainText(heading.text)}</a>
+                    </div>
                   ) : (
                     <a href={`#${heading.slug}`} class="toc-h2-link">{getPlainText(heading.text)}</a>
                   )}
@@ -281,43 +378,50 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
         </ul>
         <div class="sidebar-accordion">
           <div class="accordion-section">
-            <button class="accordion-toggle" data-target="docs-group" aria-expanded="true">
-              <span class="toggle-icon">▶</span>ドキュメント
-            </button>
+            <div class="accordion-header">
+              <button class="accordion-toggle" data-target="docs-group" aria-expanded="true" aria-controls="docs-group" aria-label="ドキュメントの開閉">
+                <span class="toggle-icon" aria-hidden="true"></span>
+              </button>
+              <span class="accordion-section-title">ドキュメント</span>
+            </div>
             <ul class="accordion-content" id="docs-group" style="display: block; list-style: none; padding-left: 1.5rem; margin: 0.25rem 0 0 0;">
-              <li class:list={[{ active: doc.id === 'awesome-vivliostyle' }]}>
-                <a href="/ja/reference/awesome-vivliostyle/" aria-current={doc.id === 'awesome-vivliostyle' ? 'page' : undefined}>Awesome Vivliostyle</a>
-              </li>
               <li class:list={[{ active: doc.id === 'supported-css-features' }]}>
                 <a href="/ja/reference/supported-css-features/" aria-current={doc.id === 'supported-css-features' ? 'page' : undefined}>サポートする CSS 機能</a>
               </li>
               <li class:list={[{ active: doc.id === 'api' }]}>
                 <a href="/ja/reference/api/" aria-current={doc.id === 'api' ? 'page' : undefined}>Core API リファレンス</a>
               </li>
+              <li class:list={[{ active: doc.id === 'awesome-vivliostyle' }]}>
+                <a href="/ja/reference/awesome-vivliostyle/" aria-current={doc.id === 'awesome-vivliostyle' ? 'page' : undefined}>Awesome Vivliostyle</a>
+              </li>
             </ul>
           </div>
           <div class="accordion-section">
-            <button class="accordion-toggle" data-target="contrib-group" aria-expanded="true">
-              <span class="toggle-icon">▶</span>コントリビューションガイド
-            </button>
+            <div class="accordion-header">
+              <button class="accordion-toggle" data-target="contrib-group" aria-expanded="true" aria-controls="contrib-group" aria-label="コントリビューションガイドの開閉">
+                <span class="toggle-icon" aria-hidden="true"></span>
+              </button>
+              <a href="/ja/reference/contribution-guide/" class="accordion-section-title" aria-current={doc.id === 'contribution-guide' ? 'page' : undefined}>コントリビューションガイド</a>
+            </div>
             <ul class="accordion-content" id="contrib-group" style="display: block; list-style: none; padding-left: 1.5rem; margin: 0.25rem 0 0 0;">
-              <li class:list={[{ active: doc.id === 'contribution-guide' }]}>
-                <a href="/ja/reference/contribution-guide/" aria-current={doc.id === 'contribution-guide' ? 'page' : undefined}>Vivliostyle Viewer</a>
+              <li class:list={[{ active: doc.id === 'contribution-guide/js' }]}>
+                <a href="/ja/reference/contribution-guide/js/" aria-current={doc.id === 'contribution-guide/js' ? 'page' : undefined}>Vivliostyle.js</a>
               </li>
-              <li class:list={[{ active: doc.id === 'contributing-cli' }]}>
-                <a href="/ja/reference/contributing-cli/" aria-current={doc.id === 'contributing-cli' ? 'page' : undefined}>Vivliostyle CLI</a>
+              <li class:list={[{ active: doc.id === 'contribution-guide/cli' }]}>
+                <a href="/ja/reference/contribution-guide/cli/" aria-current={doc.id === 'contribution-guide/cli' ? 'page' : undefined}>Vivliostyle CLI</a>
               </li>
-              <li class:list={[{ active: doc.id === 'contributing-vfm' }]}>
-                <a href="/ja/reference/contributing-vfm/" aria-current={doc.id === 'contributing-vfm' ? 'page' : undefined}>VFM</a>
+              <li class:list={[{ active: doc.id === 'contribution-guide/vfm' }]}>
+                <a href="/ja/reference/contribution-guide/vfm/" aria-current={doc.id === 'contribution-guide/vfm' ? 'page' : undefined}>VFM</a>
               </li>
-              <li class:list={[{ active: doc.id === 'contributing-themes' }]}>
-                <a href="/ja/reference/contributing-themes/" aria-current={doc.id === 'contributing-themes' ? 'page' : undefined}>Vivliostyle Themes</a>
+              <li class:list={[{ active: doc.id === 'contribution-guide/themes' }]}>
+                <a href="/ja/reference/contribution-guide/themes/" aria-current={doc.id === 'contribution-guide/themes' ? 'page' : undefined}>Vivliostyle Themes</a>
               </li>
             </ul>
           </div>
         </div>
       </>
     )}
+    <DownloadLinks product="reference" lang="ja" />
   </nav>
 
   <!-- メインコンテンツ -->
@@ -413,36 +517,41 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
     color: var(--color-primary);
   }
   
-  .toc-toggle {
+  .toc-h2-row {
     display: flex;
     align-items: flex-start;
-    width: 100%;
+    gap: 0.4rem;
+  }
+
+  .toc-toggle {
     background: none;
     border: none;
     padding: 0;
-    text-align: left;
     cursor: pointer;
-    gap: 0;
-  }
-  
-  .toggle-icon {
-    display: inline-block;
-    transition: transform 0.2s;
-    font-size: 0.7rem;
+    color: var(--color-text);
+    display: inline-flex;
+    align-items: center;
     padding-top: 0.2rem;
   }
-  
-  .toc-toggle[aria-expanded="true"] .toggle-icon {
-    transform: rotate(90deg);
-  }
-  
-  .toc-toggle a {
-    color: var(--color-text);
-    text-decoration: none;
-  }
-  
-  .toc-toggle a:hover {
+
+  .toc-toggle:hover {
     color: var(--color-primary);
+  }
+
+  .toggle-icon {
+    display: inline-block;
+    width: 1em;
+    font-size: 0.7rem;
+  }
+
+  /* 展開状態は ▼、折りたたみ状態は ▶ */
+  .toc-toggle .toggle-icon::before,
+  .accordion-toggle .toggle-icon::before {
+    content: '▶';
+  }
+  .toc-toggle[aria-expanded="true"] .toggle-icon::before,
+  .accordion-toggle[aria-expanded="true"] .toggle-icon::before {
+    content: '▼';
   }
   
   .toc-h3-list {
@@ -482,30 +591,36 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
     margin-bottom: 0.5rem;
   }
 
-  .accordion-toggle {
+  .accordion-header {
     display: flex;
     align-items: center;
-    width: 100%;
+    gap: 0.4rem;
+    padding: 0.25rem 0;
+  }
+
+  .accordion-toggle {
     background: none;
     border: none;
-    padding: 0.25rem 0;
-    text-align: left;
+    padding: 0;
     cursor: pointer;
-    font-size: 1rem;
-    font-weight: 500;
     color: var(--color-text);
+    display: inline-flex;
+    align-items: center;
   }
 
   .accordion-toggle:hover {
     color: var(--color-primary);
   }
 
-  .accordion-toggle .toggle-icon {
-    margin-right: 0.5rem;
+  .accordion-section-title {
+    color: var(--color-text);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
   }
 
-  .accordion-toggle[aria-expanded="true"] .toggle-icon {
-    transform: rotate(90deg);
+  a.accordion-section-title:hover {
+    color: var(--color-primary);
   }
 
   .accordion-content li {
@@ -524,42 +639,17 @@ for (let i = currentIndex + 1; i < sortedDocs.length; i++) {
 </style>
 
 <script>
-  // アコーディオンメニューの開閉処理
+  // アコーディオン / TOC トグルの開閉処理
   document.addEventListener('DOMContentLoaded', () => {
-    // サイドバーアコーディオンのトグル
-    const accordionToggles = document.querySelectorAll('.accordion-toggle');
-    accordionToggles.forEach(toggle => {
-      toggle.addEventListener('click', (e) => {
-        e.preventDefault();
+    const allToggles = document.querySelectorAll('.accordion-toggle, .toc-toggle');
+    allToggles.forEach((toggle) => {
+      toggle.addEventListener('click', () => {
         const targetId = toggle.getAttribute('data-target');
-        const content = document.getElementById(targetId!);
         const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
-        
         toggle.setAttribute('aria-expanded', String(!isExpanded));
-        if (content) {
-          content.style.display = isExpanded ? 'none' : 'block';
-        }
-      });
-    });
-
-    // TOCトグル
-    const toggleButtons = document.querySelectorAll('.toc-toggle');
-    
-    toggleButtons.forEach(button => {
-      button.addEventListener('click', (e) => {
-        // リンクのデフォルト動作は許可
-        if ((e.target as HTMLElement).tagName === 'A') {
-          return;
-        }
-        
-        e.preventDefault();
-        const targetId = button.getAttribute('data-target');
-        const targetList = document.getElementById(targetId!);
-        const isExpanded = button.getAttribute('aria-expanded') === 'true';
-        
-        if (targetList) {
-          button.setAttribute('aria-expanded', String(!isExpanded));
-          targetList.style.display = isExpanded ? 'none' : 'block';
+        if (targetId) {
+          const content = document.getElementById(targetId);
+          if (content) content.style.display = isExpanded ? 'none' : 'block';
         }
       });
     });

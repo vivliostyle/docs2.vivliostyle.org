@@ -23,5 +23,14 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
+# Claude Code local settings
+.claude/
+
 # Vivliostyle temporary files
 .vivliostyle/
+
+# ビルド成果物（PDF / EPUB / WebPub）はリポジトリに含めない。
+# .github/workflows/deploy.yml が CI 側で `npm run build:formats` を実行して
+# dist/ に組み込み、GitHub Pages 配信時に同梱する。
+public/downloads/
+public/publications/

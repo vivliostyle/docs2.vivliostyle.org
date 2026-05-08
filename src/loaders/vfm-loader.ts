@@ -7,9 +7,173 @@
 
 import type { Loader, LoaderContext } from 'astro/loaders';
 import { stringify } from '@vivliostyle/vfm';
+import GithubSlugger from 'github-slugger';
 import matter from 'gray-matter';
 import { readFile, readdir, stat } from 'fs/promises';
 import { join, relative, basename, dirname } from 'path';
+
+/**
+ * HTML 内のフラグメントリンク（`<a href="#...">`）が、
+ * 本文中の見出しに付与された ID と大文字小文字や括弧などで
+ * 食い違っている場合に、github-slugger 互換の正規化を介して
+ * 解決し、書き換える。
+ *
+ * 例：[Web出版物](#Web出版物（複数HTML文書）) と書かれた markdown が
+ * `id="web出版物複数html文書"` の見出しに対応する場合、
+ * href を `#web出版物複数html文書` に書き換える。
+ */
+function rewriteFragmentLinks(html: string): string {
+  // 既存の ID を収集
+  const existingIds = new Set<string>();
+  const idMatches = html.matchAll(/\sid="([^"]+)"/g);
+  for (const m of idMatches) {
+    existingIds.add(m[1]);
+  }
+  if (existingIds.size === 0) return html;
+
+  return html.replace(
+    /href="#([^"]+)"/g,
+    (full, encodedFragment: string) => {
+      // すでに対応 ID が存在する場合はそのまま
+      if (existingIds.has(encodedFragment)) return full;
+
+      // URL デコードを試みる（失敗しても続行）
+      let decoded: string;
+      try {
+        decoded = decodeURIComponent(encodedFragment);
+      } catch {
+        decoded = encodedFragment;
+      }
+      if (existingIds.has(decoded)) {
+        return `href="#${decoded}"`;
+      }
+
+      // github-slugger で正規化して見出し ID と突合
+      const slugger = new GithubSlugger();
+      const candidate = slugger.slug(decoded);
+      if (existingIds.has(candidate)) {
+        return `href="#${candidate}"`;
+      }
+      // 見つからなければ元のまま（外部 URL や無関係なフラグメントの可能性）
+      return full;
+    },
+  );
+}
+
+export interface RewriteRelativeLinksOptions {
+  lang?: string;
+  collectionName?: string;
+  /**
+   * ソース MD が index ページ（index.md）か否か。
+   * Astro はすべてのページを `dist/{lang}/{product}/{slug}/index.html` に
+   * flat 展開するため、非 index ページから兄弟ページへの相対リンクは
+   * `./X/` ではなく `../X/` を生成する必要がある（前者だと
+   * `/{lang}/{product}/{slug}/X/` という存在しない URL に解決されてしまう）。
+   * 既定は false（非 index）。
+   */
+  isIndexPage?: boolean;
+}
+
+/**
+ * VFM が生成した HTML に対して、相対リンクを Astro/EPUB ルーティングに合うよう
+ * 書き換える。各正規表現は `./X.md`／`./X.md#anchor` のどちらにもマッチするよう
+ * 末尾フラグメントを optional capture でつかみ、新 URL に引き継ぐ。
+ * 兄弟参照については `.md` の有無を問わず統一的に処理する。
+ *
+ * 純粋関数（同じ入力に対して同じ出力）にしてあるのは Vitest 等から
+ * 単体テストできるようにするため。
+ */
+export function rewriteRelativeLinks(
+  html: string,
+  options: RewriteRelativeLinksOptions = {},
+): string {
+  const { lang, collectionName, isIndexPage = false } = options;
+
+  // 1. ./ja/index.md のような言語ディレクトリへのリンクを削除（言語スイッチャーで対応）
+  html = html.replace(/<li>\s*<a href="\.\/ja\/index[^"]*"[^>]*>.*?<\/a>\s*<\/li>/gi, '');
+
+  // 1.5. 空の li 要素を削除（Markdown の構造による空箇条書き項目を削除）
+  html = html.replace(/<li>\s*<\/li>/gi, '');
+
+  // 2. Themes Contributing 専用: ./docs/X.md(#a)? -> /[lang]/themes/X/(#a)?
+  if (collectionName?.includes('themes-contributing')) {
+    html = html.replace(
+      /href="\.\/docs\/([^"#]+?)\.md(#[^"]*)?"/g,
+      (_m, p: string, frag = '') => `href="/${lang}/themes/${p}/${frag}"`,
+    );
+  }
+
+  // 3. vivliostyle.js docs（viewer / reference 配下）のクロスプロダクト
+  // 参照を補正する。upstream では vivliostyle-viewer.md と
+  // supported-css-features.md / api.md / contribution-guide.md は
+  // 同じ docs/ 内の sibling だが、本サイトでは前者を /viewer/、
+  // 後者群を /reference/ に振り分けているため、`./X.md` 形式の
+  // 相対リンクを正しい絶対パスに書き換える。
+  if (
+    collectionName?.startsWith('vivliostyle-viewer-') ||
+    collectionName?.startsWith('vivliostyle-reference-')
+  ) {
+    const referenceFiles = ['api', 'supported-css-features', 'contribution-guide'];
+    for (const f of referenceFiles) {
+      const re = new RegExp(`href="\\.\\/${f}\\.md(#[^"]*)?"`, 'g');
+      html = html.replace(re, (_m, frag = '') => `href="/${lang}/reference/${f}/${frag}"`);
+    }
+    // Reference → Viewer の逆参照
+    html = html.replace(
+      /href="\.\/vivliostyle-viewer\.md(#[^"]*)?"/g,
+      (_m, frag = '') => `href="/${lang}/viewer/vivliostyle-viewer/${frag}"`,
+    );
+  }
+
+  // 4. 同一ディレクトリの兄弟参照 ./X(.md)?(#a)? を書き換え。
+  //    - パスの文字クラスから '.' '/' '#' を除外することで、画像（./foo.png 等）や
+  //      サブディレクトリ（./docs/spec.md は themes-contributing 特例で先に処理済）
+  //      には誤マッチさせない。
+  //    - .md の有無を `(?:\.md)?` で吸収するので、ソース MD が `./X.md` でも `./X` でも
+  //      同じ出力になる。
+  //    - 出力プレフィクスは isIndexPage で分岐：
+  //        index ページ（URL が /lang/product/）→ ./X/
+  //        非 index ページ（URL が /lang/product/{slug}/）→ ../X/
+  const siblingPrefix = isIndexPage ? './' : '../';
+  html = html.replace(
+    /href="\.\/([^"#./]+)(?:\.md)?(#[^"]*)?"/g,
+    (_m, p: string, frag = '') => `href="${siblingPrefix}${p}/${frag}"`,
+  );
+
+  // Awesome Vivliostyle: CONTRIBUTING.md を GitHub にリンク
+  if (collectionName?.includes('awesome-vivliostyle')) {
+    html = html.replace(
+      /href="CONTRIBUTING\.md"/g,
+      'href="https://github.com/vivliostyle/awesome-vivliostyle/blob/master/CONTRIBUTING.md"',
+    );
+  }
+
+  // Themes Contributing: CODE_OF_CONDUCT.md を GitHub にリンク
+  // upstream の submodules/themes/CONTRIBUTING.md:16 が
+  // `[Code of Conduct](CODE_OF_CONDUCT.md)` と `./` プレフィックス無しの
+  // 相対リンクを使っているため、汎用 ./X.md 規則では拾えない。
+  if (collectionName?.includes('themes-contributing')) {
+    html = html.replace(
+      /href="CODE_OF_CONDUCT\.md"/g,
+      'href="https://github.com/vivliostyle/themes/blob/main/CODE_OF_CONDUCT.md"',
+    );
+  }
+
+  // 5. ../X.md(#a)? の処理（言語コンテキストを維持）
+  if (lang === 'ja') {
+    html = html.replace(
+      /href="\.\.\/([^"#]+?)\.md(#[^"]*)?"/g,
+      (_m, p: string, frag = '') => `href="/ja/cli/${p}/${frag}"`,
+    );
+  } else {
+    html = html.replace(
+      /href="\.\.\/([^"#]+?)\.md(#[^"]*)?"/g,
+      (_m, p: string, frag = '') => `href="../${p}/${frag}"`,
+    );
+  }
+
+  return html;
+}
 
 export interface VFMLoaderOptions {
   /** ベースディレクトリのパス（絶対パスまたはプロジェクトルートからの相対パス） */
@@ -196,9 +360,16 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
 
             let html: string;
             try {
+              // partial: true で `<html>` / `<head>` / `<body>` ラッパーを
+              // 出力しないようにする。我々は DocsLayout 内の `<article>`
+              // にコンテンツを注入するため、フルドキュメントを set:html で
+              // 埋め込むと `<meta charset>` や `<title>` が body 内に出て
+              // しまい、HTML 仕様上不正な構造（および EPUB ビルド成果物
+              // の警告原因）になっていた。
               html = stringify(processedMarkdownBody, {
                 hardLineBreaks: false,
                 disableFormatHtml: false,
+                partial: true,
               });
               logger.debug(`VFM Loader [${lang}]: Successfully converted markdown to HTML for file: ${filePath}`);
             } catch (stringifyError) {
@@ -251,39 +422,19 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
               }
             }
             
-            // 2. ./ja/index.md のような言語ディレクトリへのリンクを削除（言語スイッチャーで対応）
-            html = html.replace(/<li>\s*<a href="\.\/ja\/index[^"]*"[^>]*>.*?<\/a>\s*<\/li>/gi, '');
-            
-            // 2.5. 空のli要素を削除（Markdownの構造による空箇条書き項目を削除）
-            html = html.replace(/<li>\s*<\/li>/gi, '');
-            
-            // 3. Themes Contributing専用: ./docs/spec.md -> /[lang]/themes/spec/
-            if (collectionName && collectionName.includes('themes-contributing')) {
-              html = html.replace(/href="\.\/docs\/([^"]+)\.md"/g, `href="/${lang}/themes/$1/"`);
-            }
-            
-            // 4. 相対リンクの.md拡張子を削除し、末尾スラッシュを追加
-            // 例: ./getting-started.md -> ./getting-started/
-            html = html.replace(/href="\.\/([^"]+)\.md"/g, 'href="./$1/"');
+            // 2. href 系の相対リンク書き換えを一括適用（rewriteRelativeLinks 内で
+            // .md → / 変換、cross-product 補正、親ディレクトリ参照、upstream タイポ
+            // 補正、CONTRIBUTING.md などをまとめて処理する。各 regex は `.md#anchor`
+            // 形式にもマッチし、フラグメントを保持する）。
+            // 兄弟参照 ./X(.md)? の出力プレフィクスは「ソース MD が index.md か否か」で
+            // 分岐するため、ファイル名から isIndexPage を計算して渡す。
+            const isIndexPage = basename(filePath, '.md') === 'index';
+            html = rewriteRelativeLinks(html, { lang, collectionName, isIndexPage });
 
-            // Awesome Vivliostyle: link CONTRIBUTING.md to GitHub
-            if (collectionName?.includes('awesome-vivliostyle')) {
-              html = html.replace(
-                /href="CONTRIBUTING\.md"/g,
-                'href="https://github.com/vivliostyle/awesome-vivliostyle/blob/master/CONTRIBUTING.md"',
-              );
-            }
-            
-            // 5. ../で始まるリンク（親ディレクトリ）の処理
-            // docs/ja/index.md から docs/config.md への参照を適切に変換
-            // ../config.md は /en/cli/config/ になるべき（英語版のみ存在）
-            if (lang === 'ja') {
-              // 日本語版から親ディレクトリへのリンクは英語版を参照
-              html = html.replace(/href="\.\.\/([^"]+)\.md"/g, 'href="/en/cli/$1/"');
-            } else {
-              // 英語版は親ディレクトリ参照を維持（.md拡張子削除と末尾スラッシュ追加）
-              html = html.replace(/href="\.\.\/([^"]+)\.md"/g, 'href="../$1/"');
-            }
+            // 3. フラグメントリンクの正規化：見出しの自動 slug と
+            // markdown 中のリンク先（原文ママの大文字・括弧入り）の
+            // 食い違いを解消する。
+            html = rewriteFragmentLinks(html);
 
             // HTMLから見出しを抽出（h2, h3）
             const headings: Array<{ depth: number; slug: string; text: string }> = [];

@@ -52,7 +52,11 @@
   /* タイポグラフィ */
   /* Google Sans Flex を先頭、次に日本語フォールバック */
   --font-sans: "Google Sans Flex", "Noto Sans JP", "Circled Numbers", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  /* 末尾の 'NotoSansJP PDF' は PDF テーマで宣言される @font-face にマッチする。
+   * Web 側ではこのフォントは未登録なのでブラウザは無視して次の monospace に
+   * フォールバック（既存挙動）。PDF ビルド時のみ code/pre 内日本語コメントが
+   * Hiragino → Type 3 化する問題を防ぐ。 */
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, "NotoSansJP PDF", monospace;
   
   --font-size-base: 16px;
   --font-size-sm: 0.875rem;

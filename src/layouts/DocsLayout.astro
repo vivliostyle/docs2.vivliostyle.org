@@ -51,15 +51,15 @@ const navLinks = {
   },
   reference: {
     docs: [
-      { label: 'Awesome Vivliostyle', href: `/${lang}/reference/awesome-vivliostyle/` },
       { label: isJa ? 'サポートする CSS 機能' : 'Supported CSS Features', href: `/${lang}/reference/supported-css-features/` },
       { label: isJa ? 'Core API リファレンス' : 'Core API Reference', href: `/${lang}/reference/api/` },
+      { label: 'Awesome Vivliostyle', href: `/${lang}/reference/awesome-vivliostyle/` },
     ],
     contribution: [
-      { label: 'Vivliostyle.js', href: `/${lang}/reference/contribution-guide/` },
-      { label: 'Vivliostyle CLI', href: `/${lang}/reference/contributing-cli/` },
-      { label: 'VFM', href: `/${lang}/reference/contributing-vfm/` },
-      { label: 'Vivliostyle Themes', href: `/${lang}/reference/contributing-themes/` },
+      { label: 'Vivliostyle.js', href: `/${lang}/reference/contribution-guide/js/` },
+      { label: 'Vivliostyle CLI', href: `/${lang}/reference/contribution-guide/cli/` },
+      { label: 'VFM', href: `/${lang}/reference/contribution-guide/vfm/` },
+      { label: 'Vivliostyle Themes', href: `/${lang}/reference/contribution-guide/themes/` },
     ],
   },
   faq: {
@@ -291,7 +291,8 @@ const navLinks = {
     min-width: 0;
   }
 
-  .header-nav a {
+  .header-nav a,
+  .header-nav summary {
     color: var(--color-text);
     text-decoration: none;
     font-weight: 500;
@@ -304,7 +305,6 @@ const navLinks = {
     display: flex;
     align-items: center;
     gap: 0.35rem;
-    font-size: 1.1rem;
   }
 
   .header-nav summary::-webkit-details-marker {
@@ -650,47 +650,8 @@ const navLinks = {
   }
   
   /* レスポンシブ */
-  @media (max-width: 1024px) {
-    .main-container {
-      padding-right: 0;
-    }
-    
-    /* 中間サイズ: 検索ボックス調整 */
-    .search-container {
-      max-width: 240px;
-    }
-    
-    .header-nav {
-      gap: 0.5rem;
-    }
-
-    .header-nav a {
-      font-size: 0.9rem;
-    }
-
-    .header-nav summary {
-      font-size: 1rem;
-    }
-
-    .nav-panel a {
-      font-size: 0.85rem;
-    }
-    
-    .header-content {
-      gap: 0.5rem;
-    }
-    
-    .header-actions {
-      gap: 0.25rem;
-    }
-    
-    .logo-image {
-      height: 28px;
-    }
-  }
-  
   /* タブレット・モバイルサイズ: ナビ非表示、ハンバーガー表示、サイドバーオーバーレイ化 */
-  @media (max-width: 900px) {
+  @media (max-width: 1024px) {
     .mobile-menu-toggle {
       display: block;
     }
@@ -845,7 +806,7 @@ const navLinks = {
       if (!link.dataset.clickListenerAdded) {
         link.addEventListener('click', () => {
           // モバイル表示の時のみ閉じる
-          if (window.innerWidth <= 900) {
+          if (window.innerWidth <= 1024) {
             closeMenu();
           }
         });
@@ -865,7 +826,7 @@ const navLinks = {
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimer);
       resizeTimer = window.setTimeout(() => {
-        if (window.innerWidth > 900 && sidebar.classList.contains('active')) {
+        if (window.innerWidth > 1024 && sidebar.classList.contains('active')) {
           closeMenu();
         }
       }, 250);

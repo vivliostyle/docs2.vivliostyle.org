@@ -1,50 +1,146 @@
 /**
  * Vivliostyle PDF Theme
- * ドキュメントサイトからPDF生成するための専用テーマ
- * Web専用要素を自動的に除外し、印刷に適したレイアウトを提供
+ * ドキュメントサイトから PDF / EPUB を生成するための専用テーマ。
+ *
+ * 日本語フォント戦略:
+ * Noto Sans JP の **TrueType-flavored woff2**（subset=japanese 一括）を
+ * `./fonts/` に同梱し、url() で直接参照する。`font-display: block` で
+ * Chrome にフォントロード完了を待たせてから PDF レンダリングさせる。
+ *
+ * これにより以下の従来の問題を解消:
+ *  - local('Noto Sans JP') 経由でユーザ環境の Noto Sans JP Thin (.otf) /
+ *    Hiragino Sans (.ttc) が選ばれ、Chrome の PDF 出力で Type 3 として
+ *    埋め込まれて Adobe Reader で文字が表示できない（トーフ化）
+ *  - Google Fonts の `@import url('...css2?family=...')` は unicode-range で
+ *    多数の subset に分割されており、Vivliostyle CLI（Puppeteer）の PDF 化
+ *    タイミングと race condition を起こしてローカルフォントへフォールバック
+ *
+ * Latin 側は引き続き Verdana（システム TrueType）を使用。Web 用 global.css
+ * で導入されている Google Sans Flex は variable font であり、Chrome の PDF
+ * 出力で必ず Type 3 化されるため PDF テーマでは採用していない。
  */
+/* 同梱した Noto Sans JP woff2 をユニークな family 名 'NotoSansJP PDF' で
+ * 登録する。実体は Noto Sans JP 日本語 subset (TrueType-flavored woff2) だが、
+ * Web 用 layout (DocsLayout.astro) が Japanese ページに
+ *   https://fonts.googleapis.com/css2?family=Noto+Sans+JP&...
+ * の <link> を出していて HTML レベルで多数の unicode-range subset 群が
+ * 'Noto Sans JP' family として先に登録されてしまう。同じ名前で @font-face を
+ * 後から書いても Chrome の font matching は Google Fonts subset 側を選んで
+ * しまい、その非同期ロード完了を待たずローカル 'Noto Sans JP Thin' (.otf)
+ * へフォールバックして Type 3 化する。
+ *
+ * 別名 'NotoSansJP PDF' にすれば Web 側スタックと衝突せず、Chrome は
+ * 必ず同梱 woff2 を解決して CID TrueType として埋め込む。 */
+@font-face {
+  font-family: 'NotoSansJP PDF';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('./fonts/NotoSansJP-Regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'NotoSansJP PDF';
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+  src: url('./fonts/NotoSansJP-Bold.woff2') format('woff2');
+}
+
+/* fontsource の Noto Sans JP japanese subset には U+2776-277F (❶❿) や
+ * U+25B6 (▶), U+25C9 (◉) などの記号が含まれていない。これらは Google Fonts の
+ * text= API で必要な 12 文字だけを Noto Sans JP のグリフから抽出した極小
+ * woff2 を別途バンドルし、独立したファミリ名で適用する。
+ *
+ * 同じファミリ名 'NotoSansJP PDF' に unicode-range 違いで複数 @font-face を
+ * 宣言すると、Chrome の cascade 解決で意図せず先に宣言された主 subset の方
+ * が選ばれて symbols subset が無視されることがある（実測確認）。そのため
+ * 別ファミリ名 'NotoSansJP PDF Symbols' にして body font-family の末尾に
+ * フォールバック候補として並べる。
+ *
+ * weight 400 と 700 の両方を用意するのは viewer-ja の HTML 中に
+ * <strong>❶Page Spread View</strong> のように太字化された記号が含まれるため。
+ * weight 違いの宣言が無いと Chrome は system Hiragino W6 にフォールバックして
+ * Type 3 化する。 */
+@font-face {
+  font-family: 'NotoSansJP PDF Symbols';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('./fonts/NotoSansJP-Symbols.woff2') format('woff2');
+  unicode-range: U+25B6, U+25C9, U+2776-277F;
+}
+@font-face {
+  font-family: 'NotoSansJP PDF Symbols';
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+  src: url('./fonts/NotoSansJP-Symbols-Bold.woff2') format('woff2');
+  unicode-range: U+25B6, U+25C9, U+2776-277F;
+}
+
+/* 絵文字: Apple Color Emoji は Chrome の PDF 出力で Type 3 化されてしまい
+ * Adobe Reader で表示が崩れる。Mozilla 配布の Twemoji COLR (TrueType) を
+ * バンドルして CID TrueType として埋め込ませる。COLRv0 はモノクロ outline
+ * を含むので Adobe Reader でも形は描画される（色は出ない）。 */
+@font-face {
+  font-family: 'Twemoji Mozilla';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url('./fonts/Twemoji.Mozilla.ttf') format('truetype');
+}
 
 /* ページ設定 */
 @page {
   size: A4;
-  margin: 25mm 20mm;
-  
+  margin: 22mm 20mm 22mm 20mm;
+
+  /* @page と margin boxes は body の font-family を継承しないため、ここで
+   * 明示しないと Chrome のシステムデフォルト (macOS では Hiragino) にフォール
+   * バックして数字 0-9 ・章タイトル・ページ番号が Type 3 化する。 */
+  font-family: Verdana, Arial, 'Helvetica Neue', 'NotoSansJP PDF', 'NotoSansJP PDF Symbols', 'Twemoji Mozilla', sans-serif;
+
+  /* 柱: 直近の H1（章タイトル）を string-set で取得して上部中央に表示 */
   @top-center {
-    content: none;
+    content: string(doc-title);
+    font-family: Verdana, Arial, 'Helvetica Neue', 'NotoSansJP PDF', 'NotoSansJP PDF Symbols', 'Twemoji Mozilla', sans-serif;
+    font-size: 9pt;
+    color: #555;
+    padding-bottom: 4pt;
+    border-bottom: 0.4pt solid #bbb;
+    vertical-align: bottom;
   }
-  
-  @top-left {
-    content: none;
-  }
-  
-  @top-right {
-    content: none;
-  }
-  
+
   @bottom-center {
     content: counter(page);
-    font-size: 9pt;
+    font-family: Verdana, Arial, 'Helvetica Neue', 'NotoSansJP PDF', 'NotoSansJP PDF Symbols', 'Twemoji Mozilla', sans-serif;
+    font-size: 9.5pt;
+    color: #333;
   }
-  
-  @bottom-left {
-    content: none;
-  }
-  
-  @bottom-right {
-    content: none;
-  }
+}
+
+/* 章扉ページ（H1 が来たページ）では柱を消す。本文の頭でいきなり柱が
+ * 出ると重複感があるため。
+ * またページのトップマージンを大きく取って章タイトルを版面上端から
+ * 約 1/4 下げる。h1 の margin-top では新規ページ先頭でマージン折り畳み
+ * の影響を受けるため、@page 側で margin-top を確保する。 */
+@page chapter-opener {
+  margin-top: 85mm;
+  @top-center { content: none; }
+  @bottom-center { content: counter(page); }
+}
+
+/* 目次ページ用。柱とノンブルの扱いは章扉と同じだが、目次見出しは下げず
+ * 通常のページ上端から組む。 */
+@page toc-page {
+  @top-center { content: none; }
+  @bottom-center { content: counter(page); }
 }
 
 @page :first {
   margin-top: 50mm;
-  
-  @top-center {
-    content: none;
-  }
-  
-  @bottom-center {
-    content: none;
-  }
+  @top-center { content: none; }
+  @bottom-center { content: none; }
 }
 
 /* 基本スタイル */
@@ -61,7 +157,11 @@
 }
 
 body {
-  font-family: 'Noto Sans JP', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', sans-serif;
+  /* Latin 文字には Verdana/Arial を使い（Chrome が TrueType サブセットで
+   * 効率よく埋め込める）、日本語文字のみ Noto Sans JP にフォールバック
+   * させる。逆順だと Latin 文字まで Noto Sans JP（Type 3 埋め込み）に
+   * なって PDF が大幅に肥大化する。 */
+  font-family: Verdana, Arial, 'Helvetica Neue', 'NotoSansJP PDF', 'NotoSansJP PDF Symbols', 'Twemoji Mozilla', sans-serif;
   font-size: var(--font-size-base);
   line-height: 1.7;
   color: var(--color-text);
@@ -107,11 +207,22 @@ nav.breadcrumb,
 
 /* 見出しスタイル */
 h1 {
+  /* 柱に表示するためタイトル文字列を string-set で確保 */
+  string-set: doc-title content();
+  /* 各章は右ページ起こし。最初の H1（本扉）は下の :first-of-type ルールで打ち消す。 */
+  break-before: right;
+  page: chapter-opener;
   font-size: 24pt;
   font-weight: bold;
-  margin-top: 0;
-  margin-bottom: 1.5em;
+  /* 章扉での下げは @page chapter-opener の margin-top 側で確保しているので、
+   * h1 自体の margin-top はゼロに。 */
+  margin: 0 0 1.5em 0;
   page-break-after: avoid;
+}
+
+/* 書籍冒頭の最初の H1（本扉）は break-before しない */
+h1:first-of-type:first-child {
+  break-before: avoid;
 }
 
 h2 {
@@ -170,6 +281,29 @@ ul, ol {
 
 li {
   margin: 0.3em 0;
+}
+
+/* 本文中のリストは途中で改ページせず、できるだけ同じページに収める。
+ * （nav#toc / nav[role="doc-toc"] 配下の auto TOC は別ルールで分割可能。
+ * 巨大なリストは収まらず仕方なく分割されるが、4-5 項目程度の短い箇条書きが
+ * 末尾の 1 項目だけ次ページに送られる widows 状態を抑える。） */
+article ul, article ol,
+main ul, main ol {
+  break-inside: avoid;
+}
+/* TOC の各 <ol> は break-inside: auto を再宣言して上記を打ち消す */
+nav[role="doc-toc"] ol,
+nav#toc ol {
+  break-inside: auto;
+}
+
+/* リストの直前にあるリード段落は、後続のリストと一緒に動かしたい。
+ * 見出し → 段落 → リスト の流れでリストを次ページに送るとき、リードだけ
+ * 前ページに取り残されると見出し・リードが list と分離して読みにくい。
+ * `p:has(+ ul)` 等で直接にリストが続く段落に break-after: avoid を入れる。 */
+p:has(+ ul),
+p:has(+ ol) {
+  break-after: avoid;
 }
 
 /* コードブロック */
@@ -302,6 +436,142 @@ hr {
   border: none;
   border-top: 1px solid var(--color-border);
   margin: 2em 0;
+}
+
+/* =========================================================================
+   目次（Vivliostyle CLI が toc: true で自動生成する nav#toc / role="doc-toc"）
+   - 章タイトルとページ番号の間にリーダー線
+   - target-counter() で各エントリのページ番号を取得して右端に表示
+   ========================================================================= */
+nav[role="doc-toc"],
+nav#toc {
+  page: toc-page;
+  break-before: right;
+  break-after: page;
+}
+
+nav[role="doc-toc"] > h2,
+nav#toc > h2 {
+  font-size: 22pt;
+  font-weight: 700;
+  margin: 30mm 0 14mm 0;
+  border-bottom: none;
+  page-break-after: avoid;
+}
+
+nav[role="doc-toc"] ol,
+nav[role="doc-toc"] ul,
+nav#toc ol,
+nav#toc ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+nav[role="doc-toc"] li,
+nav#toc li {
+  margin: 0.55em 0;
+}
+
+/* 階層別のインデント: H3 (data-section-level="3") は H2 から 1.5em インデント、
+ * H4 はさらに深く。同階層では文字の太さでなく字下げで区別できるようにする。 */
+nav[role="doc-toc"] li[data-section-level="2"],
+nav#toc li[data-section-level="2"] {
+  padding-left: 0;
+}
+nav[role="doc-toc"] li[data-section-level="3"],
+nav#toc li[data-section-level="3"] {
+  padding-left: 1.5em;
+}
+nav[role="doc-toc"] li[data-section-level="4"],
+nav#toc li[data-section-level="4"] {
+  padding-left: 3em;
+}
+nav[role="doc-toc"] li[data-section-level="5"],
+nav#toc li[data-section-level="5"] {
+  padding-left: 4.5em;
+}
+nav[role="doc-toc"] li[data-section-level="6"],
+nav#toc li[data-section-level="6"] {
+  padding-left: 6em;
+}
+
+/* 改ページ制御:
+ *   - 個々の項目（テキスト 1 行＋リーダー＋ページ番号）は途中で割らない
+ *   - H2 章見出しの直後で改ページしない（最低でも 1 件目の子と同居）
+ *   - H2 が抱える子リスト全体（h3 group）はできるだけ同一ページに収める
+ *   - 親 li 全体で break-inside: avoid をかけると、子が多くて 1 ページに
+ *     収まらない章で「収められないので途中で切る」結果になり、子リストが
+ *     不自然な箇所で割れる。なので親 li には avoid をかけない。 */
+nav[role="doc-toc"] li > a,
+nav#toc li > a {
+  break-inside: avoid;
+}
+nav[role="doc-toc"] > ol > li > a,
+nav#toc > ol > li > a {
+  break-after: avoid;
+}
+nav[role="doc-toc"] > ol > li > ol,
+nav#toc > ol > li > ol {
+  break-inside: avoid;
+}
+
+/* Reference の TOC で「コントリビューションガイド」ハブ entry が単独で
+ * ページ末尾に残り、その下にぶら下がる 4 つのプロダクト contribution
+ * guide が次ページに送られる widows 状態を回避する。プロダクト entry に
+ * break-before: avoid を付け、ハブごと次ページに送る挙動を誘導。 */
+nav[role="doc-toc"] > ol > li:has(> a[href*="/contribution-guide/js/"]),
+nav[role="doc-toc"] > ol > li:has(> a[href*="/contribution-guide/cli/"]),
+nav[role="doc-toc"] > ol > li:has(> a[href*="/contribution-guide/vfm/"]),
+nav[role="doc-toc"] > ol > li:has(> a[href*="/contribution-guide/themes/"]),
+nav#toc > ol > li:has(> a[href*="/contribution-guide/js/"]),
+nav#toc > ol > li:has(> a[href*="/contribution-guide/cli/"]),
+nav#toc > ol > li:has(> a[href*="/contribution-guide/vfm/"]),
+nav#toc > ol > li:has(> a[href*="/contribution-guide/themes/"]) {
+  break-before: avoid;
+}
+
+/* 各エントリ: テキスト ‥‥‥‥ ページ番号 のレイアウト */
+nav[role="doc-toc"] li a,
+nav#toc li a {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5em;
+  text-decoration: none;
+  border-bottom: none;
+  color: var(--color-text);
+}
+
+/* 第 1 階層は太字で章扱い */
+nav[role="doc-toc"] > ol > li > a,
+nav#toc > ol > li > a {
+  font-weight: 700;
+  margin-top: 0.3em;
+}
+
+/* リーダー線（::before）と ページ番号（::after） */
+nav[role="doc-toc"] li a::before,
+nav#toc li a::before {
+  content: '';
+  flex-grow: 1;
+  border-bottom: 0.5pt dotted #999;
+  align-self: end;
+  margin-bottom: 3pt;
+  order: 1;
+}
+
+nav[role="doc-toc"] li a::after,
+nav#toc li a::after {
+  content: target-counter(attr(href url), page);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  order: 2;
+}
+
+/* TOC 内の外部リンク (a[href^="http"]) でも URL ではなくページ番号にする */
+nav[role="doc-toc"] li a[href^="http"]::after,
+nav#toc li a[href^="http"]::after {
+  content: target-counter(attr(href url), page);
 }
 
 /* ページブレーク制御 */
