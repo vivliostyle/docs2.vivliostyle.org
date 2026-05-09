@@ -11,6 +11,8 @@ Vivliostyle is a CSS typesetting engine that allows you to create beautifully fo
 
 ## What is Vivliostyle?
 
+![Vivliostyle products](/product-en.svg)
+
 Vivliostyle is an open-source project that provides:
 
 - **Vivliostyle Viewer** - View and paginate HTML/CSS documents in the browser
@@ -50,9 +52,63 @@ Practical, cross-product guides to recently added Vivliostyle features:
 
 This demonstrates VFM's {Ruby|ルビ} support.
 
+<details>
+<summary>VFM Markdown source</summary>
+
+```markdown
+This demonstrates VFM's {Ruby|ルビ} support.
+```
+
+</details>
+
+<details>
+<summary>VFM-generated HTML (body only)</summary>
+
+```html
+<p>This demonstrates VFM's <ruby>Ruby<rt>ルビ</rt></ruby> support.</p>
+```
+
+</details>
+
 ### Section Attribution
 
 Sections are automatically wrapped with appropriate IDs for CSS styling.
+
+<details>
+<summary>VFM Markdown source (entire H2 "VFM Features Demo")</summary>
+
+````markdown
+## VFM Features Demo
+
+### Ruby Text
+
+This demonstrates VFM's {Ruby|ルビ} support.
+
+### Section Attribution
+
+Sections are automatically wrapped with appropriate IDs for CSS styling.
+````
+
+</details>
+
+<details>
+<summary>VFM-generated HTML (entire H2 "VFM Features Demo")</summary>
+
+```html
+<section class="level2">
+  <h2 id="vfm-features-demo">VFM Features Demo</h2>
+  <section class="level3">
+    <h3 id="ruby-text">Ruby Text</h3>
+    <p>This demonstrates VFM's <ruby>Ruby<rt>ルビ</rt></ruby> support.</p>
+  </section>
+  <section class="level3">
+    <h3 id="section-attribution">Section Attribution</h3>
+    <p>Sections are automatically wrapped with appropriate IDs for CSS styling.</p>
+  </section>
+</section>
+```
+
+</details>
 
 ## Downloads (built by Vivliostyle CLI)
 

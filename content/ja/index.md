@@ -11,6 +11,8 @@ Vivliostyleは、Webテクノロジーを使って美しくフォーマットさ
 
 ## Vivliostyleとは？
 
+![Vivliostyleプロダクト群](/product-jp.svg)
+
 Vivliostyleは以下を提供するオープンソースプロジェクトです：
 
 - **Vivliostyle Viewer** - ブラウザでHTML/CSSドキュメントを表示・ページ分割
@@ -50,9 +52,63 @@ Vivliostyleの最大のメリットは**SSMO（Single Source Multi Output）**�
 
 VFMの{漢字|かんじ}サポートをデモンストレーションしています。
 
+<details>
+<summary>VFM Markdownソース</summary>
+
+```markdown
+VFMの{漢字|かんじ}サポートをデモンストレーションしています。
+```
+
+</details>
+
+<details>
+<summary>VFMが生成するHTML（body部）</summary>
+
+```html
+<p>VFMの<ruby>漢字<rt>かんじ</rt></ruby>サポートをデモンストレーションしています。</p>
+```
+
+</details>
+
 ### セクション属性
 
 セクションはCSSスタイリング用の適切なIDで自動的にラップされます。
+
+<details>
+<summary>VFM Markdownソース（H2「VFM機能デモ」全体）</summary>
+
+````markdown
+## VFM機能デモ
+
+### ルビ
+
+VFMの{漢字|かんじ}サポートをデモンストレーションしています。
+
+### セクション属性
+
+セクションはCSSスタイリング用の適切なIDで自動的にラップされます。
+````
+
+</details>
+
+<details>
+<summary>VFMが生成するHTML（H2「VFM機能デモ」全体）</summary>
+
+```html
+<section class="level2">
+  <h2 id="vfm機能デモ">VFM機能デモ</h2>
+  <section class="level3">
+    <h3 id="ルビ">ルビ</h3>
+    <p>VFMの<ruby>漢字<rt>かんじ</rt></ruby>サポートをデモンストレーションしています。</p>
+  </section>
+  <section class="level3">
+    <h3 id="セクション属性">セクション属性</h3>
+    <p>セクションはCSSスタイリング用の適切なIDで自動的にラップされます。</p>
+  </section>
+</section>
+```
+
+</details>
 
 ## Vivliostyle CLI生成物のダウンロード
 
