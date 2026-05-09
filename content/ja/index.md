@@ -112,7 +112,7 @@ VFMの{漢字|かんじ}サポートをデモンストレーションしてい�
 
 ## Vivliostyle CLI生成物のダウンロード
 
-このサイトの各プロダクトのドキュメントは、同じ Markdown ソースから Vivliostyle CLI で **PDF / EPUB** として生成しています（[Single Source, Multi Output](#ssmo)）。
+このサイトのドキュメントをVivliostyle CLIによって、MarkdownソースからPDF / EPUBを生成しました（Single Source, Multi Output）。
 
 | プロダクト | PDF | EPUB |
 |---|---|---|
