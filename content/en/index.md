@@ -16,7 +16,7 @@ Vivliostyle is a CSS typesetting engine that allows you to create beautifully fo
 Vivliostyle is an open-source project that provides:
 
 - **Vivliostyle Viewer** - View and paginate HTML/CSS documents in the browser
-- **Vivliostyle CLI** - Command-line tool for generating PDF from HTML/Markdown
+- **Vivliostyle CLI** - Command-line tool for generating PDF / EPUB from HTML/Markdown
 - **VFM (Vivliostyle Flavored Markdown)** - Extended Markdown syntax for publishing
 - **Vivliostyle Themes** - Pre-designed themes for beautiful documents
 
@@ -29,14 +29,6 @@ From a single Markdown source, you can generate:
 - **[WebPub](https://docs.vivliostyle.org/en/cli/special-output-settings/#output-in-web-publication-webpub-format)** - HTML pages for online viewing
 - **[PDF](https://docs.vivliostyle.org/en/cli/special-output-settings/#generating-print-ready-pdf-pdfx-1a-format)** - Print-ready documents
 - **[EPUB](https://docs.vivliostyle.org/en/cli/special-output-settings/#output-in-epub-format)** - E-book format
-
-## Getting Started
-
-Choose a product to get started:
-
-- [Vivliostyle CLI](/en/cli/) - For generating PDF from command line
-- [VFM](/en/vfm/) - For writing documents in Markdown
-- [Vivliostyle Themes](/en/themes/) - For styling your documents
 
 ## [Cookbook](/en/cookbook/)
 
@@ -112,7 +104,7 @@ Sections are automatically wrapped with appropriate IDs for CSS styling.
 
 ## Downloads (built by Vivliostyle CLI)
 
-Every product's documentation on this site is generated from the same Markdown source as **PDF / EPUB** with Vivliostyle CLI ([Single Source, Multi Output](#ssmo)).
+PDF and EPUB were generated from the documents (Markdown source) on this site using Vivliostyle CLI (Single Source, Multi Output).
 
 | Product | PDF | EPUB |
 |---|---|---|
