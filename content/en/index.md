@@ -67,7 +67,7 @@ This demonstrates VFM's {Ruby|ルビ} support.
 Sections are automatically wrapped with appropriate IDs for CSS styling.
 
 <details>
-<summary>VFM Markdown source (entire H2 "VFM Features Demo")</summary>
+<summary>VFM Markdown source (entire H2 “VFM Features Demo”)</summary>
 
 ````markdown
 ## VFM Features Demo
@@ -84,7 +84,7 @@ Sections are automatically wrapped with appropriate IDs for CSS styling.
 </details>
 
 <details>
-<summary>VFM-generated HTML (entire H2 "VFM Features Demo")</summary>
+<summary>VFM-generated HTML (entire H2 “VFM Features Demo”)</summary>
 
 ```html
 <section class="level2">
