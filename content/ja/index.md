@@ -16,7 +16,7 @@ Vivliostyleは、Webテクノロジーを使って美しくフォーマットさ
 Vivliostyleは以下を提供するオープンソースプロジェクトです：
 
 - **Vivliostyle Viewer** - ブラウザでHTML/CSSドキュメントを表示・ページ分割
-- **Vivliostyle CLI** - HTML/MarkdownからPDFを生成するコマンドラインツール
+- **Vivliostyle CLI** - HTML/MarkdownからPDF / EPUBを生成するコマンドラインツール
 - **VFM (Vivliostyle Flavored Markdown)** - 出版向け拡張Markdown記法
 - **Vivliostyle Themes** - 美しいドキュメントのための事前設計テーマ
 
@@ -34,7 +34,7 @@ Vivliostyleの最大のメリットは**SSMO（Single Source Multi Output）**�
 
 以下のプロダクトから始めてください：
 
-- [Vivliostyle CLI](/ja/cli/) - コマンドラインからPDFを生成
+- [Vivliostyle CLI](/ja/cli/) - コマンドラインからPDF / EPUBを生成
 - [VFM](/ja/vfm/) - Markdownでドキュメントを書く
 - [Vivliostyle Themes](/ja/themes/) - ドキュメントをスタイリング
 
