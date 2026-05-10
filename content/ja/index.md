@@ -30,14 +30,6 @@ Vivliostyleの最大のメリットは**SSMO（Single Source Multi Output）**�
 - **[PDF](https://docs.vivliostyle.org/ja/cli/special-output-settings/#%E5%8D%B0%E5%88%B7%E7%94%A8-pdfpdfx-1a-%E5%BD%A2%E5%BC%8F%E3%81%AE%E7%94%9F%E6%88%90)** - 印刷可能なドキュメント
 - **[EPUB](https://docs.vivliostyle.org/ja/cli/special-output-settings/#epub-%E5%BD%A2%E5%BC%8F%E3%81%AE%E5%87%BA%E5%8A%9B)** - 電子書籍フォーマット
 
-## はじめに
-
-以下のプロダクトから始めてください：
-
-- [Vivliostyle CLI](/ja/cli/) - コマンドラインからPDF / EPUBを生成
-- [VFM](/ja/vfm/) - Markdownでドキュメントを書く
-- [Vivliostyle Themes](/ja/themes/) - ドキュメントをスタイリング
-
 ## [活用ガイド](/ja/cookbook/)
 
 最近追加された機能を、プロダクトを横断して実践的に解説:
