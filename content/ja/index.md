@@ -11,7 +11,10 @@ Vivliostyleは、Webテクノロジーを使って美しくフォーマットさ
 
 ## Vivliostyleとは？
 
-![Vivliostyleプロダクト群](/product-jp.svg)
+<figure>
+<img src="/product-jp.svg" alt="Vivliostyleプロダクト群">
+<figcaption>Vivliostyleプロダクト群（<a href="https://gihyo.jp/article/2024/01/vivliostyle-01">村上真雄／小形克宏「Vivliostyleでなにができるの？」gihyo.jpより</a>）</figcaption>
+</figure>
 
 Vivliostyleは以下を提供するオープンソースプロジェクトです：
 

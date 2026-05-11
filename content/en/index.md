@@ -11,7 +11,10 @@ Vivliostyle is a CSS typesetting engine that allows you to create beautifully fo
 
 ## What is Vivliostyle?
 
-![Vivliostyle products](/product-en.svg)
+<figure>
+<img src="/product-en.svg" alt="Vivliostyle products">
+<figcaption>Vivliostyle products (<a href="https://gihyo.jp/article/2024/01/vivliostyle-01">Shinyu Murakami / Katsuhiro Ogata “Vivliostyleでなにができるの？” from gihyo.jp</a>)</figcaption>
+</figure>
 
 Vivliostyle is an open-source project that provides:
 
