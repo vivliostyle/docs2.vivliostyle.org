@@ -52,13 +52,13 @@ Vivliostyleの最大のメリットは**SSMO（Single Source Multi Output）**�
 
 ### ルビ
 
-VFMの{漢字|かんじ}サポートをデモンストレーションしています。
+{智|ち}に{棹|さお}させば{流|なが}される。{意地|いじ}を{通|とお}せば{窮屈|きゅうくつ}だ。
 
 <details>
 <summary>VFM Markdownソース</summary>
 
 ```markdown
-VFMの{漢字|かんじ}サポートをデモンストレーションしています。
+{智|ち}に{棹|さお}させば{流|なが}される。{意地|いじ}を{通|とお}せば{窮屈|きゅうくつ}だ。
 ```
 
 </details>
@@ -67,7 +67,7 @@ VFMの{漢字|かんじ}サポートをデモンストレーションしてい�
 <summary>VFMが生成するHTML（body部）</summary>
 
 ```html
-<p>VFMの<ruby>漢字<rt>かんじ</rt></ruby>サポートをデモンストレーションしています。</p>
+<p><ruby>智<rt>ち</rt></ruby>に<ruby>棹<rt>さお</rt></ruby>させば<ruby>流<rt>なが</rt></ruby>される。<ruby>意地<rt>いじ</rt></ruby>を<ruby>通<rt>とお</rt></ruby>せば<ruby>窮屈<rt>きゅうくつ</rt></ruby>だ。</p>
 ```
 
 </details>
@@ -84,7 +84,7 @@ VFMの{漢字|かんじ}サポートをデモンストレーションしてい�
 
 ### ルビ
 
-VFMの{漢字|かんじ}サポートをデモンストレーションしています。
+{智|ち}に{棹|さお}させば{流|なが}される。{意地|いじ}を{通|とお}せば{窮屈|きゅうくつ}だ。
 
 ### セクション属性
 
@@ -101,7 +101,7 @@ VFMの{漢字|かんじ}サポートをデモンストレーションしてい�
   <h2 id="vfm機能デモ">VFM機能デモ</h2>
   <section class="level3">
     <h3 id="ルビ">ルビ</h3>
-    <p>VFMの<ruby>漢字<rt>かんじ</rt></ruby>サポートをデモンストレーションしています。</p>
+    <p><ruby>智<rt>ち</rt></ruby>に<ruby>棹<rt>さお</rt></ruby>させば<ruby>流<rt>なが</rt></ruby>される。<ruby>意地<rt>いじ</rt></ruby>を<ruby>通<rt>とお</rt></ruby>せば<ruby>窮屈<rt>きゅうくつ</rt></ruby>だ。</p>
   </section>
   <section class="level3">
     <h3 id="セクション属性">セクション属性</h3>
