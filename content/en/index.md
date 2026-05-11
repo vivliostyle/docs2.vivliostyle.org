@@ -114,7 +114,7 @@ Sections are automatically wrapped with appropriate IDs for CSS styling.
 
 ## Downloads (built by Vivliostyle CLI)
 
-PDF and EPUB were generated from the documents (Markdown source) on this site using Vivliostyle CLI (Single Source, Multi Output).
+Web Pub, PDF and EPUB were generated from the documents (Markdown source) on this site using Vivliostyle CLI (Single Source, Multi Output).
 
 | Product | Vivliostyle Viewer | PDF | EPUB |
 |---|---|---|---|

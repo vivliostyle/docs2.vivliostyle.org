@@ -114,7 +114,7 @@ VFMの{漢字|かんじ}サポートをデモンストレーションしてい�
 
 ## Vivliostyle CLI生成物のダウンロード
 
-Vivliostyle CLIにより、このサイトのドキュメント（Markdownソース）からPDFとEPUBを生成しました（Single Source, Multi Output）。
+Vivliostyle CLIにより、このサイトのドキュメント（Markdownソース）からWeb Pub、PDFとEPUBを生成しました（Single Source, Multi Output）。
 
 | プロダクト | Vivliostyle Viewer | PDF | EPUB |
 |---|---|---|---|
