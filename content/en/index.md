@@ -37,6 +37,7 @@ From a single Markdown source, you can generate:
 
 - <a href="https://vivliostyle.org/tutorials/" target="_blank" rel="noopener noreferrer">Tutorials ↗</a>
 - <a href="https://vivliostyle.org/faq/" target="_blank" rel="noopener noreferrer">FAQ ↗</a>
+- [Reference](/en/reference/)
 - <a href="https://vivliostyle.org/samples/" target="_blank" rel="noopener noreferrer">Samples ↗</a>
 
 ## [Cookbook](/en/cookbook/)

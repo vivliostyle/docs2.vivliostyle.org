@@ -37,6 +37,7 @@ Vivliostyleの最大のメリットは**SSMO（Single Source Multi Output）**�
 
 - <a href="https://vivliostyle.org/ja/tutorials/" target="_blank" rel="noopener noreferrer">チュートリアル ↗</a>
 - <a href="https://vivliostyle.org/ja/faq/" target="_blank" rel="noopener noreferrer">FAQ ↗</a>
+- [リファレンス](/ja/reference/)
 - <a href="https://vivliostyle.org/ja/samples/" target="_blank" rel="noopener noreferrer">サンプル ↗</a>
 
 ## [活用ガイド](/ja/cookbook/)
