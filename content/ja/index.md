@@ -116,11 +116,11 @@ VFMの{漢字|かんじ}サポートをデモンストレーションしてい�
 
 Vivliostyle CLIにより、このサイトのドキュメント（Markdownソース）からPDFとEPUBを生成しました（Single Source, Multi Output）。
 
-| プロダクト | PDF | EPUB |
-|---|---|---|
-| [Vivliostyle Viewer](/ja/viewer/) | [PDF](/downloads/vivliostyle-viewer-ja.pdf) | [EPUB](/downloads/vivliostyle-viewer-ja.epub) |
-| [Vivliostyle CLI](/ja/cli/) | [PDF](/downloads/vivliostyle-cli-ja.pdf) | [EPUB](/downloads/vivliostyle-cli-ja.epub) |
-| [VFM](/ja/vfm/) | [PDF](/downloads/vfm-ja.pdf) | [EPUB](/downloads/vfm-ja.epub) |
-| [Vivliostyle Themes](/ja/themes/) | [PDF](/downloads/vivliostyle-themes-ja.pdf) | [EPUB](/downloads/vivliostyle-themes-ja.epub) |
-| [リファレンス](/ja/reference/) | [PDF](/downloads/vivliostyle-reference-ja.pdf) | [EPUB](/downloads/vivliostyle-reference-ja.epub) |
-| [活用ガイド](/ja/cookbook/) | [PDF](/downloads/vivliostyle-cookbook-ja.pdf) | [EPUB](/downloads/vivliostyle-cookbook-ja.epub) |
+| プロダクト | Vivliostyle Viewer | PDF | EPUB |
+|---|---|---|---|
+| [Vivliostyle Viewer](/ja/viewer/) | <a href="https://vivliostyle.org/viewer/#src=https://docs2.vivliostyle.org/publications/viewer-ja/publication.json" target="_blank" rel="noopener noreferrer">WebPub ↗</a> | [PDF](/downloads/vivliostyle-viewer-ja.pdf) | [EPUB](/downloads/vivliostyle-viewer-ja.epub) |
+| [Vivliostyle CLI](/ja/cli/) | <a href="https://vivliostyle.org/viewer/#src=https://docs2.vivliostyle.org/publications/cli-ja/publication.json" target="_blank" rel="noopener noreferrer">WebPub ↗</a> | [PDF](/downloads/vivliostyle-cli-ja.pdf) | [EPUB](/downloads/vivliostyle-cli-ja.epub) |
+| [VFM](/ja/vfm/) | <a href="https://vivliostyle.org/viewer/#src=https://docs2.vivliostyle.org/publications/vfm-ja/publication.json" target="_blank" rel="noopener noreferrer">WebPub ↗</a> | [PDF](/downloads/vfm-ja.pdf) | [EPUB](/downloads/vfm-ja.epub) |
+| [Vivliostyle Themes](/ja/themes/) | <a href="https://vivliostyle.org/viewer/#src=https://docs2.vivliostyle.org/publications/themes-ja/publication.json" target="_blank" rel="noopener noreferrer">WebPub ↗</a> | [PDF](/downloads/vivliostyle-themes-ja.pdf) | [EPUB](/downloads/vivliostyle-themes-ja.epub) |
+| [リファレンス](/ja/reference/) | <a href="https://vivliostyle.org/viewer/#src=https://docs2.vivliostyle.org/publications/reference-ja/publication.json" target="_blank" rel="noopener noreferrer">WebPub ↗</a> | [PDF](/downloads/vivliostyle-reference-ja.pdf) | [EPUB](/downloads/vivliostyle-reference-ja.epub) |
+| [活用ガイド](/ja/cookbook/) | <a href="https://vivliostyle.org/viewer/#src=https://docs2.vivliostyle.org/publications/cookbook-ja/publication.json" target="_blank" rel="noopener noreferrer">WebPub ↗</a> | [PDF](/downloads/vivliostyle-cookbook-ja.pdf) | [EPUB](/downloads/vivliostyle-cookbook-ja.epub) |
