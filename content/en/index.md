@@ -18,10 +18,10 @@ Vivliostyle is a CSS typesetting ecosystem for creating beautifully formatted do
 
 Vivliostyle is an open-source project that provides:
 
-- **Vivliostyle Viewer** - View and paginate HTML/CSS documents in the browser
-- **Vivliostyle CLI** - Command-line tool for generating PDF / EPUB from HTML/Markdown
-- **VFM (Vivliostyle Flavored Markdown)** - Extended Markdown syntax for publishing
-- **Vivliostyle Themes** - Pre-designed themes for beautiful documents
+- **[Vivliostyle Viewer](/en/viewer/)** - View and paginate HTML/CSS documents in the browser
+- **[Vivliostyle CLI](/en/cli/)** - Command-line tool for generating PDF / EPUB from HTML/Markdown
+- **[VFM (Vivliostyle Flavored Markdown)](/en/vfm/)** - Extended Markdown syntax for publishing
+- **[Vivliostyle Themes](/en/themes/)** - Pre-designed themes for beautiful documents
 
 ## Single Source, Multi Output {#ssmo}
 
