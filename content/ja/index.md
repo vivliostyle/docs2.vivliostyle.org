@@ -23,16 +23,6 @@ Vivliostyleは以下を提供するオープンソースプロジェクトです
 - **[VFM (Vivliostyle Flavored Markdown)](/ja/vfm/)** - 出版向け拡張Markdown記法
 - **[Vivliostyle Themes](/ja/themes/)** - 美しいドキュメントのための事前設計テーマ
 
-## Single Source, Multi Output {#ssmo}
-
-Vivliostyleの最大のメリットは**SSMO（Single Source Multi Output）**です：
-
-1つのMarkdownソースから以下を生成できます：
-
-- **[WebPub](https://docs.vivliostyle.org/ja/cli/special-output-settings/#web-%E5%87%BA%E7%89%88%E7%89%A9webpub%E3%81%AE%E5%87%BA%E5%8A%9B)** - オンライン閲覧用HTMLページ
-- **[PDF](https://docs.vivliostyle.org/ja/cli/special-output-settings/#%E5%8D%B0%E5%88%B7%E7%94%A8-pdfpdfx-1a-%E5%BD%A2%E5%BC%8F%E3%81%AE%E7%94%9F%E6%88%90)** - 印刷可能なドキュメント
-- **[EPUB](https://docs.vivliostyle.org/ja/cli/special-output-settings/#epub-%E5%BD%A2%E5%BC%8F%E3%81%AE%E5%87%BA%E5%8A%9B)** - 電子書籍フォーマット
-
 ## Vivliostyleビギナーはこちら
 
 - <a href="https://vivliostyle.org/ja/tutorials/" target="_blank" rel="noopener noreferrer">チュートリアル ↗</a>
@@ -47,6 +37,16 @@ Vivliostyleの最大のメリットは**SSMO（Single Source Multi Output）**�
 - [脚注（フットノート）](/ja/cookbook/footnotes/) — DPUB-ARIA脚注、標準 `@page { @footnote { } }` ルール、VFMの新しい `footnote` モード（v2.41.0+）
 - [CMYK 変換](/ja/cookbook/cmyk/) — `device-cmyk()` とCLIによるCMYK PDF出力（v2.40.0+）
 - [ページグループ](/ja/cookbook/page-groups/) — 名前付きページと `:nth(An+B of C)` ページセレクタ（v2.39.0+）
+
+## Single Source, Multi Output {#ssmo}
+
+Vivliostyleの最大のメリットは**SSMO（Single Source Multi Output）**です：
+
+1つのMarkdownソースから以下を生成できます：
+
+- **[WebPub](https://docs.vivliostyle.org/ja/cli/special-output-settings/#web-%E5%87%BA%E7%89%88%E7%89%A9webpub%E3%81%AE%E5%87%BA%E5%8A%9B)** - オンライン閲覧用HTMLページ
+- **[PDF](https://docs.vivliostyle.org/ja/cli/special-output-settings/#%E5%8D%B0%E5%88%B7%E7%94%A8-pdfpdfx-1a-%E5%BD%A2%E5%BC%8F%E3%81%AE%E7%94%9F%E6%88%90)** - 印刷可能なドキュメント
+- **[EPUB](https://docs.vivliostyle.org/ja/cli/special-output-settings/#epub-%E5%BD%A2%E5%BC%8F%E3%81%AE%E5%87%BA%E5%8A%9B)** - 電子書籍フォーマット
 
 ## VFM機能デモ
 

@@ -23,16 +23,6 @@ Vivliostyle is an open-source project that provides:
 - **[VFM (Vivliostyle Flavored Markdown)](/en/vfm/)** - Extended Markdown syntax for publishing
 - **[Vivliostyle Themes](/en/themes/)** - Pre-designed themes for beautiful documents
 
-## Single Source, Multi Output {#ssmo}
-
-One of the key benefits of Vivliostyle is **SSMO (Single Source Multi Output)**:
-
-From a single Markdown source, you can generate:
-
-- **[WebPub](https://docs.vivliostyle.org/en/cli/special-output-settings/#output-in-web-publication-webpub-format)** - HTML pages for online viewing
-- **[PDF](https://docs.vivliostyle.org/en/cli/special-output-settings/#generating-print-ready-pdf-pdfx-1a-format)** - Print-ready documents
-- **[EPUB](https://docs.vivliostyle.org/en/cli/special-output-settings/#output-in-epub-format)** - E-book format
-
 ## For Vivliostyle Beginners
 
 - <a href="https://vivliostyle.org/tutorials/" target="_blank" rel="noopener noreferrer">Tutorials ↗</a>
@@ -47,6 +37,16 @@ Practical, cross-product guides to recently added Vivliostyle features:
 - [Footnotes](/en/cookbook/footnotes/) — DPUB-ARIA footnotes, the standard `@page { @footnote { } }` rule, and the new VFM `footnote` modes (v2.41.0+)
 - [CMYK Conversion](/en/cookbook/cmyk/) — `device-cmyk()` and CLI PDF CMYK output (v2.40.0+)
 - [Page Groups](/en/cookbook/page-groups/) — Named pages and the `:nth(An+B of C)` page selector (v2.39.0+)
+
+## Single Source, Multi Output {#ssmo}
+
+One of the key benefits of Vivliostyle is **SSMO (Single Source Multi Output)**:
+
+From a single Markdown source, you can generate:
+
+- **[WebPub](https://docs.vivliostyle.org/en/cli/special-output-settings/#output-in-web-publication-webpub-format)** - HTML pages for online viewing
+- **[PDF](https://docs.vivliostyle.org/en/cli/special-output-settings/#generating-print-ready-pdf-pdfx-1a-format)** - Print-ready documents
+- **[EPUB](https://docs.vivliostyle.org/en/cli/special-output-settings/#output-in-epub-format)** - E-book format
 
 ## VFM Features Demo
 
