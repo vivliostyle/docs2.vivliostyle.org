@@ -13,7 +13,7 @@ Vivliostyle is a CSS typesetting ecosystem for creating beautifully formatted do
 
 <figure>
 <img src="/product-en.svg" alt="Vivliostyle products">
-<figcaption>Vivliostyle products (<a href="https://gihyo.jp/article/2024/01/vivliostyle-01">Shinyu Murakami / Katsuhiro Ogata “Vivliostyleでなにができるの？” from gihyo.jp</a>)</figcaption>
+<figcaption>Vivliostyle products (<a href="https://gihyo.jp/article/2024/01/vivliostyle-01" target="_blank" rel="noopener noreferrer">Shinyu Murakami / Katsuhiro Ogata “Vivliostyleでなにができるの？” from gihyo.jp ↗</a>)</figcaption>
 </figure>
 
 Vivliostyle is an open-source project that provides:
@@ -32,6 +32,12 @@ From a single Markdown source, you can generate:
 - **[WebPub](https://docs.vivliostyle.org/en/cli/special-output-settings/#output-in-web-publication-webpub-format)** - HTML pages for online viewing
 - **[PDF](https://docs.vivliostyle.org/en/cli/special-output-settings/#generating-print-ready-pdf-pdfx-1a-format)** - Print-ready documents
 - **[EPUB](https://docs.vivliostyle.org/en/cli/special-output-settings/#output-in-epub-format)** - E-book format
+
+## For Vivliostyle Beginners
+
+- <a href="https://vivliostyle.org/tutorials/" target="_blank" rel="noopener noreferrer">Tutorials ↗</a>
+- <a href="https://vivliostyle.org/faq/" target="_blank" rel="noopener noreferrer">FAQ ↗</a>
+- <a href="https://vivliostyle.org/samples/" target="_blank" rel="noopener noreferrer">Samples ↗</a>
 
 ## [Cookbook](/en/cookbook/)
 

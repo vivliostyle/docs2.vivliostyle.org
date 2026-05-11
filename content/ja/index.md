@@ -13,7 +13,7 @@ Vivliostyleは、Webテクノロジーを使って美しくフォーマットさ
 
 <figure>
 <img src="/product-jp.svg" alt="Vivliostyleプロダクト群">
-<figcaption>Vivliostyleプロダクト群（<a href="https://gihyo.jp/article/2024/01/vivliostyle-01">村上真雄／小形克宏「Vivliostyleでなにができるの？」gihyo.jpより</a>）</figcaption>
+<figcaption>Vivliostyleプロダクト群（<a href="https://gihyo.jp/article/2024/01/vivliostyle-01" target="_blank" rel="noopener noreferrer">村上真雄／小形克宏「Vivliostyleでなにができるの？」gihyo.jpより ↗</a>）</figcaption>
 </figure>
 
 Vivliostyleは以下を提供するオープンソースプロジェクトです：
@@ -32,6 +32,12 @@ Vivliostyleの最大のメリットは**SSMO（Single Source Multi Output）**�
 - **[WebPub](https://docs.vivliostyle.org/ja/cli/special-output-settings/#web-%E5%87%BA%E7%89%88%E7%89%A9webpub%E3%81%AE%E5%87%BA%E5%8A%9B)** - オンライン閲覧用HTMLページ
 - **[PDF](https://docs.vivliostyle.org/ja/cli/special-output-settings/#%E5%8D%B0%E5%88%B7%E7%94%A8-pdfpdfx-1a-%E5%BD%A2%E5%BC%8F%E3%81%AE%E7%94%9F%E6%88%90)** - 印刷可能なドキュメント
 - **[EPUB](https://docs.vivliostyle.org/ja/cli/special-output-settings/#epub-%E5%BD%A2%E5%BC%8F%E3%81%AE%E5%87%BA%E5%8A%9B)** - 電子書籍フォーマット
+
+## Vivliostyleビギナーはこちら
+
+- <a href="https://vivliostyle.org/ja/tutorials/" target="_blank" rel="noopener noreferrer">チュートリアル ↗</a>
+- <a href="https://vivliostyle.org/ja/faq/" target="_blank" rel="noopener noreferrer">FAQ ↗</a>
+- <a href="https://vivliostyle.org/ja/samples/" target="_blank" rel="noopener noreferrer">サンプル ↗</a>
 
 ## [活用ガイド](/ja/cookbook/)
 
