@@ -7,7 +7,7 @@ order: 1
 
 # Welcome to Vivliostyle Documentation
 
-Vivliostyle is a CSS typesetting engine that allows you to create beautifully formatted documents using web technologies.
+Vivliostyle is a CSS typesetting ecosystem for creating beautifully formatted documents using web technologies.
 
 ## What is Vivliostyle?
 
