@@ -7,7 +7,7 @@ order: 1
 
 # Vivliostyle ドキュメントへようこそ
 
-Vivliostyleは、Webテクノロジーを使って美しくフォーマットされたドキュメントを作成するための、CSS組版のエコシステムです。
+Vivliostyleは、Webテクノロジーを使って美しくフォーマットされたドキュメントを作成できる、CSS組版のエコシステムです。
 
 ## Vivliostyleとは？
 
