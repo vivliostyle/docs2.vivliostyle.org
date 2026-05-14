@@ -7,7 +7,7 @@ order: 5
 
 # VFM 拡張機能ガイド
 
-> **対象バージョン**: `@vivliostyle/vfm` v2.7.0+
+> **対象バージョン**: `@vivliostyle/vfm` v2.7+
 > **公開日**: 2026-05-14
 > **最終更新日**: 2026-05-14
 >
@@ -202,7 +202,7 @@ export function myPlugin(rawOptions) {
 
 #### c. 下流ツールが VFM のスキーマを再利用
 
-Vivliostyle CLI v10.6.0 は自身の設定スキーマを VFM の `SerializablePluginOptionsSchema` から派生させており、CLI 側で VFM オプションのドキュメントや JSON Schema を自動生成しています。同じパターンを自作ツールでも採用できます。
+Vivliostyle CLI v10.6 は自身の設定スキーマを VFM の `SerializablePluginOptionsSchema` から派生させており、CLI 側で VFM オプションのドキュメントや JSON Schema を自動生成しています。同じパターンを自作ツールでも採用できます。
 
 ### 設計メモ
 

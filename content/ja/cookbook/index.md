@@ -14,19 +14,19 @@ Vivliostyleの最近の追加機能について、プロダクト別ではなく
 ## ガイド一覧
 
 - **[脚注（フットノート）](./footnotes/)** — DPUB-ARIA脚注サポート、標準`@page { @footnote { } }`ルール、`footnote-display`、VFMの新しい`footnote`モード（`pandoc` / `gcpm` / `dpub`）。
-  - 対象バージョン: Vivliostyle.js v2.42.0+ / CLI v10.6.0+
+  - 対象バージョン: Vivliostyle.js v2.42+ / CLI v10.6+
 
 - **[CMYK変換](./cmyk/)** — CSSの`device-cmyk()`関数と、CLIのPDF CMYK出力（`pdfPostprocess.cmyk`）。
-  - 対象バージョン: Vivliostyle.js v2.40.0+ / CLI v10.6.0+
+  - 対象バージョン: Vivliostyle.js v2.40+ / CLI v10.6+
 
 - **[ページグループ](./page-groups/)** — 名前付きページ、`:nth(An+B of C)`ページセレクタによる章ごとのレイアウト。
-  - 対象バージョン: Vivliostyle.js v2.39.0+
+  - 対象バージョン: Vivliostyle.js v2.39+
 
 - **[VFM 拡張機能](./vfm-extensions/)** — `captionlessImagePolicy`、`editPlugins` フック、valibot プラグインオプションスキーマ。
-  - 対象バージョン: `@vivliostyle/vfm` v2.7.0+
+  - 対象バージョン: `@vivliostyle/vfm` v2.7+
 
 - **[レスポンシブ画像と CSS Nesting](./responsive-and-nesting/)** — CSS Nesting と `<picture>` / `<source media>` で 1 原稿から複数出力を作る。
-  - 対象バージョン: Vivliostyle.js v2.42.0+（CSS Nesting）／v2.42.1+（`<picture>`）
+  - 対象バージョン: Vivliostyle.js v2.42+（CSS Nesting）／v2.42+（`<picture>`）
 
 ## このセクションについて
 

@@ -1,6 +1,6 @@
 ---
 title: レスポンシブ画像と CSS Nesting ガイド
-description: Vivliostyle.js v2.42.0 の CSS Nesting と v2.42.1 の <picture> / <source media> 対応
+description: Vivliostyle.js v2.42 の CSS Nesting と v2.42 の <picture> / <source media> 対応
 lang: ja
 order: 6
 ---
@@ -9,9 +9,9 @@ order: 6
 
 > **対象バージョン**:
 >
-> - **CSS Nesting**: Vivliostyle.js v2.42.0+（2026-04-25リリース）
-> - **`<picture>` / `<source media>`**: Vivliostyle.js v2.42.1+（2026-05-13リリース）
-> - Vivliostyle CLI v10.6.0+ は Viewer 2.42.1 を同梱しているため、追加設定なしに両機能が利用できます。
+> - **CSS Nesting**: Vivliostyle.js v2.42+（2026-04-25リリース）
+> - **`<picture>` / `<source media>`**: Vivliostyle.js v2.42+（2026-05-13リリース）
+> - Vivliostyle CLI v10.6+ は Viewer 2.42.1 を同梱しているため、追加設定なしに両機能が利用できます。
 >
 > **公開日**: 2026-05-14
 > **最終更新日**: 2026-05-14
@@ -126,7 +126,7 @@ order: 6
 ### 知っておきたい制限
 
 - ネストできるのはルール（`@page` / `@media` / クラス・要素セレクタ）の中身です。**プロパティの中にネストはできません**。
-- 不正なセレクタが現れたときは、v2.42.0+ のセレクタ復帰処理によって以降のスタイルは正常に解釈されます（[#5c11c33 / fix invalid selector recovery for css nesting](https://github.com/vivliostyle/vivliostyle.js/issues/1032)）。
+- 不正なセレクタが現れたときは、v2.42+ のセレクタ復帰処理によって以降のスタイルは正常に解釈されます（[#5c11c33 / fix invalid selector recovery for css nesting](https://github.com/vivliostyle/vivliostyle.js/issues/1032)）。
 
 ---
 
@@ -134,7 +134,7 @@ order: 6
 
 ### 何ができるようになったか
 
-Vivliostyle.js v2.42.1 から、HTML の `<picture>` 要素と `<source media>` 属性が組版時に評価されるようになりました（[#1089](https://github.com/vivliostyle/vivliostyle.js/issues/1089)）。**1 つの Markdown / HTML 原稿から、出力条件に応じて自動的に画像を切り替えられる** ようになります。
+Vivliostyle.js v2.42 から、HTML の `<picture>` 要素と `<source media>` 属性が組版時に評価されるようになりました（[#1089](https://github.com/vivliostyle/vivliostyle.js/issues/1089)）。**1 つの Markdown / HTML 原稿から、出力条件に応じて自動的に画像を切り替えられる** ようになります。
 
 ### 組版での使いどころ
 
@@ -228,14 +228,14 @@ figure {
 
 | 機能                                | 対応開始バージョン | 注                                              |
 | ----------------------------------- | ------------------ | ----------------------------------------------- |
-| CSS Nesting                         | Vivliostyle.js v2.42.0 | セレクタ復帰の改善は同 2.42.1 で追加          |
-| `<picture>` / `<source media>`      | Vivliostyle.js v2.42.1 | CLI v10.6.0 は Viewer 2.42.1 を同梱             |
-| `<img srcset>` のロード安定化       | Vivliostyle.js v2.42.1 | `<picture>` 利用時の前提（[2579d4a](https://github.com/vivliostyle/vivliostyle.js/commit/2579d4a4d7bc7a9216f0f25d99987f49d866f285)）|
+| CSS Nesting                         | Vivliostyle.js v2.42 | セレクタ復帰の改善は同 2.42.1 で追加          |
+| `<picture>` / `<source media>`      | Vivliostyle.js v2.42 | CLI v10.6 は Viewer 2.42.1 を同梱             |
+| `<img srcset>` のロード安定化       | Vivliostyle.js v2.42 | `<picture>` 利用時の前提（[2579d4a](https://github.com/vivliostyle/vivliostyle.js/commit/2579d4a4d7bc7a9216f0f25d99987f49d866f285)）|
 
 ## 関連ガイド
 
 - [VFM 拡張機能ガイド](../vfm-extensions/)
-- [脚注（フットノート）](../footnotes/) — v2.42.0 で同時に脚注機能も拡張されました
+- [脚注（フットノート）](../footnotes/) — v2.42 で同時に脚注機能も拡張されました
 - [CMYK 変換](../cmyk/)
 - [ページグループ](../page-groups/)
 
