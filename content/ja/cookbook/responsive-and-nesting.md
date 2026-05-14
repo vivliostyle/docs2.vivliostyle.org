@@ -86,7 +86,7 @@ order: 6
 
 #### 2. 章ごとの差分スタイル
 
-[名前付きページ](./page-groups/)と組み合わせると、章別レイアウトのスタイルが大幅に整理できます。
+[名前付きページ](../page-groups/)と組み合わせると、章別レイアウトのスタイルが大幅に整理できます。
 
 ```css
 @page chapter-glossary {
@@ -190,7 +190,7 @@ VFM の `![alt](src)` は `<img>` を出すだけなので、`<picture>` を使�
 続く本文…
 ```
 
-[VFM 拡張機能ガイド](./vfm-extensions/)の `captionlessImagePolicy: 'figure-with-figcaption'` と組み合わせれば、`<picture>` を含む段落も `<figure>` 化してキャプションスロットを揃えられます。
+[VFM 拡張機能ガイド](../vfm-extensions/)の `captionlessImagePolicy: 'figure-with-figcaption'` と組み合わせれば、`<picture>` を含む段落も `<figure>` 化してキャプションスロットを揃えられます。
 
 ### EPUB / SVG 出力での挙動
 
@@ -234,10 +234,10 @@ figure {
 
 ## 関連ガイド
 
-- [VFM 拡張機能ガイド](./vfm-extensions/)
-- [脚注（フットノート）](./footnotes/) — v2.42.0 で同時に脚注機能も拡張されました
-- [CMYK 変換](./cmyk/)
-- [ページグループ](./page-groups/)
+- [VFM 拡張機能ガイド](../vfm-extensions/)
+- [脚注（フットノート）](../footnotes/) — v2.42.0 で同時に脚注機能も拡張されました
+- [CMYK 変換](../cmyk/)
+- [ページグループ](../page-groups/)
 
 ## 参考リンク
 
