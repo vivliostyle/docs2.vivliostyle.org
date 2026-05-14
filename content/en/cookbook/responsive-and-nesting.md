@@ -11,7 +11,7 @@ order: 6
 >
 > - **CSS Nesting**: Vivliostyle.js v2.42+ (released 2026-04-25)
 > - **`<picture>` / `<source media>`**: Vivliostyle.js v2.42+ (released 2026-05-13)
-> - Vivliostyle CLI v10.6+ bundles Viewer 2.42.1, so both features are available out of the box.
+> - Vivliostyle CLI v10.6+ bundles Viewer 2.42, so both features are available out of the box.
 >
 > **Published**: 2026-05-14
 > **Last updated**: 2026-05-14
@@ -228,8 +228,8 @@ figure {
 
 | Feature                          | Available from         | Notes                                                              |
 | -------------------------------- | ---------------------- | ------------------------------------------------------------------ |
-| CSS Nesting                      | Vivliostyle.js v2.42 | Selector recovery improvements landed in 2.42.1                     |
-| `<picture>` / `<source media>`   | Vivliostyle.js v2.42 | Bundled with CLI v10.6 (Viewer 2.42.1)                            |
+| CSS Nesting                      | Vivliostyle.js v2.42 | Selector recovery improvements landed in 2.42                     |
+| `<picture>` / `<source media>`   | Vivliostyle.js v2.42 | Bundled with CLI v10.6 (Viewer 2.42)                            |
 | Robust `<img srcset>` preloading | Vivliostyle.js v2.42 | Prerequisite for `<picture>` ([2579d4a](https://github.com/vivliostyle/vivliostyle.js/commit/2579d4a4d7bc7a9216f0f25d99987f49d866f285)) |
 
 ## Related guides

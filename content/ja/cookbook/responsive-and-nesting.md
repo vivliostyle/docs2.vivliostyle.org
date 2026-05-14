@@ -11,7 +11,7 @@ order: 6
 >
 > - **CSS Nesting**: Vivliostyle.js v2.42+（2026-04-25リリース）
 > - **`<picture>` / `<source media>`**: Vivliostyle.js v2.42+（2026-05-13リリース）
-> - Vivliostyle CLI v10.6+ は Viewer 2.42.1 を同梱しているため、追加設定なしに両機能が利用できます。
+> - Vivliostyle CLI v10.6+ は Viewer 2.42 を同梱しているため、追加設定なしに両機能が利用できます。
 >
 > **公開日**: 2026-05-14
 > **最終更新日**: 2026-05-14
@@ -228,8 +228,8 @@ figure {
 
 | 機能                                | 対応開始バージョン | 注                                              |
 | ----------------------------------- | ------------------ | ----------------------------------------------- |
-| CSS Nesting                         | Vivliostyle.js v2.42 | セレクタ復帰の改善は同 2.42.1 で追加          |
-| `<picture>` / `<source media>`      | Vivliostyle.js v2.42 | CLI v10.6 は Viewer 2.42.1 を同梱             |
+| CSS Nesting                         | Vivliostyle.js v2.42 | セレクタ復帰の改善は同 2.42 で追加          |
+| `<picture>` / `<source media>`      | Vivliostyle.js v2.42 | CLI v10.6 は Viewer 2.42 を同梱             |
 | `<img srcset>` のロード安定化       | Vivliostyle.js v2.42 | `<picture>` 利用時の前提（[2579d4a](https://github.com/vivliostyle/vivliostyle.js/commit/2579d4a4d7bc7a9216f0f25d99987f49d866f285)）|
 
 ## 関連ガイド
