@@ -25,7 +25,7 @@ Vivliostyleの最近の追加機能について、プロダクト別ではなく
 - **[VFM 拡張機能](./vfm-extensions/)** — `captionlessImagePolicy`、`editPlugins` フック、valibot プラグインオプションスキーマ。
   - 対象バージョン: `@vivliostyle/vfm` v2.7+
 
-- **[レスポンシブ画像と CSS Nesting](./responsive-and-nesting/)** — CSS Nesting と `<picture>` / `<source media>` で 1 原稿から複数出力を作る。
+- **[CSS Nesting と picture 要素ガイド](./responsive-and-nesting/)** — CSS Nesting と `<picture>` / `<source media>` で 1 原稿から複数出力を作る。
   - 対象バージョン: Vivliostyle.js v2.42+（CSS Nesting）／v2.42+（`<picture>`）
 
 ## このセクションについて

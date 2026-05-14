@@ -25,7 +25,7 @@ Each guide states the minimum version required at the top, so you can tell at a 
 - **[VFM Extension Hooks](./vfm-extensions/)** — `captionlessImagePolicy`, the `editPlugins` hook, and valibot-based plugin option schemas.
   - Target: `@vivliostyle/vfm` v2.7+
 
-- **[Responsive Images & CSS Nesting](./responsive-and-nesting/)** — CSS Nesting and `<picture>` / `<source media>` for one-source / many-output workflows.
+- **[CSS Nesting & picture Element Guide](./responsive-and-nesting/)** — CSS Nesting and `<picture>` / `<source media>` for one-source / many-output workflows.
   - Target: Vivliostyle.js v2.42+ (CSS Nesting) / v2.42+ (`<picture>`)
 
 ## How this section is organised

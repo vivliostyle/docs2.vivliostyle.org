@@ -38,7 +38,7 @@ Vivliostyleは以下を提供するオープンソースプロジェクトです
 - [CMYK 変換](/ja/cookbook/cmyk/) — `device-cmyk()` とCLIによるCMYK PDF出力（v2.40+）
 - [ページグループ](/ja/cookbook/page-groups/) — 名前付きページと `:nth(An+B of C)` ページセレクタ（v2.39+）
 - [VFM 拡張機能ガイド](/ja/cookbook/vfm-extensions/) — `captionlessImagePolicy`・`editPlugins` フック・valibot スキーマ（VFM v2.7+）
-- [レスポンシブ画像と CSS Nesting](/ja/cookbook/responsive-and-nesting/) — CSS Nesting（Vivliostyle.js v2.42+）と `<picture>` 対応（v2.42+）
+- [CSS Nesting と picture 要素ガイド](/ja/cookbook/responsive-and-nesting/) — CSS Nesting（Vivliostyle.js v2.42+）と `<picture>` 対応（v2.42+）
 
 ## Single Source, Multi Output {#ssmo}
 

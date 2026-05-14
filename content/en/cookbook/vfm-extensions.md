@@ -214,7 +214,7 @@ Vivliostyle CLI v10.6 derives its own config schema from `SerializablePluginOpti
 - [Footnotes](../footnotes/) — the `footnote` option is also defined as a valibot schema
 - [CMYK Conversion](../cmyk/)
 - [Page Groups](../page-groups/)
-- [Responsive Images & CSS Nesting](../responsive-and-nesting/) — new features on the Vivliostyle.js side
+- [CSS Nesting & picture Element Guide](../responsive-and-nesting/) — new features on the Vivliostyle.js side
 
 ## References
 
