@@ -86,7 +86,7 @@ Books frequently need different margins and folio positions for left and right p
 
 #### 2. Per-chapter style overrides
 
-Combined with [named pages](./page-groups/), nesting collapses what was once a long list of `@page name :left` / `:right` blocks into something legible:
+Combined with [named pages](../page-groups/), nesting collapses what was once a long list of `@page name :left` / `:right` blocks into something legible:
 
 ```css
 @page chapter-glossary {
@@ -190,7 +190,7 @@ An inline figure follows.
 Continuing prose…
 ```
 
-Combine this with `captionlessImagePolicy: 'figure-with-figcaption'` from the [VFM Extension Hooks Guide](./vfm-extensions/) to keep `<picture>` paragraphs aligned with VFM's `<figure>` structure for counters and captions.
+Combine this with `captionlessImagePolicy: 'figure-with-figcaption'` from the [VFM Extension Hooks Guide](../vfm-extensions/) to keep `<picture>` paragraphs aligned with VFM's `<figure>` structure for counters and captions.
 
 ### Behaviour in EPUB / SVG output
 
@@ -234,10 +234,10 @@ figure {
 
 ## Related guides
 
-- [VFM Extension Hooks Guide](./vfm-extensions/)
-- [Footnotes](./footnotes/) — footnote features were also expanded in v2.42.0
-- [CMYK Conversion](./cmyk/)
-- [Page Groups](./page-groups/)
+- [VFM Extension Hooks Guide](../vfm-extensions/)
+- [Footnotes](../footnotes/) — footnote features were also expanded in v2.42.0
+- [CMYK Conversion](../cmyk/)
+- [Page Groups](../page-groups/)
 
 ## References
 
