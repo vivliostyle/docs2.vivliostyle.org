@@ -1,6 +1,6 @@
 ---
 title: VFM Extension Hooks Guide
-description: VFM 2.7.0 — captionlessImagePolicy, the editPlugins hook, and valibot-based plugin option schemas
+description: VFM 2.7 — captionlessImagePolicy, the editPlugins hook, and valibot-based plugin option schemas
 lang: en
 order: 5
 ---
@@ -13,7 +13,7 @@ order: 5
 >
 > This guide is for users who call VFM **as a library** — custom builders, Astro / custom loaders, CI pipelines. If you just generate PDF/EPUB through Vivliostyle CLI, skim the **“When to reach for these”** section and stop there.
 
-VFM 2.7.0 ships three new extension points that let external code tune VFM's behaviour more precisely than the existing flat options allow:
+VFM 2.7 ships three new extension points that let external code tune VFM's behaviour more precisely than the existing flat options allow:
 
 | Feature                          | Problem it solves                                                                                                          | Affects                                  |
 | -------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- |
@@ -59,7 +59,7 @@ The previous handling was inconsistent across versions, and CSS such as `figure 
 
 ### The new option
 
-VFM 2.7.0 adds `captionlessImagePolicy` with three values:
+VFM 2.7 adds `captionlessImagePolicy` with three values:
 
 | Value                          | Output                                                | Use case                                                                                       |
 | ------------------------------ | ----------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
@@ -104,7 +104,7 @@ VFM's `replace` option only handles "match a pattern → emit a HAST node". It c
 
 ### The new hook
 
-VFM 2.7.0 adds an `editPlugins(plugins)` hook called just before the unified processor is built.
+VFM 2.7 adds an `editPlugins(plugins)` hook called just before the unified processor is built.
 
 ```ts
 type EditPlugins = (plugins: BuiltinPlugins) => EditedPlugins;
