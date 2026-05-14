@@ -38,7 +38,7 @@ Practical, cross-product guides to recently added Vivliostyle features:
 - [CMYK Conversion](/en/cookbook/cmyk/) — `device-cmyk()` and CLI PDF CMYK output (v2.40+)
 - [Page Groups](/en/cookbook/page-groups/) — Named pages and the `:nth(An+B of C)` page selector (v2.39+)
 - [VFM Extension Hooks](/en/cookbook/vfm-extensions/) — `captionlessImagePolicy`, `editPlugins` hook, and valibot option schemas (VFM v2.7+)
-- [Responsive Images & CSS Nesting](/en/cookbook/responsive-and-nesting/) — CSS Nesting (Vivliostyle.js v2.42+) and `<picture>` support (v2.42+)
+- [CSS Nesting & picture Element Guide](/en/cookbook/responsive-and-nesting/) — CSS Nesting (Vivliostyle.js v2.42+) and `<picture>` support (v2.42+)
 
 ## Single Source, Multi Output {#ssmo}
 

@@ -216,7 +216,7 @@ Vivliostyle CLI v10.6 は自身の設定スキーマを VFM の `SerializablePlu
 - [脚注（フットノート）](../footnotes/) — VFM の `footnote` オプションも valibot スキーマで定義されています
 - [CMYK 変換](../cmyk/)
 - [ページグループ](../page-groups/)
-- [レスポンシブ画像と CSS Nesting](../responsive-and-nesting/) — Vivliostyle.js 側の新機能
+- [CSS Nesting と picture 要素ガイド](../responsive-and-nesting/) — Vivliostyle.js 側の新機能
 
 ## 参考リンク
 

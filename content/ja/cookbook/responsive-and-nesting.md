@@ -1,11 +1,11 @@
 ---
-title: レスポンシブ画像と CSS Nesting ガイド
+title: CSS Nesting と picture 要素ガイド
 description: Vivliostyle.js v2.42 の CSS Nesting と picture / source media 要素の組版での活用
 lang: ja
 order: 6
 ---
 
-# レスポンシブ画像と CSS Nesting ガイド
+# CSS Nesting と picture 要素ガイド
 
 > **対象バージョン**:
 >
