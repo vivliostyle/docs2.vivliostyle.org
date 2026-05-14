@@ -7,14 +7,14 @@ order: 2
 
 # 脚注ガイド
 
-> **対象バージョン**: Vivliostyle.js v2.41.0+（2026-04-11リリース）／v2.42.0+（2026-04-25リリース、機能による）、Vivliostyle CLI v10.5.0+
+> **対象バージョン**: Vivliostyle.js v2.41.0+（2026-04-11リリース）／v2.42.0+（2026-04-25リリース、機能による）、Vivliostyle CLI v10.6.0+（Viewer 2.42.1同梱）
 > **公開日**: 2026-05-05
-> **最終更新日**: 2026-05-06
+> **最終更新日**: 2026-05-14
 >
 > - **v2.41.0で追加**: DPUB-ARIA脚注の自動認識（`float: footnote`のビルトイン適用）、`@page { @footnote { … } }`ルールと`@footnote ::before`コンテンツ
 > - **v2.42.0で追加**: DPUB-ARIA由来の脚注に対するCSS footnoteプロパティ／擬似要素（`footnote-display`、`::footnote-call`、`::footnote-marker`のcontent/list-style-positionなど、[#1884](https://github.com/vivliostyle/vivliostyle.js/issues/1884)）
 >
-> なおVivliostyle CLI 10.5.0はViewer 2.41.0を同梱しているため、`vivliostyle preview`でv2.42.0機能を試すには`package.json`の`overrides`に`"@vivliostyle/viewer": "^2.42.0"`を加えるなどしてViewerの最新版を強制する必要があります。
+> Vivliostyle CLI 10.6.0以降はViewer 2.42.1を同梱しているため、追加の`overrides`設定なしで本ガイドのv2.42.0機能を`vivliostyle preview` / `vivliostyle build`からそのまま利用できます。
 
 このガイドでは、Vivliostyle.js（およびVFM）で脚注を扱う方法を、**v2.41.0以前から提供されていた機能**と**v2.41.0 / v2.42.0で新たに加わった機能**に分けて解説します。
 

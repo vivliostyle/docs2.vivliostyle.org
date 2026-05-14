@@ -7,14 +7,14 @@ order: 2
 
 # Footnotes Guide
 
-> **Target versions**: Vivliostyle.js v2.41.0+ (released 2026-04-11) / v2.42.0+ (released 2026-04-25, by feature), Vivliostyle CLI v10.5.0+
+> **Target versions**: Vivliostyle.js v2.41.0+ (released 2026-04-11) / v2.42.0+ (released 2026-04-25, by feature), Vivliostyle CLI v10.6.0+ (bundles Viewer 2.42.1)
 > **Published**: 2026-05-05
-> **Last updated**: 2026-05-06
+> **Last updated**: 2026-05-14
 >
 > - **Added in v2.41.0**: DPUB-ARIA footnote auto-recognition (built-in `float: footnote`), the `@page { @footnote { … } }` rule, and `@footnote ::before` content.
 > - **Added in v2.42.0**: CSS footnote properties / pseudo-elements applied to DPUB-ARIA footnotes (`footnote-display`, `::footnote-call`, author-supplied `::footnote-marker` content / list-style-position, etc. — see [#1884](https://github.com/vivliostyle/vivliostyle.js/issues/1884)).
 >
-> Note: Vivliostyle CLI 10.5.0 bundles Viewer 2.41.0, so to exercise v2.42.0 features through `vivliostyle preview` you need to force the latest viewer, e.g. by adding `"@vivliostyle/viewer": "^2.42.0"` to `overrides` in `package.json`.
+> Vivliostyle CLI 10.6.0+ bundles Viewer 2.42.1, so the v2.42.0 features described in this guide work out of the box with `vivliostyle preview` / `vivliostyle build` without any extra `overrides` setup.
 
 This guide explains how to produce footnotes with **Vivliostyle.js** (and VFM), structured around **what was already supported** and **what's new in v2.41.0 / v2.42.0**.
 
