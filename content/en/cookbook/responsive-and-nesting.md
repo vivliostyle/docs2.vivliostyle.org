@@ -29,7 +29,7 @@ This guide covers two "modern web platform" features added in the Vivliostyle.js
 
 ### What's new
 
-The [CSS Nesting Module](https://www.w3.org/TR/css-nesting-1/) lets you nest rules in CSS using `&`. If you've used Sass the syntax is familiar — but here **the browser and Vivliostyle interpret it directly**, with no build step.
+The [CSS Nesting Module](https://www.w3.org/TR/css-nesting-1/) lets you write child rules inside a parent rule using `&`. In plain CSS you would repeat the selector — `.chapter h2 { ... }`, `.chapter p { ... }` and so on — but with nesting **you write them once, grouped inside `.chapter { }`**. No build tool or converter is required; browsers and Vivliostyle interpret it directly.
 
 ```css
 .chapter {
@@ -119,7 +119,7 @@ You can place `@media print` next to the rule it modifies, which makes it easy t
 
 ### Migrating existing themes
 
-- **From Sass**: renaming `.scss` → `.css` and removing the `@import` lines is enough to keep most `&`-nested rules working. Only Sass-specific constructs (`@mixin`, `@function`) need rewriting.
+- **Adding to an existing CSS file**: you can write nested rules directly in your current theme CSS. No configuration change is needed.
 - **Browser preview**: modern browsers already implement CSS Nesting, so what you see in a browser matches what `vivliostyle preview` and Viewer produce.
 - **Author tip**: start each nested selector with `&`. Plain selectors at the start of a nested block can occasionally be misread as declarations by CSS parsers.
 
