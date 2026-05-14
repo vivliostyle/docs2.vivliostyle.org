@@ -1,6 +1,6 @@
 ---
 title: Responsive Images & CSS Nesting Guide
-description: CSS Nesting (Vivliostyle.js v2.42) and <picture> / <source media> (v2.42) for book typesetting
+description: CSS Nesting (Vivliostyle.js v2.42) and picture / source media elements for book typesetting
 lang: en
 order: 6
 ---
@@ -130,7 +130,7 @@ You can place `@media print` next to the rule it modifies, which makes it easy t
 
 ---
 
-## Part 2 · `<picture>` / `<source media>`
+## Part 2 · picture / source media elements
 
 ### What's new
 
