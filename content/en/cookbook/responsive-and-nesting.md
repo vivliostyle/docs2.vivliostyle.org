@@ -1,6 +1,6 @@
 ---
 title: Responsive Images & CSS Nesting Guide
-description: CSS Nesting (Vivliostyle.js v2.42.0) and <picture> / <source media> (v2.42.1) for book typesetting
+description: CSS Nesting (Vivliostyle.js v2.42) and <picture> / <source media> (v2.42) for book typesetting
 lang: en
 order: 6
 ---
@@ -9,9 +9,9 @@ order: 6
 
 > **Target versions**:
 >
-> - **CSS Nesting**: Vivliostyle.js v2.42.0+ (released 2026-04-25)
-> - **`<picture>` / `<source media>`**: Vivliostyle.js v2.42.1+ (released 2026-05-13)
-> - Vivliostyle CLI v10.6.0+ bundles Viewer 2.42.1, so both features are available out of the box.
+> - **CSS Nesting**: Vivliostyle.js v2.42+ (released 2026-04-25)
+> - **`<picture>` / `<source media>`**: Vivliostyle.js v2.42+ (released 2026-05-13)
+> - Vivliostyle CLI v10.6+ bundles Viewer 2.42.1, so both features are available out of the box.
 >
 > **Published**: 2026-05-14
 > **Last updated**: 2026-05-14
@@ -126,7 +126,7 @@ You can place `@media print` next to the rule it modifies, which makes it easy t
 ### Known limits
 
 - You can nest *rules* (`@page`, `@media`, class/element selectors). You **cannot nest properties**.
-- When invalid selectors appear, the selector-recovery improvements in v2.42.0+ ensure the rest of the stylesheet still parses cleanly ([#1032](https://github.com/vivliostyle/vivliostyle.js/issues/1032)).
+- When invalid selectors appear, the selector-recovery improvements in v2.42+ ensure the rest of the stylesheet still parses cleanly ([#1032](https://github.com/vivliostyle/vivliostyle.js/issues/1032)).
 
 ---
 
@@ -134,7 +134,7 @@ You can place `@media print` next to the rule it modifies, which makes it easy t
 
 ### What's new
 
-Starting with Vivliostyle.js v2.42.1, the HTML `<picture>` element and `<source media>` attribute are evaluated during typesetting ([#1089](https://github.com/vivliostyle/vivliostyle.js/issues/1089)). One manuscript can now select different image assets depending on output conditions.
+Starting with Vivliostyle.js v2.42, the HTML `<picture>` element and `<source media>` attribute are evaluated during typesetting ([#1089](https://github.com/vivliostyle/vivliostyle.js/issues/1089)). One manuscript can now select different image assets depending on output conditions.
 
 ### Where it pays off
 
@@ -228,14 +228,14 @@ figure {
 
 | Feature                          | Available from         | Notes                                                              |
 | -------------------------------- | ---------------------- | ------------------------------------------------------------------ |
-| CSS Nesting                      | Vivliostyle.js v2.42.0 | Selector recovery improvements landed in 2.42.1                     |
-| `<picture>` / `<source media>`   | Vivliostyle.js v2.42.1 | Bundled with CLI v10.6.0 (Viewer 2.42.1)                            |
-| Robust `<img srcset>` preloading | Vivliostyle.js v2.42.1 | Prerequisite for `<picture>` ([2579d4a](https://github.com/vivliostyle/vivliostyle.js/commit/2579d4a4d7bc7a9216f0f25d99987f49d866f285)) |
+| CSS Nesting                      | Vivliostyle.js v2.42 | Selector recovery improvements landed in 2.42.1                     |
+| `<picture>` / `<source media>`   | Vivliostyle.js v2.42 | Bundled with CLI v10.6 (Viewer 2.42.1)                            |
+| Robust `<img srcset>` preloading | Vivliostyle.js v2.42 | Prerequisite for `<picture>` ([2579d4a](https://github.com/vivliostyle/vivliostyle.js/commit/2579d4a4d7bc7a9216f0f25d99987f49d866f285)) |
 
 ## Related guides
 
 - [VFM Extension Hooks Guide](../vfm-extensions/)
-- [Footnotes](../footnotes/) — footnote features were also expanded in v2.42.0
+- [Footnotes](../footnotes/) — footnote features were also expanded in v2.42
 - [CMYK Conversion](../cmyk/)
 - [Page Groups](../page-groups/)
 

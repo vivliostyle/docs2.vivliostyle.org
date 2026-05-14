@@ -7,7 +7,7 @@ order: 5
 
 # VFM Extension Hooks Guide
 
-> **Target versions**: `@vivliostyle/vfm` v2.7.0+
+> **Target versions**: `@vivliostyle/vfm` v2.7+
 > **Published**: 2026-05-14
 > **Last updated**: 2026-05-14
 >
@@ -200,7 +200,7 @@ export function myPlugin(rawOptions) {
 
 #### c. Downstream tools reuse VFM's schemas
 
-Vivliostyle CLI v10.6.0 derives its own config schema from `SerializablePluginOptionsSchema`, generating both runtime validation and JSON Schema docs from a single source of truth. You can do the same in any downstream tool.
+Vivliostyle CLI v10.6 derives its own config schema from `SerializablePluginOptionsSchema`, generating both runtime validation and JSON Schema docs from a single source of truth. You can do the same in any downstream tool.
 
 ### Design notes
 
