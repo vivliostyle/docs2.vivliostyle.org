@@ -22,6 +22,12 @@ Vivliostyleの最近の追加機能について、プロダクト別ではなく
 - **[ページグループ](./page-groups/)** — 名前付きページ、`:nth(An+B of C)`ページセレクタによる章ごとのレイアウト。
   - 対象バージョン: Vivliostyle.js v2.39.0+
 
+- **[VFM 拡張機能](./vfm-extensions/)** — `captionlessImagePolicy`、`editPlugins` フック、valibot プラグインオプションスキーマ。
+  - 対象バージョン: `@vivliostyle/vfm` v2.7.0+
+
+- **[レスポンシブ画像と CSS Nesting](./responsive-and-nesting/)** — CSS Nesting と `<picture>` / `<source media>` で 1 原稿から複数出力を作る。
+  - 対象バージョン: Vivliostyle.js v2.42.0+（CSS Nesting）／v2.42.1+（`<picture>`）
+
 ## このセクションについて
 
 ここで扱う機能は、Vivliostyleの複数のプロダクト（コアCSS、CLI、VFM、テーマ）にまたがることが多く、プロダクト別セクションには収まりにくいものです。「活用ガイド」では、プロダクト軸ではなく**機能軸**で整理しています。
