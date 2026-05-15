@@ -54,63 +54,25 @@ From a single Markdown source, you can generate:
 
 This demonstrates VFM's {Ruby|ルビ} support.
 
-<details>
-<summary>VFM Markdown source</summary>
+**VFM Markdown source:**
 
 ```markdown
 This demonstrates VFM's {Ruby|ルビ} support.
 ```
 
-</details>
+### Footnotes
 
-<details>
-<summary>VFM-generated HTML (body only)</summary>
+The term "hypertext" was coined by Ted Nelson in 1963, long before the invention of the World Wide Web[^1].
 
-```html
-<p>This demonstrates VFM's <ruby>Ruby<rt>ルビ</rt></ruby> support.</p>
+[^1]: Nelson, T. H. (1965). "Complex information processing: a file structure for the complex, the changing and the indeterminate".
+
+**VFM Markdown source:**
+
+```markdown
+The term "hypertext" was coined by Ted Nelson in 1963, long before the invention of the World Wide Web[^1].
+
+[^1]: Nelson, T. H. (1965). "Complex information processing: a file structure for the complex, the changing and the indeterminate".
 ```
-
-</details>
-
-### Section Attribution
-
-Sections are automatically wrapped with appropriate IDs for CSS styling.
-
-<details>
-<summary>VFM Markdown source (entire H2 “VFM Features Demo”)</summary>
-
-````markdown
-## VFM Features Demo
-
-### Ruby Text
-
-This demonstrates VFM's {Ruby|ルビ} support.
-
-### Section Attribution
-
-Sections are automatically wrapped with appropriate IDs for CSS styling.
-````
-
-</details>
-
-<details>
-<summary>VFM-generated HTML (entire H2 “VFM Features Demo”)</summary>
-
-```html
-<section class="level2">
-  <h2 id="vfm-features-demo">VFM Features Demo</h2>
-  <section class="level3">
-    <h3 id="ruby-text">Ruby Text</h3>
-    <p>This demonstrates VFM's <ruby>Ruby<rt>ルビ</rt></ruby> support.</p>
-  </section>
-  <section class="level3">
-    <h3 id="section-attribution">Section Attribution</h3>
-    <p>Sections are automatically wrapped with appropriate IDs for CSS styling.</p>
-  </section>
-</section>
-```
-
-</details>
 
 ## Downloads (built by Vivliostyle CLI)
 

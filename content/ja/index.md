@@ -54,63 +54,25 @@ Vivliostyleの最大のメリットは**SSMO（Single Source Multi Output）**�
 
 {智|ち}に{棹|さお}させば{流|なが}される。{意地|いじ}を{通|とお}せば{窮屈|きゅうくつ}だ。
 
-<details>
-<summary>VFM Markdownソース</summary>
+**VFM Markdownソース:**
 
 ```markdown
 {智|ち}に{棹|さお}させば{流|なが}される。{意地|いじ}を{通|とお}せば{窮屈|きゅうくつ}だ。
 ```
 
-</details>
+### 脚注
 
-<details>
-<summary>VFMが生成するHTML（body部）</summary>
+文化庁調査（2022年）[^1]によると、「棹さす」を「流れに乗る」の意味で使う人は23.4%なのに対し、「勢いを止める」は59.4％にのぼる。
 
-```html
-<p><ruby>智<rt>ち</rt></ruby>に<ruby>棹<rt>さお</rt></ruby>させば<ruby>流<rt>なが</rt></ruby>される。<ruby>意地<rt>いじ</rt></ruby>を<ruby>通<rt>とお</rt></ruby>せば<ruby>窮屈<rt>きゅうくつ</rt></ruby>だ。</p>
+[^1]: [平成24年度「国語に関する世論調査」の結果の概要](https://www.bunka.go.jp/tokei_hakusho_shuppan/tokeichosa/kokugo_yoronchosa/pdf/h24_chosa_kekka.pdf)
+
+**VFM Markdownソース:**
+
+```markdown
+文化庁調査（2022年）[^1]によると、「棹さす」を「流れに乗る」の意味で使う人は23.4%なのに対し、「勢いを止める」は59.4％にのぼる。
+
+[^1]: [平成24年度「国語に関する世論調査」の結果の概要](https://www.bunka.go.jp/tokei_hakusho_shuppan/tokeichosa/kokugo_yoronchosa/pdf/h24_chosa_kekka.pdf)
 ```
-
-</details>
-
-### セクション属性
-
-セクションはCSSスタイリング用の適切なIDで自動的にラップされます。
-
-<details>
-<summary>VFM Markdownソース（H2「VFM機能デモ」全体）</summary>
-
-````markdown
-## VFM機能デモ
-
-### ルビ
-
-{智|ち}に{棹|さお}させば{流|なが}される。{意地|いじ}を{通|とお}せば{窮屈|きゅうくつ}だ。
-
-### セクション属性
-
-セクションはCSSスタイリング用の適切なIDで自動的にラップされます。
-````
-
-</details>
-
-<details>
-<summary>VFMが生成するHTML（H2「VFM機能デモ」全体）</summary>
-
-```html
-<section class="level2">
-  <h2 id="vfm機能デモ">VFM機能デモ</h2>
-  <section class="level3">
-    <h3 id="ルビ">ルビ</h3>
-    <p><ruby>智<rt>ち</rt></ruby>に<ruby>棹<rt>さお</rt></ruby>させば<ruby>流<rt>なが</rt></ruby>される。<ruby>意地<rt>いじ</rt></ruby>を<ruby>通<rt>とお</rt></ruby>せば<ruby>窮屈<rt>きゅうくつ</rt></ruby>だ。</p>
-  </section>
-  <section class="level3">
-    <h3 id="セクション属性">セクション属性</h3>
-    <p>セクションはCSSスタイリング用の適切なIDで自動的にラップされます。</p>
-  </section>
-</section>
-```
-
-</details>
 
 ## Vivliostyle CLI生成物のダウンロード
 
