@@ -134,7 +134,7 @@ pdfPostprocess: {
 pdfPostprocess: {
   cmyk: {
     enabled: true,
-    mapOutput: './cmyk-map.txt',
+    mapOutput: './cmyk-map.json',
   },
 },
 ```
