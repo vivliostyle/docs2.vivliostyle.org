@@ -115,6 +115,8 @@ EPUB 3仕様に由来する`epub:type`属性を使って注をマークアップ
 
 Vivliostyleはこの属性を実装しており、`float: footnote`を適用します。テーマCSSは不要です。
 
+VFMはこの`epub:type`属性の出力をサポートしていません。HTMLに直接記述する場合のみ利用できます。
+
 ### DPUB-ARIAロール方式（[#1700](https://github.com/vivliostyle/vivliostyle.js/issues/1700)、[PR#1703](https://github.com/vivliostyle/vivliostyle.js/pull/1703)）
 
 Vivliostyle.js v2.41は、DPUB-ARIAロールから直接脚注を認識します:
