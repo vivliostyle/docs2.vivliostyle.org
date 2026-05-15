@@ -61,11 +61,11 @@ Vivliostyle.js v2.41.0で追加された脚注関連の新機能:
 
 ## Part 2 · 従来の脚注サポート
 
-### 1. CSS組版における注の役割
+### CSS組版における注の役割
 
 注（脚注・後注）は書籍出版に欠かせない要素です。CSS Generated Content for Paged Media（GCPM）Module 3は、ブロックレベルの要素を本文フローから取り出してページ下部の脚注エリアに流し込むメカニズムとして`float: footnote`を定義しています。
 
-### 2. HTMLで直接記述する方法
+### HTMLで直接記述する方法
 
 最も直接的な記法は、HTMLでマークアップする方法です:
 
@@ -108,7 +108,7 @@ HTML中に`<span class="footnote">`として記述した脚注[^1]は、テー�
 
 </details>
 
-### 3. VFMのPandoc形式後注（従来のデフォルト）
+### VFMのPandoc形式後注（従来のデフォルト）
 
 VFM v2.5.x以前では、Markdownの`[^1]`記法はPandoc出力スタイルの**後注**を生成しました:
 
@@ -160,13 +160,13 @@ VFMのデフォルト設定（`footnote: 'pandoc'`）では、`[^1]`記法は`<s
 
 </details>
 
-### 4. theme-techbookの画面表示と印刷表示
+### theme-techbookの画面表示と印刷表示
 
 theme-techbookは`@media screen`と`@media print`で別々のスタイルを提供しているため、画面プレビューと印刷PDFで注の見た目が異なります。印刷時の見た目を確認するにはVivliostyle Viewerを使ってください。
 
 ## Part 3 · v2.41.0の新しい脚注機能
 
-### 5. DPUB-ARIA脚注サポート（[#1700](https://github.com/vivliostyle/vivliostyle.js/issues/1700)、[PR#1703](https://github.com/vivliostyle/vivliostyle.js/pull/1703)）
+### DPUB-ARIA脚注サポート（[#1700](https://github.com/vivliostyle/vivliostyle.js/issues/1700)、[PR#1703](https://github.com/vivliostyle/vivliostyle.js/pull/1703)）
 
 Vivliostyle.js v2.41.0は、DPUB-ARIAロールから直接脚注を認識します:
 
@@ -224,7 +224,7 @@ Vivliostyle.js v2.41.0+のビルトインUAスタイルが`float: footnote`を�
 >
 > v2.41.0環境で同等の見た目にしたい場合は、asideの中に`<sup>n</sup>`を直接書くなどHTML側で番号を持たせる方法でも代用できます。
 
-### 6. 3つの認識メカニズムの比較
+### 3つの認識メカニズムの比較
 
 |メカニズム|由来|認識パターン|テーマCSS |
 |---|---|---|---|
@@ -234,7 +234,7 @@ Vivliostyle.js v2.41.0+のビルトインUAスタイルが`float: footnote`を�
 
 3つのメカニズムは同一ドキュメント内で共存できますが、実際にはソースに応じてどれか1つを採用するのが普通です。
 
-### 7.標準CSSの`@footnote`ルールサポート（[#1045](https://github.com/vivliostyle/vivliostyle.js/issues/1045)、[#1723](https://github.com/vivliostyle/vivliostyle.js/issues/1723)）
+### 標準CSSの`@footnote`ルールサポート（[#1045](https://github.com/vivliostyle/vivliostyle.js/issues/1045)、[#1723](https://github.com/vivliostyle/vivliostyle.js/issues/1723)）
 
 これまでVivliostyleはベンダー固有の`@-adapt-footnote-area` at-ruleを使っていましたが、v2.41.0は標準のCSS GCPM 3 `@footnote`ルールに対応します:
 
@@ -295,7 +295,7 @@ vfm:
 
 </details>
 
-### 8. `footnote-display`プロパティ（[#1825](https://github.com/vivliostyle/vivliostyle.js/issues/1825)）
+### `footnote-display`プロパティ（[#1825](https://github.com/vivliostyle/vivliostyle.js/issues/1825)）
 
 > **DPUB-ARIA脚注に適用するにはVivliostyle.js v2.42.0+が必要**（[#1884](https://github.com/vivliostyle/vivliostyle.js/issues/1884)で追加）。GCPMのclass方式`<span class="footnote">`にはv2.41.0以前から適用可能です。
 
@@ -386,7 +386,7 @@ vfm:
 
 </details>
 
-### 9. `::footnote-marker`の`list-style-position: outside`（[#1702](https://github.com/vivliostyle/vivliostyle.js/issues/1702)）
+### `::footnote-marker`の`list-style-position: outside`（[#1702](https://github.com/vivliostyle/vivliostyle.js/issues/1702)）
 
 > **DPUB-ARIA脚注に対してauthor CSSの`::footnote-marker`を適用するにはVivliostyle.js v2.42.0+が必要**（[#1884](https://github.com/vivliostyle/vivliostyle.js/issues/1884)）。GCPMのclass方式ではv2.41.0以前から適用可能です。
 
@@ -434,11 +434,11 @@ vfm:
 
 なおVivliostyleのDPUB-ARIA実装では、`::footnote-marker`のcontentを**`list-style-position: outside`**とセットで指定したときに描画されます。`inside`（CSSのデフォルト）ではauthorのcontentが描画されないので注意してください（GCPMのclass方式`<span class="footnote">`ではどちらでも描画されます）。詳細は §5の「マーカー表示について」を参照。
 
-### 10.ページスコープリセットとクロススコープカウンタ
+### ページスコープリセットとクロススコープカウンタ
 
 脚注カウンタをページグループ単位でリセットできるようになりました。章ごとに脚注番号を新規に採番する書籍で便利です。`counter-reset`を、[ページグループガイド](./page-groups/)で扱う名前付きページの仕組みと組み合わせて使います。
 
-### 11. VFMの3つの`footnote`モード（VFM [PR#226](https://github.com/vivliostyle/vfm/pull/226)、[PR#231](https://github.com/vivliostyle/vfm/pull/231)）
+### VFMの3つの`footnote`モード（VFM [PR#226](https://github.com/vivliostyle/vfm/pull/226)、[PR#231](https://github.com/vivliostyle/vfm/pull/231)）
 
 VFM v2.6.0は`footnote`オプションを導入しました:
 
@@ -457,7 +457,7 @@ export default {
 };
 ```
 
-### 12. VFM `footnote`オプションのオブジェクト形式
+### VFM `footnote`オプションのオブジェクト形式
 
 `footnote`はオブジェクト`{ mode, body }`の形でも指定でき、生成HTMLをカスタマイズできます:
 
@@ -473,7 +473,7 @@ vfm: {
 
 用途は、ぶら下げインデント用ラッパーのような**スタイリング目的のDOM変形をMarkdownソースから分離する**ことです。Markdownには素のままに脚注を書き、ビルド設定側でラッパーを適用します。
 
-### 13. YAMLフロントマターによるファイル単位の設定
+### YAMLフロントマターによるファイル単位の設定
 
 脚注モードはファイルごとにYAMLフロントマターで指定でき、グローバル設定を上書きできます:
 
@@ -486,7 +486,7 @@ vfm:
 
 プロジェクト全体ではデフォルト設定を使いつつ、特定のファイルだけ別モードに切り替えたい場合に便利です。
 
-### 14. CSS脚注プロパティのまとめ
+### CSS脚注プロパティのまとめ
 
 |プロパティ・at-rule |役割|
 |---|---|

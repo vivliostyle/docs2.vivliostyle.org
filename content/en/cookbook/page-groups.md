@@ -13,7 +13,7 @@ order: 4
 
 This guide explains named pages and the `:nth(An+B of C)` page selector, which together let you give different chapters of a book entirely different page layouts.
 
-## 1. Why named pages?
+## Why named pages?
 
 A book often needs more than one page design within a single document:
 
@@ -23,7 +23,7 @@ A book often needs more than one page design within a single document:
 
 CSS lets you address pages with `@page :left` / `:right` / `:first`, but those selectors only distinguish *facing pages* and *the very first page* — they can't distinguish *which chapter* you're in. **Named pages** fill that gap.
 
-## 2. Named pages — the basics
+## Named pages — the basics
 
 The `page` property assigns a name to a flow-level box (a section, a `<div>`, etc.):
 
@@ -53,7 +53,7 @@ You then style each named page with a matching `@page` rule:
 
 Pages produced by laying out `section.glossary` use the `narrow` page, while pages produced by `section.gallery` use the `wide` page.
 
-## 3. The `:nth()` page selector
+## The `:nth()` page selector
 
 Within a single `@page` name (or the unnamed default), `:nth()` selects pages by their position:
 
@@ -67,7 +67,7 @@ Within a single `@page` name (or the unnamed default), `:nth()` selects pages by
 
 The `An+B` form follows the same convention as `:nth-child`: `n` is `0, 1, 2, ...`, and any non-positive result is dropped.
 
-## 4. `:nth()` with counter manipulation
+## `:nth()` with counter manipulation
 
 Pages are numbered from 1 by default, but `counter-reset: page <n>` on a flow box restarts the page counter at `<n>`. This makes selectors like `:nth(1)` mean *the first page of this chapter*:
 
@@ -82,13 +82,13 @@ section.chapter {
 }
 ```
 
-## 5. The page-group concept
+## The page-group concept
 
 When the layout engine flows content into pages and the `page` named on the flow box changes (e.g. `glossary` is followed by `gallery`), Vivliostyle issues a *forced page break*. The block of consecutive pages produced by a single named-page block is a **page group**.
 
 In other words, a page group is "a run of pages all using the same `@page` name, all coming from the same flow-level region in the source." That's the unit `:nth(... of <name>)` selects within.
 
-## 6. `:nth(An+B of C)` — selectors *inside* a page group (new in v2.39.0)
+## `:nth(An+B of C)` — selectors *inside* a page group (new in v2.39.0)
 
 Vivliostyle.js v2.39.0 supports the form `:nth(An+B of <name>)`. It restricts the index to **within** the named page group:
 
@@ -107,7 +107,7 @@ Vivliostyle.js v2.39.0 supports the form `:nth(An+B of <name>)`. It restricts th
 
 This is what makes "the first page of every chapter looks different from the rest" easy to express. Without `of <name>`, `:nth(1)` only selects the *very first page of the document*; with it, you select the first page of each group separately.
 
-## 7. Practical example: a chapter-structured book
+## Practical example: a chapter-structured book
 
 Combining named pages, `counter-reset`, and `:nth(... of <name>)`:
 
@@ -145,7 +145,7 @@ section.glossary { page: narrow; }
 
 This pattern is used in CSS GCPM 3 Examples 13 and 14, and is now natively supported in Vivliostyle.js v2.39.0.
 
-## 8. Verifying with Vivliostyle Viewer
+## Verifying with Vivliostyle Viewer
 
 `@page` rules only manifest in paginated rendering. To check page-group output:
 

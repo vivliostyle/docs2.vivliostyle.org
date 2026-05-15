@@ -61,11 +61,11 @@ The terminology in this guide follows the W3C [Requirements for Japanese Text La
 
 ## Part 2 · Footnote support before v2.41.0
 
-### 1. The role of notes in CSS-based publishing
+### The role of notes in CSS-based publishing
 
 Notes (footnotes and endnotes) are an essential element of book publishing. CSS Generated Content for Paged Media (GCPM) Module 3 defines `float: footnote` as the mechanism that takes a flow-level box out of the main flow and reflows it into a footnote area at the bottom of the page.
 
-### 2. Footnotes written directly in HTML
+### Footnotes written directly in HTML
 
 The most direct way to author footnotes is to mark them in HTML:
 
@@ -108,7 +108,7 @@ Multiple references in the same paragraph[^2] share an auto-incrementing counter
 
 </details>
 
-### 3. Pandoc-style endnotes in VFM (the legacy default)
+### Pandoc-style endnotes in VFM (the legacy default)
 
 Up to and including VFM v2.5.x, `[^1]` notation in Markdown produced **endnotes** in Pandoc's output style:
 
@@ -160,13 +160,13 @@ Because endnotes flow inline with the main text, they are not subject to `float:
 
 </details>
 
-### 4. Screen vs print presentation in theme-techbook
+### Screen vs print presentation in theme-techbook
 
 theme-techbook provides separate styling under `@media screen` and `@media print`, so the visual appearance of notes differs between the on-screen preview and the printed PDF. Use the Vivliostyle Viewer to confirm the printed look.
 
 ## Part 3 · New footnote features in v2.41.0
 
-### 5. DPUB-ARIA footnote support ([#1700](https://github.com/vivliostyle/vivliostyle.js/issues/1700), [PR#1703](https://github.com/vivliostyle/vivliostyle.js/pull/1703))
+### DPUB-ARIA footnote support ([#1700](https://github.com/vivliostyle/vivliostyle.js/issues/1700), [PR#1703](https://github.com/vivliostyle/vivliostyle.js/pull/1703))
 
 Vivliostyle.js v2.41.0 recognises footnotes from DPUB-ARIA roles directly:
 
@@ -224,7 +224,7 @@ Vivliostyle.js v2.41.0+ applies `float: footnote` automatically through its buil
 >
 > On v2.41.0 (or older Viewer bundles) you can get an equivalent look by writing the marker as inline HTML inside the aside (e.g. `<aside><sup>1</sup>…</aside>`).
 
-### 6. Comparison of the three recognition mechanisms
+### Comparison of the three recognition mechanisms
 
 | Mechanism | Origin | Recognised pattern | Theme CSS |
 |---|---|---|---|
@@ -234,7 +234,7 @@ Vivliostyle.js v2.41.0+ applies `float: footnote` automatically through its buil
 
 The three mechanisms can coexist within the same document, but in practice one of them is chosen per source.
 
-### 7. Standard CSS `@footnote` rule ([#1045](https://github.com/vivliostyle/vivliostyle.js/issues/1045), [#1723](https://github.com/vivliostyle/vivliostyle.js/issues/1723))
+### Standard CSS `@footnote` rule ([#1045](https://github.com/vivliostyle/vivliostyle.js/issues/1045), [#1723](https://github.com/vivliostyle/vivliostyle.js/issues/1723))
 
 Vivliostyle previously used a vendor-specific `@-adapt-footnote-area` at-rule. v2.41.0 adds support for the standard CSS GCPM 3 `@footnote` rule:
 
@@ -295,7 +295,7 @@ With multiple notes[^2], the heading appears once for the entire footnote area, 
 
 </details>
 
-### 8. The `footnote-display` property ([#1825](https://github.com/vivliostyle/vivliostyle.js/issues/1825))
+### The `footnote-display` property ([#1825](https://github.com/vivliostyle/vivliostyle.js/issues/1825))
 
 > **Applying this to DPUB-ARIA footnotes requires Vivliostyle.js v2.42.0+** (added in [#1884](https://github.com/vivliostyle/vivliostyle.js/issues/1884)). The GCPM class form (`<span class="footnote">`) accepts it from v2.41.0 and earlier.
 
@@ -386,7 +386,7 @@ vfm:
 
 </details>
 
-### 9. `list-style-position: outside` for `::footnote-marker` ([#1702](https://github.com/vivliostyle/vivliostyle.js/issues/1702))
+### `list-style-position: outside` for `::footnote-marker` ([#1702](https://github.com/vivliostyle/vivliostyle.js/issues/1702))
 
 > **Applying author `::footnote-marker` styles to DPUB-ARIA footnotes requires Vivliostyle.js v2.42.0+** ([#1884](https://github.com/vivliostyle/vivliostyle.js/issues/1884)). The GCPM class form has accepted these styles since earlier releases.
 
@@ -434,11 +434,11 @@ Setting `list-style-position: outside` on `::footnote-marker` places the marker 
 
 Note that under Vivliostyle's DPUB-ARIA implementation the author's `::footnote-marker` `content` is rendered only when paired with **`list-style-position: outside`**. With `inside` (the CSS default) the author content is silently dropped — but the GCPM class form (`<span class="footnote">`) renders with either value. See the "About the footnote-area marker" callout in §5 for the underlying reason.
 
-### 10. Page-scoped reset and cross-scope counters
+### Page-scoped reset and cross-scope counters
 
 Footnote counters can now be reset per page group, which is useful for books that restart footnote numbering at each chapter. Use `counter-reset` together with the named-page mechanism described in the [Page Groups guide](./page-groups/).
 
-### 11. The three VFM `footnote` modes (VFM [PR#226](https://github.com/vivliostyle/vfm/pull/226), [PR#231](https://github.com/vivliostyle/vfm/pull/231))
+### The three VFM `footnote` modes (VFM [PR#226](https://github.com/vivliostyle/vfm/pull/226), [PR#231](https://github.com/vivliostyle/vfm/pull/231))
 
 VFM v2.6.0 introduces a `footnote` option on the VFM transformer:
 
@@ -457,7 +457,7 @@ export default {
 };
 ```
 
-### 12. Object form of the VFM `footnote` option
+### Object form of the VFM `footnote` option
 
 Beyond the three string values, `footnote` also accepts an object `{ mode, body }` that lets you customise the generated HTML:
 
@@ -473,7 +473,7 @@ vfm: {
 
 The intended use case is keeping styling-only DOM transformations (such as adding a wrapper for hanging indent) **out of the Markdown source**. Authors write plain Markdown footnotes; the build configuration applies the wrapper.
 
-### 13. Per-file configuration via YAML frontmatter
+### Per-file configuration via YAML frontmatter
 
 The footnote mode can also be set per file in YAML frontmatter, overriding the global config:
 
@@ -486,7 +486,7 @@ vfm:
 
 This is convenient when most of the project uses the project-wide default but a single file needs a different mode.
 
-### 14. Summary of CSS footnote properties
+### Summary of CSS footnote properties
 
 | Property / at-rule | Purpose |
 |---|---|

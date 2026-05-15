@@ -13,7 +13,7 @@ order: 3
 
 このガイドは、CSS側の`device-cmyk()`によるCMYK色指定と、CLI側の`pdfPostprocess.cmyk`によるCMYK PDF出力を扱います。
 
-## 1.印刷用PDFでなぜCMYKが必要か
+## 印刷用PDFでなぜCMYKが必要か
 
 商業オフセット印刷では、**Cyan**・**Magenta**・**Yellow**・**Key（黒）**の4色のプロセスインキを使います。印刷所は、色がCMYKカラースペースで直接指定されたPDFを要求します。RGB→CMYK変換はワークフローごとに結果が異なるため、最初からCMYKでPDFを作るのが結果を確定的にコントロールする唯一の方法だからです。
 
@@ -24,7 +24,7 @@ v2.39.xまではVivliostyleはRGBしか出力できませんでしたが、v2.40
 
 これにより、印刷入稿可能なPDFをVivliostyleだけで一貫して制作できるようになりました。
 
-## 2. CSS関数`device-cmyk()`
+## CSS関数`device-cmyk()`
 
 `device-cmyk()`は[CSS Color 5](https://drafts.csswg.org/css-color-5/#device-cmyk)で定義されています。
 
@@ -54,7 +54,7 @@ color: device-cmyk(0, 1, 1, 0);
 background-color: device-cmyk(0 1 1 0 / 0.5);
 ```
 
-## 3.さまざまなCSSプロパティでの使用
+## さまざまなCSSプロパティでの使用
 
 `device-cmyk()`は`<color>`値が許される任意の場所で使えます:
 
@@ -73,7 +73,7 @@ h1 { color: device-cmyk(0 0 0 1); }                     /* テキスト色 */
 }
 ```
 
-## 4.プロセスカラーの実用例
+## プロセスカラーの実用例
 
 |用途| CMYK |備考|
 |---|---|---|
@@ -83,7 +83,7 @@ h1 { color: device-cmyk(0 0 0 1); }                     /* テキスト色 */
 |プロセスブルー| `device-cmyk(1 1 0 0)` | C=M=100% |
 |淡い塗り（囲み・ハイライト用）| `device-cmyk(0 0.1 0.2 0)` |暖色系の淡いトーン|
 
-## 5. CLIによるCMYK PDF出力
+## CLIによるCMYK PDF出力
 
 `device-cmyk()`は、CSS著者が制御するレベルでカラースペースオブジェクトがCMYKのPDFを生成します。ただしVivliostyle CLIはそれ以外の要素（ページ背景、埋め込み画像など）はデフォルトでRGB出力です。PDF全体をCMYK PDFに変換するには、CLIの後処理を設定します:
 
@@ -102,7 +102,7 @@ export default {
 
 内部ではGhostscriptを色変換デバイスで起動し、PDF内のすべてのカラースペースオブジェクトをDeviceCMYKに変換します。
 
-## 6. RGB→CMYKカスタムマッピング（`overrideMap`）
+## RGB→CMYKカスタムマッピング（`overrideMap`）
 
 デフォルトのRGB→CMYK変換は汎用プロファイルを使うので、印刷所が期待する色とは違うことがほとんどです。CLIは、特定のRGB色を手調整したCMYK値で上書きできます:
 
@@ -126,7 +126,7 @@ pdfPostprocess: {
 - **ロゴやスポットカラーを含むラスター画像**
 - **`device-cmyk()`で書かれていないCSS値**（サードパーティ製テーマなど）
 
-## 7.デバッグ用カラーマップ出力（`mapOutput`）
+## デバッグ用カラーマップ出力（`mapOutput`）
 
 どの色が変換されたかを監査するため、マップをファイルに書き出せます:
 
@@ -141,7 +141,7 @@ pdfPostprocess: {
 
 ソースPDF中で見つかった一意のRGB色と、変換後のCMYK値が対応付けて記録されます。
 
-## 8.画像の差し替え（`replaceImage`）
+## 画像の差し替え（`replaceImage`）
 
 ワークフローによってはWeb用と印刷用で画像を分けることがあります（Web用はRGB JPEG、印刷用はCMYK変換済みTIFFなど）。CLIはPDF後処理時に画像を差し替えられます:
 
@@ -156,13 +156,13 @@ pdfPostprocess: {
 },
 ```
 
-## 9.制限事項と注意点
+## 制限事項と注意点
 
 - **グラデーションや画像エフェクト**: 色のグラデーションや画像フィルター効果は、CLIのCMYK後処理の対象外です。これらが含まれる場合は、CMYK変換済みの画像を別途用意して差し替えてください。
 - **スポットカラー**: `device-cmyk()`はスポットインキ（Pantone、DICなど）には対応しません。スポットカラー分版が必要な場合は、印刷所側または別のPDF後処理ステップで扱います。
 - **ソフトプルーフ**:結果は*device-cmyk* PDFです。実際の印刷物が画面と一致するかは印刷所のCMYKプロファイルに依存し、Vivliostyleの責任範囲外です。
 
-## 10.ビルドと検証
+## ビルドと検証
 
 生成PDFのインクカバレッジを確認するには、Ghostscriptの`inkcov`デバイスを使います:
 
