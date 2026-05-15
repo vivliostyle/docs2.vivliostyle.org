@@ -175,5 +175,5 @@ gs -o - -sDEVICE=inkcov mybook.pdf
 ## 参照
 
 - W3C [CSS Color 5 — `device-cmyk()`](https://drafts.csswg.org/css-color-5/#device-cmyk)
-- CLI例: `vivliostyle-cli/examples/cmyk/`
+- CLI例: [`vivliostyle-cli/examples/cmyk/`](https://github.com/vivliostyle/vivliostyle-cli/tree/main/examples/cmyk)
 - テストケース: `vivliostyle.js/packages/core/test/files/device-cmyk/test.html`
