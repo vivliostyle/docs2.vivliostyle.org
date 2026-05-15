@@ -176,4 +176,4 @@ gs -o - -sDEVICE=inkcov mybook.pdf
 
 - W3C [CSS Color 5 — `device-cmyk()`](https://drafts.csswg.org/css-color-5/#device-cmyk)
 - CLI例: [`vivliostyle-cli/examples/cmyk/`](https://github.com/vivliostyle/vivliostyle-cli/tree/main/examples/cmyk)
-- テストケース: `vivliostyle.js/packages/core/test/files/device-cmyk/test.html`
+- テストケース: [vivliostyle.js/packages/core/test/files/device-cmyk/test.html](https://vivliostyle.org/viewer/#src=https://raw.githubusercontent.com/vivliostyle/vivliostyle.js/master/packages/core/test/files/device-cmyk/test.html)（Vivliostyle Viewerで開きます。テキスト・背景・ボーダー・グラデーションなど各CSSプロパティで`device-cmyk()`が正しくレンダリングされることを確認できます）
