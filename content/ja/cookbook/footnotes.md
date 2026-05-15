@@ -16,38 +16,38 @@ order: 2
 >
 > Vivliostyle CLI 10.6.0以降はViewer 2.42.1を同梱しているため、追加の`overrides`設定なしで本ガイドのv2.42.0機能を`vivliostyle preview` / `vivliostyle build`からそのまま利用できます。
 
-このガイドでは、Vivliostyle.js（およびVFM）で脚注を扱う方法を、**v2.41.0以前から提供されていた機能**と**v2.41.0 / v2.42.0で新たに加わった機能**に分けて解説します。
+このガイドでは、Vivliostyle.js（およびVFM）で脚注を扱うための**手段**と、脚注の**カスタマイズ方法**を解説します。
 
-## Part 1 · 概要
+## 概要
 
-Vivliostyle.js v2.41.0で追加された脚注関連の新機能:
+Vivliostyleで脚注を実現する手段と、その設定・必要なCSSの対応:
 
-- **DPUB-ARIA脚注サポート**（[#1700](https://github.com/vivliostyle/vivliostyle.js/issues/1700)、[PR#1703](https://github.com/vivliostyle/vivliostyle.js/pull/1703)）— `role="doc-noteref"` / `role="doc-footnote"`属性による脚注認識。ビルトインUAスタイルにより**テーマ不要で自動的に`float: footnote`が適用**される
-- **CSS `@footnote`ルール**（[#1045](https://github.com/vivliostyle/vivliostyle.js/issues/1045)、[#1723](https://github.com/vivliostyle/vivliostyle.js/issues/1723)）— CSS GCPM 3標準の`@page { @footnote { ... } }`による脚注エリアのスタイリング。`::before`コンテンツレンダリングにも対応
-- **`footnote-display`プロパティ**（[#1825](https://github.com/vivliostyle/vivliostyle.js/issues/1825)）— `block` / `inline` / `compact`の指定で脚注のインライン表示が可能に
-- **`list-style-position: outside` for `::footnote-marker`**（[#1702](https://github.com/vivliostyle/vivliostyle.js/issues/1702)）
-- **ページスコープ脚注リセット** — ページグループ間でのカウンタ連携
-
-### Vivliostyle.js v2.41.0で対応する脚注認識メカニズム
-
-|メカニズム| HTMLパターン|テーマCSS |備考|
+|やりたいこと| `vivliostyle.config.js` |テーマ・CSS |結果|
 |---|---|---|---|
-| **CSS GCPM**（既存）| `<span class="footnote">` | `.footnote { float: footnote }`を含むテーマが**必要** | theme-base / theme-techbookで対応|
-| **EPUB**（既存）| `epub:type="noteref"` / `epub:type="footnote"` |不要（ビルトインで認識）| |
-| **DPUB-ARIA**（v2.41.0新規）| `<a role="doc-noteref">` → `<aside role="doc-footnote">` | **不要**（ビルトインUAスタイルで自動適用）| [PR#1703](https://github.com/vivliostyle/vivliostyle.js/pull/1703) |
+|後注（文末）| `vfm: { footnote: 'pandoc' }`（デフォルト）|不要|文末の後注セクション|
+|HTMLで直接記述する脚注（CSSクラス方式）| —（HTML直書き）| theme-base / theme-techbook | `float: footnote`による脚注|
+|脚注（VFM→GCPM変換）| `vfm: { footnote: 'gcpm' }` | theme-base / theme-techbook | CSSクラスベースの脚注|
+|脚注（VFM→DPUB変換）| `vfm: { footnote: 'dpub' }` | **不要**（v2.41.0のUAスタイルで自動適用）| DPUB-ARIAベースの脚注|
+|脚注エリアのスタイリング| `gcpm` / `dpub`またはHTML直書き| `@page { @footnote { ... } }` | v2.41.0で標準CSS対応|
+|インライン脚注表示| `gcpm` / `dpub`またはHTML直書き| `footnote-display: inline` | v2.41.0新機能|
 
-### 早見表（v2.41.0の脚注機能）
+### 脚注認識メカニズムについて
 
-|新|やりたいこと| `vivliostyle.config.js` |テーマ・CSS |結果|
-|:---:|---|---|---|---|
-| |後注（文末）| `vfm: { footnote: 'pandoc' }`（デフォルト）|不要|文末の後注セクション|
-| | HTMLで直接記述する脚注（CSSクラス方式）| —（HTML直書き）| theme-base / theme-techbook | `float: footnote`による脚注|
-| ★ |脚注（VFM→GCPM変換）| `vfm: { footnote: 'gcpm' }` | theme-base / theme-techbook | CSSクラスベースの脚注|
-| ★ |脚注（VFM→DPUB変換）| `vfm: { footnote: 'dpub' }` | **不要**（v2.41.0のUAスタイルで自動適用）| DPUB-ARIAベースの脚注|
-| ★ |脚注エリアのスタイリング| `gcpm` / `dpub`またはHTML直書き| `@page { @footnote { ... } }` | v2.41.0で標準CSS対応|
-| ★ |インライン脚注表示| `gcpm` / `dpub`またはHTML直書き| `footnote-display: inline` | v2.41.0新機能|
+Vivliostyleが脚注として認識するHTMLマークアップには、由来の異なる3つの方式があります。
 
-### 用語について
+**CSS GCPM（CSS Generated Content for Paged Media）** は、W3CがページメディアのCSS組版向けに策定した仕様です（[CSS GCPM 3](https://www.w3.org/TR/css-gcpm-3/)）。この仕様で定義された`float: footnote`を含むCSSクラスをHTMLに適用することで、脚注フロートを実現します。Vivliostyleはtheme-base / theme-techbookにこのスタイルを同梱しており、v2.41.0以前から対応しています。
+
+**DPUB-ARIA**（Digital Publishing WAI-ARIA）は、W3CがEPUBなどの電子出版物のアクセシビリティ向けに策定したARIAロールの拡張仕様です（[DPUB-ARIA 1.1](https://www.w3.org/TR/dpub-aria-1.1/)）。`role="doc-noteref"` / `role="doc-footnote"`というHTMLの`role`属性で注の参照元と注本文をマークアップします。Vivliostyle.js v2.41.0でビルトインUAスタイルによる自動認識に対応し、テーマCSSなしで脚注が使えるようになりました。
+
+**EPUB属性方式**（`epub:type`）は、EPUB 3仕様に由来するマークアップです（`epub:type="noteref"` / `epub:type="footnote"`）。Vivliostyleはv2.41.0以前からビルトインで認識しています。
+
+|メカニズム|由来|HTMLパターン|テーマCSS|
+|---|---|---|---|
+| **CSS GCPM** | CSS Generated Content for Paged Media | `<span class="footnote">` | `.footnote { float: footnote }`を含むテーマが**必要**（theme-base / theme-techbook）|
+| **EPUB属性** | EPUB 3 | `epub:type="noteref"` / `epub:type="footnote"` |不要（ビルトインで認識）|
+| **DPUB-ARIA**（v2.41.0新規）| W3C DPUB-ARIA 1.1 | `<a role="doc-noteref">` → `<aside role="doc-footnote">` | **不要**（ビルトインUAスタイルで自動適用）|
+
+## 用語について
 
 本ガイドの注に関する用語は、W3C [日本語組版処理の要件（JLReq）§4.2「注の処理」](https://www.w3.org/TR/jlreq/#processing-of-notes-in-japanese)の定義に基づきます。
 
@@ -59,13 +59,9 @@ Vivliostyle.js v2.41.0で追加された脚注関連の新機能:
 
 **CSS `@footnote`の適用範囲**: CSS GCPM 3の`@page { @footnote { ... } }`および`footnote-display`は、`float: footnote`でページ下部に配置される**脚注（footnotes）のみ**に適用されます。後注（endnotes）には影響しません。
 
-## Part 2 · 従来の脚注サポート
+## 脚注を実現する手段
 
-### CSS組版における注の役割
-
-注（脚注・後注）は書籍出版に欠かせない要素です。CSS Generated Content for Paged Media（GCPM）Module 3は、ブロックレベルの要素を本文フローから取り出してページ下部の脚注エリアに流し込むメカニズムとして`float: footnote`を定義しています。
-
-### HTMLで直接記述する方法
+### CSS直書き方式（GCPMクラス方式）
 
 最も直接的な記法は、HTMLでマークアップする方法です:
 
@@ -108,65 +104,18 @@ HTML中に`<span class="footnote">`として記述した脚注[^1]は、テー�
 
 </details>
 
-### VFMのPandoc形式後注（従来のデフォルト）
+### EPUB属性方式
 
-VFM v2.5.x以前では、Markdownの`[^1]`記法はPandoc出力スタイルの**後注**を生成しました:
-
-```markdown
-本文。[^1]
-
-[^1]: 注の本文。
-```
-
-VFMはこれを`<section role="doc-endnotes">`に変換し、**ドキュメント本文の末尾**に配置します。後注は本文と同じフローに置かれるため、**`float: footnote`の対象にはなりません**。組み込みの`@footnote`スタイリングも後注には影響しません。
-
-![VFM Pandoc形式の後注。本文末尾に`<section role="doc-endnotes">`がフローし、各注に戻るリンクが付く](/cookbook/footnotes/ja/02-vfm-pandoc-endnotes.png)
-
-<details>
-<summary>VFM Markdownソース</summary>
-
-```markdown
----
-title: "例2: VFM Pandoc形式の後注"
-vfm:
-  footnote: pandoc
----
-
-VFMのデフォルト設定（`footnote: 'pandoc'`）では、`[^1]`記法は`<section role="doc-endnotes">`として本文末尾に追加される[^1]。
-
-本文と通常フローでつながるため、`float: footnote`や`@page { @footnote { } }`の対象にならない[^2]点に注意。
-
-[^1]: 最初の後注の本文。
-
-[^2]: 次の後注の本文。
-```
-
-</details>
-
-<details>
-<summary>VFMが生成するHTML（body部）</summary>
+EPUB 3仕様に由来する`epub:type`属性を使って注をマークアップします:
 
 ```html
-<p>VFMのデフォルト設定（<code>footnote: 'pandoc'</code>）では、<code>[^1]</code>記法は<code>&#x3C;section role="doc-endnotes"></code>として本文末尾に追加される<a id="fnref1" href="#fn1" class="footnote-ref" role="doc-noteref"><sup>1</sup></a>。</p>
-<p>本文と通常フローでつながるため、<code>float: footnote</code>や<code>@page { @footnote { } }</code>の対象にならない<a id="fnref2" href="#fn2" class="footnote-ref" role="doc-noteref"><sup>2</sup></a>点に注意。</p>
-<section class="footnotes" role="doc-endnotes">
-  <hr>
-  <ol>
-    <li id="fn1" role="doc-endnote">最初の後注の本文。<a href="#fnref1" class="footnote-back" role="doc-backlink">↩</a></li>
-    <li id="fn2" role="doc-endnote">次の後注の本文。<a href="#fnref2" class="footnote-back" role="doc-backlink">↩</a></li>
-  </ol>
-</section>
+<p>本文<a epub:type="noteref" href="#fn1">1</a>はここに続く。</p>
+<aside id="fn1" epub:type="footnote">注の本文。</aside>
 ```
 
-</details>
+Vivliostyleはビルトインでこの属性を認識し、`float: footnote`を自動適用します。テーマCSSは不要です。
 
-### theme-techbookの画面表示と印刷表示
-
-theme-techbookは`@media screen`と`@media print`で別々のスタイルを提供しているため、画面プレビューと印刷PDFで注の見た目が異なります。印刷時の見た目を確認するにはVivliostyle Viewerを使ってください。
-
-## Part 3 · v2.41.0の新しい脚注機能
-
-### DPUB-ARIA脚注サポート（[#1700](https://github.com/vivliostyle/vivliostyle.js/issues/1700)、[PR#1703](https://github.com/vivliostyle/vivliostyle.js/pull/1703)）
+### DPUB-ARIAロール方式（[#1700](https://github.com/vivliostyle/vivliostyle.js/issues/1700)、[PR#1703](https://github.com/vivliostyle/vivliostyle.js/pull/1703)）
 
 Vivliostyle.js v2.41.0は、DPUB-ARIAロールから直接脚注を認識します:
 
@@ -234,7 +183,109 @@ Vivliostyle.js v2.41.0+のビルトインUAスタイルが`float: footnote`を�
 
 3つのメカニズムは同一ドキュメント内で共存できますが、実際にはソースに応じてどれか1つを採用するのが普通です。
 
-### 標準CSSの`@footnote`ルールサポート（[#1045](https://github.com/vivliostyle/vivliostyle.js/issues/1045)、[#1723](https://github.com/vivliostyle/vivliostyle.js/issues/1723)）
+### VFMによる変換（`[^1]`記法）
+
+VFM v2.6.0は`footnote`オプションを導入しました（[PR#226](https://github.com/vivliostyle/vfm/pull/226)、[PR#231](https://github.com/vivliostyle/vfm/pull/231)）。Markdownの`[^1]`記法から生成されるHTMLが、モードによって異なります:
+
+- **`'pandoc'`（デフォルト）** — **後注**を生成します。`<section role="doc-endnotes">`としてドキュメント末尾に配置されます。`float: footnote`の対象にはならず、`@footnote`スタイリングも影響しません。
+- **`'gcpm'`** — `<span class="footnote">`を生成します。`float: footnote`を含むテーマCSS（theme-base / theme-techbookなど）が必要です。
+- **`'dpub'`** — `<aside role="doc-footnote">`を生成します。Vivliostyle.js v2.41.0+のビルトインUAスタイルで自動的に`float: footnote`が適用されるため、**テーマCSS不要**です。将来デフォルト化予定（[#234](https://github.com/vivliostyle/vfm/issues/234)）。
+
+`vivliostyle.config.js`での設定:
+
+```js
+export default {
+  vfm: {
+    footnote: 'dpub',
+  },
+  // ...
+};
+```
+
+#### `pandoc`モード（後注）の例
+
+VFM v2.5.x以前では、Markdownの`[^1]`記法はPandoc出力スタイルの**後注**を生成しました:
+
+```markdown
+本文。[^1]
+
+[^1]: 注の本文。
+```
+
+VFMはこれを`<section role="doc-endnotes">`に変換し、**ドキュメント本文の末尾**に配置します。後注は本文と同じフローに置かれるため、**`float: footnote`の対象にはなりません**。組み込みの`@footnote`スタイリングも後注には影響しません。
+
+![VFM Pandoc形式の後注。本文末尾に`<section role="doc-endnotes">`がフローし、各注に戻るリンクが付く](/cookbook/footnotes/ja/02-vfm-pandoc-endnotes.png)
+
+<details>
+<summary>VFM Markdownソース</summary>
+
+```markdown
+---
+title: "例2: VFM Pandoc形式の後注"
+vfm:
+  footnote: pandoc
+---
+
+VFMのデフォルト設定（`footnote: 'pandoc'`）では、`[^1]`記法は`<section role="doc-endnotes">`として本文末尾に追加される[^1]。
+
+本文と通常フローでつながるため、`float: footnote`や`@page { @footnote { } }`の対象にならない[^2]点に注意。
+
+[^1]: 最初の後注の本文。
+
+[^2]: 次の後注の本文。
+```
+
+</details>
+
+<details>
+<summary>VFMが生成するHTML（body部）</summary>
+
+```html
+<p>VFMのデフォルト設定（<code>footnote: 'pandoc'</code>）では、<code>[^1]</code>記法は<code>&#x3C;section role="doc-endnotes"></code>として本文末尾に追加される<a id="fnref1" href="#fn1" class="footnote-ref" role="doc-noteref"><sup>1</sup></a>。</p>
+<p>本文と通常フローでつながるため、<code>float: footnote</code>や<code>@page { @footnote { } }</code>の対象にならない<a id="fnref2" href="#fn2" class="footnote-ref" role="doc-noteref"><sup>2</sup></a>点に注意。</p>
+<section class="footnotes" role="doc-endnotes">
+  <hr>
+  <ol>
+    <li id="fn1" role="doc-endnote">最初の後注の本文。<a href="#fnref1" class="footnote-back" role="doc-backlink">↩</a></li>
+    <li id="fn2" role="doc-endnote">次の後注の本文。<a href="#fnref2" class="footnote-back" role="doc-backlink">↩</a></li>
+  </ol>
+</section>
+```
+
+</details>
+
+#### `footnote`オプションのオブジェクト形式
+
+`footnote`はオブジェクト`{ mode, body }`の形でも指定でき、生成HTMLをカスタマイズできます:
+
+```js
+vfm: {
+  footnote: {
+    mode: 'gcpm',
+    body: (h, props, children) =>
+      h('span.footnote', props, h('span.footnote-wrap', ...children)),
+  },
+}
+```
+
+用途は、ぶら下げインデント用ラッパーのような**スタイリング目的のDOM変形をMarkdownソースから分離する**ことです。Markdownには素のままに脚注を書き、ビルド設定側でラッパーを適用します。
+
+#### YAMLフロントマターによるファイル単位の設定
+
+脚注モードはファイルごとにYAMLフロントマターで指定でき、グローバル設定を上書きできます:
+
+```yaml
+---
+vfm:
+  footnote: dpub  # | pandoc | gcpm
+---
+```
+
+プロジェクト全体ではデフォルト設定を使いつつ、特定のファイルだけ別モードに切り替えたい場合に便利です。
+
+## 脚注のカスタマイズ
+
+### `@page { @footnote { ... } }`ルール（[#1045](https://github.com/vivliostyle/vivliostyle.js/issues/1045)、[#1723](https://github.com/vivliostyle/vivliostyle.js/issues/1723)）
 
 これまでVivliostyleはベンダー固有の`@-adapt-footnote-area` at-ruleを使っていましたが、v2.41.0は標準のCSS GCPM 3 `@footnote`ルールに対応します:
 
@@ -438,55 +489,7 @@ vfm:
 
 脚注カウンタをページグループ単位でリセットできるようになりました。章ごとに脚注番号を新規に採番する書籍で便利です。`counter-reset`を、[ページグループガイド](./page-groups/)で扱う名前付きページの仕組みと組み合わせて使います。
 
-### VFMの3つの`footnote`モード（VFM [PR#226](https://github.com/vivliostyle/vfm/pull/226)、[PR#231](https://github.com/vivliostyle/vfm/pull/231)）
-
-VFM v2.6.0は`footnote`オプションを導入しました:
-
-- `'pandoc'`（デフォルト）— 後注（ドキュメント末尾の`<section role="doc-endnotes">`）
-- `'gcpm'`（新機能）— `<span class="footnote">`による脚注（テーマCSS必要）
-- `'dpub'`（新機能）— `<aside role="doc-footnote">`による脚注（**テーマCSS不要**、将来デフォルト化予定 — [#234](https://github.com/vivliostyle/vfm/issues/234)）
-
-`vivliostyle.config.js`での設定:
-
-```js
-export default {
-  vfm: {
-    footnote: 'dpub',
-  },
-  // ...
-};
-```
-
-### VFM `footnote`オプションのオブジェクト形式
-
-`footnote`はオブジェクト`{ mode, body }`の形でも指定でき、生成HTMLをカスタマイズできます:
-
-```js
-vfm: {
-  footnote: {
-    mode: 'gcpm',
-    body: (h, props, children) =>
-      h('span.footnote', props, h('span.footnote-wrap', ...children)),
-  },
-}
-```
-
-用途は、ぶら下げインデント用ラッパーのような**スタイリング目的のDOM変形をMarkdownソースから分離する**ことです。Markdownには素のままに脚注を書き、ビルド設定側でラッパーを適用します。
-
-### YAMLフロントマターによるファイル単位の設定
-
-脚注モードはファイルごとにYAMLフロントマターで指定でき、グローバル設定を上書きできます:
-
-```yaml
----
-vfm:
-  footnote: dpub  # | pandoc | gcpm
----
-```
-
-プロジェクト全体ではデフォルト設定を使いつつ、特定のファイルだけ別モードに切り替えたい場合に便利です。
-
-### CSS脚注プロパティのまとめ
+### CSSプロパティ一覧
 
 |プロパティ・at-rule |役割|
 |---|---|
@@ -497,7 +500,7 @@ vfm:
 | `::footnote-call` |本文中の参照マーカーの擬似要素|
 | `::footnote-marker` |注本体の横に表示されるマーカーの擬似要素|
 
-## Part 4 · まとめ
+## まとめ
 
 VFMで利用できる注の種類と、その記法・設定・CSSの対応:
 
