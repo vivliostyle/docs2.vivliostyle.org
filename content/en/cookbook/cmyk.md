@@ -9,24 +9,54 @@ order: 3
 
 > **Target versions**: Vivliostyle.js v2.40.0+ (released 2026-01-11), Vivliostyle CLI v10.6.0+
 > **Published**: 2026-05-05
-> **Last updated**: 2026-05-05
+> **Last updated**: 2026-05-16
 
-This guide covers CMYK colour authoring on the CSS side via `device-cmyk()`, and CMYK PDF output on the CLI side via `pdfPostprocess.cmyk`.
+This guide explains the mechanics and limitations of the `device-cmyk()` CSS function and `pdfPostprocess.cmyk`.
 
-## Why CMYK matters in print PDFs
+## What this feature can and cannot do
 
-Commercial offset printing uses four process inks: **Cyan**, **Magenta**, **Yellow**, and **Key (black)**. Print shops require PDFs whose colours are specified directly in the CMYK colour space, because RGB-to-CMYK conversion happens differently in every workflow and producing a PDF in CMYK upfront is the only way to control the result deterministically.
+Vivliostyle CLI drives Chromium to generate PDFs. Because web browsers have no native support for CMYK colour spaces, every colour in the PDF that Chromium produces is DeviceRGB. This feature adds a post-processing step that uses MuPDF to scan the PDF content stream and replace DeviceRGB colour operators (`rg`/`RG`) with DeviceCMYK colour operators (`k`/`K`).
 
-Until v2.39.x, Vivliostyle could only emit RGB. v2.40.0 introduces:
+![CMYK conversion flow overview](/cookbook/cmyk/flow-en.svg)
 
-- The CSS function `device-cmyk()` for direct CMYK colour authoring
-- CLI post-processing (`pdfPostprocess.cmyk`) that converts the generated RGB PDF into a CMYK PDF, with custom RGB→CMYK mapping rules
+Here is what is and is not converted:
 
-Together, they make it possible to author and produce print-ready PDFs entirely from Vivliostyle.
+**Converted** (output as DeviceRGB colour operators):
+- Text colour (`color` property)
+- Solid fills and borders (`background-color`, `border-color`)
+- Solid fills in SVG vector elements (via `reserveMap`)
+
+**Not converted** (written to the PDF via mechanisms other than DeviceRGB operators):
+- **Raster images** (JPEG, PNG, etc.) — prepare pre-converted CMYK image files and swap them with `replaceImage`
+- **Gradients** (`linear-gradient()`, etc.) — Chromium outputs these as PDF Shading Objects, which are out of scope for the operator replacement
+- **Filters, blend modes, etc.** — expressed via transparency groups and other mechanisms, not plain operators
+
+In short, this is a deliberately scoped implementation: it handles **text and solid vector fills**, leaving raster images to existing CMYK conversion solutions. Practical use requires keeping your CSS to simple solid colour declarations and having pre-converted image assets ready.
+
+If your print shop accepts RGB submissions, that route is often more straightforward.
+
+## Background: PDF colour operators
+
+Understanding how this feature works requires some knowledge of PDF colour operators.
+
+PDF content streams support a shortcut notation where a single operator both selects the colour space and sets the colour value. Because the colour space is implied by the operator name itself, no separate colour space declaration is needed. These are called **implicit colour operators**.
+
+| Operator | Colour space | Applies to |
+|---|---|---|
+| `rg` (lowercase) | DeviceRGB | fill |
+| `RG` (uppercase) | DeviceRGB | stroke |
+| `k` (lowercase) | DeviceCMYK | fill |
+| `K` (uppercase) | DeviceCMYK | stroke |
+
+Chromium outputs text and solid fills using `rg`/`RG` operators. Vivliostyle CLI's post-processing replaces `rg` with `k` and `RG` with `K`. Because the argument count changes from three (RGB) to four (CMYK), a mapping from RGB values to CMYK values is required — that is what `reserveMap` and `overrideMap` provide.
 
 ## The `device-cmyk()` CSS function
 
 `device-cmyk()` is defined in [CSS Color 5](https://drafts.csswg.org/css-color-5/#device-cmyk).
+
+### How it works
+
+Because Vivliostyle runs inside a web browser, `device-cmyk()` is converted at CSS-processing time to `color(srgb r g b)`, and the RGB–CMYK correspondence is stored in CmykStore. The actual CMYK substitution happens later in the CLI post-processing step.
 
 ### Basic syntax
 
@@ -36,42 +66,30 @@ color: device-cmyk(100% 0% 0% 0%);      /* pure cyan, percentage form */
 color: device-cmyk(0 0 0 1);            /* pure black */
 ```
 
-Channels are listed in the order **C, M, Y, K**. Each channel is a number `0..1` or a percentage `0%..100%`.
+Channels are listed in **C, M, Y, K** order. Each channel is a number `0..1` or a percentage `0%..100%`. The legacy comma-separated syntax from CSS3 is also accepted.
 
-### Legacy comma-separated syntax
+### Constraints on where CMYK conversion applies
 
-For compatibility with the legacy CSS3 syntax, comma-separated arguments are also accepted:
-
-```css
-color: device-cmyk(0, 1, 1, 0);
-```
-
-### Alpha channel
-
-A trailing alpha can be supplied with `/`:
+`device-cmyk()` can be written wherever a `<color>` value is accepted, but CMYK conversion only takes effect where the resulting RGB value appears as a `rg`/`RG` operator directly in the PDF content stream. Solid `color`, `background-color`, and `border-color` declarations generally qualify; gradients do not, because Chromium outputs them as Shading Objects. Avoid using `device-cmyk()` inside gradient functions.
 
 ```css
-background-color: device-cmyk(0 1 1 0 / 0.5);
-```
+/* ✅ converted to CMYK */
+h1 { color: device-cmyk(0 0 0 1); }
+.box { background-color: device-cmyk(0 0.1 0.2 0); }
+.box { border: 1pt solid device-cmyk(0 0.5 1 0.1); }
 
-## Using `device-cmyk()` across CSS properties
-
-`device-cmyk()` works wherever a `<color>` value is expected:
-
-```css
-h1 { color: device-cmyk(0 0 0 1); }                     /* text */
-.callout {
-  background-color: device-cmyk(0 0.1 0.2 0);           /* fills */
-  border: 1pt solid device-cmyk(0 0.5 1 0.1);           /* borders */
+/* ❌ not converted (gradient becomes a Shading Object) */
+.box {
   background-image: linear-gradient(
     device-cmyk(1 0 0 0),
     device-cmyk(0 0 0 0)
-  );                                                     /* gradients */
-}
-@page {
-  background: device-cmyk(0 0 0.05 0);                  /* page backgrounds */
+  );
 }
 ```
+
+### Alpha values
+
+A trailing alpha can be appended with `/`, but alpha is handled by a separate mechanism from colour operators. The replacement process ignores alpha, so an alpha-bearing `device-cmyk()` value may not be converted to CMYK as expected.
 
 ## Practical process-colour examples
 
@@ -85,95 +103,100 @@ h1 { color: device-cmyk(0 0 0 1); }                     /* text */
 
 ## CLI CMYK PDF output
 
-`device-cmyk()` produces a PDF whose colour-space objects are CMYK at the CSS-author-controlled level. But Vivliostyle CLI still emits RGB by default for everything else — page background, embedded images, etc. To convert the whole PDF into a CMYK PDF, configure the CLI's post-processing:
+### Enabling
 
 ```js
 // vivliostyle.config.js
 export default {
-  // ...
   pdfPostprocess: {
-    cmyk: {
-      // Convert the output PDF to CMYK after Vivliostyle generates it
-      enabled: true,
-    },
+    cmyk: true,   // or cmyk: {} (equivalent)
   },
 };
 ```
 
-Internally this runs Ghostscript with a colour-conversion device, transforming all colour-space objects in the PDF to DeviceCMYK.
+The default is `false`. When `false`, CMYK substitution does not run — not even for colours authored with `device-cmyk()`.
 
-## Custom RGB→CMYK mapping (`overrideMap`)
+### How the post-processing works
 
-The default RGB→CMYK conversion uses a generic profile, which is rarely what a print shop expects. The CLI lets you override specific RGB colours with hand-tuned CMYK values:
+Post-processing is carried out by MuPDF. It scans the PDF content stream and replaces DeviceRGB colour operators (`rg`/`RG`) with DeviceCMYK colour operators (`k`/`K`). The RGB-to-CMYK mapping is built from values recorded in CmykStore during `device-cmyk()` processing, combined with whatever is specified in `reserveMap` and `overrideMap`.
+
+## Handling RGB colours that originate outside CSS: `reserveMap`
+
+The fill colours of SVG vector elements are written directly to the PDF as RGB by Chromium and cannot be targeted with `device-cmyk()`. Use `reserveMap` to register RGB→CMYK entries in CmykStore before CSS processing begins.
 
 ```js
 pdfPostprocess: {
   cmyk: {
-    enabled: true,
-    overrideMap: [
-      // Convert the brand orange (#FF6633) to a tuned CMYK value
-      { from: '#FF6633', to: 'cmyk(0, 70, 90, 0)' },
-      // Cover key brand colours
-      { from: '#003366', to: 'cmyk(100, 80, 20, 40)' },
+    reserveMap: [
+      ['#FF6633', { c: 0, m: 7000, y: 9000, k: 0 }],
+      ['#003366', { c: 10000, m: 8000, y: 2000, k: 4000 }],
     ],
   },
 },
 ```
 
-This is particularly useful for:
+**Entry format**: an array of `[rgb, { c, m, y, k }]` tuples.
 
-- **SVG content** authored in RGB
-- **Raster images** that contain logo / spot colours
-- **CSS values that aren't authored as `device-cmyk()`** (e.g. third-party themes)
+**Value scale**: CMYK and RGB values are both **integers in the range 0–10000** (10000 = 100%, minimum unit 0.0001%). This representation avoids floating-point precision issues in JavaScript.
 
-## Debug colour map (`mapOutput`)
+**RGB keys**: hex strings such as `'#FF6633'` are accepted and normalised to the 0–10000 scale by a Chromium-compatible conversion.
 
-To audit which colours were converted, write the map to a file:
+## Last resort: `overrideMap`
 
-```js
-pdfPostprocess: {
-  cmyk: {
-    enabled: true,
-    mapOutput: './cmyk-map.txt',
-  },
-},
-```
+`overrideMap` is an escape hatch for colours that neither `reserveMap` nor `device-cmyk()` can reach — for example, RGB values in internally generated invisible elements. At post-processing time it is merged on top of the final CmykStore map.
 
-The output records each unique RGB colour found in the source PDF together with the CMYK value it was converted to.
+The entry format and value scale are the same as `reserveMap`. Colours already covered by `reserveMap` will not appear in warnings, so there is no reason to list them again in `overrideMap`.
 
-## Image replacement (`replaceImage`)
+## Detecting unmapped colours: `warnUnmapped`
 
-Some workflows separate Web and print versions of images (e.g. RGB JPEG for web, pre-converted CMYK TIFF for print). The CLI can swap an image at PDF post-processing time:
+After post-processing, any DeviceRGB operators still remaining in the PDF trigger a warning. Because the PDF cannot distinguish CSS-originated colours from SVG-originated ones, all remaining RGB colours are reported.
 
 ```js
 pdfPostprocess: {
   cmyk: {
-    enabled: true,
-    replaceImage: [
-      { match: 'cover.jpg', with: 'cover-print.tiff' },
-    ],
+    warnUnmapped: true,
   },
 },
 ```
 
-## Limitations and caveats
+The typical workflow is to add each colour that appears in the warnings to `reserveMap`.
 
-- **Gradients and image effects**: gradients between colours and certain image-filter effects may not round-trip perfectly through the CMYK conversion. Confirm visually before sending to print.
-- **Spot colours**: `device-cmyk()` does not address spot inks (Pantone, DIC). If you need spot colour separation, that has to be handled by the print shop or via a separate PDF post-processing step.
-- **Soft proofing**: the result is a *device-cmyk* PDF. Whether the actual print matches your screen depends on the shop's CMYK profile, which is outside Vivliostyle's responsibility.
+## Practical workflow
 
-## Build and verification
+1. Limit CSS colour usage to solid declarations (`color`, `background-color`, `border`) and author them with `device-cmyk()`
+2. Prepare pre-converted CMYK image assets (swap them with `replaceImage`)
+3. Register SVG vector colours in `reserveMap`
+4. Enable `warnUnmapped: true`, build, and add any warned colours to `reserveMap`
+5. Verify ink coverage with Ghostscript `inkcov`
 
-To check ink coverage on the generated PDF, use Ghostscript with an `inkcov` device:
+## Image replacement: `pdfPostprocess.replaceImage`
+
+`replaceImage` is independent of `cmyk` and works even when `cmyk: false`.
+
+```js
+pdfPostprocess: {
+  replaceImage: [
+    { source: 'cover.jpg', replacement: 'cover-print.tiff' },
+    { source: /^images\/web-(.+)\.jpg$/, replacement: 'images/print-$1.tiff' },
+  ],
+},
+```
+
+- `source`: a string or JavaScript regular expression
+- `replacement`: the replacement file path
+- Both paths are resolved relative to the entry context directory (`entryContextDir`, defaulting to `.`)
+
+## Verification
+
+To check ink coverage on the generated PDF, use Ghostscript with the `inkcov` device:
 
 ```sh
 gs -o - -sDEVICE=inkcov mybook.pdf
 ```
 
-This prints the per-page ink coverage as four numbers (C M Y K) in the range 0..1, which lets you confirm the printer-relevant per-channel ink amounts.
+This prints per-page ink coverage as four numbers (C M Y K) in the range 0..1. Any non-zero value for C, M, or Y on a page that should be black-only indicates an unintended ink channel.
 
 ## References
 
 - W3C [CSS Color 5 — `device-cmyk()`](https://drafts.csswg.org/css-color-5/#device-cmyk)
-- CLI example: `vivliostyle-cli/examples/cmyk/`
-- Test case: `vivliostyle.js/packages/core/test/files/device-cmyk/test.html`
+- CLI example: [`vivliostyle-cli/examples/cmyk/`](https://github.com/vivliostyle/vivliostyle-cli/tree/main/examples/cmyk)
