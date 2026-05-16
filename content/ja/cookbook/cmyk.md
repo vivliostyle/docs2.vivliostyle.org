@@ -73,12 +73,12 @@ color: device-cmyk(0 0 0 1);            /* 純黒（K=100%） */
 `device-cmyk()` は `<color>` 値が使える任意のCSSプロパティに記述できますが、CMYK変換が有効なのは変換後のRGB値がPDFコンテンツストリームの `rg`/`RG` オペレーターとして直接露出する箇所に限られます。単色の `color`・`background-color`・`border-color` は概ねこれに該当しますが、グラデーション（`linear-gradient()` 等）は対象外です。グラデーション内での `device-cmyk()` 使用は避けてください。
 
 ```css
-/* ✅ CMYK変換される */
+/* OK: CMYK変換される */
 h1 { color: device-cmyk(0 0 0 1); }
 .box { background-color: device-cmyk(0 0.1 0.2 0); }
 .box { border: 1pt solid device-cmyk(0 0.5 1 0.1); }
 
-/* ❌ CMYK変換されない（グラデーションはShading Objectになる） */
+/* NG: CMYK変換されない（グラデーションはShading Objectになる） */
 .box {
   background-image: linear-gradient(
     device-cmyk(1 0 0 0),

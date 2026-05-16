@@ -73,12 +73,12 @@ Channels are listed in **C, M, Y, K** order. Each channel is a number `0..1` or 
 `device-cmyk()` can be written wherever a `<color>` value is accepted, but CMYK conversion only takes effect where the resulting RGB value appears as a `rg`/`RG` operator directly in the PDF content stream. Solid `color`, `background-color`, and `border-color` declarations generally qualify; gradients do not, because Chromium outputs them as Shading Objects. Avoid using `device-cmyk()` inside gradient functions.
 
 ```css
-/* ✅ converted to CMYK */
+/* OK: converted to CMYK */
 h1 { color: device-cmyk(0 0 0 1); }
 .box { background-color: device-cmyk(0 0.1 0.2 0); }
 .box { border: 1pt solid device-cmyk(0 0.5 1 0.1); }
 
-/* ❌ not converted (gradient becomes a Shading Object) */
+/* NG: not converted (gradient becomes a Shading Object) */
 .box {
   background-image: linear-gradient(
     device-cmyk(1 0 0 0),
