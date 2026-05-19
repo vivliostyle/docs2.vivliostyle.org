@@ -274,7 +274,7 @@ VFMで利用できる注の種類と、その記法・設定・CSSの対応:
 - W3C [DPUB-ARIA 1.1](https://www.w3.org/TR/dpub-aria-1.1/)（`doc-noteref` / `doc-footnote`の定義）
 - W3C [日本語組版処理の要件 §4.2注の処理](https://www.w3.org/TR/jlreq/#processing-of-notes-in-japanese)
 - Qiita: [@u1f992「Vivliostyle.js v2.41（CLI v10.5）の脚注機能をMarkdownで利用する」](https://qiita.com/u1f992/items/6466c03aa4f569a39572)
-- テストケース: `vivliostyle.js/packages/core/test/files/footnotes/`
-- VFMソース: `vfm/src/plugins/footnotes.ts`、[PR#226](https://github.com/vivliostyle/vfm/pull/226)、[PR#231](https://github.com/vivliostyle/vfm/pull/231)
+- テストケース: [`vivliostyle.js/packages/core/test/files/footnotes/`](https://github.com/vivliostyle/vivliostyle.js/tree/main/packages/core/test/files/footnotes/)
+- VFMソース: [`vfm/src/plugins/footnotes.ts`](https://github.com/vivliostyle/vfm/blob/main/src/plugins/footnotes.ts)、[PR#226](https://github.com/vivliostyle/vfm/pull/226)、[PR#231](https://github.com/vivliostyle/vfm/pull/231)
 - VFM [Issue #234](https://github.com/vivliostyle/vfm/issues/234)（dpubデフォルト化計画）
-- テーマ: `themes/packages/@vivliostyle/theme-base/css/partial/footnote.css`、`theme-techbook/theme.css`
+- テーマ: [`theme-base/css/partial/footnote.css`](https://github.com/vivliostyle/themes/blob/main/packages/%40vivliostyle/theme-base/css/partial/footnote.css)、[`theme-techbook/theme.css`](https://github.com/vivliostyle/themes/blob/main/packages/%40vivliostyle/theme-techbook/theme.css)
