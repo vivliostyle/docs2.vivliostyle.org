@@ -22,14 +22,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const stylesDir = join(__dirname, 'styles');
 const baseCssPath = join(stylesDir, '_base.css');
 
-/**
- * 04-page-footnote-styledだけは見出しテキストが言語ごとに違うので
- * `<stem>.<lang>.css`を読む。それ以外は`<stem>.css`共通。
- */
 function perExampleCssPath(stem, lang) {
-  if (stem === '04-page-footnote-styled') {
-    return join(stylesDir, `${stem}.${lang}.css`);
-  }
   return join(stylesDir, `${stem}.css`);
 }
 

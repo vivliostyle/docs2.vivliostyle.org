@@ -28,7 +28,6 @@ const SAMPLES = [
   { stem: '01-gcpm-class', img: '01-html-class-themebase' },
   { stem: '02-pandoc-endnotes', img: '02-vfm-pandoc-endnotes' },
   { stem: '03-dpub-default', img: '03-dpub-aria-default' },
-  { stem: '04-page-footnote-styled', img: '04-page-footnote-styled' },
   { stem: '05-footnote-display-inline', img: '05-footnote-display-inline' },
   { stem: '06-footnote-display-compact', img: '06-footnote-display-compact' },
   { stem: '07-footnote-marker-outside', img: '07-footnote-marker-outside' },
