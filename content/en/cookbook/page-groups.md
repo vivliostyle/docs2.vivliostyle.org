@@ -125,13 +125,13 @@ section.chapter  { page: body; counter-reset: page 1; }
 section.glossary { page: narrow; }
 
 /* Per-chapter front page */
-@page body :nth(1 of body) {
+@page :nth(1 of body) {
   @top-center { content: none; }
   margin-top: 4cm;
 }
 
 /* Running headers on subsequent chapter pages */
-@page body :nth(n+2 of body) {
+@page :nth(n+2 of body) {
   @top-center { content: string(chapter-title); }
 }
 

@@ -14,7 +14,7 @@ Each guide states the minimum version required at the top, so you can tell at a 
 ## Guides
 
 - **[Footnotes](./footnotes/)** — DPUB-ARIA footnote support, the standard `@page { @footnote { } }` rule, `footnote-display`, and the new VFM `footnote` modes (`pandoc` / `gcpm` / `dpub`).
-  - Target: Vivliostyle.js v2.42.1+, CLI v10.6.0+
+  - Target: Vivliostyle.js v2.42.0+, CLI v10.6.0+
 
 - **[CMYK Conversion](./cmyk/)** — The `device-cmyk()` CSS function and the CLI's PDF CMYK output (`pdfPostprocess.cmyk`).
   - Target: Vivliostyle.js v2.40.0+, CLI v10.6.0+
