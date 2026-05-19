@@ -41,6 +41,15 @@ Ask explicitly:
 
 If no → state "実機未確認の描画動作記述が含まれます" in the PR comment.
 
+## External Posts Require Prior Approval
+
+Before posting any comment to GitHub (PR comments, issue comments) or making any commit that will be publicly visible, **always show the draft to the user first** and wait for explicit approval.
+
+- ✅ "こちらの文案でよろしいですか？" → wait for confirmation → then post
+- ❌ Composing and posting in the same turn without showing the draft
+
+This applies to: PR/issue comments, commit messages (when non-trivial), and any other externally visible action.
+
 ## Learnings
 
 ### 2026-05 PR #17 — `list-style-position` / `::footnote-marker` error
