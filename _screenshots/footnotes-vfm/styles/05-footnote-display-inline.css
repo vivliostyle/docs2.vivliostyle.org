@@ -1,6 +1,0 @@
-/*例5: footnote-display: inline
-   VFM dpubモードが出す<aside class="footnote">に対して
-   footnote-display: inlineを適用する。
-   この機能をDPUB-ARIA由来の脚注に効かせるにはViewer 2.42.0+が必要。*/
-
-.footnote { footnote-display: inline; }

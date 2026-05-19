@@ -1,5 +1,0 @@
-/*例6: footnote-display: compact
-   compactは1行に収まる短い注はinline、収まらない長い注はblockに
-   フォールバックする挙動。Viewer 2.42.0+必須。*/
-
-.footnote { footnote-display: compact; }

@@ -7,14 +7,11 @@ order: 2
 
 # 脚注ガイド
 
-> **対象バージョン**: Vivliostyle.js v2.41+（2026-04-11リリース）／v2.42+（2026-04-25リリース、機能による）、Vivliostyle CLI v10.6+（Viewer 2.42.1同梱）
+> **対象バージョン**: Vivliostyle.js v2.41+（2026-04-11リリース）、Vivliostyle CLI v10.5+
 > **公開日**: 2026-05-05
 > **最終更新日**: 2026-05-14
 >
 > - **v2.41で追加**: DPUB-ARIA脚注への対応（`float: footnote`の自動適用）
-> - **v2.42で追加**: DPUB-ARIA由来の脚注に対するCSS footnoteプロパティ／擬似要素（`footnote-display`、`::footnote-call`、`::footnote-marker`のcontent/list-style-positionなど、[#1884](https://github.com/vivliostyle/vivliostyle.js/issues/1884)）
->
-> Vivliostyle CLI 10.6.0以降はViewer 2.42.1を同梱しているため、追加の`overrides`設定なしで本ガイドのv2.42機能を`vivliostyle preview` / `vivliostyle build`からそのまま利用できます。
 
 このガイドでは、Vivliostyle.js（およびVFM）で脚注を扱うための**手段**と、脚注の**カスタマイズ方法**を解説します。
 
@@ -28,7 +25,6 @@ Vivliostyleで脚注を実現する手段と、その設定・必要なCSSの対
 |HTMLで直接記述する脚注（CSSクラス方式）| —（HTML直書き）| theme-base / theme-techbook | `float: footnote`による脚注|
 |脚注（VFM→GCPM変換）| `vfm: { footnote: 'gcpm' }` | theme-base / theme-techbook | CSSクラスベースの脚注|
 |脚注（VFM→DPUB変換）| `vfm: { footnote: 'dpub' }` | **不要**（v2.41で自動対応）| DPUB-ARIAベースの脚注|
-|インライン脚注表示| `gcpm` / `dpub`またはHTML直書き| `footnote-display: inline` | v2.41新機能|
 
 ### 脚注認識メカニズムについて
 
@@ -133,18 +129,6 @@ Vivliostyle.js v2.41+が`float: footnote`を自動で適用するため、テー
 ```
 
 </details>
-
-> **マーカー表示について（v2.42+）**:脚注エリア側のマーカー（`::footnote-marker`）のcontentをauthor CSSから指定して番号を出すには、**Vivliostyle.js v2.42+**が必要です（[#1884](https://github.com/vivliostyle/vivliostyle.js/issues/1884)で追加）。さらにVivliostyleのDPUB-ARIA実装では、`::footnote-marker`の`content`プロパティを**`list-style-position: outside`**とセットで指定したときに描画されます（`outside`でなければauthorの`content`は描画されません）:
->
-> ```css
-> aside.footnote { margin-inline-start: 1.5em; }  /* マーカー領域の確保 */
-> aside.footnote::footnote-marker {
->   content: counter(footnote) ". ";
->   list-style-position: outside;  /* DPUB-ARIA で必須 */
-> }
-> ```
->
-> v2.41環境で同等の見た目にしたい場合は、asideの中に`<sup>n</sup>`を直接書くなどHTML側で番号を持たせる方法でも代用できます。
 
 ### 2つの認識メカニズムの比較
 
@@ -257,145 +241,6 @@ vfm:
 
 ## 脚注のカスタマイズ
 
-### `footnote-display`プロパティ（[#1825](https://github.com/vivliostyle/vivliostyle.js/issues/1825)）
-
-> **DPUB-ARIA脚注に適用するにはVivliostyle.js v2.42+が必要**（[#1884](https://github.com/vivliostyle/vivliostyle.js/issues/1884)で追加）。GCPMのclass方式`<span class="footnote">`にはv2.41以前から適用可能です。
-
-脚注本体のレイアウト方式を切り替えます。指定先は`@footnote`ルールの中ではなく**脚注要素自身**です:
-
-- `block`（デフォルト）— 各脚注を改行
-- `inline` — 複数の脚注を同じ行にフロー
-- `compact` — 短い脚注はインライン、長い脚注は自動的にブロックへフォールバック
-
-```css
-.footnote { footnote-display: inline; }
-```
-
-`inline`の表示例:
-
-![`footnote-display: inline`で3件の短い脚注が同じ行に流れ込む](/cookbook/footnotes/ja/05-footnote-display-inline.png)
-
-<details>
-<summary>VFM Markdownソース</summary>
-
-```markdown
----
-title: "例5: footnote-display: inline"
-vfm:
-  footnote: dpub
----
-
-`footnote-display: inline`を指定すると、複数の脚注が同じ行に流れ込む[^1]。本文中の参照を3つ並べた場合[^2]でも、脚注エリアの縦方向のスペース消費が抑えられる[^3]。
-
-[^1]: 短い注。
-
-[^2]: もう一つの短い注。
-
-[^3]: 別の短い注。
-```
-
-</details>
-
-<details>
-<summary>VFMが生成するHTML（body部）</summary>
-
-```html
-<p><code>footnote-display: inline</code>を指定すると、複数の脚注が同じ行に流れ込む<a id="fnref1" href="#fn1" class="footnote-ref" role="doc-noteref"><sup>1</sup></a>。本文中の参照を3つ並べた場合<a id="fnref2" href="#fn2" class="footnote-ref" role="doc-noteref"><sup>2</sup></a>でも、脚注エリアの縦方向のスペース消費が抑えられる<a id="fnref3" href="#fn3" class="footnote-ref" role="doc-noteref"><sup>3</sup></a>。</p>
-<aside id="fn1" class="footnote" role="doc-footnote"><a href="#fnref1" class="footnote-back" role="doc-backlink"><sup>1</sup></a>短い注。</aside>
-<aside id="fn2" class="footnote" role="doc-footnote"><a href="#fnref2" class="footnote-back" role="doc-backlink"><sup>2</sup></a>もう一つの短い注。</aside>
-<aside id="fn3" class="footnote" role="doc-footnote"><a href="#fnref3" class="footnote-back" role="doc-backlink"><sup>3</sup></a>別の短い注。</aside>
-```
-
-</details>
-
-`compact`の表示例（短い注はインライン、長い注はブロックフォールバック）:
-
-![`footnote-display: compact`で短い注3件がインラインに、長い注がブロックにフォールバック](/cookbook/footnotes/ja/06-footnote-display-compact.png)
-
-<details>
-<summary>VFM Markdownソース</summary>
-
-```markdown
----
-title: "例6: footnote-display: compact"
-vfm:
-  footnote: dpub
----
-
-`footnote-display: compact`は、短い脚注はインライン[^1]でまとまって流れ[^2]、続く短い注も同じ行に並ぶ[^3]。一方で1行に収まらない長い注は自動でブロック扱いになる[^4]。
-
-[^1]: 短い注。
-
-[^2]: もう一つの短い注。
-
-[^3]: 別の短い注。
-
-[^4]: こちらは1行に収まらない長めの注で、compactでは自動的にブロック表示にフォールバックする挙動を確認する。
-```
-
-</details>
-
-<details>
-<summary>VFMが生成するHTML（body部）</summary>
-
-```html
-<p><code>footnote-display: compact</code>は、短い脚注はインライン<a id="fnref1" href="#fn1" class="footnote-ref" role="doc-noteref"><sup>1</sup></a>でまとまって流れ<a id="fnref2" href="#fn2" class="footnote-ref" role="doc-noteref"><sup>2</sup></a>、続く短い注も同じ行に並ぶ<a id="fnref3" href="#fn3" class="footnote-ref" role="doc-noteref"><sup>3</sup></a>。一方で1行に収まらない長い注は自動でブロック扱いになる<a id="fnref4" href="#fn4" class="footnote-ref" role="doc-noteref"><sup>4</sup></a>。</p>
-<aside id="fn1" class="footnote" role="doc-footnote"><a href="#fnref1" class="footnote-back" role="doc-backlink"><sup>1</sup></a>短い注。</aside>
-<aside id="fn2" class="footnote" role="doc-footnote"><a href="#fnref2" class="footnote-back" role="doc-backlink"><sup>2</sup></a>もう一つの短い注。</aside>
-<aside id="fn3" class="footnote" role="doc-footnote"><a href="#fnref3" class="footnote-back" role="doc-backlink"><sup>3</sup></a>別の短い注。</aside>
-<aside id="fn4" class="footnote" role="doc-footnote"><a href="#fnref4" class="footnote-back" role="doc-backlink"><sup>4</sup></a>こちらは1行に収まらない長めの注で、compactでは自動的にブロック表示にフォールバックする挙動を確認する。</aside>
-```
-
-</details>
-
-### `::footnote-marker`の`list-style-position: outside`（[#1702](https://github.com/vivliostyle/vivliostyle.js/issues/1702)）
-
-> **DPUB-ARIA脚注に対してauthor CSSの`::footnote-marker`を適用するにはVivliostyle.js v2.42+が必要**（[#1884](https://github.com/vivliostyle/vivliostyle.js/issues/1884)）。GCPMのclass方式ではv2.41以前から適用可能です。
-
-脚注マーカーが`list-style-position`を尊重するようになりました。マーカーを脚注本体の外側に配置することで、ぶら下げインデントの体裁が作れます:
-
-```css
-aside.footnote { margin-inline-start: 1.5em; }
-aside.footnote::footnote-marker {
-  content: counter(footnote) ". ";
-  list-style-position: outside;
-}
-```
-
-![`::footnote-marker`の`list-style-position: outside`でマーカーが本文左にぶら下がり、継続行が本文左端に揃うハンギングインデント](/cookbook/footnotes/ja/07-footnote-marker-outside.png)
-
-<details>
-<summary>VFM Markdownソース</summary>
-
-```markdown
----
-title: "例7: ::footnote-markerのlist-style-position: outside"
-vfm:
-  footnote: dpub
----
-
-`::footnote-marker`に`list-style-position: outside`を指定すると、マーカーが本文の外側にぶら下がる[^1]。複数行にわたる脚注の継続行が、番号の下ではなく本文の左端に揃って読みやすくなる[^2]のが利点。
-
-[^1]: この注の番号はぶら下げインデントで本文の左側に張り出し、複数行に渡る場合の継続行は番号の下ではなく本文の左端に揃う。
-
-[^2]: もう一つの注。同じくぶら下げインデントが適用される。
-```
-
-</details>
-
-<details>
-<summary>VFMが生成するHTML（body部）</summary>
-
-```html
-<p><code>::footnote-marker</code>に<code>list-style-position: outside</code>を指定すると、マーカーが本文の外側にぶら下がる<a id="fnref1" href="#fn1" class="footnote-ref" role="doc-noteref"><sup>1</sup></a>。複数行にわたる脚注の継続行が、番号の下ではなく本文の左端に揃って読みやすくなる<a id="fnref2" href="#fn2" class="footnote-ref" role="doc-noteref"><sup>2</sup></a>のが利点。</p>
-<aside id="fn1" class="footnote" role="doc-footnote"><a href="#fnref1" class="footnote-back" role="doc-backlink"><sup>1</sup></a>この注の番号はぶら下げインデントで本文の左側に張り出し、複数行に渡る場合の継続行は番号の下ではなく本文の左端に揃う。</aside>
-<aside id="fn2" class="footnote" role="doc-footnote"><a href="#fnref2" class="footnote-back" role="doc-backlink"><sup>2</sup></a>もう一つの注。同じくぶら下げインデントが適用される。</aside>
-```
-
-</details>
-
-なおVivliostyleのDPUB-ARIA実装では、`::footnote-marker`のcontentを**`list-style-position: outside`**とセットで指定したときに描画されます。`inside`（CSSのデフォルト）ではauthorのcontentが描画されないので注意してください（GCPMのclass方式`<span class="footnote">`ではどちらでも描画されます）。詳細は「DPUB-ARIAロール方式」の節の「マーカー表示について」を参照。
-
 ### ページスコープリセットとクロススコープカウンタ
 
 脚注カウンタをページグループ単位でリセットできるようになりました。章ごとに脚注番号を新規に採番する書籍で便利です。`counter-reset`を、[ページグループガイド](./page-groups/)で扱う名前付きページの仕組みと組み合わせて使います。
@@ -405,10 +250,7 @@ vfm:
 |プロパティ・at-rule |役割|
 |---|---|
 | `float: footnote` |ブロックレベル要素をページ下部の脚注エリアに移動|
-| `footnote-display` | `block` / `inline` / `compact` |
 | `footnote-policy` |注をページ間で分割するかを制御|
-| `::footnote-call` |本文中の参照マーカーの擬似要素|
-| `::footnote-marker` |注本体の横に表示されるマーカーの擬似要素|
 
 ## まとめ
 
@@ -416,9 +258,9 @@ VFMで利用できる注の種類と、その記法・設定・CSSの対応:
 
 |注の種類| VFMでの記法| `vivliostyle.config.js` |テーマ・CSS |備考|
 |---|---|---|---|---|
-| **後注**（endnotes）| `[^1]` | `vfm: { footnote: 'pandoc' }`（デフォルト）|不要（通常フローで`<section role="doc-endnotes">`出力）| `@footnote` / `footnote-display`非対応|
+| **後注**（endnotes）| `[^1]` | `vfm: { footnote: 'pandoc' }`（デフォルト）|不要（通常フローで`<section role="doc-endnotes">`出力）| `@footnote`非対応|
 | **脚注・CSSクラス方式**（footnotes）| `[^1]` | `vfm: { footnote: 'gcpm' }` | `.footnote { float: footnote }`を含むテーマが**必要**（theme-base / theme-techbook）| `<span class="footnote">`として出力。VFM v2.6新機能|
-| **脚注・DPUB-ARIA方式**（footnotes）| `[^1]` | `vfm: { footnote: 'dpub' }` | **不要**（v2.41で自動対応）。カスタマイズは`@page { @footnote {} }`などで| `<aside role="doc-footnote">`として出力。VFM v2.6新機能。将来デフォルト化予定（[#234](https://github.com/vivliostyle/vfm/issues/234)）|
+| **脚注・DPUB-ARIA方式**（footnotes）| `[^1]` | `vfm: { footnote: 'dpub' }` | **不要**（v2.41で自動対応）| `<aside role="doc-footnote">`として出力。VFM v2.6新機能。将来デフォルト化予定（[#234](https://github.com/vivliostyle/vfm/issues/234)）|
 | **傍注**（sidenotes）| — | — | — | VFMの脚注モード（`pandoc` / `gcpm` / `dpub`）では**サポートされない**。傍注を実現するにはカスタムHTML+CSSによる独自実装が必要|
 
 > **gcpmとdpubの選択指針**:
