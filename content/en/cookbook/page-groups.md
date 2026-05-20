@@ -11,7 +11,7 @@ order: 4
 > **Published**: 2026-05-05
 > **Last updated**: 2026-05-05
 
-This guide explains named pages and the `:nth(An+B of C)` page selector, which together let you give different chapters of a book entirely different page layouts.
+This guide explains named pages and the `:nth(An+B of C)` page selector, which together let you give entirely different page layouts to sections within the same document.
 
 ## Why named pages?
 
@@ -25,7 +25,7 @@ CSS lets you address pages with `@page :left` / `:right` / `:first`, but those s
 
 ## Named pages — the basics
 
-The `page` property assigns a name to a flow-level box (a section, a `<div>`, etc.):
+The `page` property specifies the name of the page type on which a flow-level box (a section, a `<div>`, etc.) will be displayed:
 
 ```css
 section.glossary {
@@ -66,21 +66,6 @@ Within a single `@page` name (or the unnamed default), `:nth()` selects pages by
 ```
 
 The `An+B` form follows the same convention as `:nth-child`: `n` is `0, 1, 2, ...`, and any non-positive result is dropped.
-
-## `:nth()` with counter manipulation
-
-Pages are numbered from 1 by default, but `counter-reset: page <n>` on a flow box restarts the page counter at `<n>`. This makes selectors like `:nth(1)` mean *the first page of this chapter*:
-
-```css
-section.chapter {
-  counter-reset: page 1;
-}
-
-@page :nth(1) {
-  /* Drop the running header on each chapter's opening page */
-  @top-center { content: none; }
-}
-```
 
 ## The page-group concept
 
