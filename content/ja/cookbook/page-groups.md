@@ -69,6 +69,8 @@ section.gallery {
 
 ## ページグループという概念
 
+CSS GCPM 3仕様によると、ページグループが生成されるには`page`プロパティと**強制改ページプロパティ**（`break-before: page`など）の**両方**が要素に適用されている必要があります。強制改ページがなければ、`page`名が変わっても新しいページグループは開始されません。
+
 レイアウトエンジンがページにコンテンツを流し込む過程で、フローボックスに付いた`page`名が変わる（例: `glossary`の後に`gallery`が来る）と、Vivliostyleは*強制改ページ*を発行します。1つの名前付きページブロックから生成された、連続するページの塊が**ページグループ**です。
 
 言い換えれば、ページグループは「同じ`@page`名を使い、ソースの同じフローレベル領域から生成された、連続するページの並び」です。これが`:nth(... of <name>)`の選択単位です。
@@ -105,7 +107,7 @@ Vivliostyle.js v2.39.0は`:nth(An+B of <name>)`形式に対応しました。イ
 */
 
 article.cover    { page: cover; }
-section.chapter  { page: body; counter-reset: page 1; }
+section.chapter  { page: body; break-before: page; counter-reset: page 1; }
 section.glossary { page: narrow; }
 
 /* 各章の扉ページ */
