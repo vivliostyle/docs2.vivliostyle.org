@@ -69,9 +69,9 @@ The `An+B` form follows the same convention as `:nth-child`: `n` is `0, 1, 2, ..
 
 ## The page-group concept
 
-According to the CSS GCPM 3 specification, a page group is created only when **both** the `page` property and a **forced-break property** (such as `break-before: page`) are applied to the same element. Without a forced break, changing the `page` name alone does not start a new page group.
-
 When the layout engine flows content into pages and the `page` named on the flow box changes (e.g. `glossary` is followed by `gallery`), Vivliostyle issues a *forced page break*. The block of consecutive pages produced by a single named-page block is a **page group**.
+
+When multiple elements share the same `page` name (e.g. several `section.chapter` elements), `break-before: page` must be specified — without it, no page break occurs and no new page group is started.
 
 In other words, a page group is "a run of pages all using the same `@page` name, all coming from the same flow-level region in the source." That's the unit `:nth(... of <name>)` selects within.
 
@@ -101,13 +101,13 @@ Combining named pages and `:nth(... of <name>)`:
 ```css
 /* Source structure */
 /*
-   <article class="cover">      ...   </article>
+   <section class="cover">      ...   </section>
    <section class="chapter">     ...   </section>
    <section class="chapter">     ...   </section>
    <section class="glossary">    ...   </section>
 */
 
-article.cover    { page: cover; }
+section.cover    { page: cover; }
 section.chapter  { page: body; break-before: page; }
 section.glossary { page: narrow; }
 
