@@ -241,6 +241,90 @@ This is convenient when most of the project uses the project-wide default but a 
 
 ## Customizing footnotes
 
+### `footnote-display` property ([#1825](https://github.com/vivliostyle/vivliostyle.js/issues/1825))
+
+Lays out footnote bodies in different ways. The property goes on the **footnote element itself** (not inside `@footnote`):
+
+- `block` (default) — each footnote on its own line
+- `inline` — multiple footnotes flow on the same line
+- `compact` — short footnotes flow inline; notes that don't fit on one line fall back to block
+
+```css
+.footnote { footnote-display: inline; }
+```
+
+<details>
+<summary>VFM Markdown source (<code>footnote-display: inline</code>)</summary>
+
+```markdown
+---
+title: "Example: footnote-display: inline"
+vfm:
+  footnote: gcpm
+---
+
+With `footnote-display: inline`, multiple footnotes flow on the same line[^1]. Three short references[^2] in a row[^3] still keep the footnote area compact in the vertical direction.
+
+[^1]: A short note.
+
+[^2]: Another short note.
+
+[^3]: A third short note.
+```
+
+</details>
+
+<details>
+<summary>VFM-generated HTML (body only)</summary>
+
+```html
+<p>With <code>footnote-display: inline</code>, multiple footnotes flow on the same line<span class="footnote" id="fn-1" role="doc-footnote">A short note.</span>. Three short references<span class="footnote" id="fn-2" role="doc-footnote">Another short note.</span> in a row<span class="footnote" id="fn-3" role="doc-footnote">A third short note.</span> still keep the footnote area compact in the vertical direction.</p>
+```
+
+</details>
+
+With `compact`, short notes stay inline and long notes fall back to block automatically.
+
+### `list-style-position: outside` for `::footnote-marker` ([#1702](https://github.com/vivliostyle/vivliostyle.js/issues/1702))
+
+The footnote marker now respects `list-style-position`, so the marker can sit outside the footnote body to produce a hanging-indent presentation:
+
+```css
+.footnote { margin-inline-start: 1.5em; }
+.footnote::footnote-marker {
+  content: counter(footnote) ". ";
+  list-style-position: outside;
+}
+```
+
+<details>
+<summary>VFM Markdown source</summary>
+
+```markdown
+---
+title: "Example: ::footnote-marker with list-style-position: outside"
+vfm:
+  footnote: gcpm
+---
+
+Setting `list-style-position: outside` on `::footnote-marker` places the marker outside the footnote body[^1]. Continuation lines align with the body's left edge rather than under the marker[^2], which makes long footnotes easier to read.
+
+[^1]: This note's number hangs to the left of the body. Continuation lines align with the left edge of the body, not under the number, producing a clean hanging indent.
+
+[^2]: A second note with hanging indent applied.
+```
+
+</details>
+
+<details>
+<summary>VFM-generated HTML (body only)</summary>
+
+```html
+<p>Setting <code>list-style-position: outside</code> on <code>::footnote-marker</code> places the marker outside the footnote body<span class="footnote" id="fn-1" role="doc-footnote">This note's number hangs to the left of the body. Continuation lines align with the left edge of the body, not under the number, producing a clean hanging indent.</span>. Continuation lines align with the body's left edge rather than under the marker<span class="footnote" id="fn-2" role="doc-footnote">A second note with hanging indent applied.</span>, which makes long footnotes easier to read.</p>
+```
+
+</details>
+
 ### Page-scoped reset and cross-scope counters
 
 Footnote counters can now be reset per page group, which is useful for books that restart footnote numbering at each chapter. Use `counter-reset` together with the named-page mechanism described in the [Page Groups guide](./page-groups/).
@@ -250,7 +334,10 @@ Footnote counters can now be reset per page group, which is useful for books tha
 | Property / at-rule | Purpose |
 |---|---|
 | `float: footnote` | Move a flow-level element to the page-bottom footnote area |
+| `footnote-display` | `block` / `inline` / `compact` |
 | `footnote-policy` | Control whether a note may be split across pages |
+| `::footnote-call` | Pseudo-element for the in-text reference marker |
+| `::footnote-marker` | Pseudo-element for the marker shown beside the note body |
 
 ## Summary
 

@@ -241,6 +241,90 @@ vfm:
 
 ## 脚注のカスタマイズ
 
+### `footnote-display`プロパティ（[#1825](https://github.com/vivliostyle/vivliostyle.js/issues/1825)）
+
+脚注本体のレイアウト方式を切り替えます。指定先は`@footnote`ルールの中ではなく**脚注要素自身**です:
+
+- `block`（デフォルト）— 各脚注を改行
+- `inline` — 複数の脚注を同じ行にフロー
+- `compact` — 短い脚注はインライン、長い脚注は自動的にブロックへフォールバック
+
+```css
+.footnote { footnote-display: inline; }
+```
+
+<details>
+<summary>VFM Markdownソース（<code>footnote-display: inline</code>）</summary>
+
+```markdown
+---
+title: "例: footnote-display: inline"
+vfm:
+  footnote: gcpm
+---
+
+`footnote-display: inline`を指定すると、複数の脚注が同じ行に流れ込む[^1]。本文中の参照を3つ並べた場合[^2]でも、脚注エリアの縦方向のスペース消費が抑えられる[^3]。
+
+[^1]: 短い注。
+
+[^2]: もう一つの短い注。
+
+[^3]: 別の短い注。
+```
+
+</details>
+
+<details>
+<summary>VFMが生成するHTML（body部）</summary>
+
+```html
+<p><code>footnote-display: inline</code>を指定すると、複数の脚注が同じ行に流れ込む<span class="footnote" id="fn-1" role="doc-footnote">短い注。</span>。本文中の参照を3つ並べた場合<span class="footnote" id="fn-2" role="doc-footnote">もう一つの短い注。</span>でも、脚注エリアの縦方向のスペース消費が抑えられる<span class="footnote" id="fn-3" role="doc-footnote">別の短い注。</span>。</p>
+```
+
+</details>
+
+`compact`は、短い注はインライン、長い注は自動でブロックにフォールバックします。
+
+### `::footnote-marker`の`list-style-position: outside`（[#1702](https://github.com/vivliostyle/vivliostyle.js/issues/1702)）
+
+脚注マーカーが`list-style-position`を尊重するようになりました。マーカーを脚注本体の外側に配置することで、ぶら下げインデントの体裁が作れます:
+
+```css
+.footnote { margin-inline-start: 1.5em; }
+.footnote::footnote-marker {
+  content: counter(footnote) ". ";
+  list-style-position: outside;
+}
+```
+
+<details>
+<summary>VFM Markdownソース</summary>
+
+```markdown
+---
+title: "例: ::footnote-markerのlist-style-position: outside"
+vfm:
+  footnote: gcpm
+---
+
+`::footnote-marker`に`list-style-position: outside`を指定すると、マーカーが本文の外側にぶら下がる[^1]。複数行にわたる脚注の継続行が、番号の下ではなく本文の左端に揃って読みやすくなる[^2]のが利点。
+
+[^1]: この注の番号はぶら下げインデントで本文の左側に張り出し、複数行に渡る場合の継続行は番号の下ではなく本文の左端に揃う。
+
+[^2]: もう一つの注。同じくぶら下げインデントが適用される。
+```
+
+</details>
+
+<details>
+<summary>VFMが生成するHTML（body部）</summary>
+
+```html
+<p><code>::footnote-marker</code>に<code>list-style-position: outside</code>を指定すると、マーカーが本文の外側にぶら下がる<span class="footnote" id="fn-1" role="doc-footnote">この注の番号はぶら下げインデントで本文の左側に張り出し、複数行に渡る場合の継続行は番号の下ではなく本文の左端に揃う。</span>。複数行にわたる脚注の継続行が、番号の下ではなく本文の左端に揃って読みやすくなる<span class="footnote" id="fn-2" role="doc-footnote">もう一つの注。同じくぶら下げインデントが適用される。</span>のが利点。</p>
+```
+
+</details>
+
 ### ページスコープリセットとクロススコープカウンタ
 
 脚注カウンタをページグループ単位でリセットできるようになりました。章ごとに脚注番号を新規に採番する書籍で便利です。`counter-reset`を、[ページグループガイド](./page-groups/)で扱う名前付きページの仕組みと組み合わせて使います。
@@ -250,7 +334,10 @@ vfm:
 |プロパティ・at-rule |役割|
 |---|---|
 | `float: footnote` |ブロックレベル要素をページ下部の脚注エリアに移動|
+| `footnote-display` | `block` / `inline` / `compact` |
 | `footnote-policy` |注をページ間で分割するかを制御|
+| `::footnote-call` |本文中の参照マーカーの擬似要素|
+| `::footnote-marker` |注本体の横に表示されるマーカーの擬似要素|
 
 ## まとめ
 
