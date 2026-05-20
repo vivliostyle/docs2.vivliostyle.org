@@ -96,7 +96,7 @@ This is what makes "the first page of every chapter looks different from the res
 
 ## Practical example: a chapter-structured book
 
-Combining named pages, `counter-reset`, and `:nth(... of <name>)`:
+Combining named pages and `:nth(... of <name>)`:
 
 ```css
 /* Source structure */
@@ -108,7 +108,7 @@ Combining named pages, `counter-reset`, and `:nth(... of <name>)`:
 */
 
 article.cover    { page: cover; }
-section.chapter  { page: body; break-before: page; counter-reset: page 1; }
+section.chapter  { page: body; break-before: page; }
 section.glossary { page: narrow; }
 
 /* Per-chapter front page */
@@ -126,7 +126,7 @@ section.glossary { page: narrow; }
 @page cover {
   size: A4;
   margin: 0;
-  background: black;  /* For a CMYK-mastered cover use device-cmyk(0 0 0 1) — requires v2.40.0+ (see CMYK Conversion guide) */
+  background: black;
 }
 ```
 

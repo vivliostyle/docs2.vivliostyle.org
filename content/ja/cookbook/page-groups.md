@@ -96,7 +96,7 @@ Vivliostyle.js v2.39.0は`:nth(An+B of <name>)`形式に対応しました。イ
 
 ## 実践例:章構造のある書籍レイアウト
 
-名前付きページ、`counter-reset`、`:nth(... of <name>)`を組み合わせた例:
+名前付きページと`:nth(... of <name>)`を組み合わせた例:
 
 ```css
 /* ソース構造
@@ -107,7 +107,7 @@ Vivliostyle.js v2.39.0は`:nth(An+B of <name>)`形式に対応しました。イ
 */
 
 article.cover    { page: cover; }
-section.chapter  { page: body; break-before: page; counter-reset: page 1; }
+section.chapter  { page: body; break-before: page; }
 section.glossary { page: narrow; }
 
 /* 各章の扉ページ */
@@ -125,7 +125,7 @@ section.glossary { page: narrow; }
 @page cover {
   size: A4;
   margin: 0;
-  background: black;  /* CMYK 入稿用には device-cmyk(0 0 0 1) — v2.40.0+ が必要（CMYK 変換ガイド参照）*/
+  background: black;
 }
 ```
 
