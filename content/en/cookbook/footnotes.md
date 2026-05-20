@@ -10,8 +10,6 @@ order: 2
 > **Target versions**: Vivliostyle.js v2.41+ (released 2026-04-11), Vivliostyle CLI v10.5+
 > **Published**: 2026-05-05
 > **Last updated**: 2026-05-14
->
-> - **Added in v2.41**: DPUB-ARIA footnote support (`float: footnote` auto-applied).
 
 This guide explains the **methods** for working with footnotes in Vivliostyle.js (and VFM), and how to **customize** footnote presentation.
 
