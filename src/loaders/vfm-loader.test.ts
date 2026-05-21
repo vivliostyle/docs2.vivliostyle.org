@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { rewriteRelativeLinks } from './vfm-loader';
+import { rewriteRelativeLinks, cleanJaeuSpacesInHtml } from './vfm-loader';
 
 describe('rewriteRelativeLinks', () => {
   describe('同一ディレクトリの兄弟参照（unified: .md 有無を問わない）', () => {
@@ -185,6 +185,85 @@ describe('rewriteRelativeLinks', () => {
       })).toBe(
         '<a href="https://github.com/vivliostyle/awesome-vivliostyle/blob/master/CONTRIBUTING.md">x</a>'
       );
+    });
+  });
+});
+
+describe('cleanJaeuSpacesInHtml', () => {
+  describe('prose 内の和欧境界スペース除去', () => {
+    it('和文 + 半角スペース + ASCII を詰める', () => {
+      expect(cleanJaeuSpacesInHtml('<p>これは Vivliostyle です</p>'))
+        .toBe('<p>これはVivliostyleです</p>');
+    });
+
+    it('ASCII + 半角スペース + 和文 を詰める', () => {
+      expect(cleanJaeuSpacesInHtml('<p>v2.40 で公開</p>'))
+        .toBe('<p>v2.40で公開</p>');
+    });
+
+    it('連続する和欧スペース（fixed-point ループ）が全て詰まる', () => {
+      // 「漢 ABC 字 ABC 漢」のように交互に並ぶケース
+      expect(cleanJaeuSpacesInHtml('<p>漢 ABC 字 ABC 漢</p>'))
+        .toBe('<p>漢ABC字ABC漢</p>');
+    });
+
+    it('和文同士のスペースは触らない（誤反応防止）', () => {
+      expect(cleanJaeuSpacesInHtml('<p>これは 日本語</p>'))
+        .toBe('<p>これは 日本語</p>');
+    });
+
+    it('ASCII 同士のスペースは触らない', () => {
+      expect(cleanJaeuSpacesInHtml('<p>foo bar baz</p>'))
+        .toBe('<p>foo bar baz</p>');
+    });
+  });
+
+  describe('保護対象タグ（pre/code/style/script/kbd）の内側は不変', () => {
+    it('<code> の中身は触らない（prose 側は通常通り詰める）', () => {
+      // prose 側の "例え ABC" は和欧境界として詰められる。
+      // code 側の "// 数値" は同じ ASCII+JA 境界だが、保護されて変化しない。
+      expect(cleanJaeuSpacesInHtml('<p>例え ABC<code>const x = 1; // 数値</code></p>'))
+        .toBe('<p>例えABC<code>const x = 1; // 数値</code></p>');
+    });
+
+    it('<pre> の中身は触らない（コードブロック）', () => {
+      const input = '<pre>npm install vivliostyle 後 に 実行</pre>';
+      expect(cleanJaeuSpacesInHtml(input)).toBe(input);
+    });
+
+    it('<style> の中身は触らない', () => {
+      const input = '<style>/* 注釈 */ body { color: red; }</style>';
+      expect(cleanJaeuSpacesInHtml(input)).toBe(input);
+    });
+
+    it('<script> の中身は触らない', () => {
+      const input = '<script>const x = "値 1";</script>';
+      expect(cleanJaeuSpacesInHtml(input)).toBe(input);
+    });
+
+    it('<kbd> の中身は触らない', () => {
+      const input = '<p>キー: <kbd>Ctrl + 矢印</kbd></p>';
+      expect(cleanJaeuSpacesInHtml(input)).toBe(input);
+    });
+  });
+
+  describe('エッジケース', () => {
+    it('空文字列', () => {
+      expect(cleanJaeuSpacesInHtml('')).toBe('');
+    });
+
+    it('保護タグの属性内に登場するスペースは prose とみなさない（属性値はそもそも保護対象タグの一部）', () => {
+      // <code class="lang-js">…</code> の class 属性は保護タグ範囲なので不変
+      const input = '<code class="ja コード">x = 1</code>';
+      expect(cleanJaeuSpacesInHtml(input)).toBe(input);
+    });
+
+    it('混在: prose は詰めるが保護タグ内は不変', () => {
+      // prose の "v2.40 から" は ASCII+JA 境界として詰める。
+      // code 内の "0 1 1 0" は ASCII 同士のスペースなので元々対象外。
+      const input = '<p>v2.40 から<code>device-cmyk(0 1 1 0)</code>が使える</p>';
+      const expected = '<p>v2.40から<code>device-cmyk(0 1 1 0)</code>が使える</p>';
+      expect(cleanJaeuSpacesInHtml(input)).toBe(expected);
     });
   });
 });

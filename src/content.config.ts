@@ -37,6 +37,26 @@ const docsJa = defineCollection({
   schema: docsSchema,
 });
 
+// Cookbook ドキュメント（英語）
+const cookbookEn = defineCollection({
+  loader: vfmLoader({
+    base: 'content/en/cookbook',
+    lang: 'en',
+    collectionName: 'cookbook-en',
+  }),
+  schema: docsSchema,
+});
+
+// Cookbook ドキュメント（日本語）
+const cookbookJa = defineCollection({
+  loader: vfmLoader({
+    base: 'content/ja/cookbook',
+    lang: 'ja',
+    collectionName: 'cookbook-ja',
+  }),
+  schema: docsSchema,
+});
+
 // CLI ドキュメント（英語）
 const cliDocsEn = defineCollection({
   loader: vfmLoader({
@@ -229,6 +249,8 @@ const vfmContributingEn = defineCollection({
 export const collections = {
   'docs-en': docsEn,
   'docs-ja': docsJa,
+  'cookbook-en': cookbookEn,
+  'cookbook-ja': cookbookJa,
   'vivliostyle-cli-en': cliDocsEn,
   'vivliostyle-cli-ja': cliDocsJa,
   'vivliostyle-themes-en': themesDocsEn,

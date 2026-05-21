@@ -19,10 +19,12 @@ const { title, description = '', lang = 'en', showBreadcrumb = true, availableLa
 const currentPath = Astro.url.pathname;
 
 const isJa = lang === 'ja';
+const fullTitle = `${title}${isJa ? '｜' : ' | '}Vivliostyle Documentation`;
 const navLabels = isJa
   ? {
       product: 'プロダクト',
       tutorial: 'チュートリアル',
+      cookbook: '活用ガイド',
       reference: 'リファレンス',
       faq: 'FAQ',
       docs: 'ドキュメント',
@@ -31,6 +33,7 @@ const navLabels = isJa
   : {
       product: 'Product',
       tutorial: 'Tutorials',
+      cookbook: 'Cookbook',
       reference: 'Reference',
       faq: 'FAQ',
       docs: 'Documentation',
@@ -46,13 +49,17 @@ const navLinks = {
   ],
   tutorial: {
     label: navLabels.tutorial,
-    href: isJa ? 'https://vivliostyle.org/ja/tutorials/' : 'https://vivliostyle.org/tutorials/',
+    href: isJa ? 'https://vivliostyle.org/ja/tutorials/' : 'https://vivliostyle.org/en/tutorials/',
     external: true,
+  },
+  cookbook: {
+    label: navLabels.cookbook,
+    href: `/${lang}/cookbook/`,
   },
   reference: {
     docs: [
-      { label: isJa ? 'サポートする CSS 機能' : 'Supported CSS Features', href: `/${lang}/reference/supported-css-features/` },
-      { label: isJa ? 'Core API リファレンス' : 'Core API Reference', href: `/${lang}/reference/api/` },
+      { label: isJa ? 'サポートするCSS機能' : 'Supported CSS Features', href: `/${lang}/reference/supported-css-features/` },
+      { label: isJa ? 'Core APIリファレンス' : 'Core API Reference', href: `/${lang}/reference/api/` },
       { label: 'Awesome Vivliostyle', href: `/${lang}/reference/awesome-vivliostyle/` },
     ],
     contribution: [
@@ -64,7 +71,7 @@ const navLinks = {
   },
   faq: {
     label: navLabels.faq,
-    href: isJa ? 'https://vivliostyle.org/ja/faq/' : 'https://vivliostyle.org/faq/',
+    href: isJa ? 'https://vivliostyle.org/ja/faq/' : 'https://vivliostyle.org/en/faq/',
     external: true,
   },
 };
@@ -75,7 +82,7 @@ const navLinks = {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content={description}>
-  <title>{title} | Vivliostyle Documentation</title>
+  <title>{fullTitle}</title>
   <link rel="icon" type="image/png" href="/favicon.png">
   <link rel="canonical" href={`${Astro.url.origin}${currentPath}`}>
   {availableLanguages.map((language) => (
@@ -145,6 +152,7 @@ const navLinks = {
               ))}
             </div>
           </details>
+          <a href={navLinks.cookbook.href}>{navLinks.cookbook.label}</a>
           <a
             href={navLinks.tutorial.href}
             target={navLinks.tutorial.external ? '_blank' : undefined}
@@ -170,6 +178,7 @@ const navLinks = {
             </div>
           </details>
           <a
+            class="nav-faq"
             href={navLinks.faq.href}
             target={navLinks.faq.external ? '_blank' : undefined}
             rel={navLinks.faq.external ? 'noopener noreferrer' : undefined}
@@ -296,7 +305,14 @@ const navLinks = {
     color: var(--color-text);
     text-decoration: none;
     font-weight: 500;
-    font-size: 0.95rem;
+    font-size: 1.1rem;
+    white-space: nowrap;
+  }
+
+  /* 日本語ページでは Latin の "FAQ" が CJK と並ぶと一回り小さく見えるため
+     視覚的にサイズを揃える */
+  :global(html[lang="ja"]) .header-nav .nav-faq {
+    font-size: 1.2rem;
   }
 
   .header-nav summary {
@@ -650,8 +666,47 @@ const navLinks = {
   }
   
   /* レスポンシブ */
-  /* タブレット・モバイルサイズ: ナビ非表示、ハンバーガー表示、サイドバーオーバーレイ化 */
   @media (max-width: 1024px) {
+    .main-container {
+      padding-right: 0;
+    }
+
+    /* 中間サイズ: 検索ボックス調整 */
+    .search-container {
+      max-width: 240px;
+    }
+
+    .header-nav {
+      gap: 0.5rem;
+    }
+
+    .header-nav a {
+      font-size: 0.9rem;
+    }
+
+    .header-nav summary {
+      font-size: 1rem;
+    }
+
+    .nav-panel a {
+      font-size: 0.85rem;
+    }
+
+    .header-content {
+      gap: 0.5rem;
+    }
+
+    .header-actions {
+      gap: 0.25rem;
+    }
+
+    .logo-image {
+      height: 28px;
+    }
+  }
+
+  /* タブレット・モバイルサイズ: ナビ非表示、ハンバーガー表示、サイドバーオーバーレイ化 */
+  @media (max-width: 900px) {
     .mobile-menu-toggle {
       display: block;
     }
@@ -806,7 +861,7 @@ const navLinks = {
       if (!link.dataset.clickListenerAdded) {
         link.addEventListener('click', () => {
           // モバイル表示の時のみ閉じる
-          if (window.innerWidth <= 1024) {
+          if (window.innerWidth <= 900) {
             closeMenu();
           }
         });
@@ -826,7 +881,7 @@ const navLinks = {
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimer);
       resizeTimer = window.setTimeout(() => {
-        if (window.innerWidth > 1024 && sidebar.classList.contains('active')) {
+        if (window.innerWidth > 900 && sidebar.classList.contains('active')) {
           closeMenu();
         }
       }, 250);

@@ -13,8 +13,7 @@ let htmlContent = '';
 try {
   const docs = await getCollection('docs-ja');
   indexDoc = docs.find(doc => doc.id === 'ja/index' || doc.id.endsWith('/index') || doc.id === 'index');
-  
-  if (indexDoc && indexDoc.rendered) {
+  if (indexDoc?.rendered) {
     htmlContent = indexDoc.rendered.html;
   }
 } catch (error) {
@@ -32,48 +31,79 @@ const description = indexDoc?.data?.description || 'Vivliostyle公式ドキュ�
   availableLanguages={['en', 'ja']}
 >
   <LanguageSwitcher slot="header" currentLang="ja" pagePath="/" hasTranslation={true} />
-  <nav slot="sidebar">
+  <nav slot="sidebar" class="home-sidebar">
     <h3>ドキュメント</h3>
-    <ul class="top-links" style="list-style: none; padding-left: 0; margin-bottom: 0.5rem;">
-      <li><a href="/ja/">ホーム</a></li>
+    <ul class="sidebar-top">
+      <li class="active"><a href="/ja/" aria-current="page">ホーム</a></li>
     </ul>
+
     <div class="sidebar-accordion">
       <div class="accordion-section">
         <div class="accordion-header">
-          <button class="accordion-toggle" data-target="products-group" aria-expanded="true" aria-controls="products-group" aria-label="プロダクトの開閉">
+          <button class="accordion-toggle" aria-controls="product-group" aria-expanded="true" aria-label="プロダクトの開閉">
             <span class="toggle-icon" aria-hidden="true"></span>
           </button>
           <span class="accordion-section-title">プロダクト</span>
         </div>
-        <ul class="accordion-content" id="products-group" style="display: block; list-style: none; padding-left: 1.5rem; margin: 0.25rem 0 0 0;">
+        <ul class="accordion-content" id="product-group">
           <li><a href="/ja/viewer/">Vivliostyle Viewer</a></li>
           <li><a href="/ja/cli/">Vivliostyle CLI</a></li>
           <li><a href="/ja/vfm/">VFM</a></li>
           <li><a href="/ja/themes/">Vivliostyle Themes</a></li>
         </ul>
       </div>
+
+      <div class="accordion-section">
+        <div class="accordion-header">
+          <button class="accordion-toggle" aria-controls="cookbook-group" aria-expanded="true" aria-label="活用ガイドの開閉">
+            <span class="toggle-icon" aria-hidden="true"></span>
+          </button>
+          <a href="/ja/cookbook/" class="accordion-section-title">活用ガイド</a>
+        </div>
+        <ul class="accordion-content" id="cookbook-group">
+          <li><a href="/ja/cookbook/">概要</a></li>
+          <li><a href="/ja/cookbook/footnotes/">脚注ガイド</a></li>
+          <li><a href="/ja/cookbook/cmyk/">CMYK 変換ガイド</a></li>
+          <li><a href="/ja/cookbook/page-groups/">ページグループガイド</a></li>
+        </ul>
+      </div>
     </div>
-    <ul class="top-links" style="list-style: none; padding-left: 0; margin: 0.5rem 0;">
-      <li><a href="https://vivliostyle.org/ja/tutorials/" target="_blank" rel="noopener noreferrer">チュートリアル</a></li>
+    <ul class="sidebar-flat">
+      <li>
+        <a href="https://vivliostyle.org/ja/tutorials/" target="_blank" rel="noopener noreferrer">チュートリアル</a>
+      </li>
     </ul>
+
     <div class="sidebar-accordion">
       <div class="accordion-section">
         <div class="accordion-header">
-          <button class="accordion-toggle" data-target="reference-group" aria-expanded="true" aria-controls="reference-group" aria-label="リファレンスの開閉">
+          <button class="accordion-toggle" aria-controls="reference-group" aria-expanded="true" aria-label="リファレンスの開閉">
             <span class="toggle-icon" aria-hidden="true"></span>
           </button>
           <a href="/ja/reference/" class="accordion-section-title">リファレンス</a>
         </div>
-        <ul class="accordion-content" id="reference-group" style="display: block; list-style: none; padding-left: 1.5rem; margin: 0.25rem 0 0 0;">
-          <li><a href="/ja/reference/supported-css-features/">サポートする CSS 機能</a></li>
-          <li><a href="/ja/reference/api/">Core API リファレンス</a></li>
-          <li><a href="/ja/reference/awesome-vivliostyle/">Awesome Vivliostyle</a></li>
-          <li><a href="/ja/reference/contribution-guide/">コントリビューションガイド</a></li>
-        </ul>
+        <div class="accordion-content accordion-content-grouped" id="reference-group">
+          <h4 class="subgroup-title">ドキュメント</h4>
+          <ul>
+            <li><a href="/ja/reference/supported-css-features/">サポートするCSS機能</a></li>
+            <li><a href="/ja/reference/api/">Core APIリファレンス</a></li>
+            <li><a href="/ja/reference/awesome-vivliostyle/">Awesome Vivliostyle</a></li>
+          </ul>
+          <h4 class="subgroup-title">コントリビューションガイド</h4>
+          <ul>
+            <li><a href="/ja/reference/contribution-guide/js/">Vivliostyle.js</a></li>
+            <li><a href="/ja/reference/contribution-guide/cli/">Vivliostyle CLI</a></li>
+            <li><a href="/ja/reference/contribution-guide/vfm/">VFM</a></li>
+            <li><a href="/ja/reference/contribution-guide/themes/">Vivliostyle Themes</a></li>
+          </ul>
+        </div>
       </div>
     </div>
-    <ul class="top-links" style="list-style: none; padding-left: 0; margin: 0.5rem 0;">
-      <li><a href="https://vivliostyle.org/ja/faq/" target="_blank" rel="noopener noreferrer">FAQ</a></li>
+
+    <ul class="sidebar-flat">
+      <li>
+        <a href="https://vivliostyle.org/ja/faq/" target="_blank" rel="noopener noreferrer">FAQ</a>
+      </li>
     </ul>
   </nav>
 
@@ -89,25 +119,50 @@ const description = indexDoc?.data?.description || 'Vivliostyle公式ドキュ�
 </DocsLayout>
 
 <style>
-  nav h3 {
+  .home-sidebar h3 {
     color: var(--color-text);
+    font-size: 1rem;
+    margin: 0 0 0.5rem;
   }
 
-  nav ul li a {
+  .home-sidebar ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  }
+
+  .home-sidebar li {
+    margin: 0.25rem 0;
+  }
+
+  .home-sidebar a {
     color: var(--color-text);
     text-decoration: none;
   }
 
-  nav ul li a:hover {
+  .home-sidebar a:hover {
     color: var(--color-primary);
   }
 
+  .sidebar-top {
+    margin-bottom: 0.75rem;
+  }
+
+  .sidebar-top li.active a {
+    font-weight: bold;
+    color: var(--color-primary);
+  }
+
+  .sidebar-flat {
+    margin: 0.25rem 0 0.5rem;
+  }
+
   .sidebar-accordion {
-    margin-top: 0.5rem;
+    margin: 0 0 0.25rem;
   }
 
   .accordion-section {
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
   }
 
   .accordion-toggle {
@@ -157,32 +212,69 @@ const description = indexDoc?.data?.description || 'Vivliostyle公式ドキュ�
     color: var(--color-primary);
   }
 
+  /* L3 項目を含むコンテナ。1.75rem の padding-left により L3 を全アコーディオンで揃える */
+  .accordion-content {
+    padding-left: 1.75rem;
+    margin: 0.25rem 0 0;
+  }
+
   .accordion-content li {
     margin: 0.25rem 0;
   }
 
+  .accordion-content-grouped > ul {
+    margin-bottom: 0.25rem;
+  }
+
+  /* L3: 各ナビ項目（アコーディオン配下）。L1 のトグル / トップレベルリンクより一段小さく */
   .accordion-content a {
     color: var(--color-text);
     text-decoration: none;
-    font-size: 1rem;
+    font-size: 0.85rem;
+    font-weight: 400;
   }
 
   .accordion-content a:hover {
     color: var(--color-primary);
   }
+
+  /* L2: サブグループ見出し。
+     - L1 と同じウエイト・muted カラーで「ラベル」として機能
+     - margin-left: -1rem で accordion-content の padding-left（1.75rem）を 1rem 戻し、
+       L2（0.75rem）と L3（1.75rem）の差をちょうど 1em（1 文字分）にする */
+  .subgroup-title {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    margin: 0.4rem 0 0.15rem -1rem;
+    letter-spacing: 0;
+  }
+
+  /* 外部リンクには「↗」を末尾に付与し、新しいタブで開くことを示す */
+  .home-sidebar a[target="_blank"]::after {
+    content: " ↗";
+    font-size: 0.85em;
+    opacity: 0.7;
+    margin-left: 0.15em;
+  }
 </style>
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const toggleButtons = document.querySelectorAll('.accordion-toggle');
+    const toggleButtons = document.querySelectorAll('.home-sidebar .accordion-toggle');
     toggleButtons.forEach((button) => {
-      button.addEventListener('click', () => {
-        const targetId = button.getAttribute('data-target');
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetId = button.getAttribute('aria-controls');
+        const content = targetId ? document.getElementById(targetId) : null;
         const isExpanded = button.getAttribute('aria-expanded') === 'true';
         button.setAttribute('aria-expanded', String(!isExpanded));
-        if (targetId) {
-          const content = document.getElementById(targetId);
-          if (content) content.style.display = isExpanded ? 'none' : 'block';
+        if (content) {
+          if (isExpanded) {
+            content.setAttribute('hidden', '');
+          } else {
+            content.removeAttribute('hidden');
+          }
         }
       });
     });

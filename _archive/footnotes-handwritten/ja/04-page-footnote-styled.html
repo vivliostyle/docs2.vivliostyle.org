@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>例 4: @page { @footnote { … } } によるカスタムスタイル</title>
+<style>
+  @page {
+    size: 140mm 90mm;
+    margin: 12mm 14mm;
+
+    @footnote {
+      border-top: 1pt solid #555;
+      padding-top: 6pt;
+      margin-top: 6pt;
+      font-size: 8.5pt;
+      line-height: 1.5;
+      color: #333;
+    }
+    /* CSS GCPM 3 / Vivliostyle ともに「@footnote ::before」（スペースあり）が
+       正しい構文。スペースなしだとパースエラーで @page 全体が無効化される */
+    @footnote ::before {
+      content: "脚注:";
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.2em;
+      color: #555;
+    }
+  }
+  body {
+    font-family: "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", serif;
+    font-size: 10pt;
+    line-height: 1.65;
+    text-align: justify;
+  }
+  p { margin: 0 0 0.5em; }
+  code { font-size: 0.92em; }
+</style>
+</head>
+<body>
+<p><code>@page { @footnote { … } }</code> で脚注エリアにスタイルを与える例<a role="doc-noteref" href="#fn1">1</a>。上罫線・字下げ・<code>::before</code> による「脚注:」見出しを生成している。</p>
+<aside id="fn1" role="doc-footnote"><sup>1</sup> スタイル付きの脚注。</aside>
+<p>複数の注がある場合<a role="doc-noteref" href="#fn2">2</a>、見出しはエリア全体に対して 1 度だけ表示される。</p>
+<aside id="fn2" role="doc-footnote"><sup>2</sup> もう一つのスタイル付き脚注。</aside>
+</body>
+</html>

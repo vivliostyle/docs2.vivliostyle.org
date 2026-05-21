@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>例 5: footnote-display: inline</title>
+<style>
+  @page {
+    size: 140mm 90mm;
+    margin: 12mm 14mm;
+  }
+  body {
+    font-family: "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", serif;
+    font-size: 10pt;
+    line-height: 1.55;
+  }
+  p { margin: 0 0 0.5em; }
+  code { font-size: 0.92em; }
+  /* vivliostyle テスト dpub-footnote-display.html と同じパターン */
+  .footnote-display-inline .footnote { footnote-display: inline; }
+</style>
+</head>
+<body>
+<section class="footnote-display-inline">
+<p><code>footnote-display: inline</code> を指定すると、複数の脚注が同じ行に流れ込む<a id="ref1" href="#fn1" class="footnote-ref" role="doc-noteref"><sup>1</sup></a>。本文中の参照を 3 つ並べた場合<a id="ref2" href="#fn2" class="footnote-ref" role="doc-noteref"><sup>2</sup></a>でも、脚注エリアの縦方向のスペース消費が抑えられる<a id="ref3" href="#fn3" class="footnote-ref" role="doc-noteref"><sup>3</sup></a>。</p>
+<aside id="fn1" class="footnote" role="doc-footnote"><a href="#ref1" class="footnote-back" role="doc-backlink"><sup>1</sup></a>短い注。</aside>
+<aside id="fn2" class="footnote" role="doc-footnote"><a href="#ref2" class="footnote-back" role="doc-backlink"><sup>2</sup></a>もう一つの短い注。</aside>
+<aside id="fn3" class="footnote" role="doc-footnote"><a href="#ref3" class="footnote-back" role="doc-backlink"><sup>3</sup></a>別の短い注。</aside>
+</section>
+</body>
+</html>

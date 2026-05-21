@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Example 5: footnote-display: inline</title>
+<style>
+  @page {
+    size: 140mm 90mm;
+    margin: 12mm 14mm;
+  }
+  body {
+    font-family: "Source Serif Pro", "Georgia", serif;
+    font-size: 10pt;
+    line-height: 1.45;
+  }
+  p { margin: 0 0 0.5em; }
+  code { font-size: 0.92em; }
+  /* Same pattern as vivliostyle's dpub-footnote-display.html test. */
+  .footnote-display-inline .footnote { footnote-display: inline; }
+</style>
+</head>
+<body>
+<section class="footnote-display-inline">
+<p>With <code>footnote-display: inline</code>, multiple footnotes flow on the same line<a id="ref1" href="#fn1" class="footnote-ref" role="doc-noteref"><sup>1</sup></a>. Three short references<a id="ref2" href="#fn2" class="footnote-ref" role="doc-noteref"><sup>2</sup></a> in a row<a id="ref3" href="#fn3" class="footnote-ref" role="doc-noteref"><sup>3</sup></a> still keep the footnote area compact in the vertical direction.</p>
+<aside id="fn1" class="footnote" role="doc-footnote"><a href="#ref1" class="footnote-back" role="doc-backlink"><sup>1</sup></a>A short note.</aside>
+<aside id="fn2" class="footnote" role="doc-footnote"><a href="#ref2" class="footnote-back" role="doc-backlink"><sup>2</sup></a>Another short note.</aside>
+<aside id="fn3" class="footnote" role="doc-footnote"><a href="#ref3" class="footnote-back" role="doc-backlink"><sup>3</sup></a>A third short note.</aside>
+</section>
+</body>
+</html>

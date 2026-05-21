@@ -1,0 +1,25 @@
+/*例1: GCPMクラス方式
+   VFM gcpmモードは<span class="footnote" id="fn-N" role="doc-footnote">を出力。
+   theme-base / theme-techbook同等のスタイルをここで定義する。*/
+
+.footnote { float: footnote; }
+
+::footnote-call {
+  content: counter(footnote);
+  font-size: 0.7em;
+  vertical-align: super;
+  line-height: 0;
+}
+
+::footnote-marker {
+  content: counter(footnote) ".  ";
+}
+
+@page {
+  @footnote {
+    border-top: 0.4pt solid currentColor;
+    padding-top: 4pt;
+    font-size: 8.5pt;
+    line-height: 1.5;
+  }
+}

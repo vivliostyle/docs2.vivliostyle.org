@@ -1,0 +1,120 @@
+---
+/**
+ * Cookbook ドキュメントページ（英語版）
+ * 動的ルーティング: /en/cookbook/* にマッチ
+ */
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import LanguageSwitcher from '../../../components/LanguageSwitcher.astro';
+import PageNavigation from '../../../components/PageNavigation.astro';
+import SidebarTocHeadings from '../../../components/SidebarTocHeadings.astro';
+import DownloadLinks from '../../../components/DownloadLinks.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const docs = await getCollection('cookbook-en');
+  const docsJa = await getCollection('cookbook-ja');
+
+  // 日本語版に存在するIDのセット
+  const jaIds = new Set(docsJa.map((d) => d.id));
+
+  return docs.map((doc) => {
+    const slug = doc.id === 'index' ? undefined : doc.id;
+    return {
+      params: { slug },
+      props: {
+        doc,
+        docs,
+        hasJaTranslation: jaIds.has(doc.id),
+      },
+    };
+  });
+}
+
+const { doc, docs, hasJaTranslation } = Astro.props;
+const htmlContent = doc.rendered?.html || '';
+const title = doc.data?.title || 'Cookbook';
+const description = doc.data?.description || '';
+const headings = ((doc.data as unknown) as { headings?: Array<{ depth: number; slug: string; text: string }> })?.headings || [];
+
+// ページ順（index.md と同期させる）
+const pageOrder = ['index', 'footnotes', 'cmyk', 'page-groups'];
+
+const sortedDocs = [...docs].sort((a, b) => {
+  const indexA = pageOrder.indexOf(a.id);
+  const indexB = pageOrder.indexOf(b.id);
+  const orderA = indexA === -1 ? 999 : indexA;
+  const orderB = indexB === -1 ? 999 : indexB;
+  return orderA - orderB;
+});
+
+const currentPath = doc.id === 'index' ? '/en/cookbook/' : `/en/cookbook/${doc.id}/`;
+const pagePath = doc.id === 'index' ? '/cookbook/' : `/cookbook/${doc.id}/`;
+
+const currentIndex = sortedDocs.findIndex((item) => item.id === doc.id);
+const prevPage = currentIndex > 0 ? sortedDocs[currentIndex - 1] : null;
+const nextPage = currentIndex < sortedDocs.length - 1 ? sortedDocs[currentIndex + 1] : null;
+---
+
+<DocsLayout
+  title={title}
+  description={description}
+  lang="en"
+  availableLanguages={hasJaTranslation ? ['en', 'ja'] : []}
+>
+  <div slot="header" class="language-switcher-container">
+    <LanguageSwitcher currentLang="en" pagePath={pagePath} hasTranslation={hasJaTranslation} />
+  </div>
+  <nav slot="sidebar">
+    <h3>Cookbook</h3>
+    <ul style="list-style: none; padding-left: 0;">
+      <li><a href="/en/">← Back to Home</a></li>
+      {sortedDocs.map((item) => {
+        const itemPath = item.id === 'index' ? '/en/cookbook/' : `/en/cookbook/${item.id}/`;
+        const isActive = itemPath === currentPath;
+        return (
+          <li class:list={[{ active: isActive }]}>
+            <a href={itemPath} aria-current={isActive ? 'page' : undefined}>
+              {item.data.title || item.id}
+            </a>
+            {isActive && <SidebarTocHeadings headings={headings} lang="en" />}
+          </li>
+        );
+      })}
+    </ul>
+    <DownloadLinks product="cookbook" lang="en" />
+  </nav>
+
+  <article set:html={htmlContent} />
+
+  <PageNavigation
+    prevPage={prevPage}
+    nextPage={nextPage}
+    basePath="/en/cookbook/"
+    prevLabel="← Previous"
+    nextLabel="Next →"
+  />
+</DocsLayout>
+
+<style>
+  nav ul {
+    list-style: none;
+    padding: 0;
+  }
+  nav li {
+    margin: 0.5rem 0;
+  }
+  nav > ul > li.active > a {
+    font-weight: bold;
+    color: var(--color-primary, #3b9eff);
+  }
+
+  nav > ul > li > a {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  nav > ul > li > a:hover {
+    color: var(--color-primary);
+  }
+
+</style>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Example 7: ::footnote-marker with list-style-position: outside</title>
+<style>
+  /* On Viewer 2.42.0+, author-supplied ::footnote-marker `content`
+     and `list-style-position` apply to DPUB-ARIA footnotes. With
+     `outside`, the marker hangs to the left of the body, giving
+     a clean hanging-indent presentation for multi-line notes. */
+  @page {
+    size: 140mm 90mm;
+    margin: 12mm 14mm;
+  }
+  body {
+    font-family: "Source Serif Pro", "Georgia", serif;
+    font-size: 10pt;
+    line-height: 1.45;
+  }
+  p { margin: 0 0 0.5em; }
+  code { font-size: 0.92em; }
+  /* Match the dpub-footnote-call-marker-outside.html test pattern:
+     - reset the footnote counter on :root
+     - hide the in-text <sup> and let ::footnote-call generate
+       the call instead
+     - hide the backlink <sup> inside the aside and let
+       ::footnote-marker generate the marker (so the CSS marker
+       and the inline sup don't both appear)
+     - reserve hanging space on the aside via margin-inline-start */
+  :root { counter-reset: footnote; }
+  a.footnote-ref > sup { display: none; }
+  a.footnote-ref::footnote-call {
+    content: counter(footnote);
+    font-size: 0.7em;
+    vertical-align: super;
+    line-height: 0;
+  }
+  aside.footnote { margin-inline-start: 1.5em; }
+  aside.footnote > a.footnote-back { display: none; }
+  aside.footnote::footnote-marker {
+    content: counter(footnote) ". ";
+    list-style-position: outside;
+  }
+</style>
+</head>
+<body>
+<p>Setting <code>list-style-position: outside</code> on <code>::footnote-marker</code> places the marker outside the footnote body<a id="ref1" href="#fn1" class="footnote-ref" role="doc-noteref"><sup>1</sup></a>. Continuation lines align with the body's left edge rather than under the marker<a id="ref2" href="#fn2" class="footnote-ref" role="doc-noteref"><sup>2</sup></a>, which makes long footnotes easier to read.</p>
+<aside id="fn1" class="footnote" role="doc-footnote"><a href="#ref1" class="footnote-back" role="doc-backlink"><sup>1</sup></a>This note's number hangs to the left of the body. Continuation lines align with the left edge of the body, not under the number, producing a clean hanging indent.</aside>
+<aside id="fn2" class="footnote" role="doc-footnote"><a href="#ref2" class="footnote-back" role="doc-backlink"><sup>2</sup></a>A second note with hanging indent applied.</aside>
+</body>
+</html>

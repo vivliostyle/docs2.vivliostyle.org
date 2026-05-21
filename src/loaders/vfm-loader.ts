@@ -272,6 +272,49 @@ function generateSlug(filePath: string, baseDir: string): string {
 }
 
 /**
+ * 日本語コンテンツの和欧境界の半角スペースを除去する。
+ *
+ * モダンブラウザは和欧間隔を自動処理するため、ソース上で半角スペースを
+ * 入れると二重に間隔が空く。submodule 由来の ja コンテンツも含めて
+ * 一律で除去するため、HTML 化した直後にここで処理する。
+ *
+ * `<pre>`、`<code>`、`<style>`、`<script>`、`<kbd>` の中身はコード扱いで
+ * 保護する（コード例の文字列を改変しないため）。
+ */
+const PROSE_PROTECTED_TAGS = ['pre', 'code', 'style', 'script', 'kbd'];
+const PROSE_PROTECTED_REGEX = new RegExp(
+  `<(${PROSE_PROTECTED_TAGS.join('|')})\\b[^>]*>[\\s\\S]*?</\\1>`,
+  'gi',
+);
+const PROSE_JA_RANGE = '\\u3040-\\u30FF\\u4E00-\\u9FFF\\u3000-\\u303F\\uFF00-\\uFFEF';
+const PROSE_RE_JA_SPACE_ASCII = new RegExp(`([${PROSE_JA_RANGE}]) ([!-~])`, 'g');
+const PROSE_RE_ASCII_SPACE_JA = new RegExp(`([!-~]) ([${PROSE_JA_RANGE}])`, 'g');
+
+export function cleanJaeuSpacesInHtml(html: string): string {
+  if (!html) return html;
+  // 保護対象タグの中身をセンチネルで隠す
+  const SENTINEL = '\u0000';
+  const protectedSegments: string[] = [];
+  const masked = html.replace(PROSE_PROTECTED_REGEX, (match) => {
+    protectedSegments.push(match);
+    return SENTINEL;
+  });
+
+  // 残った prose 部分の和欧境界スペースを除去（連続パターン対応で fixed-point）
+  let cleaned = masked;
+  let prev: string;
+  do {
+    prev = cleaned;
+    cleaned = cleaned.replace(PROSE_RE_JA_SPACE_ASCII, '$1$2');
+    cleaned = cleaned.replace(PROSE_RE_ASCII_SPACE_JA, '$1$2');
+  } while (cleaned !== prev);
+
+  // 保護対象を復元
+  let i = 0;
+  return cleaned.replace(new RegExp(SENTINEL, 'g'), () => protectedSegments[i++]);
+}
+
+/**
  * VFMローダーを作成
  */
 export function vfmLoader(options: VFMLoaderOptions): Loader {
@@ -436,6 +479,15 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
             // 食い違いを解消する。
             html = rewriteFragmentLinks(html);
 
+            // 6. 日本語コンテンツの和欧境界半角スペースを除去（submodule も含む全 ja コレクション対象）
+            //    モダンブラウザの自動和欧間隔と二重にならないようにする
+            if (lang === 'ja') {
+              html = cleanJaeuSpacesInHtml(html);
+              if (extractedTocHtml) {
+                extractedTocHtml = cleanJaeuSpacesInHtml(extractedTocHtml);
+              }
+            }
+
             // HTMLから見出しを抽出（h2, h3）
             const headings: Array<{ depth: number; slug: string; text: string }> = [];
             const headingMatches = html.matchAll(/<h([23])[^>]*id="([^"]+)"[^>]*>(.*?)<\/h\1>/gi);
@@ -452,14 +504,30 @@ export function vfmLoader(options: VFMLoaderOptions): Loader {
             const slug = generateSlug(filePath, baseDir);
             const id = slug;
 
+            // ja の frontmatter 文字列値（title / description）も和欧スペースを除去
+            // サイドバーやパンくずなど、Markdown 本文を経由しない箇所で使われるため
+            const cleanedFrontmatter =
+              lang === 'ja'
+                ? Object.fromEntries(
+                    Object.entries(frontmatter).map(([key, value]) => [
+                      key,
+                      typeof value === 'string' ? cleanJaeuSpacesInHtml(value) : value,
+                    ]),
+                  )
+                : frontmatter;
+            const cleanedTitle =
+              lang === 'ja'
+                ? cleanJaeuSpacesInHtml(frontmatter.title || headingTitle || basename(slug))
+                : frontmatter.title || headingTitle || basename(slug);
+
             const entry: DocEntry = {
               id,
               slug,
               body: processedMarkdownBody,
               data: {
-                ...frontmatter,
+                ...cleanedFrontmatter,
                 lang: lang || frontmatter.lang || 'en',
-                title: frontmatter.title || headingTitle || basename(slug),
+                title: cleanedTitle,
                 extractedToc: extractedTocHtml, // 抽出したTOCをデータに追加
                 headings, // 見出しデータを追加
               },

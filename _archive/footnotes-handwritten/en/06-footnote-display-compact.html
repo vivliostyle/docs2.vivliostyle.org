@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Example 6: footnote-display: compact</title>
+<style>
+  /* `compact` keeps short notes inline and falls back to block for
+     notes that don't fit on a single line. */
+  @page {
+    size: 140mm 90mm;
+    margin: 12mm 14mm;
+  }
+  body {
+    font-family: "Source Serif Pro", "Georgia", serif;
+    font-size: 10pt;
+    line-height: 1.45;
+  }
+  p { margin: 0 0 0.5em; }
+  code { font-size: 0.92em; }
+  /* Same pattern as vivliostyle's dpub-footnote-display.html test. */
+  .footnote-display-compact .footnote { footnote-display: compact; }
+</style>
+</head>
+<body>
+<section class="footnote-display-compact">
+<p><code>footnote-display: compact</code> packs short notes inline<a id="ref1" href="#fn1" class="footnote-ref" role="doc-noteref"><sup>1</sup></a> as unbreakable units<a id="ref2" href="#fn2" class="footnote-ref" role="doc-noteref"><sup>2</sup></a>, with following short notes joining the same run<a id="ref3" href="#fn3" class="footnote-ref" role="doc-noteref"><sup>3</sup></a>. A note that does not fit on one rendered line falls back to block automatically<a id="ref4" href="#fn4" class="footnote-ref" role="doc-noteref"><sup>4</sup></a>.</p>
+<aside id="fn1" class="footnote" role="doc-footnote"><a href="#ref1" class="footnote-back" role="doc-backlink"><sup>1</sup></a>A short note.</aside>
+<aside id="fn2" class="footnote" role="doc-footnote"><a href="#ref2" class="footnote-back" role="doc-backlink"><sup>2</sup></a>Another short note.</aside>
+<aside id="fn3" class="footnote" role="doc-footnote"><a href="#ref3" class="footnote-back" role="doc-backlink"><sup>3</sup></a>A third short note.</aside>
+<aside id="fn4" class="footnote" role="doc-footnote"><a href="#ref4" class="footnote-back" role="doc-backlink"><sup>4</sup></a>A longer note that cannot fit on one rendered inline line and therefore falls back to a block layout under `compact`.</aside>
+</section>
+</body>
+</html>

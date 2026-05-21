@@ -508,11 +508,14 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--color-bg-code);
 }
 
-/* 画像 */
+/* 画像
+ * スクリーンショット等の白背景画像が明モードのページ背景と境目を失わないよう、
+ * 細罫を引く。テーマトークン経由なので明/暗どちらでも適切なコントラスト。 */
 .prose img {
   max-width: 100%;
   height: auto;
   border-radius: 8px;
+  border: 1px solid var(--color-border);
 }
 
 .prose figure {
