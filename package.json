@@ -30,7 +30,7 @@
     "regenerate:symbol-fonts": "python3 scripts/regenerate-symbol-fonts.py"
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.7.0",
+    "@astrojs/sitemap": "^3.7.2",
     "@vivliostyle/vfm": "^2.7.0",
     "astro": "^5.16.6",
     "github-slugger": "^2.0.0",
