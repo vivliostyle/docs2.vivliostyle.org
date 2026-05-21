@@ -12,8 +12,6 @@ export default {
     'ja/cookbook/footnotes/index.html',
     'ja/cookbook/cmyk/index.html',
     'ja/cookbook/page-groups/index.html',
-    'ja/cookbook/vfm-extensions/index.html',
-    'ja/cookbook/responsive-and-nesting/index.html',
   ],
   output: [
     { path: 'public/downloads/vivliostyle-cookbook-ja.pdf', format: 'pdf' },

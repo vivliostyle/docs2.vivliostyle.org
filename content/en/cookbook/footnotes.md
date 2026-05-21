@@ -325,7 +325,7 @@ Setting `list-style-position: outside` on `::footnote-marker` places the marker 
 
 ### Page-scoped reset and cross-scope counters
 
-Footnote counters can now be reset per page group, which is useful for books that restart footnote numbering at each chapter. Use `counter-reset` together with the named-page mechanism described in the [Page Groups guide](../page-groups/).
+Footnote counters can now be reset per page group, which is useful for books that restart footnote numbering at each chapter. Use `counter-reset` together with the named-page mechanism described in the [Page Groups guide](./page-groups/).
 
 ### CSS property list
 

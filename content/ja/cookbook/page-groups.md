@@ -7,7 +7,7 @@ order: 4
 
 # ページグループガイド
 
-> **対象バージョン**: Vivliostyle.js v2.39+（2025-12-25リリース）
+> **対象バージョン**: Vivliostyle.js v2.39.0+（2025-12-25リリース）
 > **公開日**: 2026-05-05
 > **最終更新日**: 2026-05-05
 
@@ -75,9 +75,9 @@ section.gallery {
 
 言い換えれば、ページグループは「同じ`@page`名を使い、ソースの同じフローレベル領域から生成された、連続するページの並び」です。これが`:nth(... of <name>)`の選択単位です。
 
-## `:nth(An+B of C)` ―― ページグループ*内*のセレクタ（v2.39新機能）
+## `:nth(An+B of C)` ―― ページグループ*内*のセレクタ（v2.39.0新機能）
 
-Vivliostyle.js v2.39は`:nth(An+B of <name>)`形式に対応しました。インデックスを名前付きページグループ**内**に限定します:
+Vivliostyle.js v2.39.0は`:nth(An+B of <name>)`形式に対応しました。インデックスを名前付きページグループ**内**に限定します:
 
 ```css
 @page :nth(1 of body) {
@@ -129,7 +129,7 @@ section.glossary { page: narrow; }
 }
 ```
 
-このパターンはCSS GCPM 3仕様のExample 13・14で示されており、Vivliostyle.js v2.39でネイティブにサポートされるようになりました。
+このパターンはCSS GCPM 3仕様のExample 13・14で示されており、Vivliostyle.js v2.39.0でネイティブにサポートされるようになりました。
 
 ## Vivliostyle Viewerでの確認方法
 

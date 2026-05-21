@@ -7,7 +7,7 @@ order: 3
 
 # CMYK Conversion Guide
 
-> **Target versions**: Vivliostyle.js v2.40+ (released 2026-01-11), Vivliostyle CLI v10.6+
+> **Target versions**: Vivliostyle.js v2.40.0+ (released 2026-01-11), Vivliostyle CLI v10.6.0+
 > **Published**: 2026-05-05
 > **Last updated**: 2026-05-16
 

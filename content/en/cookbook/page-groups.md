@@ -7,7 +7,7 @@ order: 4
 
 # Page Groups Guide
 
-> **Target versions**: Vivliostyle.js v2.39+ (released 2025-12-25)
+> **Target versions**: Vivliostyle.js v2.39.0+ (released 2025-12-25)
 > **Published**: 2026-05-05
 > **Last updated**: 2026-05-05
 
@@ -75,9 +75,9 @@ When multiple elements share the same `page` name (e.g. several `section.chapter
 
 In other words, a page group is "a run of pages all using the same `@page` name, all coming from the same flow-level region in the source." That's the unit `:nth(... of <name>)` selects within.
 
-## `:nth(An+B of C)` — selectors *inside* a page group (new in v2.39)
+## `:nth(An+B of C)` — selectors *inside* a page group (new in v2.39.0)
 
-Vivliostyle.js v2.39 supports the form `:nth(An+B of <name>)`. It restricts the index to **within** the named page group:
+Vivliostyle.js v2.39.0 supports the form `:nth(An+B of <name>)`. It restricts the index to **within** the named page group:
 
 ```css
 @page :nth(1 of body) {
@@ -130,7 +130,7 @@ section.glossary { page: narrow; }
 }
 ```
 
-This pattern is used in CSS GCPM 3 Examples 13 and 14, and is now natively supported in Vivliostyle.js v2.39.
+This pattern is used in CSS GCPM 3 Examples 13 and 14, and is now natively supported in Vivliostyle.js v2.39.0.
 
 ## Verifying with Vivliostyle Viewer
 
