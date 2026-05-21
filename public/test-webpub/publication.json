@@ -1,0 +1,16 @@
+{
+  "@context": [
+    "https://schema.org",
+    "https://www.w3.org/ns/pub-context"
+  ],
+  "type": "Book",
+  "name": "Minimal WebPub for bug reproduction",
+  "inLanguage": "en",
+  "readingOrder": [
+    { "url": "page1.html", "name": "Page 1" },
+    { "url": "page2.html", "name": "Page 2" },
+    { "url": "page3.html", "name": "Page 3" },
+    { "url": "page4.html", "name": "Page 4" },
+    { "url": "page5.html", "name": "Page 5" }
+  ]
+}
