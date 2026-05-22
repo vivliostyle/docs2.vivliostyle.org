@@ -141,9 +141,9 @@ The two mechanisms can coexist within the same document, but in practice one of 
 
 VFM v2.6 introduced the `footnote` option ([PR#226](https://github.com/vivliostyle/vfm/pull/226), [PR#231](https://github.com/vivliostyle/vfm/pull/231)). The HTML generated from Markdown's `[^1]` notation differs by mode:
 
-- **`'pandoc'` ( Generates **endnotes**. Placed at the end of the document as `<section role="doc-endnotes">`. Not subject to `float: footnote`, and `@footnote` styling has no effect.default)** 
-- **`' Generates `<span class="footnote">`. Theme CSS with `float: footnote` (theme-base / theme-techbook) is required.gcpm'`** 
-- **`' Generates `<aside role="doc-footnote">`. Vivliostyle.js v2.41 applies `float: footnote`, so **no theme CSS is required**. Slated to become the default ([#234](https://github.com/vivliostyle/vfm/issues/234)).dpub'`** 
+- **`'pandoc'` (default)** — Generates **endnotes**. Placed at the end of the document as `<section role="doc-endnotes">`. Not subject to `float: footnote`, and `@footnote` styling has no effect.
+- **`'gcpm'`** — Generates `<span class="footnote">`. Theme CSS with `float: footnote` (theme-base / theme-techbook) is required.
+- **`'dpub'`** — Generates `<aside role="doc-footnote">`. Vivliostyle.js v2.41 applies `float: footnote`, so **no theme CSS is required**. Slated to become the default ([#234](https://github.com/vivliostyle/vfm/issues/234)).
 
 In `vivliostyle.config.js`:
 

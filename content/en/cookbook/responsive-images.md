@@ -17,9 +17,9 @@ Starting with Vivliostyle.js v2.42 (2026-05-13), the HTML `<picture>` element an
 
 ## Where it pays off
 
-### 1. Print vs. screen
+### 1. Vivliostyle output vs. raw browser viewing
 
-Use a heavy CMYK image for PDFs and a lighter RGB version for live preview:
+Vivliostyle Viewer and CLI evaluate typesetting as `print` media, so `<source media="print">` selects an image that's used **only when Vivliostyle is typesetting**. When the same Markdown / HTML is opened in a plain browser (GitHub preview, a simple file share, etc.), the `<img>` fallback is shown.
 
 ```html
 <picture>
@@ -28,7 +28,7 @@ Use a heavy CMYK image for PDFs and a lighter RGB version for live preview:
 </picture>
 ```
 
-Vivliostyle treats typesetting as `print` media (both in the Viewer and through the CLI), so the CMYK source is picked up for PDF output. See the limitation note below for EPUB.
+For example, you can target a CMYK asset for the final PDF via `<source media="print">` while collaborators viewing the raw HTML in a normal browser see the lighter RGB fallback. **Vivliostyle Viewer also evaluates the content as `print` media**, so the Viewer preview will pick the CMYK source — you cannot use this technique to differentiate "PDF" from "Viewer preview". See the limitation note below for EPUB.
 
 ### 2. Output-size-aware resolution
 

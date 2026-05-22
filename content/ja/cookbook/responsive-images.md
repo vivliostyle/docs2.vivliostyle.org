@@ -17,9 +17,9 @@ Vivliostyle.js v2.42（2026-05-13）から、HTML の `<picture>` 要素と `<so
 
 ## 組版での使いどころ
 
-### 1. 印刷とスクリーンで画像を切り替える
+### 1. Vivliostyle 出力と素のブラウザ表示で画像を切り替える
 
-PDF には CMYK 化した重い画像、Viewer でのプレビューには軽い RGB 画像、という出し分けが可能になります。
+Vivliostyle Viewer や CLI による組版は `print` media として評価されるため、`<source media="print">` で「Vivliostyle が組版する場合にのみ使う画像」を指定できます。Markdown / HTML 原稿をそのまま素のブラウザで開いた場合（GitHub のプレビューや簡易共有サーバなど）は `<img>` フォールバックが表示されます。
 
 ```html
 <picture>
@@ -28,7 +28,7 @@ PDF には CMYK 化した重い画像、Viewer でのプレビューには軽い
 </picture>
 ```
 
-`media="print"` がマッチする条件は Vivliostyle.js の組版時（Viewer / CLI とも `print` media に該当します）と一致するため、PDF 出力には CMYK 版が選択されます。EPUB 出力の挙動については後述の制限事項を参照してください。
+たとえば最終 PDF 用に CMYK 版を `<source media="print">` で指定しつつ、共同編集者が素のブラウザで原稿を確認するときには軽い RGB 版にフォールバックさせる、といった使い分けができます。**Vivliostyle Viewer でのプレビューも `print` media として扱われる**ため、Viewer 上では CMYK 版が選択される点に注意してください（プレビューと PDF 出力で画像を出し分けることはできません）。EPUB 出力の挙動については後述の制限事項を参照してください。
 
 ### 2. 出力サイズで解像度を切り替える
 
