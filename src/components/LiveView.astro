@@ -17,7 +17,7 @@ const label = lang === 'ja'
   : 'Open in Vivliostyle Viewer ↗';
 
 const manifestUrl = `https://docs.vivliostyle.org/publications/${product}-${lang}/publication.json`;
-const viewerUrl = `https://vivliostyle.org/viewer/#src=${encodeURIComponent(manifestUrl)}&bookMode=true&lng=${lang}`;
+const viewerUrl = `https://vivliostyle.org/viewer/#src=${manifestUrl}&bookMode=true&lng=${lang}`;
 ---
 
 <a
