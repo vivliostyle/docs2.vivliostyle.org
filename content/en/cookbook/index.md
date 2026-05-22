@@ -14,19 +14,19 @@ Each guide states the minimum version required at the top, so you can tell at a 
 ## Guides
 
 - **[Footnotes](./footnotes/)** — DPUB-ARIA footnote support, the standard `@page { @footnote { } }` rule, `footnote-display`, and the new VFM `footnote` modes (`pandoc` / `gcpm` / `dpub`).
-  - Target: Vivliostyle.js v2.42+, CLI v10.6+
+  - Target: Vivliostyle.js v2.41, CLI v10.5
 
 - **[CMYK Conversion](./cmyk/)** — The `device-cmyk()` CSS function and the CLI's PDF CMYK output (`pdfPostprocess.cmyk`).
-  - Target: Vivliostyle.js v2.40+, CLI v10.6+
+  - Target: Vivliostyle.js v2.40, CLI v10.6
 
 - **[Page Groups](./page-groups/)** — Named pages, the `:nth(An+B of C)` page selector, and per-chapter layouts.
-  - Target: Vivliostyle.js v2.39+
+  - Target: Vivliostyle.js v2.39
 
-- **[VFM Extension Hooks](./vfm-extensions/)** — `captionlessImagePolicy`, the `editPlugins` hook, and valibot-based plugin option schemas.
-  - Target: `@vivliostyle/vfm` v2.7+
+- **[CSS Nesting Guide](./css-nesting/)** — Organizing theme CSS with CSS Nesting, including `::footnote-call` and other typesetting pseudo-elements.
+  - Target: Vivliostyle.js v2.42
 
-- **[CSS Nesting & picture Element Guide](./responsive-and-nesting/)** — CSS Nesting and `<picture>` / `<source media>` for one-source / many-output workflows.
-  - Target: Vivliostyle.js v2.42+ (CSS Nesting) / v2.42+ (`<picture>`)
+- **[Responsive Images Guide](./responsive-images/)** — Switching images per output condition with `<picture>` / `<source media>`.
+  - Target: Vivliostyle.js v2.42 (2026-05-13)
 
 ## How this section is organised
 

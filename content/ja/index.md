@@ -34,11 +34,11 @@ Vivliostyleは以下を提供するオープンソースプロジェクトです
 
 最近追加された機能を、プロダクトを横断して実践的に解説:
 
-- [脚注（フットノート）](/ja/cookbook/footnotes/) — DPUB-ARIA脚注、標準 `@page { @footnote { } }` ルール、VFMの新しい `footnote` モード（v2.41+）
-- [CMYK 変換](/ja/cookbook/cmyk/) — `device-cmyk()` とCLIによるCMYK PDF出力（v2.40+）
-- [ページグループ](/ja/cookbook/page-groups/) — 名前付きページと `:nth(An+B of C)` ページセレクタ（v2.39+）
-- [VFM 拡張機能ガイド](/ja/cookbook/vfm-extensions/) — `captionlessImagePolicy`・`editPlugins` フック・valibot スキーマ（VFM v2.7+）
-- [CSS Nesting と picture 要素ガイド](/ja/cookbook/responsive-and-nesting/) — CSS Nesting（Vivliostyle.js v2.42+）と `<picture>` 対応（v2.42+）
+- [脚注（フットノート）](/ja/cookbook/footnotes/) — DPUB-ARIA脚注、標準 `@page { @footnote { } }` ルール、VFMの新しい `footnote` モード（v2.41）
+- [CMYK 変換](/ja/cookbook/cmyk/) — `device-cmyk()` とCLIによるCMYK PDF出力（v2.40）
+- [ページグループ](/ja/cookbook/page-groups/) — 名前付きページと `:nth(An+B of C)` ページセレクタ（v2.39）
+- [CSS Nesting ガイド](/ja/cookbook/css-nesting/) — Vivliostyle.js v2.42 の CSS Nesting と組版疑似要素への応用
+- [レスポンシブ画像ガイド](/ja/cookbook/responsive-images/) — `<picture>` と `<source media>` による出力ごとの画像差し替え（v2.42、2026-05-13）
 
 ## Single Source, Multi Output {#ssmo}
 

@@ -7,7 +7,7 @@ order: 4
 
 # Page Groups Guide
 
-> **Target versions**: Vivliostyle.js v2.39+ (released 2025-12-25)
+> **Target versions**: Vivliostyle.js v2.39 (2025-12-25)
 > **Published**: 2026-05-05
 > **Last updated**: 2026-05-05
 
