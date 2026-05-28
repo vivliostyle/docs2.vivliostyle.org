@@ -13,7 +13,6 @@ export default {
     'ja/cookbook/cmyk/index.html',
     'ja/cookbook/page-groups/index.html',
     'ja/cookbook/css-nesting/index.html',
-    'ja/cookbook/responsive-images/index.html',
   ],
   output: [
     { path: 'public/downloads/vivliostyle-cookbook-ja.pdf', format: 'pdf' },

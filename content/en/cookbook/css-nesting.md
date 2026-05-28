@@ -13,7 +13,7 @@ order: 5
 > **Published**: 2026-05-14
 > **Last updated**: 2026-05-14
 
-The [CSS Nesting Module](https://www.w3.org/TR/css-nesting-1/) lets you write child rules inside a parent rule using `&`. In plain CSS you would repeat the selector — `.chapter h2 { ... }`, `.chapter p { ... }` and so on — but with nesting **you write them once, grouped inside `.chapter { }`**. No build tool or converter is required; browsers and Vivliostyle interpret it directly.
+The [CSS Nesting Module](https://www.w3.org/TR/css-nesting-1/) lets you write child rules inside a parent rule. In plain CSS you repeat the parent selector — `.chapter { ... } .chapter h2 { ... }` and so on — but with nesting you write the child rules once, grouped inside `.chapter { }`.
 
 ```css
 .chapter {
@@ -39,6 +39,8 @@ This expands to:
 .chapter h2 { font-size: 1.4em; border-bottom: 1px solid currentColor; }
 .chapter p:first-of-type::first-letter { font-size: 3em; float: left; margin-right: 0.1em; }
 ```
+
+The leading `&` on a child rule is optional — `h2 { ... }` means the same thing. This guide keeps the `&` to make the nesting explicit.
 
 ## Where it pays off in typesetting
 
@@ -95,33 +97,10 @@ You can place `@media print` next to the rule it modifies, which makes it easy t
 }
 ```
 
-## Combining with `<picture>` for print-only image styling
-
-Use nested `@media print` to apply print-only outlining to images selected via `<picture>` (see the [Responsive Images Guide](../responsive-images/) for `<picture>` itself):
-
-```css
-figure {
-  margin: 0;
-
-  & picture img {
-    display: block;
-    max-width: 100%;
-  }
-
-  @media print {
-    & picture img {
-      outline: 0.25mm solid black;
-      outline-offset: 0.5mm;
-    }
-  }
-}
-```
-
 ## Migrating existing themes
 
 - **Adding to an existing CSS file**: you can write nested rules directly in your current theme CSS. No configuration change is needed.
 - **Browser preview**: modern browsers already implement CSS Nesting, so what you see in a browser matches what `vivliostyle preview` and Viewer produce.
-- **Author tip**: start each nested selector with `&`. Plain selectors at the start of a nested block can occasionally be misread as declarations by CSS parsers.
 
 ## Known limits
 
@@ -130,7 +109,6 @@ figure {
 
 ## Related guides
 
-- [Responsive Images Guide](../responsive-images/) — combine with CSS Nesting for print-only image styling
 - [Footnotes](../footnotes/) — footnote features were also expanded in v2.42
 - [CMYK Conversion](../cmyk/)
 - [Page Groups](../page-groups/)

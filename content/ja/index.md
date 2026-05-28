@@ -38,7 +38,6 @@ Vivliostyleは以下を提供するオープンソースプロジェクトです
 - [CMYK 変換](/ja/cookbook/cmyk/) — `device-cmyk()` とCLIによるCMYK PDF出力（v2.40）
 - [ページグループ](/ja/cookbook/page-groups/) — 名前付きページと `:nth(An+B of C)` ページセレクタ（v2.39）
 - [CSS Nesting ガイド](/ja/cookbook/css-nesting/) — Vivliostyle.js v2.42 の CSS Nesting と組版疑似要素への応用
-- [レスポンシブ画像ガイド](/ja/cookbook/responsive-images/) — `<picture>` と `<source media>` による出力ごとの画像差し替え（v2.42、2026-05-13）
 
 ## Single Source, Multi Output {#ssmo}
 

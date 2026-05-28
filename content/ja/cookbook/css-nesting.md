@@ -13,7 +13,7 @@ order: 5
 > **公開日**: 2026-05-14
 > **最終更新日**: 2026-05-14
 
-[CSS Nesting Module](https://www.w3.org/TR/css-nesting-1/) は、CSS 内で `&` を使ってルールを階層化する仕組みです。従来の CSS では `.chapter h2 { ... }` のように**繰り返しセレクタを書く必要がありましたが、ネスト記法では親セレクタ `.chapter { }` の中にまとめて書けます**。変換ツール不要で、ブラウザと Vivliostyle がそのまま解釈します。
+[CSS Nesting Module](https://www.w3.org/TR/css-nesting-1/) は、CSS のルールを入れ子にして記述するしくみです。従来の CSS では `.chapter { ... } .chapter h2 { ... }` のように親セレクタを繰り返し書く必要がありましたが、ネスト記法では `.chapter { }` の中に子ルールをまとめて書けます。
 
 ```css
 .chapter {
@@ -39,6 +39,8 @@ order: 5
 .chapter h2 { font-size: 1.4em; border-bottom: 1px solid currentColor; }
 .chapter p:first-of-type::first-letter { font-size: 3em; float: left; margin-right: 0.1em; }
 ```
+
+子ルール先頭の `&` は省略できます（`h2 { ... }` と書いても同じ意味です）。本ガイドでは、ネストであることを明示するため `&` を付けています。
 
 ## 組版での使いどころ
 
@@ -95,33 +97,10 @@ Vivliostyle.js v2.42 の CSS Nesting は、Vivliostyle が組版時に処理す�
 }
 ```
 
-## `<picture>` と組み合わせて印刷時のみ画像スタイルを切り替える
-
-ネスト記法を使って、印刷時のみ `<picture>` の選択画像にトリミング枠を付ける例です（`<picture>` 自体については[レスポンシブ画像ガイド](../responsive-images/)を参照してください）。
-
-```css
-figure {
-  margin: 0;
-
-  & picture img {
-    display: block;
-    max-width: 100%;
-  }
-
-  @media print {
-    & picture img {
-      outline: 0.25mm solid black;
-      outline-offset: 0.5mm;
-    }
-  }
-}
-```
-
 ## 既存テーマへの取り込み Tips
 
 - **既存の CSS ファイルへの追加**: 今あるテーマの CSS ファイルにネスト記法をそのまま追記できます。特別な設定変更は不要です。
 - **ブラウザプレビュー**: モダンブラウザはすでに CSS Nesting を実装しているため、Vivliostyle Viewer でも `vivliostyle preview` でも同じ見た目になります。
-- **書き手の凡ミスを避ける**: 各ネストの先頭は **`&` から始める** のが安全です（生のセレクタから始めると CSS パーサが宣言と誤認することがあります）。
 
 ## 知っておきたい制限
 
@@ -130,7 +109,6 @@ figure {
 
 ## 関連ガイド
 
-- [レスポンシブ画像ガイド](../responsive-images/) — `<picture>` を使った出力ごとの画像差し替え
 - [脚注（フットノート）](../footnotes/) — v2.42 で同時に脚注機能も拡張されました
 - [CMYK 変換](../cmyk/)
 - [ページグループ](../page-groups/)

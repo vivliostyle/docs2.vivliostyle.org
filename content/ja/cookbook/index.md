@@ -25,9 +25,6 @@ Vivliostyleの最近の追加機能について、プロダクト別ではなく
 - **[CSS Nesting ガイド](./css-nesting/)** — CSS Nesting によるテーマ CSS の整理と、組版時の `::footnote-call` などへの応用。
   - 対象バージョン: Vivliostyle.js v2.42
 
-- **[レスポンシブ画像ガイド](./responsive-images/)** — `<picture>` と `<source media>` で 1 原稿から出力ごとに画像を差し替える。
-  - 対象バージョン: Vivliostyle.js v2.42（2026-05-13）
-
 ## このセクションについて
 
 ここで扱う機能は、Vivliostyleの複数のプロダクト（コアCSS、CLI、VFM、テーマ）にまたがることが多く、プロダクト別セクションには収まりにくいものです。「活用ガイド」では、プロダクト軸ではなく**機能軸**で整理しています。

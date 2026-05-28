@@ -25,9 +25,6 @@ Each guide states the minimum version required at the top, so you can tell at a 
 - **[CSS Nesting Guide](./css-nesting/)** — Organizing theme CSS with CSS Nesting, including `::footnote-call` and other typesetting pseudo-elements.
   - Target: Vivliostyle.js v2.42
 
-- **[Responsive Images Guide](./responsive-images/)** — Switching images per output condition with `<picture>` / `<source media>`.
-  - Target: Vivliostyle.js v2.42 (2026-05-13)
-
 ## How this section is organised
 
 These features typically cut across multiple Vivliostyle products — core CSS, CLI, VFM, and themes — so they don't fit neatly into any single per-product section. The "Cookbook" section organises them by **feature**, not by product.
