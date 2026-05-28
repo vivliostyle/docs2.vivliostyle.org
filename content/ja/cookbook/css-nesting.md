@@ -97,15 +97,13 @@ Vivliostyle.js v2.42 の CSS Nesting は、Vivliostyle が組版時に処理す�
 }
 ```
 
-## 既存テーマへの取り込み Tips
+## 既存テーマへの取り込み
 
 - **既存の CSS ファイルへの追加**: 今あるテーマの CSS ファイルにネスト記法をそのまま追記できます。特別な設定変更は不要です。
-- **ブラウザプレビュー**: モダンブラウザはすでに CSS Nesting を実装しているため、Vivliostyle Viewer でも `vivliostyle preview` でも同じ見た目になります。
 
 ## 知っておきたい制限
 
 - ネストできるのはルール（`@page` / `@media` / クラス・要素セレクタ）の中身です。**プロパティの中にネストはできません**。
-- 不正なセレクタが現れたときは、v2.42 のセレクタ復帰処理によって以降のスタイルは正常に解釈されます（コミット [e5d8bc16](https://github.com/vivliostyle/vivliostyle.js/commit/e5d8bc160371c5a7d65d46803a4c11dd7f5739b1)）。
 
 ## 関連ガイド
 

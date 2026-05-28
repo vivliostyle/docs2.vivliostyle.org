@@ -100,12 +100,10 @@ You can place `@media print` next to the rule it modifies, which makes it easy t
 ## Migrating existing themes
 
 - **Adding to an existing CSS file**: you can write nested rules directly in your current theme CSS. No configuration change is needed.
-- **Browser preview**: modern browsers already implement CSS Nesting, so what you see in a browser matches what `vivliostyle preview` and Viewer produce.
 
 ## Known limits
 
 - You can nest *rules* (`@page`, `@media`, class/element selectors). You **cannot nest properties**.
-- When invalid selectors appear, the selector-recovery improvements in v2.42 ensure the rest of the stylesheet still parses cleanly (commit [e5d8bc16](https://github.com/vivliostyle/vivliostyle.js/commit/e5d8bc160371c5a7d65d46803a4c11dd7f5739b1)).
 
 ## Related guides
 
