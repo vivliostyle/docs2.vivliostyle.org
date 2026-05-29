@@ -41,6 +41,6 @@
     "@vivliostyle/theme-techbook": "^2.0.1",
     "pagefind": "^1.4.0",
     "sharp": "^0.34.5",
-    "vitest": "^4.1.5"
+    "vitest": "^4.1.7"
   }
 }
