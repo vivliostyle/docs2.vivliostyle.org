@@ -34,9 +34,10 @@ Vivliostyle is an open-source project that provides:
 
 Practical, cross-product guides to recently added Vivliostyle features:
 
-- [Footnotes](/en/cookbook/footnotes/) — DPUB-ARIA footnotes, the standard `@page { @footnote { } }` rule, and the new VFM `footnote` modes (v2.41.0+)
-- [CMYK Conversion](/en/cookbook/cmyk/) — `device-cmyk()` and CLI PDF CMYK output (v2.40.0+)
-- [Page Groups](/en/cookbook/page-groups/) — Named pages and the `:nth(An+B of C)` page selector (v2.39.0+)
+- [Footnotes](/en/cookbook/footnotes/) — DPUB-ARIA footnotes, the standard `@page { @footnote { } }` rule, and the new VFM `footnote` modes (v2.41)
+- [CMYK Conversion](/en/cookbook/cmyk/) — `device-cmyk()` and CLI PDF CMYK output (v2.40)
+- [Page Groups](/en/cookbook/page-groups/) — Named pages and the `:nth(An+B of C)` page selector (v2.39)
+- [CSS Nesting Guide](/en/cookbook/css-nesting/) — CSS Nesting in Vivliostyle.js v2.42, including typesetting pseudo-elements
 
 ## Single Source, Multi Output {#ssmo}
 

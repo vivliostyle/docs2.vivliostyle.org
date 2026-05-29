@@ -34,9 +34,10 @@ Vivliostyleは以下を提供するオープンソースプロジェクトです
 
 最近追加された機能を、プロダクトを横断して実践的に解説:
 
-- [脚注（フットノート）](/ja/cookbook/footnotes/) — DPUB-ARIA脚注、標準 `@page { @footnote { } }` ルール、VFMの新しい `footnote` モード（v2.41.0+）
-- [CMYK 変換](/ja/cookbook/cmyk/) — `device-cmyk()` とCLIによるCMYK PDF出力（v2.40.0+）
-- [ページグループ](/ja/cookbook/page-groups/) — 名前付きページと `:nth(An+B of C)` ページセレクタ（v2.39.0+）
+- [脚注（フットノート）](/ja/cookbook/footnotes/) — DPUB-ARIA脚注、標準 `@page { @footnote { } }` ルール、VFMの新しい `footnote` モード（v2.41）
+- [CMYK 変換](/ja/cookbook/cmyk/) — `device-cmyk()` とCLIによるCMYK PDF出力（v2.40）
+- [ページグループ](/ja/cookbook/page-groups/) — 名前付きページと `:nth(An+B of C)` ページセレクタ（v2.39）
+- [CSS Nesting ガイド](/ja/cookbook/css-nesting/) — Vivliostyle.js v2.42 の CSS Nesting と組版疑似要素への応用
 
 ## Single Source, Multi Output {#ssmo}
 

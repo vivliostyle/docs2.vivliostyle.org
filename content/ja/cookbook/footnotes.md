@@ -7,7 +7,7 @@ order: 2
 
 # 脚注ガイド
 
-> **対象バージョン**: Vivliostyle.js v2.41+（2026-04-11リリース）、Vivliostyle CLI v10.5+
+> **対象バージョン**: Vivliostyle.js v2.41（2026-04-11）、Vivliostyle CLI v10.5
 > **公開日**: 2026-05-05
 > **最終更新日**: 2026-05-14
 
@@ -107,7 +107,7 @@ vfm:
 
 本文中に`[^1]`と書くと、VFM dpubモードは`<a role="doc-noteref">`[^1]と`<aside role="doc-footnote">`を出力する。
 
-Vivliostyle.js v2.41+が`float: footnote`を自動で適用するため、テーマCSSなしでもページ下部の脚注エリアに配置される[^2]。
+Vivliostyle.js v2.41 が`float: footnote`を自動で適用するため、テーマCSSなしでもページ下部の脚注エリアに配置される[^2]。
 
 [^1]: 脚注の本文。CSSは何も書いていない。
 
@@ -121,7 +121,7 @@ Vivliostyle.js v2.41+が`float: footnote`を自動で適用するため、テー
 
 ```html
 <p>本文中に<code>[^1]</code>と書くと、VFM dpubモードは<code>&#x3C;a role="doc-noteref"></code><a id="fnref1" href="#fn1" class="footnote-ref" role="doc-noteref"><sup>1</sup></a>と<code>&#x3C;aside role="doc-footnote"></code>を出力する。</p>
-<p>Vivliostyle.js v2.41+が<code>float: footnote</code>を自動で適用するため、テーマCSSなしでもページ下部の脚注エリアに配置される<a id="fnref2" href="#fn2" class="footnote-ref" role="doc-noteref"><sup>2</sup></a>。</p>
+<p>Vivliostyle.js v2.41 が<code>float: footnote</code>を自動で適用するため、テーマCSSなしでもページ下部の脚注エリアに配置される<a id="fnref2" href="#fn2" class="footnote-ref" role="doc-noteref"><sup>2</sup></a>。</p>
 <aside id="fn1" class="footnote" role="doc-footnote"><a href="#fnref1" class="footnote-back" role="doc-backlink"><sup>1</sup></a>脚注の本文。CSSは何も書いていない。</aside>
 <aside id="fn2" class="footnote" role="doc-footnote"><a href="#fnref2" class="footnote-back" role="doc-backlink"><sup>2</sup></a>もう一つの注。連番は自動。</aside>
 ```
@@ -143,7 +143,7 @@ VFM v2.6は`footnote`オプションを導入しました（[PR#226](https://git
 
 - **`'pandoc'`（デフォルト）** — **後注**を生成します。`<section role="doc-endnotes">`としてドキュメント末尾に配置されます。`float: footnote`の対象にはならず、`@footnote`スタイリングも影響しません。
 - **`'gcpm'`** — `<span class="footnote">`を生成します。`float: footnote`を含むテーマCSS（theme-base / theme-techbookなど）が必要です。
-- **`'dpub'`** — `<aside role="doc-footnote">`を生成します。Vivliostyle.js v2.41+が`float: footnote`を適用するため、**テーマCSS不要**です。将来デフォルト化予定（[#234](https://github.com/vivliostyle/vfm/issues/234)）。
+- **`'dpub'`** — `<aside role="doc-footnote">`を生成します。Vivliostyle.js v2.41 が`float: footnote`を適用するため、**テーマCSS不要**です。将来デフォルト化予定（[#234](https://github.com/vivliostyle/vfm/issues/234)）。
 
 `vivliostyle.config.js`での設定:
 
@@ -325,7 +325,7 @@ vfm:
 
 ### ページスコープリセットとクロススコープカウンタ
 
-脚注カウンタをページグループ単位でリセットできるようになりました。章ごとに脚注番号を新規に採番する書籍で便利です。`counter-reset`を、[ページグループガイド](./page-groups/)で扱う名前付きページの仕組みと組み合わせて使います。
+脚注カウンタをページグループ単位でリセットできるようになりました。章ごとに脚注番号を新規に採番する書籍で便利です。`counter-reset`を、[ページグループガイド](../page-groups/)で扱う名前付きページの仕組みと組み合わせて使います。
 
 ### CSSプロパティ一覧
 

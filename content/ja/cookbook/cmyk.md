@@ -7,7 +7,7 @@ order: 3
 
 # CMYK変換ガイド
 
-> **対象バージョン**: Vivliostyle.js v2.40.0+（2026-01-11リリース）、Vivliostyle CLI v10.6.0+
+> **対象バージョン**: Vivliostyle.js v2.40（2026-01-11）、Vivliostyle CLI v10.6
 > **公開日**: 2026-05-05
 > **最終更新日**: 2026-05-16
 

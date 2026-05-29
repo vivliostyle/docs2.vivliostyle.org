@@ -14,13 +14,16 @@ Vivliostyleの最近の追加機能について、プロダクト別ではなく
 ## ガイド一覧
 
 - **[脚注（フットノート）](./footnotes/)** — DPUB-ARIA脚注サポート、標準`@page { @footnote { } }`ルール、`footnote-display`、VFMの新しい`footnote`モード（`pandoc` / `gcpm` / `dpub`）。
-  - 対象バージョン: Vivliostyle.js v2.42.0+ / CLI v10.6.0+
+  - 対象バージョン: Vivliostyle.js v2.41 / CLI v10.5
 
 - **[CMYK変換](./cmyk/)** — CSSの`device-cmyk()`関数と、CLIのPDF CMYK出力（`pdfPostprocess.cmyk`）。
-  - 対象バージョン: Vivliostyle.js v2.40.0+ / CLI v10.6.0+
+  - 対象バージョン: Vivliostyle.js v2.40 / CLI v10.6
 
 - **[ページグループ](./page-groups/)** — 名前付きページ、`:nth(An+B of C)`ページセレクタによる章ごとのレイアウト。
-  - 対象バージョン: Vivliostyle.js v2.39.0+
+  - 対象バージョン: Vivliostyle.js v2.39
+
+- **[CSS Nesting ガイド](./css-nesting/)** — CSS Nesting によるテーマ CSS の整理と、組版時の `::footnote-call` などへの応用。
+  - 対象バージョン: Vivliostyle.js v2.42
 
 ## このセクションについて
 

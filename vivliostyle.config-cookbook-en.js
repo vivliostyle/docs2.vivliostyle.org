@@ -12,6 +12,7 @@ export default {
     'en/cookbook/footnotes/index.html',
     'en/cookbook/cmyk/index.html',
     'en/cookbook/page-groups/index.html',
+    'en/cookbook/css-nesting/index.html',
   ],
   output: [
     { path: 'public/downloads/vivliostyle-cookbook-en.pdf', format: 'pdf' },

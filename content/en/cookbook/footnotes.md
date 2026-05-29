@@ -7,7 +7,7 @@ order: 2
 
 # Footnotes Guide
 
-> **Target versions**: Vivliostyle.js v2.41+ (released 2026-04-11), Vivliostyle CLI v10.5+
+> **Target versions**: Vivliostyle.js v2.41 (2026-04-11), Vivliostyle CLI v10.5
 > **Published**: 2026-05-05
 > **Last updated**: 2026-05-14
 
@@ -107,7 +107,7 @@ vfm:
 
 Writing `[^1]` in the body causes VFM's dpub mode to emit `<a role="doc-noteref">`[^1] in-text and `<aside role="doc-footnote">` separately.
 
-Vivliostyle.js v2.41+ applies `float: footnote` automatically, so the note is placed in the page-bottom area without any theme CSS[^2].
+Vivliostyle.js v2.41 applies `float: footnote` automatically, so the note is placed in the page-bottom area without any theme CSS[^2].
 
 [^1]: The footnote body. No CSS has been written for this rendering.
 
@@ -121,7 +121,7 @@ Vivliostyle.js v2.41+ applies `float: footnote` automatically, so the note is pl
 
 ```html
 <p>Writing <code>[^1]</code> in the body causes VFM's dpub mode to emit <code>&#x3C;a role="doc-noteref"></code><a id="fnref1" href="#fn1" class="footnote-ref" role="doc-noteref"><sup>1</sup></a> in-text and <code>&#x3C;aside role="doc-footnote"></code> separately.</p>
-<p>Vivliostyle.js v2.41+ applies <code>float: footnote</code> automatically, so the note is placed in the page-bottom area without any theme CSS<a id="fnref2" href="#fn2" class="footnote-ref" role="doc-noteref"><sup>2</sup></a>.</p>
+<p>Vivliostyle.js v2.41 applies <code>float: footnote</code> automatically, so the note is placed in the page-bottom area without any theme CSS<a id="fnref2" href="#fn2" class="footnote-ref" role="doc-noteref"><sup>2</sup></a>.</p>
 <aside id="fn1" class="footnote" role="doc-footnote"><a href="#fnref1" class="footnote-back" role="doc-backlink"><sup>1</sup></a>The footnote body. No CSS has been written for this rendering.</aside>
 <aside id="fn2" class="footnote" role="doc-footnote"><a href="#fnref2" class="footnote-back" role="doc-backlink"><sup>2</sup></a>A second note. Numbering is automatic.</aside>
 ```
@@ -141,9 +141,9 @@ The two mechanisms can coexist within the same document, but in practice one of 
 
 VFM v2.6 introduced the `footnote` option ([PR#226](https://github.com/vivliostyle/vfm/pull/226), [PR#231](https://github.com/vivliostyle/vfm/pull/231)). The HTML generated from Markdown's `[^1]` notation differs by mode:
 
-- **`'pandoc'` ( Generates **endnotes**. Placed at the end of the document as `<section role="doc-endnotes">`. Not subject to `float: footnote`, and `@footnote` styling has no effect.default)** 
-- **`' Generates `<span class="footnote">`. Theme CSS with `float: footnote` (theme-base / theme-techbook) is required.gcpm'`** 
-- **`' Generates `<aside role="doc-footnote">`. Vivliostyle.js v2.41+ applies `float: footnote`, so **no theme CSS is required**. Slated to become the default ([#234](https://github.com/vivliostyle/vfm/issues/234)).dpub'`** 
+- **`'pandoc'` (default)** — Generates **endnotes**. Placed at the end of the document as `<section role="doc-endnotes">`. Not subject to `float: footnote`, and `@footnote` styling has no effect.
+- **`'gcpm'`** — Generates `<span class="footnote">`. Theme CSS with `float: footnote` (theme-base / theme-techbook) is required.
+- **`'dpub'`** — Generates `<aside role="doc-footnote">`. Vivliostyle.js v2.41 applies `float: footnote`, so **no theme CSS is required**. Slated to become the default ([#234](https://github.com/vivliostyle/vfm/issues/234)).
 
 In `vivliostyle.config.js`:
 
@@ -325,7 +325,7 @@ Setting `list-style-position: outside` on `::footnote-marker` places the marker 
 
 ### Page-scoped reset and cross-scope counters
 
-Footnote counters can now be reset per page group, which is useful for books that restart footnote numbering at each chapter. Use `counter-reset` together with the named-page mechanism described in the [Page Groups guide](./page-groups/).
+Footnote counters can now be reset per page group, which is useful for books that restart footnote numbering at each chapter. Use `counter-reset` together with the named-page mechanism described in the [Page Groups guide](../page-groups/).
 
 ### CSS property list
 
