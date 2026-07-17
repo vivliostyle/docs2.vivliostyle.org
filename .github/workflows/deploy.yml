@@ -160,7 +160,7 @@ jobs:
       # 重複を避けて main では Artifact 化しない。
       - name: Upload PDF / EPUB / WebPub artifact (for PR review)
         if: github.ref != 'refs/heads/main'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: vivliostyle-docs-formats
           path: |
