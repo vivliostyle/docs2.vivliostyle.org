@@ -5,6 +5,7 @@
 import DocsLayout from '../../layouts/DocsLayout.astro';
 import LanguageSwitcher from '../../components/LanguageSwitcher.astro';
 import { getCollection } from 'astro:content';
+import { VIVLIOSTYLE_ORG_LINKS } from '../../lib/external-links';
 
 // VFMでコンバートされたドキュメントを取得
 let indexDoc = null;
@@ -71,7 +72,7 @@ const description = indexDoc?.data?.description || 'Vivliostyle公式ドキュ�
     </div>
     <ul class="sidebar-flat">
       <li>
-        <a href="https://vivliostyle.org/ja/tutorials/" target="_blank" rel="noopener noreferrer">チュートリアル</a>
+        <a href={VIVLIOSTYLE_ORG_LINKS.tutorials.ja} target="_blank" rel="noopener noreferrer">チュートリアル</a>
       </li>
     </ul>
 
@@ -103,7 +104,7 @@ const description = indexDoc?.data?.description || 'Vivliostyle公式ドキュ�
 
     <ul class="sidebar-flat">
       <li>
-        <a href="https://vivliostyle.org/ja/faq/" target="_blank" rel="noopener noreferrer">FAQ</a>
+        <a href={VIVLIOSTYLE_ORG_LINKS.faq.ja} target="_blank" rel="noopener noreferrer">FAQ</a>
       </li>
     </ul>
   </nav>
