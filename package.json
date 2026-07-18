@@ -32,12 +32,12 @@
   "dependencies": {
     "@astrojs/sitemap": "^3.7.3",
     "@vivliostyle/vfm": "^2.7.0",
-    "astro": "^6.4.6",
+    "astro": "^7.1.1",
     "github-slugger": "^2.0.0",
     "gray-matter": "^4.0.3"
   },
   "devDependencies": {
-    "@vivliostyle/cli": "^10.6.0",
+    "@vivliostyle/cli": "^11.1.0",
     "@vivliostyle/theme-techbook": "^2.0.1",
     "pagefind": "^1.5.2",
     "sharp": "^0.35.3",
