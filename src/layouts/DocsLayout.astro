@@ -6,6 +6,7 @@
 import Breadcrumb from '../components/Breadcrumb.astro';
 import SearchBox from '../components/SearchBox.astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
+import { VIVLIOSTYLE_ORG_LINKS } from '../lib/external-links';
 
 interface Props {
   title: string;
@@ -49,7 +50,7 @@ const navLinks = {
   ],
   tutorial: {
     label: navLabels.tutorial,
-    href: isJa ? 'https://vivliostyle.org/ja/tutorials/' : 'https://vivliostyle.org/en/tutorials/',
+    href: isJa ? VIVLIOSTYLE_ORG_LINKS.tutorials.ja : VIVLIOSTYLE_ORG_LINKS.tutorials.en,
     external: true,
   },
   cookbook: {
@@ -71,7 +72,7 @@ const navLinks = {
   },
   faq: {
     label: navLabels.faq,
-    href: isJa ? 'https://vivliostyle.org/ja/faq/' : 'https://vivliostyle.org/en/faq/',
+    href: isJa ? VIVLIOSTYLE_ORG_LINKS.faq.ja : VIVLIOSTYLE_ORG_LINKS.faq.en,
     external: true,
   },
 };
