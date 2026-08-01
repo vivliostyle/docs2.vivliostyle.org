@@ -26,7 +26,7 @@ jobs:
           submodules: recursive
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@v7
         with:
           # astro 6.x が要求する Node.js >=22.12.0 を満たすため 22.12 系に固定
           # （パッチバージョンは自動追従、22.12.0 未満へのフォールバックを防ぐ）
