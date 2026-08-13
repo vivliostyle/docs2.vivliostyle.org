@@ -23,8 +23,10 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
-# Claude Code local settings
-.claude/
+# Claude Code local settings (skills are tracked; see AGENTS.md / AI_POLICY.md)
+.claude/*
+!.claude/skills
+!.claude/skills/**
 
 # Vivliostyle temporary files
 .vivliostyle/
