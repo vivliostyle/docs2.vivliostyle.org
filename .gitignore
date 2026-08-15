@@ -23,10 +23,12 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
-# Claude Code local settings (skills are tracked; see AGENTS.md / AI_POLICY.md)
+# Claude Code local settings. .claude/skills itself is tracked so the
+# repository's own skills (e.g. ai-policy-check; see AGENTS.md / AI_POLICY.md)
+# ship with the repo, but files placed under it are not force-included, so
+# personal/temporary skills still respect your own global/local gitignore.
 .claude/*
 !.claude/skills
-!.claude/skills/**
 
 # Vivliostyle temporary files
 .vivliostyle/
