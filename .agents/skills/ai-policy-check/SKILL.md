@@ -8,6 +8,13 @@ description: Check compliance with AI_POLICY.md when creating a git commit or a 
 For commits and pull requests that contain AI-generated changes (see
 `AI_POLICY.md` / `AI_POLICY_ja.md` at the repository root):
 
+<!--
+  The "does not need to be last" / Co-authored-by clauses below were added
+  after a Copilot review on PR #57 found this checklist stricter than
+  AI_POLICY.md itself, which explicitly accepts tool-added Co-authored-by:
+  trailers as disclosure. Keep this checklist in sync with the policy text
+  rather than re-tightening it independently.
+-->
 - **Commit**: the message includes an `Assisted-by: AGENT_NAME:MODEL_VERSION`
   trailer, naming the exact model used, e.g.
   `Assisted-by: Claude Code:claude-sonnet-5`. It does not need to be the last
