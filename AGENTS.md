@@ -30,6 +30,14 @@ policy:
 - Before writing documentation content, verify technical claims against the
   actual source (running code, or the upstream repositories under
   `submodules/`) rather than writing from assumption.
+- When translating or rewriting bilingual content, preserve the source's
+  technical meaning exactly — do not introduce behavior, defaults, or claims
+  the source doesn't support, even if the result reads more fluently.
+- Write natural Japanese and English prose. Avoid AI-typical phrasing —
+  literal-translation idioms, formulaic constructions, hedging filler that
+  adds no information. Prefer established terminology (including natural
+  Japanese equivalents for common English technical terms) over stiff
+  transliteration, except where the English term is the ecosystem standard.
 - When a change adds a new page or section, explicitly propose its
   navigation entry points (global nav, top page, breadcrumbs) for review
   instead of treating them as out of scope.
