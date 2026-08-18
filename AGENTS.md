@@ -9,15 +9,17 @@ the project overview, directory structure, and build commands.
 ## Generative AI Policy
 
 This project discloses its generative AI usage in
-[`AI_POLICY.md`](AI_POLICY.md) (English) and
-[`AI_POLICY_ja.md`](AI_POLICY_ja.md) (Japanese), following NLnet's
-generative AI policy. Agents must follow that policy:
+[`AI_POLICY.md`](AI_POLICY.md), following NLnet's generative AI policy. (A
+Japanese translation is [`AI_POLICY.ja.md`](AI_POLICY.ja.md), for human
+readers; agents should read the English version.) Agents must follow that
+policy:
 
 - Add an `Assisted-by:` trailer naming the agent and the exact model version
   to every commit that contains AI-generated changes, in the Linux-kernel
   format `Assisted-by: AGENT_NAME:MODEL_VERSION`, e.g.
-  `Assisted-by: Claude Code:claude-sonnet-5`. Do not add a `Co-authored-by:`
-  trailer for the AI.
+  `Assisted-by: Claude Code:claude-sonnet-5`. It does not need to be the
+  last trailer. Tool-added `Co-authored-by:` trailers (e.g. from GitHub
+  Copilot on PR review commits) are also accepted as disclosure.
 - When drafting a pull request description, include the same
   `Assisted-by:` line in the body, and describe the human/AI division of
   labor (what was delegated to the AI, and what the human contributor

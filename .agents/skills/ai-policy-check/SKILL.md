@@ -6,7 +6,7 @@ description: Check compliance with AI_POLICY.md when creating a git commit or a 
 # AI Policy compliance check
 
 For commits and pull requests that contain AI-generated changes (see
-`AI_POLICY.md` / `AI_POLICY_ja.md` at the repository root):
+`AI_POLICY.md` at the repository root):
 
 <!--
   The "does not need to be last" / Co-authored-by clauses below were added
