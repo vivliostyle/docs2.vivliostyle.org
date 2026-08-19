@@ -30,6 +30,10 @@ pnpm-debug.log*
 .claude/*
 !.claude/skills
 
+# Aider local state (contributors using other AI coding agents get the same
+# gitignore support as Claude Code; see AGENTS.md, which is agent-agnostic)
+.aider*
+
 # Vivliostyle temporary files
 .vivliostyle/
 
