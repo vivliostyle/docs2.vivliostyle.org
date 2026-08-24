@@ -1,0 +1,44 @@
+---
+/**
+ * Changelog page (English)
+ */
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import LanguageSwitcher from '../../../components/LanguageSwitcher.astro';
+import SidebarTocHeadings from '../../../components/SidebarTocHeadings.astro';
+import { getCollection } from 'astro:content';
+
+const docs = await getCollection('changelog-en');
+const doc = docs.find((d) => d.id === 'index' || d.id.endsWith('/index'));
+
+const docsJa = await getCollection('changelog-ja');
+const hasJaTranslation = docsJa.length > 0;
+
+const htmlContent = doc?.rendered?.html || '';
+const title = doc?.data?.title || 'Changelog';
+const description = doc?.data?.description || 'Update history for the Vivliostyle documentation site';
+const headings = ((doc?.data as unknown) as { headings?: Array<{ depth: number; slug: string; text: string }> })?.headings || [];
+---
+
+<DocsLayout
+  title={title}
+  description={description}
+  lang="en"
+  availableLanguages={hasJaTranslation ? ['en', 'ja'] : []}
+>
+  <div slot="header" class="language-switcher-container">
+    <LanguageSwitcher currentLang="en" pagePath="/changelog/" hasTranslation={hasJaTranslation} />
+  </div>
+
+  <nav slot="sidebar">
+    <h3>Changelog</h3>
+    <ul style="list-style: none; padding-left: 0;">
+      <li><a href="/en/">← Back to home</a></li>
+      <li class="active">
+        <a href="/en/changelog/" aria-current="page">Changelog</a>
+        <SidebarTocHeadings headings={headings} lang="en" />
+      </li>
+    </ul>
+  </nav>
+
+  <article set:html={htmlContent} />
+</DocsLayout>

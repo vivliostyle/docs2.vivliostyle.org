@@ -1,0 +1,44 @@
+---
+/**
+ * 変更履歴ページ（日本語版）
+ */
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import LanguageSwitcher from '../../../components/LanguageSwitcher.astro';
+import SidebarTocHeadings from '../../../components/SidebarTocHeadings.astro';
+import { getCollection } from 'astro:content';
+
+const docs = await getCollection('changelog-ja');
+const doc = docs.find((d) => d.id === 'index' || d.id.endsWith('/index'));
+
+const docsEn = await getCollection('changelog-en');
+const hasEnTranslation = docsEn.length > 0;
+
+const htmlContent = doc?.rendered?.html || '';
+const title = doc?.data?.title || '変更履歴';
+const description = doc?.data?.description || 'Vivliostyleドキュメントサイトの更新履歴';
+const headings = ((doc?.data as unknown) as { headings?: Array<{ depth: number; slug: string; text: string }> })?.headings || [];
+---
+
+<DocsLayout
+  title={title}
+  description={description}
+  lang="ja"
+  availableLanguages={hasEnTranslation ? ['en', 'ja'] : []}
+>
+  <div slot="header" class="language-switcher-container">
+    <LanguageSwitcher currentLang="ja" pagePath="/changelog/" hasTranslation={hasEnTranslation} />
+  </div>
+
+  <nav slot="sidebar">
+    <h3>変更履歴</h3>
+    <ul style="list-style: none; padding-left: 0;">
+      <li><a href="/ja/">← ホームに戻る</a></li>
+      <li class="active">
+        <a href="/ja/changelog/" aria-current="page">変更履歴</a>
+        <SidebarTocHeadings headings={headings} lang="ja" />
+      </li>
+    </ul>
+  </nav>
+
+  <article set:html={htmlContent} />
+</DocsLayout>

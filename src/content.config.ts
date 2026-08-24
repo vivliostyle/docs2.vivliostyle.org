@@ -193,6 +193,26 @@ const awesomeDocsJa = defineCollection({
   schema: docsSchema,
 });
 
+// 変更履歴ページ（英語）
+const changelogEn = defineCollection({
+  loader: vfmLoader({
+    base: 'content/en/changelog',
+    lang: 'en',
+    collectionName: 'changelog-en',
+  }),
+  schema: docsSchema,
+});
+
+// 変更履歴ページ（日本語）
+const changelogJa = defineCollection({
+  loader: vfmLoader({
+    base: 'content/ja/changelog',
+    lang: 'ja',
+    collectionName: 'changelog-ja',
+  }),
+  schema: docsSchema,
+});
+
 // Reference Index ページ（英語）
 const referenceIndexEn = defineCollection({
   loader: vfmLoader({
@@ -251,6 +271,8 @@ export const collections = {
   'docs-ja': docsJa,
   'cookbook-en': cookbookEn,
   'cookbook-ja': cookbookJa,
+  'changelog-en': changelogEn,
+  'changelog-ja': changelogJa,
   'vivliostyle-cli-en': cliDocsEn,
   'vivliostyle-cli-ja': cliDocsJa,
   'vivliostyle-themes-en': themesDocsEn,
