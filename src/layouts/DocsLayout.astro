@@ -26,6 +26,7 @@ const navLabels = isJa
       product: 'プロダクト',
       tutorial: 'チュートリアル',
       cookbook: '活用ガイド',
+      changelog: '変更履歴',
       reference: 'リファレンス',
       faq: 'FAQ',
       docs: 'ドキュメント',
@@ -35,6 +36,7 @@ const navLabels = isJa
       product: 'Product',
       tutorial: 'Tutorials',
       cookbook: 'Cookbook',
+      changelog: 'Changelog',
       reference: 'Reference',
       faq: 'FAQ',
       docs: 'Documentation',
@@ -56,6 +58,10 @@ const navLinks = {
   cookbook: {
     label: navLabels.cookbook,
     href: `/${lang}/cookbook/`,
+  },
+  changelog: {
+    label: navLabels.changelog,
+    href: `/${lang}/changelog/`,
   },
   reference: {
     docs: [
@@ -154,6 +160,7 @@ const navLinks = {
             </div>
           </details>
           <a href={navLinks.cookbook.href}>{navLinks.cookbook.label}</a>
+          <a href={navLinks.changelog.href}>{navLinks.changelog.label}</a>
           <a
             href={navLinks.tutorial.href}
             target={navLinks.tutorial.external ? '_blank' : undefined}

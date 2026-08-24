@@ -9,6 +9,18 @@ order: 1
 
 Vivliostyleは、Webテクノロジーを使って美しくフォーマットされたドキュメントを作成できる、CSS組版のエコシステムです。
 
+## 変更履歴
+
+### 2026年8月24日
+
+収録ドキュメントをVivliostyle.js v2.45.0 / Vivliostyle CLI v11.2.0 / VFM 2.7.2 / theme-base 2.1.1に更新しました。
+
+- **[Vivliostyle Viewer / Core](/ja/viewer/) v2.45.0** — 対応CSS機能に [CSS Cascade Layers（`@layer`）](/ja/reference/supported-css-features/#css-cascading-and-inheritance-5)と、カスケードを巻き戻す [`revert-layer` / `revert-rule`](/ja/reference/supported-css-features/#値)の記述を追加
+- **[Vivliostyle CLI](/ja/cli/) v11.2.0** — 目次ナビゲーションの中身を組み立て直す [`toc.compose`オプション](/ja/cli/config/#tocconfig)を追加
+- **[VFM](/ja/vfm/) 2.7.2** — 2.7系で加わったオプションの記述が追いつき、[プラグインオプション](/ja/vfm/plugin-options/)のページを新設
+
+[変更履歴をすべて見る →](/ja/changelog/)
+
 ## Vivliostyleとは？
 
 <figure>

@@ -9,6 +9,18 @@ order: 1
 
 Vivliostyle is a CSS typesetting ecosystem for creating beautifully formatted documents using web technologies.
 
+## Changelog
+
+### August 24, 2026
+
+Updated the documentation carried here to Vivliostyle.js v2.45.0 / Vivliostyle CLI v11.2.0 / VFM 2.7.2 / theme-base 2.1.1.
+
+- **[Vivliostyle Viewer / Core](/en/viewer/) v2.45.0** — Supported CSS features now cover [CSS Cascade Layers (`@layer`)](/en/reference/supported-css-features/#css-cascading-and-inheritance-5) and the [`revert-layer` and `revert-rule` keywords](/en/reference/supported-css-features/#values) that roll the cascade back.
+- **[Vivliostyle CLI](/en/cli/) v11.2.0** — Adds the [`toc.compose` option](/en/cli/config/#tocconfig) for composing the contents of the ToC navigation element.
+- **[VFM](/en/vfm/) 2.7.2** — Documentation caught up with the options added in the 2.7 line, and a [Plugin options](/en/vfm/plugin-options/) page was added.
+
+[See the full changelog →](/en/changelog/)
+
 ## What is Vivliostyle?
 
 <figure>
