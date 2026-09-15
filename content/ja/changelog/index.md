@@ -9,6 +9,15 @@ order: 1
 
 このサイトの更新履歴です。上流リポジトリから取り込んだドキュメントのバージョンと、サイト自体の変更を新しい順に並べています。
 
+## 2026年9月15日
+
+収録ドキュメントをVivliostyle.js v2.45.1 / Vivliostyle CLI v11.3.3 / Vivliostyle Themes v3（theme-base 3.0.0）/ VFM 2.7.2に更新しました。カッコ内は、その機能に対応したバージョンです。
+
+- **[Vivliostyle Themes](/ja/themes/) v3** — テーマの書き方が大きく変わりました。CSS変数の改名表と手順を収めた [v3への移行](/ja/themes/migration-v3/)を新設。[使い方](/ja/themes/usage/)は、`theme-all.css`などのプリセットに代えて [パッケージエントリとモジュール](/ja/themes/usage/#パッケージエントリとモジュール)の節に差し替え。[開発](/ja/themes/development/)と[仕様](/ja/themes/spec/)には、雛形生成と検証がCLIの`vivliostyle theme create`／`vivliostyle theme validate`に移ったことを反映
+- **[Vivliostyle CLI](/ja/cli/) v11.3.3** — [CSSからのテーマの読み込み](/ja/cli/themes-and-css/#css-からのテーマの読み込み)（v11.3.0。`@import '@vivliostyle/theme-base';`のようにnpmパッケージ名で書ける）、[PostCSSの利用](/ja/cli/themes-and-css/#postcss-の利用)（v11.3.0）、[テーマの作成](/ja/cli/themes-and-css/#テーマの作成)（v11.3.0）の節を追加。設定リファレンスには [`css.postcss`](/ja/cli/config/#cssconfig)（v11.3.0）と、CMYK変換のマッピングから漏れた色を変換する`cmyk.fallback`（v11.3.0。`cmyk.overrideMap`は非推奨）が加わりました。[テンプレート](/ja/cli/templates/)には、テンプレート変数がエスケープされずに挿入されるため、文字列リテラルに置く値は`json`ヘルパーで囲むという注意を追加
+- **[Vivliostyle Viewer / Core](/ja/viewer/) v2.45.1** — 不具合修正のみのリリースで、対応CSS機能の増減はありません
+- **[Awesome Vivliostyle](/ja/reference/awesome-vivliostyle/)** — Vivliostyleで作られた書籍に技術評論社の3点を追加
+
 ## 2026年8月24日
 
 収録ドキュメントをVivliostyle.js v2.45.0 / Vivliostyle CLI v11.2.0 / VFM 2.7.2 / theme-base 2.1.1に更新しました。カッコ内は、その機能に対応したバージョンです。
