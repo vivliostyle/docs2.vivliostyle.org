@@ -17,7 +17,7 @@ Updated the documentation carried here to Vivliostyle.js v2.45.1 / Vivliostyle C
 
 - **[Vivliostyle Themes](/en/themes/) v3** — A major change to how themes are written, with a new [migration guide](/en/themes/migration-v3/) covering every step and the full variable rename tables.
 - **[Vivliostyle CLI](/en/cli/) v11.3.3** — Themes can now be [imported from CSS](/en/cli/themes-and-css/#importing-themes-from-css) by npm package name, and the docs add [creating a theme](/en/cli/themes-and-css/#creating-a-theme) and [using PostCSS](/en/cli/themes-and-css/#using-postcss).
-- **[Awesome Vivliostyle](/en/reference/awesome-vivliostyle/)** — Adds three more Gijutsu-Hyohron titles to the list of books made with Vivliostyle.
+- **[Awesome Vivliostyle](/en/reference/awesome-vivliostyle/)** — Adds three more Gijutsu-Hyoron titles to the list of books made with Vivliostyle.
 
 [See the full changelog →](/en/changelog/)
 
