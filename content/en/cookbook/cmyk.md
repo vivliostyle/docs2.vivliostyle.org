@@ -7,9 +7,9 @@ order: 3
 
 # CMYK Conversion Guide
 
-> **Target versions**: Vivliostyle.js v2.40 (2026-01-11), Vivliostyle CLI v10.6
+> **Target versions**: Vivliostyle.js v2.40 (2026-01-11), Vivliostyle CLI v10.6 (deprecation notes verified against v11.3.3)
 > **Published**: 2026-05-05
-> **Last updated**: 2026-05-16
+> **Last updated**: 2026-09-15
 
 This guide explains the mechanics and limitations of the `device-cmyk()` CSS function and `pdfPostprocess.cmyk`.
 
@@ -147,6 +147,8 @@ pdfPostprocess: {
 
 The entry format and value scale are the same as `reserveMap`. Colours already covered by `reserveMap` will not appear in warnings, so there is no reason to list them again in `overrideMap`.
 
+> `overrideMap` is deprecated as of CLI v11.3.0. It still behaves as described, but using it logs a deprecation warning at build time. Colours the regular mapping does not reach are now handled by `fallback`, which works differently: instead of listing colours one by one, it applies a conversion function or an ICC profile to every colour left unmapped. See the CLI [config reference](/en/cli/config/#cmykconfig) for details.
+
 ## Detecting unmapped colours: `warnUnmapped`
 
 After post-processing, any DeviceRGB operators still remaining in the PDF trigger a warning. Because the PDF cannot distinguish CSS-originated colours from SVG-originated ones, all remaining RGB colours are reported.
@@ -160,6 +162,8 @@ pdfPostprocess: {
 ```
 
 The typical workflow is to add each colour that appears in the warnings to `reserveMap`.
+
+> `warnUnmapped` is deprecated as of CLI v11.3.0. It still behaves as described, but using it logs a deprecation warning at build time. Use `ifUnmappedColorsFound` instead: `true` corresponds to `'warn'` and `false` to `'ignore'`, and the additional `'error'` value fails the build as soon as unmapped colours are found. The default is `'warn'`, so no setting is needed just to receive the warnings. When both are given, `ifUnmappedColorsFound` wins.
 
 ## Practical workflow
 
