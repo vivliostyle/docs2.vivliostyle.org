@@ -43,9 +43,12 @@ const headings = ((doc.data as unknown) as { headings?: Array<{ depth: number; s
 // ページの順序を定義
 const pageOrder = [
   'index',
+  'usage',
   'spec',
   'gallery',
   'official',
+  'development',
+  'migration-v3',
 ];
 
 const sortedDocs = [...themesDocs].sort((a, b) => {

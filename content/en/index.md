@@ -11,13 +11,13 @@ Vivliostyle is a CSS typesetting ecosystem for creating beautifully formatted do
 
 ## Changelog
 
-### August 24, 2026
+### September 15, 2026
 
-Updated the documentation carried here to Vivliostyle.js v2.45.0 / Vivliostyle CLI v11.2.0 / VFM 2.7.2 / theme-base 2.1.1.
+Updated the documentation carried here to Vivliostyle.js v2.45.1 / Vivliostyle CLI v11.3.3 / Vivliostyle Themes v3 (theme-base 3.0.0) / VFM 2.7.2.
 
-- **[Vivliostyle Viewer / Core](/en/viewer/) v2.45.0** — Supported CSS features now cover [CSS Cascade Layers (`@layer`)](/en/reference/supported-css-features/#css-cascading-and-inheritance-5) and the [`revert-layer` and `revert-rule` keywords](/en/reference/supported-css-features/#values) that roll the cascade back.
-- **[Vivliostyle CLI](/en/cli/) v11.2.0** — Adds the [`toc.compose` option](/en/cli/config/#tocconfig) for composing the contents of the ToC navigation element.
-- **[VFM](/en/vfm/) 2.7.2** — Documentation caught up with the options added in the 2.7 line, and a [Plugin options](/en/vfm/plugin-options/) page was added.
+- **[Vivliostyle Themes](/en/themes/) v3** — A major change to how themes are written, with a new [migration guide](/en/themes/migration-v3/) covering every step and the full variable rename tables.
+- **[Vivliostyle CLI](/en/cli/) v11.3.3** — Themes can now be [imported from CSS](/en/cli/themes-and-css/#importing-themes-from-css) by npm package name, and the docs add [creating a theme](/en/cli/themes-and-css/#creating-a-theme) and [using PostCSS](/en/cli/themes-and-css/#using-postcss).
+- **[Awesome Vivliostyle](/en/reference/awesome-vivliostyle/)** — Adds three more Gijutsu-Hyoron titles to the list of books made with Vivliostyle.
 
 [See the full changelog →](/en/changelog/)
 

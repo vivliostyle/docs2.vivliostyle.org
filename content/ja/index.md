@@ -11,13 +11,13 @@ Vivliostyleは、Webテクノロジーを使って美しくフォーマットさ
 
 ## 変更履歴
 
-### 2026年8月24日
+### 2026年9月15日
 
-収録ドキュメントをVivliostyle.js v2.45.0 / Vivliostyle CLI v11.2.0 / VFM 2.7.2 / theme-base 2.1.1に更新しました。
+収録ドキュメントをVivliostyle.js v2.45.1 / Vivliostyle CLI v11.3.3 / Vivliostyle Themes v3（theme-base 3.0.0）/ VFM 2.7.2に更新しました。
 
-- **[Vivliostyle Viewer / Core](/ja/viewer/) v2.45.0** — 対応CSS機能に [CSS Cascade Layers（`@layer`）](/ja/reference/supported-css-features/#css-cascading-and-inheritance-5)と、カスケードを巻き戻す [`revert-layer` / `revert-rule`](/ja/reference/supported-css-features/#値)の記述を追加
-- **[Vivliostyle CLI](/ja/cli/) v11.2.0** — 目次ナビゲーションの中身を組み立て直す [`toc.compose`オプション](/ja/cli/config/#tocconfig)を追加
-- **[VFM](/ja/vfm/) 2.7.2** — 2.7系で加わったオプションの記述が追いつき、[プラグインオプション](/ja/vfm/plugin-options/)のページを新設
+- **[Vivliostyle Themes](/ja/themes/) v3** — テーマの書き方が大きく変わりました。CSS変数の改名表と手順を収めた [v3への移行](/ja/themes/migration-v3/)を新設
+- **[Vivliostyle CLI](/ja/cli/) v11.3.3** — [CSSからのテーマの読み込み](/ja/cli/themes-and-css/#css-からのテーマの読み込み)をnpmパッケージ名で書けるようになり、[テーマの作成](/ja/cli/themes-and-css/#テーマの作成)コマンドと [PostCSSの利用](/ja/cli/themes-and-css/#postcss-の利用)の記述を追加
+- **[Awesome Vivliostyle](/ja/reference/awesome-vivliostyle/)** — Vivliostyleで作られた書籍に技術評論社の3点を追加
 
 [変更履歴をすべて見る →](/ja/changelog/)
 
@@ -53,9 +53,7 @@ Vivliostyleは以下を提供するオープンソースプロジェクトです
 
 ## Single Source, Multi Output {#ssmo}
 
-Vivliostyleの最大のメリットは**SSMO（Single Source Multi Output）**です：
-
-1つのMarkdownソースから以下を生成できます：
+Vivliostyleの最大のメリットは、**SSMO（Single Source Multi Output）**。1つのMarkdownソースから以下を生成できます：
 
 - **[WebPub](https://docs.vivliostyle.org/ja/cli/special-output-settings/#web-%E5%87%BA%E7%89%88%E7%89%A9webpub%E3%81%AE%E5%87%BA%E5%8A%9B)** - オンライン閲覧用HTMLページ
 - **[PDF](https://docs.vivliostyle.org/ja/cli/special-output-settings/#%E5%8D%B0%E5%88%B7%E7%94%A8-pdfpdfx-1a-%E5%BD%A2%E5%BC%8F%E3%81%AE%E7%94%9F%E6%88%90)** - 印刷可能なドキュメント

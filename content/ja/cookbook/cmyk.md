@@ -7,9 +7,9 @@ order: 3
 
 # CMYK変換ガイド
 
-> **対象バージョン**: Vivliostyle.js v2.40（2026-01-11）、Vivliostyle CLI v10.6
+> **対象バージョン**: Vivliostyle.js v2.40（2026-01-11）、Vivliostyle CLI v10.6（非推奨の記載はv11.3.3で確認）
 > **公開日**: 2026-05-05
-> **最終更新日**: 2026-05-16
+> **最終更新日**: 2026-09-15
 
 このガイドは、`device-cmyk()` CSS関数と `pdfPostprocess.cmyk` の仕組みと制約を説明します。
 
@@ -147,6 +147,8 @@ pdfPostprocess: {
 
 エントリ形式・値スケールは `reserveMap` と同じです。`reserveMap` で登録済みの色は警告にも現れないため、同じ色を `overrideMap` に追加する必要はありません。
 
+> `overrideMap` はCLI v11.3.0で非推奨になりました。指定するとビルド時に警告が出ますが、挙動はこれまでどおりです。マッピングから漏れた色の処理は、代わりに `fallback` で指定します。`fallback` は色を1つずつ列挙するのではなく、漏れた色すべてに変換関数やICCプロファイルを適用するもので、書き方が変わります。詳しくはCLIの[設定リファレンス](/ja/cli/config/#cmykconfig)を参照してください。
+
 ## マッピング漏れの検出：`warnUnmapped`
 
 後処理後にPDFに残ったDeviceRGBオペレーターに対して警告します。PDFの段階ではCSS由来かSVG由来かを区別できないため、残存するすべてのRGB色が対象になります。
@@ -160,6 +162,8 @@ pdfPostprocess: {
 ```
 
 警告に現れたRGB色を `reserveMap` に追加していくことが、実際のワークフローになります。
+
+> `warnUnmapped` はCLI v11.3.0で非推奨になりました。指定するとビルド時に警告が出ますが、挙動はこれまでどおりです。代わりに `ifUnmappedColorsFound` を使います。`true` が `'warn'`、`false` が `'ignore'` に対応し、さらに `'error'` を指定するとマッピング漏れがあった時点でビルドを失敗させられます。既定値は `'warn'` なので、警告を受け取るだけなら指定は要りません。両方を書いた場合は `ifUnmappedColorsFound` が優先されます。
 
 ## 実用上のワークフロー
 
