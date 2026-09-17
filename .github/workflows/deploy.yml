@@ -65,7 +65,7 @@ jobs:
       # ことを防げる。
 
       - name: Setup Java for epubcheck
-        uses: actions/setup-java@v5.6.0
+        uses: actions/setup-java@v6.0.0
         with:
           distribution: 'temurin'
           java-version: '17'
