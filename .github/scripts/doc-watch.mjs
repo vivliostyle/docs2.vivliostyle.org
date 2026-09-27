@@ -60,7 +60,11 @@ const dryRun = process.env.DRY_RUN === '1';
 function targetDate() {
   const given = (process.env.TARGET_DATE || '').trim();
   if (given) {
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(given)) throw new Error(`TARGET_DATE の形式が不正: ${given}`);
+    // 形式だけでなく、2026-02-30 のような実在しない日付も弾く（Date は黙って翌月に繰り越すため）
+    const d = new Date(`${given}T00:00:00Z`);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(given) || Number.isNaN(d.getTime()) || d.toISOString().slice(0, 10) !== given) {
+      throw new Error(`TARGET_DATE が不正: ${given}`);
+    }
     return given;
   }
   const jstNow = new Date(Date.now() + 9 * 3600 * 1000);
@@ -147,9 +151,9 @@ async function main() {
   } else if (failed.length === TARGETS.length) {
     lines.push('どのリポジトリも確認できなかった');
   } else if (failed.length) {
-    lines.push('確認できたリポジトリには /doc の更新なし');
+    lines.push('確認できたリポジトリの監視対象には更新なし');
   } else {
-    lines.push('本日は /doc の更新なし');
+    lines.push('監視対象（各リポジトリの docs/、docs2.vivliostyle.org 全体）に更新なし');
   }
   if (failed.length) lines.push('', `確認できなかった: ${esc(failed.join('、'))}`);
   if (orgError) lines.push('', `リポジトリ増減は確認できなかった（${esc(orgError)}）`);
