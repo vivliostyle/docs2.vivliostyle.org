@@ -1,0 +1,42 @@
+# Vivliostyle doc watch
+# 主要リポジトリの doc/docs ディレクトリに前日（JST）入ったコミットを Slack に報告する。
+# 対象リポジトリとリポジトリ一覧の基準は .github/scripts/doc-watch.mjs に書いてある。
+name: Vivliostyle doc watch
+
+on:
+  schedule:
+    - cron: '30 23 * * *'  # 毎日 8:30 JST（GitHub 側の混雑で数十分遅れることがある）
+  workflow_dispatch:
+    inputs:
+      date:
+        description: '対象日 YYYY-MM-DD（JST）。空なら前日'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  watch:
+    # fork では動かさない
+    if: github.repository == 'vivliostyle/docs2.vivliostyle.org'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          sparse-checkout: .github/scripts
+          sparse-checkout-cone-mode: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22.12'
+
+      - name: Check doc updates
+        run: node .github/scripts/doc-watch.mjs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SLACK_WEBHOOK_URL: ${{ secrets.DOC_WATCH_SLACK_WEBHOOK_URL }}
+          TARGET_DATE: ${{ inputs.date }}
