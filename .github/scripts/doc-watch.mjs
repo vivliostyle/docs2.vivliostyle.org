@@ -1,56 +1,33 @@
 // Vivliostyle doc watch
-// docs2.vivliostyle.org のサブモジュールについて、いま固定しているコミットより新しいリリースが
-// 上流に出ていないかを調べ、取り込みどきかどうかを Slack に1通で報告する。
-// あわせて organization のリポジトリ増減（archived・fork を除く）を KNOWN_REPOS と比べて報告する。
+// 対象リポジトリで前日（JST の暦日）に公開されたリリースのうち、docs/（または doc/）の変更を
+// 含むものがあれば Slack に1通で報告する。該当が無い日は何も送らない。
+// 個々のコミットの通知は Slack の #github-notify に任せ、ここではリリースだけを見る。
 //
-// 判定のしかた
-//   - サブモジュールの一覧は、このリポジトリの既定ブランチの .gitmodules から読む（増減に自動で追随する）。
-//   - 固定しているコミットは、既定ブランチ上のサブモジュールのパスが指す SHA。
-//   - 上流の GitHub Releases（下書きとプレリリースを除く）のうち、固定コミットより先にあるもの
-//     （compare API の status が ahead か diverged）を「取り込み待ち」とする。
-//   - Releases を1件も出していないリポジトリは、固定コミットより後に既定ブランチへ入ったコミット数を示す。
+// 「docs の変更を含む」とは、同じパッケージの1つ前のリリースからそのリリースまでの差分に、
+// docs/ か doc/ の下のファイルが1つでもあること。
 //
 // 環境変数
 //   GITHUB_TOKEN       API のレート制限緩和用（Actions の GITHUB_TOKEN で足りる）
-//   SLACK_WEBHOOK_URL  Slack Incoming Webhook。未設定なら標準出力にだけ出して exit 1
-//   TARGET_DATE        「新着」とみなす日 YYYY-MM-DD（JST）。空なら実行時点の前日
+//   SLACK_WEBHOOK_URL  Slack Incoming Webhook。送るものがあるのに未設定なら exit 1
+//   TARGET_DATE        対象日 YYYY-MM-DD（JST）。空なら実行時点の前日
 //   DRY_RUN            "1" なら Slack に送らず標準出力のみ
 
 import { appendFileSync } from 'node:fs';
 
 const ORG = 'vivliostyle';
-const SELF = 'docs2.vivliostyle.org';
 
-// Releases は新しい順に何件まで見るか。モノレポは1回のリリースで複数のタグを打つので多めにとる。
-const RELEASES_TO_SCAN = 30;
-
-// 2026-09-27 時点の organization のリポジトリ（archived・fork を除く）。
-// 増減を報告したあと、ここを更新すれば次回から報告されなくなる。
-const KNOWN_REPOS = [
-  'action',
-  'awesome-vivliostyle',
-  'community',
-  'docs-vivliostyle-pub',
-  'docs2.vivliostyle.org',
-  'test2.vivliostyle.org',
-  'themes',
-  'typedocs',
-  'vfm',
-  'vivliostyle-cli',
-  'vivliostyle-cli-helper-doc',
-  'vivliostyle-marker-plugin-example',
-  'vivliostyle-pdf',
-  'vivliostyle-print',
-  'vivliostyle-pub',
-  'vivliostyle-sitegen',
-  'vivliostyle.com',
-  'vivliostyle.github.io',
+// GitHub Releases を出していないリポジトリは、載せておいても何も報告されない。
+const REPOS = [
   'vivliostyle.js',
+  'vivliostyle-cli',
+  'themes',
+  'vfm',
   'vivliostyle.org',
-  'vivliostyle.pub',
-  'vivliostyle_doc',
-  'wpt-results',
+  'vivliostyle.github.io',
+  'docs2.vivliostyle.org',
 ];
+
+const DOC_PATH = /^docs?\//;
 
 const token = process.env.GITHUB_TOKEN;
 const webhook = process.env.SLACK_WEBHOOK_URL;
@@ -71,217 +48,74 @@ function targetDate() {
   return jstNow.toISOString().slice(0, 10);
 }
 
-async function request(url) {
-  const res = await fetch(url, {
+async function api(path) {
+  const res = await fetch(`https://api.github.com${path}`, {
     headers: {
       Accept: 'application/vnd.github+json',
       'X-GitHub-Api-Version': '2022-11-28',
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
   });
-  if (!res.ok) throw new Error(`HTTP ${res.status} ${url.replace('https://api.github.com', '')}`);
-  return res;
-}
-
-const api = async (path) => (await request(`https://api.github.com${path}`)).json();
-
-// ページ送りつき（配列を返す API 用）
-async function apiAll(path) {
-  const out = [];
-  let next = `https://api.github.com${path}`;
-  while (next) {
-    const res = await request(next);
-    out.push(...(await res.json()));
-    const link = res.headers.get('link') || '';
-    next = (link.match(/<([^>]+)>;\s*rel="next"/) || [])[1];
-  }
-  return out;
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
 }
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const jstDay = (iso) => new Date(new Date(iso).getTime() + 9 * 3600 * 1000).toISOString().slice(0, 10);
-const short = (sha) => sha.slice(0, 7);
 
-// 本体のタグか（v1.2.3 か、リポジトリ名と同じパッケージ名のもの。例: @vivliostyle/vfm@2.7.2）
-const mainTag = (repo) => (tag) =>
-  /^v\d/.test(tag) || tag.startsWith(`@${ORG}/${repo}@`) || tag.startsWith(`${repo}@`);
-
-// .gitmodules から path と GitHub 上の owner/repo を取り出す
-function parseGitmodules(text) {
-  const mods = [];
-  let cur = null;
-  for (const raw of text.split('\n')) {
-    const line = raw.trim();
-    if (line.startsWith('[submodule')) {
-      cur = {};
-      mods.push(cur);
-    } else if (cur) {
-      const m = line.match(/^(path|url)\s*=\s*(.+)$/);
-      if (m) cur[m[1]] = m[2].trim();
-    }
-  }
-  return mods
-    .map((m) => {
-      const gh = (m.url || '').match(/github\.com[/:]([^/]+)\/(.+?)(?:\.git)?\/?$/);
-      return gh ? { path: m.path, owner: gh[1], repo: gh[2] } : { path: m.path, url: m.url };
-    })
-    .filter((m) => m.path);
-}
-
-// base（固定コミット）から head（タグや SHA）を見たときの関係
-async function compare(owner, repo, base, head) {
-  const c = await api(`/repos/${owner}/${repo}/compare/${base}...${encodeURI(head)}`);
-  return c;
-}
-
-async function checkSubmodule(mod, selfBranch, date) {
-  const { owner, repo, path } = mod;
-  const entry = await api(`/repos/${ORG}/${SELF}/contents/${encodeURI(path)}?ref=${selfBranch}`);
-  if (entry.type !== 'submodule' || !entry.sha) throw new Error(`${path} がサブモジュールとして読めない`);
-  const pin = entry.sha;
-  const isMain = mainTag(repo);
-
-  const releases = (await api(`/repos/${owner}/${repo}/releases?per_page=${RELEASES_TO_SCAN}`))
-    .filter((r) => !r.draft && !r.prerelease)
-    .sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
-
-  // Releases を出していないリポジトリ（awesome-vivliostyle など）
-  if (!releases.length) {
-    const info = await api(`/repos/${owner}/${repo}`);
-    const c = await compare(owner, repo, pin, info.default_branch);
-    return { mod, pin, kind: 'no-release', ahead: c.ahead_by, branch: info.default_branch, url: c.html_url };
-  }
-
-  const pending = [];
-  let base = null; // 固定コミットに含まれている最新のリリース
-  for (const r of releases) {
-    const c = await compare(owner, repo, pin, r.tag_name);
-    if (c.status === 'ahead' || c.status === 'diverged') {
-      pending.push({ r, c });
-      continue;
-    }
-    // identical か behind（＝そのリリースは固定コミットに含まれている）
-    base = { r, same: c.status === 'identical' };
-    break;
-  }
-
-  // モノレポは1回のリリースで複数パッケージのタグを打つ。表示には本体のタグを優先する。
-  // 固定位置の表示は、見つかったリリースと同じ回（前後1時間）のものに限って置き換える。
-  if (base && !isMain(base.r.tag_name)) {
-    const t0 = new Date(base.r.published_at).getTime();
-    const alt = releases.find(
-      (r) => isMain(r.tag_name) && Math.abs(new Date(r.published_at).getTime() - t0) < 3600 * 1000,
-    );
-    if (alt) {
-      const c = await compare(owner, repo, pin, alt.tag_name);
-      if (c.status === 'identical' || c.status === 'behind') base = { r: alt, same: c.status === 'identical' };
-    }
-  }
-
-  // 見出しにする取り込み待ち: 本体のタグのうち最新。本体のタグが無ければ最新のもの
-  const head = pending.find((p) => isMain(p.r.tag_name)) || pending[0];
-  let docsFiles = null;
-  if (head) {
-    // そこまでの差分で docs/ と doc/ の変更ファイル数を数える（compare API は300ファイルで打ち切る）
-    docsFiles = (head.c.files || []).filter((f) => /^docs?\//.test(f.filename)).length;
-  }
-  return { mod, pin, kind: 'release', pending, head, isMain, base, docsFiles, date };
-}
-
-function formatResult(x) {
-  const name = `${x.mod.owner}/${x.mod.repo}`;
-  const lines = [];
-  if (x.kind === 'no-release') {
-    if (x.ahead) {
-      lines.push(
-        `*${esc(name)}*（Releases なし）固定 \`${short(x.pin)}\` より後に ${x.branch} へ ${x.ahead} コミット <${x.url}|差分>`,
-      );
-    }
-    return { pending: x.ahead > 0, lines, summary: x.ahead ? `${x.mod.repo}（${x.ahead} コミット）` : null };
-  }
-  const where = x.base
-    ? x.base.same
-      ? `${esc(x.base.r.tag_name)} と同じ`
-      : `${esc(x.base.r.tag_name)} より後の \`${short(x.pin)}\``
-    : `\`${short(x.pin)}\`（直近 ${RELEASES_TO_SCAN} 件のリリースより前）`;
-  if (!x.pending.length) return { pending: false, lines, summary: null, upToDate: `${x.mod.repo}: ${where}` };
-
-  lines.push(`*${esc(name)}*　いまの固定: ${where}`);
-  // 本体のタグがあればそれだけを並べ、ほかのパッケージのタグは件数だけ示す
-  const shown = x.pending.some((p) => x.isMain(p.r.tag_name))
-    ? x.pending.filter((p) => x.isMain(p.r.tag_name))
-    : x.pending;
-  for (const { r } of shown) {
-    const fresh = jstDay(r.published_at) === x.date ? '【新着】' : '';
-    lines.push(`• ${fresh}<${r.html_url}|${esc(r.tag_name)}>（${jstDay(r.published_at)} 公開）`);
-  }
-  const others = x.pending.length - shown.length;
-  if (others) lines.push(`• ほかのパッケージのリリース ${others} 件`);
-  const head = x.head;
-  const docs = x.docsFiles === null ? '' : `、うち docs/ は ${x.docsFiles} ファイル`;
-  lines.push(`  固定位置から ${esc(head.r.tag_name)} まで ${head.c.ahead_by} コミット${docs} <${head.c.html_url}|差分>`);
-  return { pending: true, lines, summary: `${x.mod.repo} ${head.r.tag_name}` };
-}
+// タグ名から版番号を除いた部分（モノレポで同じパッケージの前のリリースを探すのに使う）
+// 例: v2.45.2 → "v"、@vivliostyle/vfm@2.7.2 → "@vivliostyle/vfm@"
+const pkgOf = (tag) => tag.replace(/\d+\.\d+\.\d+.*$/, '');
 
 async function main() {
   const date = targetDate();
+  const since = new Date(`${date}T00:00:00+09:00`);
+  const until = new Date(since.getTime() + 24 * 3600 * 1000);
 
-  const self = await api(`/repos/${ORG}/${SELF}`);
-  const branch = self.default_branch;
-  const gm = await api(`/repos/${ORG}/${SELF}/contents/.gitmodules?ref=${branch}`);
-  const mods = parseGitmodules(Buffer.from(gm.content, 'base64').toString('utf8'));
-
-  const blocks = [];
-  const summaries = [];
-  const upToDate = [];
+  const hits = [];
   const failed = [];
-  for (const mod of mods) {
-    if (!mod.repo) {
-      failed.push(`${mod.path}（GitHub 以外の URL: ${mod.url}）`);
-      continue;
-    }
+
+  for (const repo of REPOS) {
     try {
-      const f = formatResult(await checkSubmodule(mod, branch, date));
-      if (f.pending) {
-        blocks.push(f.lines);
-        summaries.push(f.summary);
-      } else if (f.upToDate) {
-        upToDate.push(f.upToDate);
-      } else {
-        upToDate.push(`${mod.repo}: 固定位置が ${mod.repo} の最新`);
+      // 新しい順。1日に出るリリースはこの件数に十分収まる
+      const releases = (await api(`/repos/${ORG}/${repo}/releases?per_page=100`)).filter((r) => !r.draft);
+      for (const [i, r] of releases.entries()) {
+        const t = new Date(r.published_at);
+        if (r.prerelease || t < since || t >= until) continue;
+        const prev = releases.slice(i + 1).find((p) => !p.prerelease && pkgOf(p.tag_name) === pkgOf(r.tag_name));
+        if (!prev) {
+          hits.push({ repo, r, note: '前のリリースが見つからず docs の変更は未確認' });
+          continue;
+        }
+        const c = await api(`/repos/${ORG}/${repo}/compare/${encodeURI(prev.tag_name)}...${encodeURI(r.tag_name)}`);
+        const docs = (c.files || []).filter((f) => DOC_PATH.test(f.filename));
+        if (docs.length) hits.push({ repo, r, prev, docs, url: c.html_url });
       }
     } catch (e) {
-      failed.push(`${mod.repo}（${e.message}）`);
+      failed.push(`${repo}（${e.message}）`);
     }
   }
 
-  let added = [];
-  let removed = [];
-  let orgError = null;
-  try {
-    const repos = await apiAll(`/orgs/${ORG}/repos?type=sources&per_page=100`);
-    const current = repos.filter((r) => !r.archived).map((r) => r.name);
-    added = current.filter((n) => !KNOWN_REPOS.includes(n));
-    removed = KNOWN_REPOS.filter((n) => !current.includes(n));
-  } catch (e) {
-    orgError = e.message;
+  if (!hits.length && !failed.length) {
+    console.log(`${date}（JST）: docs の変更を含むリリースなし。送信しない`);
+    return;
   }
 
-  const lines = [];
-  if (summaries.length) {
-    lines.push(`*Vivliostyle doc watch* サブモジュールの取り込み待ち: ${esc(summaries.join('、'))}`);
-    for (const b of blocks) lines.push('', ...b);
-  } else if (failed.length === mods.length) {
-    lines.push('*Vivliostyle doc watch* どのサブモジュールも確認できなかった');
-  } else {
-    lines.push('*Vivliostyle doc watch* 取り込み待ちのリリースなし');
+  const lines = [
+    hits.length
+      ? `*Vivliostyle doc watch* ${date}（JST）に公開された、docs の変更を含むリリース`
+      : `*Vivliostyle doc watch* ${date}（JST）: 確認できたリポジトリには docs の変更を含むリリースなし`,
+  ];
+  for (const h of hits) {
+    lines.push('', `*${esc(h.repo)}* <${h.r.html_url}|${esc(h.r.tag_name)}>`);
+    if (h.note) {
+      lines.push(`  ${h.note}`);
+      continue;
+    }
+    const names = h.docs.slice(0, 10).map((f) => esc(f.filename));
+    const more = h.docs.length > 10 ? ` ほか ${h.docs.length - 10} ファイル` : '';
+    lines.push(`  ${esc(h.prev.tag_name)} からの docs の変更: ${names.join('、')}${more} <${h.url}|差分>`);
   }
-  if (upToDate.length) lines.push('', `最新のリリースまで取り込み済み: ${esc(upToDate.join('／'))}`);
   if (failed.length) lines.push('', `確認できなかった: ${esc(failed.join('、'))}`);
-  if (orgError) lines.push('', `リポジトリ増減は確認できなかった（${esc(orgError)}）`);
-  if (added.length) lines.push('', `リポジトリ追加: ${esc(added.join(', '))}`);
-  if (removed.length) lines.push('', `リポジトリ削除またはアーカイブ: ${esc(removed.join(', '))}`);
-  lines.push('', `（【新着】は ${date}（JST）に公開されたもの。プレリリースは対象外）`);
 
   const text = lines.join('\n');
   console.log(text);
