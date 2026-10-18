@@ -4,7 +4,8 @@
 // 個々のコミットの通知は Slack の #github-notify に任せ、ここではリリースだけを見る。
 //
 // 「docs の変更を含む」とは、同じパッケージの1つ前のリリースからそのリリースまでの差分に、
-// docs/ か doc/ の下のファイルが1つでもあること。
+// docs/ か doc/ の下のファイル（名前の変更なら変更前か変更後のどちらか）が1つでもあること。
+// 1つ前のリリースが見つからないなど、確かめられなかったものは「確認できなかった」として報告する。
 //
 // 環境変数
 //   GITHUB_TOKEN       API のレート制限緩和用（Actions の GITHUB_TOKEN で足りる）
@@ -60,11 +61,32 @@ async function api(path) {
   return res.json();
 }
 
+// 新しい順に全ページを読む。ページ送りは Link ヘッダではなく page パラメータで行う
+async function allReleases(repo) {
+  const out = [];
+  for (let page = 1; ; page++) {
+    const batch = await api(`/repos/${ORG}/${repo}/releases?per_page=100&page=${page}`);
+    out.push(...batch);
+    if (batch.length < 100) return out;
+  }
+}
+
+// compare API が返すファイル一覧の上限。これに達したら一覧が途中で切れている
+const COMPARE_FILE_LIMIT = 300;
+
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 // タグ名から版番号を除いた部分（モノレポで同じパッケージの前のリリースを探すのに使う）
 // 例: v2.45.2 → "v"、@vivliostyle/vfm@2.7.2 → "@vivliostyle/vfm@"
-const pkgOf = (tag) => tag.replace(/\d+\.\d+\.\d+.*$/, '');
+// 本体のタグの付け方が途中で変わったリポジトリ（vfm は v2.7.0 の次が @vivliostyle/vfm@2.7.1）に
+// 合わせ、"v" とリポジトリ名と同じパッケージ名は同じ本体として扱う。ほかのパッケージは区別したまま。
+const pkgOf = (repo, tag) => {
+  const prefix = tag.replace(/\d+\.\d+\.\d+.*$/, '');
+  return prefix === 'v' || prefix === `@${ORG}/${repo}@` ? '(main)' : prefix;
+};
+
+// 名前の変更は、変更前（previous_filename）と変更後（filename）の両方を見る
+const touchesDocs = (f) => DOC_PATH.test(f.filename) || (f.previous_filename && DOC_PATH.test(f.previous_filename));
 
 async function main() {
   const date = targetDate();
@@ -76,19 +98,25 @@ async function main() {
 
   for (const repo of REPOS) {
     try {
-      // 新しい順。1日に出るリリースはこの件数に十分収まる
-      const releases = (await api(`/repos/${ORG}/${repo}/releases?per_page=100`)).filter((r) => !r.draft);
+      const releases = (await allReleases(repo))
+        .filter((r) => !r.draft && !r.prerelease)
+        .sort((a, b) => new Date(b.published_at) - new Date(a.published_at));
       for (const [i, r] of releases.entries()) {
         const t = new Date(r.published_at);
-        if (r.prerelease || t < since || t >= until) continue;
-        const prev = releases.slice(i + 1).find((p) => !p.prerelease && pkgOf(p.tag_name) === pkgOf(r.tag_name));
+        if (t < since || t >= until) continue;
+        const prev = releases.slice(i + 1).find((p) => pkgOf(repo, p.tag_name) === pkgOf(repo, r.tag_name));
         if (!prev) {
-          hits.push({ repo, r, note: '前のリリースが見つからず docs の変更は未確認' });
+          failed.push(`${repo} ${r.tag_name}（1つ前のリリースが見つからない）`);
           continue;
         }
         const c = await api(`/repos/${ORG}/${repo}/compare/${encodeURI(prev.tag_name)}...${encodeURI(r.tag_name)}`);
-        const docs = (c.files || []).filter((f) => DOC_PATH.test(f.filename));
-        if (docs.length) hits.push({ repo, r, prev, docs, url: c.html_url });
+        const files = c.files || [];
+        const docs = files.filter(touchesDocs);
+        if (docs.length) {
+          hits.push({ repo, r, prev, docs, url: c.html_url });
+        } else if (files.length >= COMPARE_FILE_LIMIT) {
+          failed.push(`${repo} ${r.tag_name}（差分が ${COMPARE_FILE_LIMIT} ファイルを超え、一覧が途中で切れている）`);
+        }
       }
     } catch (e) {
       failed.push(`${repo}（${e.message}）`);
@@ -107,11 +135,9 @@ async function main() {
   ];
   for (const h of hits) {
     lines.push('', `*${esc(h.repo)}* <${h.r.html_url}|${esc(h.r.tag_name)}>`);
-    if (h.note) {
-      lines.push(`  ${h.note}`);
-      continue;
-    }
-    const names = h.docs.slice(0, 10).map((f) => esc(f.filename));
+    const names = h.docs
+      .slice(0, 10)
+      .map((f) => esc(f.previous_filename && f.previous_filename !== f.filename ? `${f.previous_filename} → ${f.filename}` : f.filename));
     const more = h.docs.length > 10 ? ` ほか ${h.docs.length - 10} ファイル` : '';
     lines.push(`  ${esc(h.prev.tag_name)} からの docs の変更: ${names.join('、')}${more} <${h.url}|差分>`);
   }
