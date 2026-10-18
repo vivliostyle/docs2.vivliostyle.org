@@ -1,6 +1,6 @@
 # Vivliostyle doc watch
-# 主要リポジトリの doc/docs ディレクトリに前日（JST）入ったコミットを Slack に報告する。
-# 対象リポジトリとリポジトリ一覧の基準は .github/scripts/doc-watch.mjs に書いてある。
+# サブモジュールの上流に、いま固定しているコミットより新しいリリースが出ていないかを Slack に報告する。
+# 判定のしかたとリポジトリ一覧の基準は .github/scripts/doc-watch.mjs に書いてある。
 name: Vivliostyle doc watch
 
 on:
@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       date:
-        description: '対象日 YYYY-MM-DD（JST）。空なら前日'
+        description: '「新着」とみなす日 YYYY-MM-DD（JST）。空なら前日'
         required: false
         default: ''
 
