@@ -30,4 +30,4 @@ export default {
 
 ## ライセンス
 
-AGPL-3.0
+0BSD（同梱フォントは除く。`fonts/README.md` を参照）

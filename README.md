@@ -63,3 +63,18 @@ Published URL: https://docs.vivliostyle.org/
 - [Vivliostyle Official Website](https://vivliostyle.org/)
 - [Astro Documentation](https://docs.astro.build)
 - [VFM (Vivliostyle Flavored Markdown)](https://github.com/vivliostyle/vfm)
+
+
+## License
+
+This repository is licensed under the [0BSD license](LICENSE), except for the files listed below, which remain under their original licenses.
+
+| Files | Origin | License |
+|---|---|---|
+| `public/viewer/assets/` | [vivliostyle.js](https://github.com/vivliostyle/vivliostyle.js) | AGPL-3.0 |
+| `public/themes/assets/` | [themes](https://github.com/vivliostyle/themes) | Apache-2.0 |
+| `public/vfm/assets/ecosystem.drawio.svg` | [VFM](https://github.com/vivliostyle/vfm) | Apache-2.0 |
+| `public/vivliostyle-logo72.png`, `public/favicon.*`, `public/vivliostyle-docs.*` | [Vivliostyle logo](https://vivliostyle.org/logo/) | MIT |
+| `packages/theme-PDF/fonts/` | See [`fonts/README.md`](packages/theme-PDF/fonts/README.md) | SIL OFL 1.1, Apache-2.0 + CC BY 4.0 |
+
+The documents under `submodules/`, which are loaded at build time, are licensed by their respective upstream repositories.

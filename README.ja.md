@@ -62,3 +62,18 @@ GitHub Actions により `astro-Install`/`main` ブランチへの push で自�
 - [Vivliostyle公式サイト](https://vivliostyle.org/)
 - [Astro公式ドキュメント](https://docs.astro.build)
 - [VFM (Vivliostyle Flavored Markdown)](https://github.com/vivliostyle/vfm)
+
+
+## ライセンス
+
+このリポジトリは [0BSD ライセンス](LICENSE)で公開しています。ただし、次の表のファイルは元のライセンスに従います。
+
+| ファイル | 出所 | ライセンス |
+|---|---|---|
+| `public/viewer/assets/` | [vivliostyle.js](https://github.com/vivliostyle/vivliostyle.js) | AGPL-3.0 |
+| `public/themes/assets/` | [themes](https://github.com/vivliostyle/themes) | Apache-2.0 |
+| `public/vfm/assets/ecosystem.drawio.svg` | [VFM](https://github.com/vivliostyle/vfm) | Apache-2.0 |
+| `public/vivliostyle-logo72.png`、`public/favicon.*`、`public/vivliostyle-docs.*` | [Vivliostyle のロゴ](https://vivliostyle.org/ja/logo/) | MIT |
+| `packages/theme-PDF/fonts/` | [`fonts/README.md`](packages/theme-PDF/fonts/README.md) を参照 | SIL OFL 1.1、Apache-2.0 + CC BY 4.0 |
+
+ビルド時に読み込む `submodules/` 以下の文書は、それぞれの上流リポジトリのライセンスに従います。

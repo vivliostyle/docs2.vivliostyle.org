@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "author": "Vivliostyle Foundation",
   "main": "theme.css",
-  "license": "AGPL-3.0",
+  "license": "0BSD",
   "repository": {
     "type": "git",
     "url": "https://github.com/vivliostyle/docs.vivliostyle.org"

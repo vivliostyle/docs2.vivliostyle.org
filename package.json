@@ -2,6 +2,7 @@
   "name": "tested-telescope",
   "type": "module",
   "version": "0.0.1",
+  "license": "0BSD",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build && npx pagefind --site dist --output-subdir _pagefind",
