@@ -1,6 +1,6 @@
 # Vivliostyle doc watch
-# 主要リポジトリの doc/docs ディレクトリに前日（JST）入ったコミットを Slack に報告する。
-# 対象リポジトリとリポジトリ一覧の基準は .github/scripts/doc-watch.mjs に書いてある。
+# 対象リポジトリで前日（JST）に公開されたリリースのうち、docs の変更を含むものだけを Slack に報告する。
+# 該当が無い日は送らない。対象リポジトリは .github/scripts/doc-watch.mjs に書いてある。
 name: Vivliostyle doc watch
 
 on:
