@@ -13,7 +13,7 @@ Vivliostyleは、Webテクノロジーを使って美しくフォーマットさ
 
 ### 2026年10月30日
 
-収録ドキュメントをVivliostyle.js v2.45.2 / Vivliostyle CLI v11.4.0 / Vivliostyle Themes（theme-base 3.0.1、各テーマ3.1.0）/ VFM 2.7.2に更新しました。
+収録ドキュメントをVivliostyle.js v2.45.2 / Vivliostyle CLI v11.4.0 / Vivliostyle Themes（theme-base 3.0.1、theme-epub3j 2.1.0、その他のテーマ3.1.0）/ VFM 2.7.2に更新しました。
 
 - **[Vivliostyle Themes](/ja/themes/)** — v3移行・開発ガイドと仕様を更新
 - **[Vivliostyle CLI](/ja/cli/) v11.4.0** — PDF/X出力や既定のRGBプロファイルなどを記述

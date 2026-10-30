@@ -11,7 +11,7 @@ order: 1
 
 ## 2026年10月30日
 
-収録ドキュメントをVivliostyle.js v2.45.2 / Vivliostyle CLI v11.4.0 / Vivliostyle Themes（theme-base 3.0.1、theme-academic、theme-bunko、theme-slide、theme-techbook 3.1.0、theme-epub3j 2.1.0）/ VFM 2.7.2に更新しました。上流の未リリース文書更新も含みます。
+収録ドキュメントをVivliostyle.js v2.45.2 / Vivliostyle CLI v11.4.0 / Vivliostyle Themes（theme-base 3.0.1、theme-academic、theme-bunko、theme-gutenberg、theme-slide、theme-techbook 3.1.0、theme-epub3j 2.1.0）/ VFM 2.7.2に更新しました。上流の未リリース文書更新も含みます。
 
 - **[Awesome Vivliostyle](/ja/reference/awesome-vivliostyle/)**：上流リポジトリのライセンス表示がApache-2.0からCC0-1.0に変わりました。掲載するプロジェクト一覧に変更はありません。
 - **[Vivliostyle Themes](/ja/themes/)**：v3移行ガイド、開発ガイド、仕様を更新。テーマのメタデータとテンプレートの仕様が加わり、theme-baseのコードブロックの書体設定も修正されました。テンプレートガイドには、パッケージ内のテンプレートを使うにはCLI 11.5.0以降が必要と記されています。

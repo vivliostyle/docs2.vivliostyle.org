@@ -136,6 +136,32 @@ describe('rewriteRelativeLinks', () => {
     });
   });
 
+  describe('vfm-contributing 専用', () => {
+    it('./docs/dev/remark13-migration.md → GitHub URL', () => {
+      const html = '<a href="./docs/dev/remark13-migration.md">x</a>';
+      expect(rewriteRelativeLinks(html, {
+        lang: 'en',
+        collectionName: 'vivliostyle-vfm-contributing-en',
+      })).toBe('<a href="https://github.com/vivliostyle/vfm/blob/main/docs/dev/remark13-migration.md">x</a>');
+    });
+
+    it('./packages-next/README.md#tests → GitHub URL#tests', () => {
+      const html = '<a href="./packages-next/README.md#tests">x</a>';
+      expect(rewriteRelativeLinks(html, {
+        lang: 'en',
+        collectionName: 'vivliostyle-vfm-contributing-en',
+      })).toBe('<a href="https://github.com/vivliostyle/vfm/blob/main/packages-next/README.md#tests">x</a>');
+    });
+
+    it('他のコレクションでは書き換えない', () => {
+      const html = '<a href="./docs/dev/remark13-migration.md">x</a>';
+      expect(rewriteRelativeLinks(html, {
+        lang: 'en',
+        collectionName: 'vivliostyle-cli-en',
+      })).toBe('<a href="./docs/dev/remark13-migration.md">x</a>');
+    });
+  });
+
   describe('誤マッチ防止', () => {
     it('純粋なフラグメント #anchor は touch しない', () => {
       const html = '<a href="#anchor">x</a>';
