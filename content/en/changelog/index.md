@@ -9,6 +9,16 @@ order: 1
 
 Update history for this site, newest first: the versions of the documentation pulled in from the upstream repositories, and changes to the site itself.
 
+## October 30, 2026
+
+Updated the documentation sources to Vivliostyle.js v2.45.2 / Vivliostyle CLI v11.4.0 / Vivliostyle Themes (theme-base 3.0.1; theme-academic, theme-bunko, theme-slide and theme-techbook 3.1.0; theme-epub3j 2.1.0) / VFM 2.7.2. The upstream commits also include documentation work beyond released features.
+
+- **[Awesome Vivliostyle](/en/reference/awesome-vivliostyle/)** — The upstream repository changed its declared license from Apache-2.0 to CC0-1.0. Its published project list is unchanged.
+- **[Vivliostyle Themes](/en/themes/)** — Updated the v3 migration, development and specification guides. The updated specification covers theme metadata and templates; the theme-base patch corrects code-block typography. The template guide notes that package-local template sources require CLI 11.5.0 or later.
+- **[Vivliostyle CLI](/en/cli/) v11.4.0** — Documents PDF/X output, the default RGB profile, PDF output intents and template version compatibility.
+- **[Vivliostyle Viewer / Core](/en/viewer/)** — Updated the supported CSS reference for `vertical-lr`, sideways writing modes and `text-spacing-trim: trim-all`.
+- **[VFM](/en/vfm/) 2.7.2** — Added English and Japanese working notes for the ongoing remark 13 migration.
+
 ## September 15, 2026
 
 Updated the documentation carried here to Vivliostyle.js v2.45.1 / Vivliostyle CLI v11.3.3 / Vivliostyle Themes v3 (theme-base 3.0.0) / VFM 2.7.2. Versions in parentheses are the releases each feature landed in.
