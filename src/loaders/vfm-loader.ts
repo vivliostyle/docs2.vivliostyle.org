@@ -103,6 +103,17 @@ export function rewriteRelativeLinks(
     );
   }
 
+  // VFM Contributing: repository-local Markdown references point to source
+  // files that are not published as pages on this site. Link to their upstream
+  // locations so both the website and generated EPUBs have valid destinations.
+  if (collectionName?.includes('vivliostyle-vfm-contributing')) {
+    html = html.replace(
+      /href="\.\/([^"#]+?\.md)(#[^"]*)?"/g,
+      (_m, p: string, frag = '') =>
+        `href="https://github.com/vivliostyle/vfm/blob/main/${p}${frag}"`,
+    );
+  }
+
   // 3. vivliostyle.js docs（viewer / reference 配下）のクロスプロダクト
   // 参照を補正する。upstream では vivliostyle-viewer.md と
   // supported-css-features.md / api.md / contribution-guide.md は
