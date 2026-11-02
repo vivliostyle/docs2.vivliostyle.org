@@ -9,6 +9,16 @@ order: 1
 
 このサイトの更新履歴です。上流リポジトリから取り込んだドキュメントのバージョンと、サイト自体の変更を新しい順に並べています。
 
+## 2026年10月30日
+
+収録ドキュメントをVivliostyle.js v2.45.2 / Vivliostyle CLI v11.4.0 / Vivliostyle Themes（theme-base 3.0.1、theme-academic、theme-bunko、theme-gutenberg、theme-slide、theme-techbook 3.1.0、theme-epub3j 2.1.0）/ VFM 2.7.2に更新しました。上流の未リリース文書更新も含みます。
+
+- **[Awesome Vivliostyle](/ja/reference/awesome-vivliostyle/)**：上流リポジトリのライセンス表示がApache-2.0からCC0-1.0に変わりました。掲載するプロジェクト一覧に変更はありません。
+- **[Vivliostyle Themes](/ja/themes/)**：v3移行ガイド、開発ガイド、仕様を更新。テーマのメタデータとテンプレートの仕様が加わり、theme-baseのコードブロックの書体設定も修正されました。テンプレートガイドには、パッケージ内のテンプレートを使うにはCLI 11.5.0以降が必要と記されています。
+- **[Vivliostyle CLI](/ja/cli/) v11.4.0**：PDF/X出力、既定のRGBプロファイル、PDFのOutputIntent、テンプレートとCLIのバージョン互換性について記述を追加。
+- **[Vivliostyle Viewer / Core](/ja/viewer/)**：対応CSSリファレンスに`vertical-lr`、横倒しの書字モード、`text-spacing-trim: trim-all`の記述を追加。
+- **[VFM](/ja/vfm/) 2.7.2**：remark 13への移行に関する作業中の資料を日英で追加。
+
 ## 2026年9月15日
 
 収録ドキュメントをVivliostyle.js v2.45.1 / Vivliostyle CLI v11.3.3 / Vivliostyle Themes v3（theme-base 3.0.0）/ VFM 2.7.2に更新しました。カッコ内は、その機能に対応したバージョンです。
