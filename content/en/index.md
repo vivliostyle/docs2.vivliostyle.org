@@ -11,6 +11,13 @@ Vivliostyle is a CSS typesetting ecosystem for creating beautifully formatted do
 
 ## Changelog
 
+### November 4, 2026
+
+Updated the Vivliostyle.js upstream reference to a commit following the v2.46.0 release.
+The documentation text is unchanged.
+
+- [Full details](/en/changelog/#november-4-2026)
+
 ### October 30, 2026
 
 Updated the documentation sources to Vivliostyle.js v2.45.2 / Vivliostyle CLI v11.4.0 / Vivliostyle Themes (theme-base 3.0.1; theme-epub3j 2.1.0; other themes 3.1.0) / VFM 2.7.2.

@@ -11,6 +11,13 @@ Vivliostyleは、Webテクノロジーを使って美しくフォーマットさ
 
 ## 変更履歴
 
+### 2026年11月4日
+
+Vivliostyle.jsの上流参照をv2.46.0リリース後のコミットに更新しました。
+文書本文の変更はありません。
+
+- [変更内容の詳細](/ja/changelog/#2026年11月4日)
+
 ### 2026年10月30日
 
 収録ドキュメントをVivliostyle.js v2.45.2 / Vivliostyle CLI v11.4.0 / Vivliostyle Themes（theme-base 3.0.1、theme-epub3j 2.1.0、その他のテーマ3.1.0）/ VFM 2.7.2に更新しました。

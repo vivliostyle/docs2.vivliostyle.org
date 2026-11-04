@@ -9,6 +9,15 @@ order: 1
 
 このサイトの更新履歴です。上流リポジトリから取り込んだドキュメントのバージョンと、サイト自体の変更を新しい順に並べています。
 
+## 2026年11月4日
+
+Vivliostyle.jsの上流参照を`e5cb0a16d`から`0c1363241`へ更新しました（25コミット）。
+v2.46.0（2026年11月3日リリース）を含む更新で、`docs/`以下の文書本文や画像に変更はありません。
+他の4つの上流リポジトリ（Vivliostyle CLI、Themes、VFM、Awesome Vivliostyle）の参照は変更していません。
+
+今回取り込んだ上流の変更には、フォント相対単位によるボックス寸法や文字間隔、ルビ境界とインラインブロック境界の`text-autospace`、Firefoxの縦書きでの句読点のぶら下げ、Chromium 153でのレイアウトに関する修正と、フォント・画像の読み込み待ちの高速化が含まれます。
+リリース全体の変更は[上流のv2.46.0変更履歴](https://github.com/vivliostyle/vivliostyle.js/blob/v2.46.0/CHANGELOG.md#2460-2026-11-03)を参照してください。
+
 ## 2026年10月30日
 
 収録ドキュメントをVivliostyle.js v2.45.2 / Vivliostyle CLI v11.4.0 / Vivliostyle Themes（theme-base 3.0.1、theme-academic、theme-bunko、theme-gutenberg、theme-slide、theme-techbook 3.1.0、theme-epub3j 2.1.0）/ VFM 2.7.2に更新しました。上流の未リリース文書更新も含みます。

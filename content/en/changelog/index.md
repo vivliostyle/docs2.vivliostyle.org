@@ -9,6 +9,15 @@ order: 1
 
 Update history for this site, newest first: the versions of the documentation pulled in from the upstream repositories, and changes to the site itself.
 
+## November 4, 2026
+
+Updated the Vivliostyle.js upstream reference from `e5cb0a16d` to `0c1363241` (25 commits).
+This includes v2.46.0, released on November 3, 2026; the documentation text and images under `docs/` are unchanged.
+The references for the other four upstream repositories (Vivliostyle CLI, Themes, VFM and Awesome Vivliostyle) are unchanged.
+
+The upstream changes incorporated in this update include fixes for box dimensions and character spacing using font-relative units, `text-autospace` at ruby and inline-block boundaries, hanging punctuation in vertical text in Firefox, and layout in Chromium 153, plus faster waiting for fonts and images to load.
+See the [upstream v2.46.0 changelog](https://github.com/vivliostyle/vivliostyle.js/blob/v2.46.0/CHANGELOG.md#2460-2026-11-03) for the full release history.
+
 ## October 30, 2026
 
 Updated the documentation sources to Vivliostyle.js v2.45.2 / Vivliostyle CLI v11.4.0 / Vivliostyle Themes (theme-base 3.0.1; theme-academic, theme-bunko, theme-gutenberg, theme-slide and theme-techbook 3.1.0; theme-epub3j 2.1.0) / VFM 2.7.2. The upstream commits also include documentation work beyond released features.
