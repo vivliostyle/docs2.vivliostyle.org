@@ -6,6 +6,14 @@ for a change, and prefer the project's established patterns over new
 abstractions. See [README.md](README.md) / [README.ja.md](README.ja.md) for
 the project overview, directory structure, and build commands.
 
+## 上流ドキュメントの更新条件
+
+- 上流の取り込み対象は、`doc/` または `docs/` 配下の公開ドキュメントに変更を含むリリースに限る。
+- リリースの有無と、現在取り込んでいる版から対象リリースまでの文書差分を確認してから、更新の要否を判断する。
+- プログラムの修正、バージョン番号の変更、上流のコミットの進行だけでは取り込まない。未リリースの変更も取り込まない。
+- 文書に変更がなければ「ドキュメントの更新なし」と報告し、サブモジュール参照、トップページ、変更履歴、生成物を更新しない。
+- 文書に変更がある場合に限り、その内容に応じて関連ページ、更新案内、生成物を更新する。
+
 ## Generative AI Policy
 
 This project discloses its generative AI usage in
