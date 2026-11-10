@@ -8,6 +8,8 @@ metadata:
   modified: 2026-09-17T08:57:57.511Z
 ---
 
+> 注記（2026-11-10）：末尾の「Dependabot ブランチへの push が main のキュー待ちデプロイをキャンセルする」は、当時のワークフローの記録である。今の `.github/workflows/deploy.yml` では、同時実行の組 `pages` は main だけで動く `deploy` の工程にだけ付いており、ほかのブランチのビルドはこの組に入らない。
+
 Dependabot が生成する `package-lock.json` は、CI（deploy.yml の Node 22.12 系に同梱される
 npm 10 系）で `npm ci` が `Missing: esbuild@0.28.2 from lock file` のように失敗することがある。
 lockfile の中身が欠けているのではなく、Dependabot がより新しい npm で生成するため、

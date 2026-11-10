@@ -23,7 +23,7 @@
 - [Vivliostyle Viewer リンクのキャッシュ起因エラー](project_viewer_cache_issue.md) — docs.vivliostyle.org の .html/.json が Cloudflare キャッシュ対象外で GH Pages オリジンが遅く、Viewer リンクが断続エラー
 - [refs/sessions肥大化によるgit破損事案](project_git_corruption_session_refs.md) — 2026-07-17、Claude Codeのチェックポイントrefが270件超蓄積しrepack中断で.git破損。origin再取得で復旧
 - [セッションref間引きツールの設置場所](reference_session_ref_cleanup_tooling.md) — ~/.claude/scripts/prune-session-refs.sh とlaunchdによる全リポジトリ共通の定期クリーンアップ
-- [submoduleはリリース直後にタグへ更新](project_submodule_update_timing.md) — 上流のブランチHEADには未リリース機能の記述が混じるため、機能のバージョン表記も実リリースを調べて書く
+- [submoduleは文書の変更を含むリリースのタグへ更新](project_submodule_update_timing.md) — doc/・docs/ の公開文書に変更があるリリースに限り、ブランチHEADではなくリリースのタグへ更新する。機能のバージョン表記も実リリースを調べて書く
 - [上流起因の脆弱性はIssueを出さず待つ](project_upstream_vuln_no_issue.md) — cli・vfm が固定する依存のアラートは上流の対応待ち。Issue 作成を提案しない
 - [Dependabotのlockfileがnpm 10系で落ちる](project_dependabot_lockfile_npm_mismatch.md) — CIのnpmと世代が違い `npm ci` が失敗。`npx npm@10.9.0 install --package-lock-only` で作り直す
 

@@ -1,12 +1,14 @@
 ---
 name: project_submodule_update_timing
-description: docs2.vivliostyle.org の submodule は上流の新バージョンのリリース直後に、リリース時点のタグへ更新する
+description: docs2.vivliostyle.org の submodule は、doc/・docs/ の公開文書に変更を含む上流リリースに限り、リリース時点のタグへ更新する（2026-11-10 の注記）
 metadata: 
   node_type: memory
   type: project
   originSessionId: 898d2d4b-a408-4c17-a864-49a4d270ee21
   modified: 2026-08-24T12:46:26.233Z
 ---
+
+> 注記（2026-11-10）：上流のリリースがあっても、それだけでは submodule を更新しない。このリポジトリの `AGENTS.md` の「上流ドキュメントの更新条件」と `upstream-document-release-only.md` に従い、今取り込んでいる版から対象リリースまでに `doc/`・`docs/` の公開文書の変更があるときに限って、リリース時点のタグへ更新する。
 
 docs2.vivliostyle.org の submodule は、上流で新バージョンがリリースされた直後に、ブランチ HEAD ではなく**リリース時点のタグ**へ更新する。2026-08-24 の PR #61 レビューで村上真雄氏が示した方針。
 
