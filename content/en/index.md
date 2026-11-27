@@ -16,7 +16,7 @@ Vivliostyle is a CSS typesetting ecosystem for creating beautifully formatted do
 Updated the documentation sources to Vivliostyle.js v2.47.0 / Vivliostyle CLI v11.6.0 / Vivliostyle Themes (theme-base 3.1.0, plus four new themes) / VFM 2.7.2.
 
 - **[Vivliostyle Viewer / Core](/en/viewer/) v2.47.0** — Adds [style sheets specified in the manifest](/en/viewer/vivliostyle-viewer/#stylesheets-in-the-manifest) and more supported CSS, including [CSS bookmarks](/en/reference/supported-css-features/#css-generated-content-3).
-- **[Vivliostyle CLI](/en/cli/) v11.6.0** — Adds [reusing a running Chromium](/en/cli/special-output-settings/#reuse-a-running-chromium-for-local-pdf-builds). `press-ready` is now deprecated.
+- **[Vivliostyle CLI](/en/cli/) v11.6.0** — Adds [reusing a running Chromium](/en/cli/special-output-settings/#reuse-a-running-chromium-for-local-pdf-builds). CLI v11.5.0 deprecated the `press-ready` and `press-ready-local` values of `preflight`.
 - **[Vivliostyle Themes](/en/themes/)** — Adds four new official themes to the [gallery](/en/themes/gallery/).
 - [Full details](/en/changelog/#november-27-2026)
 

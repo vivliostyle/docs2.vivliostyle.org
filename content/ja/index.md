@@ -16,7 +16,7 @@ Vivliostyleは、Webテクノロジーを使って美しくフォーマットさ
 収録ドキュメントをVivliostyle.js v2.47.0 / Vivliostyle CLI v11.6.0 / Vivliostyle Themes（theme-base 3.1.0、新テーマ4種を追加）/ VFM 2.7.2に更新しました。
 
 - **[Vivliostyle Viewer / Core](/ja/viewer/) v2.47.0** — [マニフェストで指定するスタイルシート](/ja/viewer/vivliostyle-viewer/#マニフェストで指定するスタイルシート)と、[CSSブックマーク](/ja/reference/supported-css-features/#css-generated-content-3)などの対応CSSを追加
-- **[Vivliostyle CLI](/ja/cli/) v11.6.0** — [起動済みのChromiumの再利用](/ja/cli/special-output-settings/#起動済みの-chromium-をローカルでの-pdf-生成に再利用)を追加。`press-ready`は非推奨に
+- **[Vivliostyle CLI](/ja/cli/) v11.6.0** — [起動済みのChromiumの再利用](/ja/cli/special-output-settings/#起動済みの-chromium-をローカルでの-pdf-生成に再利用)を追加。CLI v11.5.0で、`preflight`の`press-ready`と`press-ready-local`が非推奨に
 - **[Vivliostyle Themes](/ja/themes/)** — [ギャラリー](/ja/themes/gallery/)に新しい公式テーマ4種を追加
 - [変更内容の詳細](/ja/changelog/#2026年11月27日)
 
