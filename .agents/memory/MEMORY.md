@@ -27,6 +27,8 @@
 - [上流起因の脆弱性はIssueを出さず待つ](project_upstream_vuln_no_issue.md) — cli・vfm が固定する依存のアラートは上流の対応待ち。Issue 作成を提案しない
 - [Dependabotのlockfileがnpm 10系で落ちる](project_dependabot_lockfile_npm_mismatch.md) — CIのnpmと世代が違い `npm ci` が失敗。`npx npm@10.9.0 install --package-lock-only` で作り直す
 
+- [レビュー返信にも AI の関与を表示する](review-reply-ai-disclosure.md) — 使用した道具とモデル、人と AI の役割、確認状況を明記する。
+
 ## ハンドオフの参照先
 
 - 作業の引き継ぎ（ハンドオフ）は全体指示が示す共通目次から探す。共通規則の正本は全体指示にある。
