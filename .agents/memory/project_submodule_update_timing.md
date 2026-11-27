@@ -15,3 +15,13 @@ docs2.vivliostyle.org の submodule は、上流で新バージョンがリリ�
 **Why:** 各プロジェクトのドキュメントは機能の実装と同時に更新されるため、submodule のブランチ HEAD には未リリースの機能の記述が含まれる。それをサイトに載せると、読者が現行リリースでは動かない書き方を真似てしまう。実際に themes で、theme-base 2.1.1 未収録のスタイルシート構成（`css/` 直下へのフラット化）の `@import` 記述例が混入していた。
 
 **How to apply:** 更新時は `git tag --contains <commit>` で対応リリースを確認する。変更履歴に機能を書くときも、submodule のバージョンではなくその機能が実際に入ったリリース番号を書く（例: CSS Nesting は収録時点の v2.44.1 ではなく v2.42.0）。運用は定期実行タスク「Vivliostyle doc watch」が担う（2026-08-25 朝から毎日）。関連: [[feedback_verify_before_writing]]
+
+## 2026-11-27 の承認（この回の例外）
+
+小形さんは、リリースのタグより後に上流で追加された「リリース済み機能の説明」も取り込むことを、Claude Code の選択肢（「2件とも含める」）で承認した。対象は Vivliostyle.js の `b03d6d227`（v2.47.0 の対応CSS）と Themes の `6f9fe15`（npm 公開済みの新テーマ4種の掲載）の2件。
+
+**How to apply:** この承認は2件だけのもの。次にタグより後の文書コミットがあれば、対象の機能がリリース済みかと、間に入るコミットを確かめたうえで、改めて尋ねる。
+
+## テーマの画像
+
+`public/themes/assets/captures/` はサブモジュールの `docs/assets/captures/` の写し。Themes を更新して画像が増減したら、写してから `npm run optimize:images` を実行し、`dist/` に画像があることを確かめる（2026-11-27、写し忘れると新テーマの画像が出ない状態だった）。
