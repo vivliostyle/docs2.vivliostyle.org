@@ -9,6 +9,14 @@ order: 1
 
 Update history for this site, newest first: the versions of the documentation pulled in from the upstream repositories, and changes to the site itself.
 
+## November 27, 2026
+
+Updated the documentation sources to Vivliostyle.js v2.47.0 / Vivliostyle CLI v11.6.0 / Vivliostyle Themes (theme-base 3.1.0; theme-academic, theme-bunko, theme-gutenberg, theme-slide and theme-techbook 3.1.1; theme-epub3j 2.1.0; four new themes 1.0.0) / VFM 2.7.2. The supported CSS reference and the theme listings include text added upstream shortly after the releases. Version numbers in parentheses indicate the release that introduced the feature.
+
+- **[Vivliostyle Viewer / Core](/en/viewer/) v2.47.0** — New section on [style sheets specified in the manifest](/en/viewer/vivliostyle-viewer/#stylesheets-in-the-manifest) (v2.47.0). The supported CSS reference adds [CSS bookmarks](/en/reference/supported-css-features/#css-generated-content-3) (v2.47.0), [`page-orientation`](/en/reference/supported-css-features/#css-paged-media-3) and printing of mixed page sizes (v2.47.0), and `quotes` within `@page` rules (v2.47.0), and clarifies the `clear` property. The [API reference](/en/reference/api/) revises the description of `userAgentRootURL`.
+- **[Vivliostyle CLI](/en/cli/) v11.6.0** — Adds the `--browser-url` option to [reuse a running Chromium for PDF builds](/en/cli/special-output-settings/#reuse-a-running-chromium-for-local-pdf-builds) (v11.6.0). The `press-ready` and `press-ready-local` values of `preflight` are now deprecated (v11.5.0). Themes can provide translations of their name and description in [`vivliostyle.theme.i18n`](/en/cli/themes-and-css/#creating-a-theme) (v11.5.0).
+- **[Vivliostyle Themes](/en/themes/)** — Adds four new official themes to the [gallery](/en/themes/gallery/) and [usage guide](/en/themes/usage/): theme-centered-heading-line-graph, theme-mono-hanging-number-sidenote, theme-vertical-numbered-heading-graph and theme-wide-margin-speaker-indent.
+
 ## October 30, 2026
 
 Updated the documentation sources to Vivliostyle.js v2.45.2 / Vivliostyle CLI v11.4.0 / Vivliostyle Themes (theme-base 3.0.1; theme-academic, theme-bunko, theme-gutenberg, theme-slide and theme-techbook 3.1.0; theme-epub3j 2.1.0) / VFM 2.7.2. The upstream commits also include documentation work beyond released features.

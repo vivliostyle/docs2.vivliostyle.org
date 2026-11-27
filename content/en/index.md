@@ -11,6 +11,15 @@ Vivliostyle is a CSS typesetting ecosystem for creating beautifully formatted do
 
 ## Changelog
 
+### November 27, 2026
+
+Updated the documentation sources to Vivliostyle.js v2.47.0 / Vivliostyle CLI v11.6.0 / Vivliostyle Themes (theme-base 3.1.0, plus four new themes) / VFM 2.7.2.
+
+- **[Vivliostyle Viewer / Core](/en/viewer/) v2.47.0** — Adds [style sheets specified in the manifest](/en/viewer/vivliostyle-viewer/#stylesheets-in-the-manifest) and more supported CSS, including [CSS bookmarks](/en/reference/supported-css-features/#css-generated-content-3).
+- **[Vivliostyle CLI](/en/cli/) v11.6.0** — Adds [reusing a running Chromium](/en/cli/special-output-settings/#reuse-a-running-chromium-for-local-pdf-builds). `press-ready` is now deprecated.
+- **[Vivliostyle Themes](/en/themes/)** — Adds four new official themes to the [gallery](/en/themes/gallery/).
+- [Full details](/en/changelog/#november-27-2026)
+
 ### October 30, 2026
 
 Updated the documentation sources to Vivliostyle.js v2.45.2 / Vivliostyle CLI v11.4.0 / Vivliostyle Themes (theme-base 3.0.1; theme-epub3j 2.1.0; other themes 3.1.0) / VFM 2.7.2.
@@ -19,14 +28,6 @@ Updated the documentation sources to Vivliostyle.js v2.45.2 / Vivliostyle CLI v1
 - **[Vivliostyle CLI](/en/cli/) v11.4.0** — Documents PDF/X output and the default RGB profile, among other updates.
 - **[Vivliostyle Viewer / Core](/en/viewer/)** — Updated the supported CSS reference.
 - [Full details](/en/changelog/#october-30-2026)
-
-### September 15, 2026
-
-Updated the documentation carried here to Vivliostyle.js v2.45.1 / Vivliostyle CLI v11.3.3 / Vivliostyle Themes v3 (theme-base 3.0.0) / VFM 2.7.2.
-
-- **[Vivliostyle Themes](/en/themes/) v3** — A major change to how themes are written, with a new [migration guide](/en/themes/migration-v3/) covering every step and the full variable rename tables.
-- **[Vivliostyle CLI](/en/cli/) v11.3.3** — Themes can now be [imported from CSS](/en/cli/themes-and-css/#importing-themes-from-css) by npm package name, and the docs add [creating a theme](/en/cli/themes-and-css/#creating-a-theme) and [using PostCSS](/en/cli/themes-and-css/#using-postcss).
-- **[Awesome Vivliostyle](/en/reference/awesome-vivliostyle/)** — Adds three more Gijutsu-Hyoron titles to the list of books made with Vivliostyle.
 
 [See the full changelog →](/en/changelog/)
 

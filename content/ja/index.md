@@ -11,6 +11,15 @@ Vivliostyleは、Webテクノロジーを使って美しくフォーマットさ
 
 ## 変更履歴
 
+### 2026年11月27日
+
+収録ドキュメントをVivliostyle.js v2.47.0 / Vivliostyle CLI v11.6.0 / Vivliostyle Themes（theme-base 3.1.0、新テーマ4種を追加）/ VFM 2.7.2に更新しました。
+
+- **[Vivliostyle Viewer / Core](/ja/viewer/) v2.47.0** — [マニフェストで指定するスタイルシート](/ja/viewer/vivliostyle-viewer/#マニフェストで指定するスタイルシート)と、[CSSブックマーク](/ja/reference/supported-css-features/#css-generated-content-3)などの対応CSSを追加
+- **[Vivliostyle CLI](/ja/cli/) v11.6.0** — [起動済みのChromiumの再利用](/ja/cli/special-output-settings/#起動済みの-chromium-をローカルでの-pdf-生成に再利用)を追加。`press-ready`は非推奨に
+- **[Vivliostyle Themes](/ja/themes/)** — [ギャラリー](/ja/themes/gallery/)に新しい公式テーマ4種を追加
+- [変更内容の詳細](/ja/changelog/#2026年11月27日)
+
 ### 2026年10月30日
 
 収録ドキュメントをVivliostyle.js v2.45.2 / Vivliostyle CLI v11.4.0 / Vivliostyle Themes（theme-base 3.0.1、theme-epub3j 2.1.0、その他のテーマ3.1.0）/ VFM 2.7.2に更新しました。
@@ -19,14 +28,6 @@ Vivliostyleは、Webテクノロジーを使って美しくフォーマットさ
 - **[Vivliostyle CLI](/ja/cli/) v11.4.0** — PDF/X出力や既定のRGBプロファイルなどを記述
 - **[Vivliostyle Viewer / Core](/ja/viewer/)** — 対応CSSリファレンスを更新
 - [変更内容の詳細](/ja/changelog/#2026年10月30日)
-
-### 2026年9月15日
-
-収録ドキュメントをVivliostyle.js v2.45.1 / Vivliostyle CLI v11.3.3 / Vivliostyle Themes v3（theme-base 3.0.0）/ VFM 2.7.2に更新しました。
-
-- **[Vivliostyle Themes](/ja/themes/) v3** — テーマの書き方が大きく変わりました。CSS変数の改名表と手順を収めた [v3への移行](/ja/themes/migration-v3/)を新設
-- **[Vivliostyle CLI](/ja/cli/) v11.3.3** — [CSSからのテーマの読み込み](/ja/cli/themes-and-css/#css-からのテーマの読み込み)をnpmパッケージ名で書けるようになり、[テーマの作成](/ja/cli/themes-and-css/#テーマの作成)コマンドと [PostCSSの利用](/ja/cli/themes-and-css/#postcss-の利用)の記述を追加
-- **[Awesome Vivliostyle](/ja/reference/awesome-vivliostyle/)** — Vivliostyleで作られた書籍に技術評論社の3点を追加
 
 [変更履歴をすべて見る →](/ja/changelog/)
 

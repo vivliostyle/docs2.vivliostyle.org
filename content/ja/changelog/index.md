@@ -9,6 +9,14 @@ order: 1
 
 このサイトの更新履歴です。上流リポジトリから取り込んだドキュメントのバージョンと、サイト自体の変更を新しい順に並べています。
 
+## 2026年11月27日
+
+収録ドキュメントをVivliostyle.js v2.47.0 / Vivliostyle CLI v11.6.0 / Vivliostyle Themes（theme-base 3.1.0、theme-academic、theme-bunko、theme-gutenberg、theme-slide、theme-techbook 3.1.1、theme-epub3j 2.1.0、新テーマ4種 1.0.0）/ VFM 2.7.2に更新しました。対応CSSリファレンスとテーマの紹介は、リリース直後に上流で追加された記述まで含みます。カッコ内は、その機能に対応したバージョンです。
+
+- **[Vivliostyle Viewer / Core](/ja/viewer/) v2.47.0** — [マニフェストで指定するスタイルシート](/ja/viewer/vivliostyle-viewer/#マニフェストで指定するスタイルシート)（v2.47.0）の節を追加。対応CSSリファレンスには、[CSSブックマーク](/ja/reference/supported-css-features/#css-generated-content-3)（v2.47.0）、[`page-orientation`](/ja/reference/supported-css-features/#css-paged-media-3)とサイズが混在するページの印刷（v2.47.0）、`@page`ルール内の`quotes`（v2.47.0）が加わり、`clear`プロパティの記述も整理されました。[APIリファレンス](/ja/reference/api/)は`userAgentRootURL`の説明を更新
+- **[Vivliostyle CLI](/ja/cli/) v11.6.0** — [起動済みのChromiumをPDF生成に再利用する](/ja/cli/special-output-settings/#起動済みの-chromium-をローカルでの-pdf-生成に再利用)`--browser-url`オプション（v11.6.0）を追加。`preflight`の`press-ready`／`press-ready-local`は非推奨になりました（v11.5.0）。テーマの[`vivliostyle.theme.i18n`](/ja/cli/themes-and-css/#テーマの作成)で、テーマ名と説明の翻訳を指定できます（v11.5.0）
+- **[Vivliostyle Themes](/ja/themes/)** — [ギャラリー](/ja/themes/gallery/)と[使い方](/ja/themes/usage/)に、新しい公式テーマ4種（theme-centered-heading-line-graph、theme-mono-hanging-number-sidenote、theme-vertical-numbered-heading-graph、theme-wide-margin-speaker-indent）を追加
+
 ## 2026年10月30日
 
 収録ドキュメントをVivliostyle.js v2.45.2 / Vivliostyle CLI v11.4.0 / Vivliostyle Themes（theme-base 3.0.1、theme-academic、theme-bunko、theme-gutenberg、theme-slide、theme-techbook 3.1.0、theme-epub3j 2.1.0）/ VFM 2.7.2に更新しました。上流の未リリース文書更新も含みます。
